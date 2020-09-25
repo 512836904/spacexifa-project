@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+
+ -->
+<mapper namespace="com.spring.dao.JunctionMapper">
+
+    <!-- 查询焊缝信息列表   -->
+    <select id="getJunctionList" parameterType="com.spring.model.Junction" resultType="com.spring.model.Junction">
+        SELECT FID,FJUNCTION,"junction_length","junction_format","current_limit","current_lower_limit",JUNCTION_NAME from TB_JUNCTION
+        WHERE 1 = 1
+        <if test="fjunction != null and fjunction != ''">
+            and FJUNCTION = #{fjunction}
+        </if>
+        <if test="junction_name != null and junction_name != ''">
+            and JUNCTION_NAME = #{junction_name}
+        </if>
+    </select>
+
+<!--新增焊缝-->
+    <insert id="addJunction" parameterType="com.spring.model.Junction" flushCache="true">
+        INSERT INTO TB_JUNCTION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fjunction != null and fjunction != ''">
+                "FJUNCTION",
+            </if>
+            <if test="junction_length != null and junction_length != ''">
+                "junction_length",
+            </if>
+            <if test="junction_format != null and junction_format != ''">
+                "junction_format",
+            </if>
+            <if test="current_limit != null and current_limit != ''">
+                "current_limit",
+            </if>
+            <if test="current_lower_limit != null and current_lower_limit != ''">
+                "current_lower_limit",
+            </if>
+            <if test="junction_name != null and junction_name != ''">
+                JUNCTION_NAME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fjunction != null and fjunction != ''">
+                #{fjunction},
+            </if>
+            <if test="junction_length != null and junction_length != ''">
+                #{junction_length},
+            </if>
+            <if test="junction_format != null and junction_format != ''">
+                #{junction_format},
+            </if>
+            <if test="current_limit != null and current_limit != ''">
+                #{current_limit},
+            </if>
+            <if test="current_lower_limit != null and current_lower_limit != ''">
+                #{current_lower_limit},
+            </if>
+            <if test="junction_name != null and junction_name != ''">
+                #{junction_name},
+            </if>
+        </trim>
+    </insert>
+
+<!--    修改焊缝-->
+    <update id="updateJunction" parameterType="com.spring.model.Junction" flushCache="true">
+        UPDATE TB_JUNCTION
+        <if test="fid != null and fid != 0">
+            <set>
+                <if test="fjunction != null and fjunction != ''">
+                    "FJUNCTION" = #{fjunction},
+                </if>
+                <if test="junction_length != null and junction_length != ''">
+                    "junction_length" = #{junction_length},
+                </if>
+                <if test="junction_format != null and junction_format != ''">
+                    "junction_format" = #{junction_format},
+                </if>
+                <if test="current_limit != null and current_limit != ''">
+                    "current_limit" = #{current_limit},
+                </if>
+                <if test="current_lower_limit != null and current_lower_limit != ''">
+                    "current_lower_limit" = #{current_lower_limit},
+                </if>
+                <if test="junction_name != null and junction_name != ''">
+                    JUNCTION_NAME = #{junction_name},
+                </if>
+            </set>
+            WHERE fid = #{fid}
+        </if>
+    </update>
+
+    <delete id="deleteJunction" parameterType="int">
+        <if test="fid != null and fid != ''">
+            DELETE FROM TB_JUNCTION WHERE FID = #{fid}
+        </if>
+    </delete>
+</mapper>

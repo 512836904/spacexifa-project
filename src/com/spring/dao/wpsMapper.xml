@@ -981,4 +981,65 @@
 		INSERT INTO TB_PARAMETER (FSTOP_TIME,FCONTINUOUS_TIME,FWIRE_WEIGHT,FAIR_FLOW_VOLUME,FSPEED,FWELDING_COEFFICIENT,FSTANDBY_POWER,FDAY_SHIFT,FAFTERNOON_SHIFT,FNIGHT_SHIFT) 
 		VALUES (#{endtime},#{fstarttime},#{f002},#{f001},#{welderid},#{macid},#{fproduct_number},#{femployee_id},#{fstep_id},#{fjunction})
 	</insert>
+
+	<insert id="addWpsLibrary" parameterType="Wps" keyColumn="FID" keyProperty="fid" useGeneratedKeys="true">
+		INSERT INTO TB_WPS_LIBRARY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+				JOB_NUMBER,
+			</if>
+			<if test="SET_NUMBER != null and SET_NUMBER != ''">
+				SET_NUMBER,
+			</if>
+			<if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+				PART_DRAWING_NUMBER,
+			</if>
+			<if test="PART_NAME != null and PART_NAME != ''">
+				PART_NAME,
+			</if>
+		</trim>
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+				#{JOB_NUMBER},
+			</if>
+			<if test="SET_NUMBER != null and SET_NUMBER != ''">
+				#{SET_NUMBER},
+			</if>
+			<if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+				#{PART_DRAWING_NUMBER},
+			</if>
+			<if test="PART_NAME != null and PART_NAME != ''">
+				#{PART_NAME},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateWpsLibrary" parameterType="Wps" flushCache="true">
+		<if test="fid != null and fid != 0">
+			UPDATE TB_WPS_LIBRARY
+			<set>
+				<if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+					JOB_NUMBER = #{JOB_NUMBER},
+				</if>
+				<if test="SET_NUMBER != null and SET_NUMBER != ''">
+					SET_NUMBER = #{SET_NUMBER},
+				</if>
+				<if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+					PART_DRAWING_NUMBER = #{PART_DRAWING_NUMBER},
+				</if>
+				<if test="PART_NAME != null and PART_NAME != ''">
+					PART_NAME = #{PART_NAME},
+				</if>
+			</set>
+			where FID = #{fid}
+		</if>
+	</update>
+
+	<!--批量删除工艺信息	-->
+	<delete id="deleteWpsByIds" parameterType="list">
+		delete from TB_WPS_LIBRARY where FID in
+		<foreach collection="list" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
 </mapper>

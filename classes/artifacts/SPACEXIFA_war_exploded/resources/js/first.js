@@ -1,7 +1,8 @@
 var machine = new Array(), off = new Array(), on = new Array(), warn = new Array(), stand = new Array(), cleardata = new Array();
 var chartsDiv11 = null,chartsDiv12=null,chartsDiv221 = null,chartsDiv222 = null,chartsDiv21 = null,chartsDiv23 = null,chartsDiv13 = null;
 var lockReconnect = false;//避免重复连接
-var websocketURL=null,websocket=null;
+var websocketURL=null;
+var websocket=null;
 $(function(){
 	showDiv12();
 	showChart21();

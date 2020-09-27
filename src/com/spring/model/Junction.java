@@ -13,6 +13,13 @@ public class Junction {
     private String current_lower_limit;     //电流下限
     private String junction_name;       //焊缝名称
 
+    /**
+     * 工艺信息和焊缝关联表
+     * @return
+     */
+    private int library_id; //工艺id
+    private int junction_id;    //焊缝id
+
     public long getFid() {
         return fid;
     }
@@ -67,5 +74,21 @@ public class Junction {
 
     public void setJunction_name(String junction_name) {
         this.junction_name = junction_name;
+    }
+
+    public int getLibrary_id() {
+        return library_id;
+    }
+
+    public void setLibrary_id(int library_id) {
+        this.library_id = library_id;
+    }
+
+    public int getJunction_id() {
+        return junction_id;
+    }
+
+    public void setJunction_id(int junction_id) {
+        this.junction_id = junction_id;
     }
 }

@@ -45,6 +45,17 @@ public interface WpsService {
 	List<Wps> gettrackcard();
 	List<Wps> getstepall();
 	List<Wps> getEmployee1(String employ_id,String productId);
+
+	/**
+	 * 新增工艺信息
+	 */
+	int addWpsLibrary(Wps wps);
+
+	/**
+	 * 新增工艺信息
+	 */
+	int updateWpsLibrary(Wps wps);
+
 	/**
 	 * 获取松下wps
 	 * @param parent
@@ -344,6 +355,12 @@ public interface WpsService {
 	 * @param fid
 	 */
 	void deleteWps(String fid);
+
+	/**
+	 * 批量删除工艺信息
+	 * @return
+	 */
+	int deleteWpsByIds(List<Integer> ids);
 	
 	/**
 	 * 新增工序

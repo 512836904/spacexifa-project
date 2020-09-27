@@ -107,7 +107,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<form id="rfm" class="easyui-form" method="post" data-options="novalidate:true"><br/>
 				<div class="fitem">
 					<lable>设备名称</lable>
-					<input type="hidden" id="wid" readonly="readonly" />
+<%--					<input type="hidden" id="wid" readonly="readonly" />--%>
 					<input class="easyui-textbox" name="equipmentNo" readonly="readonly" />
 				</div>
 				<div class="fitem">

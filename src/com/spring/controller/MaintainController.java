@@ -26,6 +26,9 @@ import com.spring.util.IsnullUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/**
+ * 设备维修记录管理
+ */
 @Controller
 @RequestMapping(value = "/maintain", produces = { "text/json;charset=UTF-8" })
 public class MaintainController {
@@ -156,7 +159,7 @@ public class MaintainController {
 				json.put("mid", wm.getId());
 				ary1.add(json);
 			}
-			List<Dictionarys> dictionary = dm.getDictionaryValue(5);
+			List<Dictionarys> dictionary = dm.getDictionaryValue(15);
 			for(Dictionarys d:dictionary){
 				json.put("typeid", d.getValue());
 				json.put("typename", d.getValueName());

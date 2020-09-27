@@ -98,4 +98,23 @@
             DELETE FROM TB_JUNCTION WHERE FID = #{fid}
         </if>
     </delete>
+
+    <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.Junction">
+        SELECT "fid","library_id","junction_id" FROM TB_LIBRARY_JUNCTION
+        WHERE "library_id" = #{library_id} AND "junction_id" = #{junction_id}
+    </select>
+
+    <insert id="addLiarbryJunction" parameterType="com.spring.model.Junction">
+        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+            select TB_LIBRARY_JUNCTION_ID.nextval as fid from dual
+        </selectKey>
+        INSERT INTO TB_LIBRARY_JUNCTION("fid","library_id","junction_id") VALUES (#{fid},#{library_id},#{junction_id})
+    </insert>
+
+    <delete id="deleteLiarbryJunctionByIds" parameterType="list">
+        delete from TB_LIBRARY_JUNCTION where "library_id" in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

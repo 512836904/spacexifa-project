@@ -31,7 +31,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="resources/js/search/search.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/allWps.js"></script>
  	<script type="text/javascript" src="resources/js/wpslib/addeditWps.js"></script>
-	<script type="text/javascript" src="resources/js/wpslib/removeWps.js"></script>
+<%--	<script type="text/javascript" src="resources/js/wpslib/removeWps.js"></script>--%>
+	<script type="text/javascript" src="resources/js/junction/junction.js"></script>
 <!--	<script type="text/javascript" src="resources/js/wpslib/giveWpslib.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/differentMachine.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/control.js"></script>
@@ -39,6 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="resources/js/getTimeToHours.js"></script>
 	<script type="text/javascript" src="resources/js/swfobject.js"></script>
 	<script type="text/javascript" src="resources/js/web_socket.js"></script>
+
 	<style type="text/css">
 		table tr td{
 			font-size:12px;
@@ -56,44 +58,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	  	<div class="functiondiv">
 			<div>
 				<div style="float: left;">
-					<label>产品图号：</label>
-					<input class="easyui-textbox" name="product_drawing_no" id="product_drawing_no" />
+					<label>工作号：</label>
+					<input class="easyui-textbox" id="job_number_search" />
 				</div>
 				<div  style="float: left;">
-					<label>产品名称：</label>
-					<input class="easyui-textbox" name="product_name" id="product_name" />
+					<label>部套号：</label>
+					<input class="easyui-textbox" id="set_number_search" />
 				</div>
 				<div  style="float: left;">
-					<label>产品版本号：</label>
-					<input class="easyui-textbox" name="product_version" id="product_version" />
+					<label>零件图号：</label>
+					<input class="easyui-textbox" id="part_drawing_search" />
 				</div>
 				<div>
-					<label>工艺规程编号：</label>
-					<input class="easyui-textbox" name="wps_lib_name" id="wps_lib_name" />
+					<label>零件名：</label>
+					<input class="easyui-textbox" id="part_name_search" />
 				</div>
-			</div>
-			<div>
-				<div  style="float: left;">
-					<label>工艺规程版本号：</label>
-					<input class="easyui-textbox" name="wps_lib_version" id="wps_lib_version" />
-				</div>
-				<div  style="float: left;">
-					<label>工艺来源：</label>
-					<select class="easyui-combobox" name="wflag" id="wflag" data-options="editable:false">
-						<option value="">无</option>
-						<option value="0">自建</option>
-						<option value="1">MES</option>
-					</select>
-				</div>
-				<div  style="float: left;">
-					<label>工艺审核：</label>
-					<select class="easyui-combobox" name="status" id="status" data-options="editable:false">
-						<option value="">无</option>
-						<option value="0">待审核</option>
-						<option value="1">已通过</option>
-					</select>
-				</div>
-				<div  style="float: left;">
+				<div>
 					<a href="javascript:searchWps();" class="easyui-linkbutton" iconCls="icon-select">查找</a>&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			</div>
@@ -103,40 +83,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		<div id="wpsTableDiv" style="height: auto;">
 	   		<table id="wpslibTable" style="table-layout: fixed; width:100%;"></table>
   		</div>
+
+		<!-- 焊缝信息列表 -->
+		<div id="dialogDiv" class="easyui-dialog" style="width: 1150px; height: 700px;" closed="true" buttons="#tdd-buttons">
+			<div class="functiondiv">
+				<div>
+					<div style="float: left;">
+						<label>焊缝编号：</label>
+						<input class="easyui-textbox" name="fjunction_search" id="junction_search"/>
+					</div>
+					<div style="float: left;">
+						<label>焊缝名称：</label>
+						<input class="easyui-textbox" name="junction_name_search" id="junction_name_search"/>
+					</div>
+					<div style="float: left;">
+						<a href="javascript:searchJunction();" class="easyui-linkbutton" iconCls="icon-select">查找</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					</div>
+				</div>
+			</div>
+			<table id="junctionTable" style="width:100%;height: 508px"></table>
+			<div align="center">
+				<a href="javascript:determine();" style="width: 13%;height: 40px" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+			</div>
+		</div>
+
 	     <!-- 添加修改工艺台账 -->
 		<div id="addOrUpdate" class="easyui-dialog" style="width: 400px; height: 400px; padding:10px 20px" closed="true" buttons="#tdd-buttons">
 			<form id="addOrUpdatefm" class="easyui-form" method="post" data-options="novalidate:true">
 				<div style="width: 100%">
 					<div class="fitem">
-						<lable><span class="required">*</span>产品图号</lable>
-						<input type="hidden" id="validPdo">
-						<input class="easyui-textbox" name="fproduct_drawing_no" id="fproduct_drawing_no"  data-options="required:true"/>
+						<input id="fid" name="fid" type="hidden">
+						<lable><span class="required">*</span>工作号</lable>
+						<input class="easyui-textbox" name="JOB_NUMBER" id="JOB_NUMBER"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>产品名称</lable>
-						<input class="easyui-textbox" name="fproduct_name" id="fproduct_name"  data-options="required:true"/>
+						<lable><span class="required">*</span>部套号</lable>
+						<input class="easyui-textbox" name="SET_NUMBER" id="SET_NUMBER"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>产品版本号</lable>
-						<input type="hidden" id="validProduct">
-						<input class="easyui-textbox" name="fproduct_version" id="fproduct_version"  data-options="required:true"/>
+						<lable><span class="required">*</span>零级图号</lable>
+						<input class="easyui-textbox" name="PART_DRAWING_NUMBER" id="PART_DRAWING_NUMBER"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>工艺规程编号</lable>
-						<input type="hidden" id="validWpsname">
-						<input class="easyui-textbox" name="fwps_lib_name" id="fwps_lib_name"  data-options="required:true"/>
+						<lable><span class="required">*</span>零件名</lable>
+						<input class="easyui-textbox" name="PART_NAME" id="PART_NAME"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>工艺规程版本号</lable>
-						<input type="hidden" id="validWpsversion">
-						<input class="easyui-textbox" name="fwps_lib_version" id="fwps_lib_version"  data-options="validType:'xifawpsValidate',required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>工艺来源</lable>
-						<select class="easyui-combobox" name="flag" id="flag" data-options="required:true,editable:false,disabled:true">
-							<option value="0">自建</option>
-							<option value="1">MES</option>
-						</select>
+						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>
+						<input class="easyui-textbox" name="junctionName" id="junctionName" readonly/>
+						<input type="hidden" id="fids" name="fids">
 					</div>
 					<div align="center">
 						<a href="javascript:saveWps();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
@@ -145,19 +140,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</form>
 		</div>
-		<div id="addVersion-buttons">
-			<a href="javascript:saveVersion();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
-			<a href="javascript:closeDialog('addVersionDiv');" class="easyui-linkbutton" iconCls="icon-cancel" >取消</a>
-		</div>
+<%--		<div id="addVersion-buttons">--%>
+<%--			<a href="javascript:saveVersion();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>--%>
+<%--			<a href="javascript:closeDialog('addVersionDiv');" class="easyui-linkbutton" iconCls="icon-cancel" >取消</a>--%>
+<%--		</div>--%>
 	    <div class="functiondiv">
 			<div>
 				<a href="javascript:addWps();" class="easyui-linkbutton" iconCls="icon-newadd">新增工艺</a>&nbsp;&nbsp;&nbsp;&nbsp;
 				<a href="javascript:editWps('');" class="easyui-linkbutton" iconCls="icon-update">修改工艺</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:deleteWps();" class="easyui-linkbutton" iconCls="icon-delete">删除工艺</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:wpsDetails();" class="easyui-linkbutton" iconCls="icon-navigation">工艺规程详情</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:addVersion();" class="easyui-linkbutton" iconCls="icon-navigation">新建版本</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:importclick();" class="easyui-linkbutton" iconCls="icon-newadd"> 工艺导入</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:exportclick();" class="easyui-linkbutton" iconCls="icon-newadd"> 工艺导出</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:deleteWps();" class="easyui-linkbutton" iconCls="icon-delete">删除工艺</a>
+<%--				<a href="javascript:wpsDetails();" class="easyui-linkbutton" iconCls="icon-navigation">工艺规程详情</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--				<a href="javascript:addVersion();" class="easyui-linkbutton" iconCls="icon-navigation">新建版本</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--				<a href="javascript:importclick();" class="easyui-linkbutton" iconCls="icon-newadd"> 工艺导入</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--				<a href="javascript:exportclick();" class="easyui-linkbutton" iconCls="icon-newadd"> 工艺导出</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
 			</div>
 		</div>
 		<div id="importdiv" class="easyui-dialog" style="width:300px; height:200px;" closed="true">

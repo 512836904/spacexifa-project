@@ -10,6 +10,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +34,7 @@ public class JunctionController {
     JunctionService junctionService;
 
     @RequestMapping("/goJunction")
-    public String goJunction(HttpServletRequest request) {
+    public String goJunction(HttpServletRequest request, Model model) {
         return "junction/junction";
     }
 
@@ -57,13 +59,13 @@ public class JunctionController {
             jun.setJunction_name(junction_name_search);
         }
         page = new Page(pageIndex, pageSize, total);
-        List<Junction> junctionList = junctionService.getJunctionList(jun);
+        List<Junction> junctionList = junctionService.getJunctionList(page,jun);
         long total = 0;
         if (junctionList != null) {
             PageInfo<Junction> pageinfo = new PageInfo<Junction>(junctionList);
             total = pageinfo.getTotal();
         }
-        request.setAttribute("junctionList", junctionList);
+       // request.setAttribute("junctionList", junctionList);
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         JSONObject obj = new JSONObject();
@@ -154,7 +156,6 @@ public class JunctionController {
     @ResponseBody
     public String deleteJunction(HttpServletRequest request){
         JSONObject obj = new JSONObject();
-        Junction junction = new Junction();
         try {
             String fid = request.getParameter("fid");//焊缝编号
             int i = junctionService.deleteJunction(Integer.valueOf(fid));

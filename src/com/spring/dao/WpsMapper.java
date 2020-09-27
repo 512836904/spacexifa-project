@@ -79,6 +79,12 @@ public interface WpsMapper {
 	List<Wps> getEmployee1(@Param("employ_id")String employ_id,@Param("productId")String productId);
 	List<Wps> getJunctionByStepid1(@Param("stepId")String stepId);
 	List<Wps> getDetail(@Param("stepId")String stepId);
+
+
+	int addWpsLibrary(Wps wps);
+	int updateWpsLibrary(Wps wps);
+	int deleteWpsByIds(List<Integer> ids);
+
 	void addWps(Wps wps);
 	void updateWps(Wps wps);
 	void deleteWps(String fid);

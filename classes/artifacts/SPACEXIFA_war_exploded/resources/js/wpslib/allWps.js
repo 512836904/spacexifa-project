@@ -23,7 +23,7 @@ function wpslibDatagrid(){
 		pageSize : 10,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		url : "wps/getWpsList",
-		singleSelect : true,
+		singleSelect : false,
 		rownumbers : true,
 		showPageList : false,
 		columns : [ [ {
@@ -38,31 +38,31 @@ function wpslibDatagrid(){
 			title : '工作号',
 			width : 200,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'SET_NUMBER',
 			title : '部套号',
 			width : 200,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'PART_DRAWING_NUMBER',
 			title : '零件图号',
-			width : 200,
+			width : 250,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'PART_NAME',
 			title : '零件名',
-			width : 200,
+			width : 250,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'JUNCTION',
 			title : '焊缝名称',
-			width : 200,
+			width : 400,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}] ],
 		pagination : true,
 		rowStyler: function(index,row){
@@ -88,60 +88,36 @@ function wpslibDatagrid(){
 
 function searchWps(){
 	var search = "";
-	var product_drawing_no = $("#product_drawing_no").textbox('getValue');
-	var product_name = $("#product_name").textbox('getValue');
-	var product_version = $("#product_version").textbox('getValue');
-	var wps_lib_name = $("#wps_lib_name").textbox('getValue');
-	var wps_lib_version = $("#wps_lib_version").textbox('getValue');
-	var wflag = $("#wflag").combobox("getValue");
-	var status = $("#status").combobox("getValue");
-	if(product_drawing_no != ""){
+	var job_number_search = $("#job_number_search").textbox('getValue');
+	var set_number_search = $("#set_number_search").textbox('getValue');
+	var part_drawing_search = $("#part_drawing_search").textbox('getValue');
+	var part_name_search = $("#part_name_search").textbox('getValue');
+	if(job_number_search != ""){
 		if(search == ""){
-			search += " fproduct_drawing_no LIKE "+"'%" + product_drawing_no + "%'";
+			search += " JOB_NUMBER LIKE "+"'%" + job_number_search + "%'";
 		}else{
-			search += " AND fproduct_drawing_no LIKE "+"'%" + product_drawing_no + "%'";
+			search += " AND JOB_NUMBER LIKE "+"'%" + job_number_search + "%'";
 		}
 	}
-	if(product_name != ""){
+	if(set_number_search != ""){
 		if(search == ""){
-			search += " fproduct_name LIKE "+"'%" + product_name + "%'";
+			search += " SET_NUMBER LIKE "+"'%" + set_number_search + "%'";
 		}else {
-			search += " AND fproduct_name LIKE "+"'%" + product_name + "%'";
+			search += " AND SET_NUMBER LIKE "+"'%" + set_number_search + "%'";
 		}
 	}
-	if(product_version != ""){
+	if(part_drawing_search != ""){
 		if(search == ""){
-			search += " fproduct_version LIKE "+"'%" + product_version + "%'";
+			search += " PART_DRAWING_NUMBER LIKE "+"'%" + part_drawing_search + "%'";
 		}else{
-			search += " AND fproduct_version LIKE "+"'%" + product_version + "%'";
+			search += " AND PART_DRAWING_NUMBER LIKE "+"'%" + part_drawing_search + "%'";
 		}
 	}
-	if(wps_lib_name != ""){
+	if(part_name_search != ""){
 		if(search == ""){
-			search += " fwps_lib_name LIKE "+"'%" + wps_lib_name + "%'";
+			search += " PART_NAME LIKE "+"'%" + part_name_search + "%'";
 		}else{
-			search += " AND fwps_lib_name LIKE "+"'%" + wps_lib_name + "%'";
-		}
-	}
-	if(wps_lib_version != ""){
-		if(search == ""){
-			search += " fwps_lib_version LIKE "+"'%" + wps_lib_version + "%'";
-		}else{
-			search += " AND fwps_lib_version LIKE "+"'%" + wps_lib_version + "%'";
-		}
-	}
-	if(wflag != ""){
-		if(search == ""){
-			search += " flag=" + wflag;
-		}else{
-			search += " AND flag=" + wflag;
-		}
-	}
-	if(status != ""){
-		if(search == ""){
-			search += " fstatus=" + status;
-		}else{
-			search += " AND fstatus=" + status;
+			search += " AND PART_NAME LIKE "+"'%" + part_name_search + "%'";
 		}
 	}
 	$('#wpslibTable').datagrid('load', {

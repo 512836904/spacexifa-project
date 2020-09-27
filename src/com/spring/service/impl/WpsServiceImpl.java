@@ -1,21 +1,17 @@
 package com.spring.service.impl;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageHelper;
 import com.spring.dao.WpsMapper;
 import com.spring.dto.WeldDto;
-import com.spring.model.User;
 import com.spring.model.Wps;
 import com.spring.page.Page;
 import com.spring.service.WpsService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigInteger;
+import java.util.List;
 
 @Service
 @Transactional
@@ -400,7 +396,17 @@ public class WpsServiceImpl implements WpsService{
 		// TODO Auto-generated method stub
 		return mapper.getEmployee1(employ_id,productId);
 	}
-	
+
+	@Override
+	public int addWpsLibrary(Wps wps) {
+		return mapper.addWpsLibrary(wps);
+	}
+
+	@Override
+	public int updateWpsLibrary(Wps wps) {
+		return mapper.updateWpsLibrary(wps);
+	}
+
 	@Override
 	public List<Wps> getStep(String employeeId) {
 		// TODO Auto-generated method stub
@@ -471,7 +477,12 @@ public class WpsServiceImpl implements WpsService{
 		mapper.deleteWpsEmp(fid);
 		mapper.deleteWps(fid);
 	}
-	
+
+	@Override
+	public int deleteWpsByIds(List<Integer> ids) {
+		return mapper.deleteWpsByIds(ids);
+	}
+
 	@Override
 	public void addEmployee(Wps wps) {
 		// TODO Auto-generated method stub

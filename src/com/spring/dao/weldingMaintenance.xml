@@ -30,7 +30,7 @@
 		inner join tb_welding_machine wm on m.fwelding_id = wm.fid
 		LEFT JOIN tb_insframework i ON wm.finsframework_id = i.fid
 		LEFT JOIN tb_insframework ins on ins.fid = i.fparent
-		LEFT JOIN tb_insframework insf on insf.fid = ins.fparent where d.ftypeid=5
+		LEFT JOIN tb_insframework insf on insf.fid = ins.fparent where d.ftypeid=15
 		<if test="wid!=null and wid!=''">
 			and wm.fid = #{wid}
 		</if>
@@ -72,7 +72,7 @@
 			select TB_WELDING_MAINTENANCE_ID.nextval as id from dual
 		</selectKey>
 		INSERT INTO tb_maintenance_record(fid,ftype_id, fviceman, fdesc, fstart_time, fend_time) VALUES 
-		(#{id},#{typeId},#{viceman},#{desc},to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss'),to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss'))
+		(#{id},#{typeId},#{viceman},#{desc}, to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss'),to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss'))
 	</insert>
 	
 	<update id="updateEndtime" parameterType="java.math.BigInteger">
@@ -80,7 +80,10 @@
 	</update>
 	
 	<update id="updateMaintenanceRecord" parameterType="com.spring.model.MaintenanceRecord">
-		UPDATE tb_maintenance_record SET ftype_id=#{typeId},fviceman=#{viceman},fdesc=#{desc},to_date(fstart_time=#{startTime}, 'yyyy-mm-dd hh24:mi:ss'),to_date(fend_time=#{endTime}, 'yyyy-mm-dd hh24:mi:ss') WHERE fid=#{id}
+		UPDATE tb_maintenance_record SET ftype_id=#{typeId},fviceman=#{viceman},fdesc=#{desc},
+		<!-- to_date(fstart_time=#{startTime}, 'yyyy-mm-dd hh24:mi:ss'),to_date(fend_time=#{endTime}, 'yyyy-mm-dd hh24:mi:ss') -->
+		FSTART_TIME = to_date(#{startTime}, 'yyyy-MM-dd HH24:mi:ss'),FEND_TIME = to_date(#{endTime}, 'yyyy-MM-dd HH24:mi:ss')
+		WHERE fid = #{id}
 	</update>
 	
 	<delete id="deleteMaintenanceRecord" parameterType="java.math.BigInteger">

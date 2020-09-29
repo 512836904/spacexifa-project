@@ -227,7 +227,7 @@ public class ImportExcelController {
 			File file  = new File(path);
 			file.delete();
 			for(int i=0;i<wt.size();i++){
-				wt.get(i).getMaintenance().setTypeId(dm.getvaluebyname(5,wt.get(i).getMaintenance().getTypename()));
+				wt.get(i).getMaintenance().setTypeId(dm.getvaluebyname(15,wt.get(i).getMaintenance().getTypename()));
 				BigInteger wmid = null;
 				if(isInteger(wt.get(i).getWelding().getEquipmentNo())){
 					wmid = wmm.getWeldingMachineByEno(wt.get(i).getWelding().getEquipmentNo());

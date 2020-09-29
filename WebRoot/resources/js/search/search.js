@@ -246,6 +246,20 @@ function searchMaintainCombobox(){
 	createSearchCombobox();
 }
 
+//清空
+function empty(){
+	var optionFields = "<option value=''></option>";
+	$(".fields").html(optionFields);
+	var optionCondition = "<option value=''></option>";
+	$(".condition").html(optionCondition);
+	var optionJoint = "<option value=''></option>";
+	$(".joint").html(optionJoint);
+	// var contentId =$(".content").eq(0).attr("id");
+	// var content = $("#"+contentId+"").val();
+	$('#content').val('');
+	searchStr = "";
+}
+
 //维修记录进入查询dialog
 function insertSearchMaintain(){
 	$("#searchdiv").dialog("open");
@@ -790,20 +804,40 @@ function getContent(){
 		var content = $("#"+contentId+"").val();
 		var jointId =$(".joint").eq(i).attr("id");
 		var joint = $("#"+jointId+"").val();
-		if(field==null || field=="" || condition==null || condition=="" || content==null || content==""){
-			alert('请输入完整的查询条件！');
-			return;
-		}
-		if(joint==null || joint==""){
-			joint = "and";
-		}
-		if(condition == "like"){
-			content = "%"+content+"%";
-		}
-		if(i==index){
-			searchStr +=" "+field+" "+condition+" '"+content+"'";
-		}else{
-			searchStr +=" "+field+" "+condition+" '"+content+"' "+joint;
+		//增加判断 todo 2020-9-29
+		if ((field == '' || field == null) && (condition == '' || condition == null) && content == '' && (joint == '' || joint == null)){
+			searchStr = "";
+		}else {
+			if(field==null || field=="" || condition==null || condition=="" || content==null || content==""){
+				alert('请输入完整的查询条件！');
+				return;
+			}
+			if(joint==null || joint==""){
+				joint = "and";
+			}
+			if(condition == "like"){
+				content = "%"+content+"%";
+			}
+			//维修记录管理：时间判断
+			if (field == 'fstart_time'){	//维修起始时间
+				content = "to_date('"+content+"','yyyy-mm-dd hh24:mi:ss')";
+			}
+			if (field == 'fend_time'){	//维修结束时间
+				content = "to_date('"+content+"','yyyy-mm-dd hh24:mi:ss')";
+			}
+			if(i==index){
+				if (field == 'fstart_time' || field == 'fend_time'){
+					searchStr +=" "+field+" "+condition+" "+content+"";
+				}else {
+					searchStr +=" "+field+" "+condition+" '"+content+"'";
+				}
+			}else{
+				if (field == 'fstart_time' || field == 'fend_time'){
+					searchStr +=" "+field+" "+condition+" "+content+" "+joint;
+				}else {
+					searchStr +=" "+field+" "+condition+" '"+content+"' "+joint;
+				}
+			}
 		}
 	}
 	return true;

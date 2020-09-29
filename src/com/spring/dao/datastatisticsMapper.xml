@@ -932,8 +932,8 @@
 		)temp 
 	</select>
 	
-	<!-- 查询焊工正常焊接时长 -->
-	<select id="getWeldPersonInCount"  resultMap="dataMap">
+	<!-- 查询焊工正常焊接时长 parameterType="com.spring.dto.WeldDto"-->
+	<select id="getWeldPersonInCount"  resultMap="dataMap" >
 		select insname,fname,sum(insid) insid,sum(hour) worktime from (
 			select j.fid,j.fwelder_no insname,j.fname, 0 insid, 0 hour from tb_welder j
 			INNER JOIN tb_insframework i on i.fid = j.Fowner

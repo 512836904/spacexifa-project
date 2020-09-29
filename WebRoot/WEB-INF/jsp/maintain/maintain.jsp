@@ -63,6 +63,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    	<select class="joint" id="joint"></select>
 		    	<a href="javascript:newSearchMaintain();" class="easyui-linkbutton" iconCls="icon-add"></a>
 		    	<a href="javascript:removeSerach();" class="easyui-linkbutton" iconCls="icon-remove"></a>
+				<a href="javascript:empty();" class="easyui-linkbutton">清空</a>
 	    	</div>
 	    </div>
 	    <div id="searchButton">

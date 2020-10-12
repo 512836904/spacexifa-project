@@ -10,7 +10,7 @@ function dgDatagrid(){
 		idField : 'id',
 		pageSize : 10,
 		pageList : [ 10, 20, 30, 40, 50 ],
-		url : "weldedjunction/getWeldedJunctionList?searchStr="+"j.fid in (SELECT DISTINCT ftaskid FROM tb_taskresult)",
+		url : "weldedjunction/getWeldedJunctionList",
 		singleSelect : true,
 		rownumbers : true,
 		showPageList : false,
@@ -36,42 +36,6 @@ function dgDatagrid(){
 			halign : "center",
 			align : "left",
 			hidden:true
-		},/* {
-			field : 'externalDiameter',
-			title : '上游外径',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'nextexternaldiameter',
-			title : '下游外径',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'wallThickness',
-			title : '上游壁厚',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'nextwall_thickness',
-			title : '下游璧厚',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'material',
-			title : '上游材质',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'next_material',
-			title : '下游材质',
-			width : 90,
-			halign : "center",
-			align : "left"
 		}, {
 			field : 'maxElectricity',
 			title : '电流上限',
@@ -96,7 +60,7 @@ function dgDatagrid(){
 			width : 90,
 			halign : "center",
 			align : "left"
-		},*/ {
+		}, {
 			field : 'itemname',
 			title : '所属项目',
 			width : 150,
@@ -131,7 +95,7 @@ function insframeworkTree(){
 	$("#myTree").tree({  
 		onClick : function(node){
 			$("#dg").datagrid('load',{
-				"searchStr" : "i.fid="+node.id
+				"insid" : node.id
 			})
 		 }
 	})

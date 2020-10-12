@@ -7,7 +7,7 @@ import javax.persistence.Transient;
 import org.springframework.stereotype.Component;
 
 /**
- * 焊口
+ * 焊口（焊缝）
  * @author gpyf16
  *
  */

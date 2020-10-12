@@ -194,7 +194,7 @@ public class Wps {
 	private String fstarttime;
 	private String endtime;
 	private BigInteger unstandardtime;
-	private String fwelded_junction_no;
+	private String fwelded_junction_no;	//电子跟踪卡号
 
 
 	public String getJOB_NUMBER() {

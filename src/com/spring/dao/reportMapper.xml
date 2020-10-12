@@ -200,9 +200,11 @@
 	</select>
 	
 	<select id="historyData" resultType="Report">
-		SELECT fsolder_layer id,fweld_bead insid,`felectricity` fstandardele,`fvoltage` fstandardvol,`FWeldTime` fweldingtime,`fstatus` fstatus FROM `tb_live_data` WHERE fjunction_no=#{fid} and fmachine_id=#{mach} and (fstatus='3' or fstatus='5' or fstatus='7' or fstatus='99') 
+		SELECT fsolder_layer id,fweld_bead insid,felectricity fstandardele,fvoltage fstandardvol,
+		FWeldTime fweldingtime,fstatus fstatus FROM tb_live_data
+		WHERE fjunction_no = #{fid} and fmachine_id = #{mach} and (fstatus='3' or fstatus='5' or fstatus='7' or fstatus='99')
 		<if test="welderid!=null and welderid!=''">
-			and `fwelder_no`=#{welderid}
+			and fwelder_no = #{welderid}
 		</if>
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
@@ -213,10 +215,10 @@
 			</if>
 		</if>
 		<if test="fsolder_layer!=null and fsolder_layer!=''">
-			and `fsolder_layer`=#{fsolder_layer}
+			and fsolder_layer = #{fsolder_layer}
 		</if>
 		<if test="fweld_bead!=null and fweld_bead!=''">
-			and `fweld_bead`=#{fweld_bead}
+			and fweld_bead = #{fweld_bead}
 		</if>
 	</select>
 	

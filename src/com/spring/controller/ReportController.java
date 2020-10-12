@@ -66,14 +66,35 @@ public class ReportController {
 	public String Alarm(HttpServletRequest request){
 		return "report/AlarmManage";
 	}
+
+	/**
+	 * 焊工历史曲线
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/history")
 	public String History(HttpServletRequest request){
 		return "td/HistoryWelder";
 	}
-	
+
+	/**
+	 * 焊缝历史曲线
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/historyJunction")
 	public String HistoryJunction(HttpServletRequest request){
 		return "td/HistoryJunction";
+	}
+
+	/**
+	 * 焊机历史曲线
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/historyMachine")
+	public String historyMachine(HttpServletRequest request){
+		return "td/HistoryMachine";
 	}
 
 /*	@RequestMapping("/getWeldPara")

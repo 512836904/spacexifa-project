@@ -456,7 +456,8 @@ public class DataStatisticsController {
 				itemid = im.getUserInsframework();
 			}
 //			List<DataStatistics> list = dss.getAllMachine(page,itemid);
-			List<DataStatistics> list = dss.getMachineData(page,im.getUserInsframework(),dto);
+//			List<DataStatistics> list = dss.getMachineData(page,im.getUserInsframework(),dto);
+			List<DataStatistics> list = dss.getMachineData(page,itemid,dto);
 			if(list != null){
 				PageInfo<DataStatistics> pageinfo = new PageInfo<DataStatistics>(list);
 				total = pageinfo.getTotal();

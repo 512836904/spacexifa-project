@@ -36,34 +36,78 @@ function wpslibDatagrid(){
 		},{
 			field : 'JOB_NUMBER',
 			title : '工作号',
-			width : 200,
+			width : 150,
 			halign : "center",
 			align : "center"
 		}, {
 			field : 'SET_NUMBER',
 			title : '部套号',
-			width : 200,
+			width : 150,
 			halign : "center",
 			align : "center"
 		}, {
 			field : 'PART_DRAWING_NUMBER',
 			title : '零件图号',
-			width : 250,
+			width : 150,
 			halign : "center",
 			align : "center"
 		}, {
 			field : 'PART_NAME',
 			title : '零件名',
-			width : 250,
+			width : 150,
 			halign : "center",
 			align : "center"
 		}, {
 			field : 'JUNCTION',
 			title : '焊缝名称',
-			width : 400,
+			width : 300,
 			halign : "center",
 			align : "center"
-		}] ],
+		}, {
+			field : 'workticket_number',
+			title : '工票编号',
+			width : 150,
+			halign : "center",
+			align : "center"
+		}, {
+			field : 'craft_param',
+			title : '工艺参数',
+			width : 150,
+			halign : "center",
+			align : "center"
+		}, {
+			field : 'raw_material',
+			title : '原料',
+			width : 150,
+			halign : "center",
+			align : "center"
+		}, {
+			field : 'process',
+			title : '工序',
+			width : 150,
+			halign : "center",
+			align : "center"
+		}, {
+			field : 'FOPERATETYPE',
+			title : '任务完成状态',
+			width : 150,
+			halign : "center",
+			align : "center",
+			formatter: function (value, row, index) {
+				var str = "";
+				if (value == null){
+					str += "未开始";
+				}else if (value == 0){
+					str += "进行中";
+				}else if (value == 1){
+					str += "已完成";
+				}else if (value == 2){
+					str += "返修";
+				}
+				return str;
+			}
+		}
+		] ],
 		pagination : true,
 		rowStyler: function(index,row){
             if ((index % 2)!=0){

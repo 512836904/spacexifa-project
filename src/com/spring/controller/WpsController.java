@@ -38,6 +38,7 @@ import net.sf.json.JSONObject;
 @RequestMapping(value = "/wps", produces = {"text/json;charset=UTF-8"})
 public class WpsController {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Page page;
     private int pageIndex = 1;
     private int pageSize = 10;
@@ -48,14 +49,14 @@ public class WpsController {
     private WpsService wpsService;
     @Autowired
     JunctionService junctionService;
-//    @Autowired
+    //    @Autowired
 //    private TdService tdService;
 //    @Autowired
 //    private UserService userService;
 //    @Autowired
 //    private JunctionService junctionService;
-//    @Autowired
-//    private DictionaryService dm;
+    @Autowired
+    private DictionaryService dm;
 
     public static final String IP_ADDR = "121.196.222.216";//服务器地址
     public static final int PORT = 5555;//服务器端口号
@@ -63,6 +64,13 @@ public class WpsController {
     IsnullUtil iutil = new IsnullUtil();
     private SocketChannel socketChannel;
     private String strdata;
+
+    public boolean isNotEmpty(Object object) {
+        if (null != object && !"".equals(object)) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 获取所有用户列表
@@ -76,10 +84,28 @@ public class WpsController {
         return "weldwps/allWps";
     }
 
-    @RequestMapping("/goWpslib")
+    /**
+     * 工艺管理（参数下发）
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/goPwpslib")
     public String goWpslib(HttpServletRequest request) {
+        return "wpslib/allWpslib";
+    }
+
+    /**
+     * 工艺规程管理
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/goWpslib")
+    public String goWps(HttpServletRequest request) {
         return "wpslib/wps";
     }
+
 
 //    @RequestMapping("/goWpsdetails")
 //    public String goWpsdetails(HttpServletRequest request) {
@@ -128,15 +154,20 @@ public class WpsController {
                 json.put("SET_NUMBER", wps.getSET_NUMBER());
                 json.put("PART_DRAWING_NUMBER", wps.getPART_DRAWING_NUMBER());
                 json.put("PART_NAME", wps.getPART_NAME());
+                json.put("workticket_number", wps.getWorkticket_number());   //工票编号
+                json.put("craft_param", wps.getCraft_param());   //工艺参数
+                json.put("raw_material", wps.getRaw_material());   //原料
+                json.put("process", wps.getProcess());   //工序
+                json.put("FOPERATETYPE", wps.getFOPERATETYPE());   //任务完成状态
                 //焊缝id
                 List<Long> junctionIds = new ArrayList<>();
                 List<Wps> libraryJunction = wpsService.getLibraryJunction(String.valueOf(wps.getFid()));
-                if (null != libraryJunction && libraryJunction.size()>0){
-                    for (Wps wps1: libraryJunction) {
-                        if (0 ==  libraryJunction.indexOf(wps1)){
+                if (null != libraryJunction && libraryJunction.size() > 0) {
+                    for (Wps wps1 : libraryJunction) {
+                        if (0 == libraryJunction.indexOf(wps1)) {
                             str = wps1.getJunction_name();
-                        }else{
-                            str = str +"、"+ wps1.getJunction_name();
+                        } else {
+                            str = str + "、" + wps1.getJunction_name();
                         }
                         junctionIds.add(wps1.getJunction_id());
                     }
@@ -153,9 +184,14 @@ public class WpsController {
         return obj.toString();
     }
 
+    /**
+     * 新增电子信息卡
+     * @param request
+     * @return
+     */
     @RequestMapping("/addWpsLibrary")
     @ResponseBody
-    public String addWpsLibrary(HttpServletRequest request){
+    public String addWpsLibrary(HttpServletRequest request) {
         JSONObject obj = new JSONObject();
         Wps wps = new Wps();
         try {
@@ -164,27 +200,35 @@ public class WpsController {
             String part_drawing_number = request.getParameter("PART_DRAWING_NUMBER");
             String part_name = request.getParameter("PART_NAME");
             String fids = request.getParameter("fids");
+            String workticket_number = request.getParameter("workticket_number");
+            String raw_material = request.getParameter("raw_material");
+            String craft_param = request.getParameter("craft_param");
+            String process = request.getParameter("process");
 
             wps.setJOB_NUMBER(job_number);
             wps.setSET_NUMBER(set_number);
             wps.setPART_DRAWING_NUMBER(part_drawing_number);
             wps.setPART_NAME(part_name);
+            wps.setWorkticket_number(workticket_number);
+            wps.setRaw_material(raw_material);
+            wps.setCraft_param(craft_param);
+            wps.setProcess(process);
             int i = wpsService.addWpsLibrary(wps);
-            if (i != 0){
+            if (i != 0) {
                 obj.put("success", true);
                 List<Integer> jun = new ArrayList<>();
-                if (null != fids && fids.length() > 0){
+                if (null != fids && fids.length() > 0) {
                     String[] fid = fids.split(",");
-                    for (int m = 0;m < fid.length;m++){
+                    for (int m = 0; m < fid.length; m++) {
                         jun.add(Integer.valueOf(fid[m]));
                     }
                 }
                 //新增工艺信息焊缝关联记录
                 junctionService.addLiarbryJunction(i, jun);
-            }else {
+            } else {
                 obj.put("success", false);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
             e.printStackTrace();
@@ -194,7 +238,7 @@ public class WpsController {
 
     @RequestMapping("/updateWpsLibrary")
     @ResponseBody
-    public String updateWpsLibrary(HttpServletRequest request){
+    public String updateWpsLibrary(HttpServletRequest request) {
         JSONObject obj = new JSONObject();
         Wps wps = new Wps();
         List<Integer> ids = new ArrayList<>();
@@ -205,21 +249,28 @@ public class WpsController {
             String part_drawing_number = request.getParameter("PART_DRAWING_NUMBER");
             String part_name = request.getParameter("PART_NAME");
             String fids = request.getParameter("fids");
+            String workticket_number = request.getParameter("workticket_number");
+            String raw_material = request.getParameter("raw_material");
+            String craft_param = request.getParameter("craft_param");
+            String process = request.getParameter("process");
 
             wps.setFid(Long.valueOf(fid));
             wps.setJOB_NUMBER(job_number);
             wps.setSET_NUMBER(set_number);
             wps.setPART_DRAWING_NUMBER(part_drawing_number);
             wps.setPART_NAME(part_name);
-
+            wps.setWorkticket_number(workticket_number);
+            wps.setRaw_material(raw_material);
+            wps.setCraft_param(craft_param);
+            wps.setProcess(process);
             ids.add(Integer.valueOf(fid));
             int i = wpsService.updateWpsLibrary(wps);
-            if (i != 0){
+            if (i != 0) {
                 obj.put("success", true);
                 List<Integer> jun = new ArrayList<>();
-                if (null != fids && fids.length() > 0){
+                if (null != fids && fids.length() > 0) {
                     String[] id = fids.split(",");
-                    for (int m = 0;m < id.length;m++){
+                    for (int m = 0; m < id.length; m++) {
                         jun.add(Integer.valueOf(id[m]));
                     }
                 }
@@ -227,10 +278,10 @@ public class WpsController {
                 junctionService.deleteLiarbryJunctionByIds(ids);
                 //新增工艺信息焊缝关联记录
                 junctionService.addLiarbryJunction(Integer.valueOf(fid), jun);
-            }else {
+            } else {
                 obj.put("success", false);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
             e.printStackTrace();
@@ -260,14 +311,15 @@ public class WpsController {
                 i1 = wpsService.deleteWpsByIds(ids);
                 i2 = junctionService.deleteLiarbryJunctionByIds(ids);
             }
-            if (i1 != 0 && i2 != 0){
+            if (i1 != 0 && i2 != 0) {
                 obj.put("success", true);
-            }else {
+            } else {
                 obj.put("success", false);
             }
         } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
+            e.printStackTrace();
         }
         return obj.toString();
     }
@@ -277,7 +329,7 @@ public class WpsController {
 //        return "specification/allSpe";
 //    }
 
-//    @RequestMapping("/getAllWps")
+    //    @RequestMapping("/getAllWps")
 //    @ResponseBody
 //    public String getAllWps(HttpServletRequest request) {
 //        pageIndex = Integer.parseInt(request.getParameter("page"));
@@ -333,89 +385,257 @@ public class WpsController {
 //        return obj.toString();
 //    }
 
-//    @RequestMapping("/getAllSpe")
-//    @ResponseBody
-//    public String getAllSpe(HttpServletRequest request) {
-//        BigInteger machine = new BigInteger(request.getParameter("machine"));
-//        BigInteger chanel = new BigInteger(request.getParameter("chanel"));
-//        List<Wps> findAll = wpsService.findAllSpe(machine, chanel);
-//
-//        request.setAttribute("wpsList", findAll);
-//        JSONObject json = new JSONObject();
-//        JSONArray ary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        try {
-//			/*if(findAll.size()==0){
-//				json.put("FWPSNum", 1);//通道号
-//				json.put("Fweld_I", 62);//初期条件
-//				json.put("Fweld_V", 62);//溶孔深度
-//				json.put("Fweld_I_MAX",102);//一元个别
-//				json.put("Fweld_I_MIN", 111);//收弧模式
-//				json.put("Fweld_V_MAX", 0);//电弧特性
-//				json.put("Fweld_V_MIN", 0);//模式
-//				json.put("Fweld_Alter_I", 91);//材料
-//				json.put("Fweld_Alter_V", 121);//气体
-//				json.put("Fweld_PreChannel", 132);//半径
-//				json.put("ftime", 30.0);
-//				json.put("fadvance", 1.0);
-//				json.put("fhysteresis", 1.0);
-//				json.put("fini_ele", 100.0);//初期电流
-//				json.put("fweld_ele", 100.0);//焊接电流
-//				json.put("farc_ele", 100.0);//收弧电流
-//				json.put("fweld_tuny_ele", 0.0);//焊接微调电流
-//				json.put("fweld_tuny_vol", 0.0);//焊接微调电压
-//				json.put("farc_tuny_ele", 0.0);//收弧微调电流
-//				if(Integer.valueOf(cla.toString())==102){
-//					json.put("fini_vol", 19.0);//初期电压
-//					json.put("fweld_vol", 19.0);//焊接电压
-//					json.put("farc_vol", 19.0);//收弧电压
-//					json.put("fweld_tuny_vol", 0.0);//焊接微调电压
-//					json.put("Fdiameter", 0.0);//收弧微调电压
-//				}else{
-//					json.put("fini_vol", 0.0);//初期电压
-//					json.put("fweld_vol", 0.0);//焊接电压
-//					json.put("farc_vol", 0.0);//收弧电压
-//					json.put("fweld_tuny_vol", 0.0);//焊接微调电压
-//					json.put("Fdiameter", 0.0);//收弧微调电压
-//				}
-//				ary.add(json);
-//			}else{*/
-//            for (Wps wps : findAll) {
-//                json.put("FID", wps.getFid());
-//                json.put("FWPSNum", wps.getWelderid());
-//                json.put("Fweld_I", wps.getFinitial());
-//                json.put("Fweld_V", wps.getFcontroller());
-//                json.put("Fweld_I_MAX", wps.getInsname());
-//                json.put("Fweld_I_MIN", wps.getWeldername());
-//                json.put("Fweld_V_MAX", wps.getFweld_v_max());
-//                json.put("Fweld_V_MIN", wps.getFmode());
-//                json.put("Fweld_Alter_I", wps.getUpdatename());
-//                json.put("Fweld_Alter_V", wps.getFback());
-//                json.put("Fweld_PreChannel", wps.getFname());
-//                json.put("ftime", wps.getFtime());
-//                json.put("fadvance", wps.getFadvance());
-//                json.put("fhysteresis", wps.getFhysteresis());
-//                json.put("fini_ele", wps.getFini_ele());
-//                json.put("fini_vol", wps.getFini_vol());
-//                json.put("fini_vol1", wps.getFini_vol1());
-//                json.put("fweld_ele", wps.getFweld_ele());
-//                json.put("fweld_vol", wps.getFweld_vol());
-//                json.put("fweld_vol1", wps.getFweld_vol1());
-//                json.put("farc_ele", wps.getFarc_ele());
-//                json.put("farc_vol", wps.getFarc_vol());
-//                json.put("farc_vol1", wps.getFarc_vol1());
-//                json.put("fweld_tuny_ele", wps.getFweld_tuny_ele());
-//                json.put("fweld_tuny_vol", wps.getFweld_tuny_vol());
-//                json.put("farc_tuny_ele", wps.getFarc_tuny_ele());
-//                json.put("Fdiameter", wps.getFdiameter());
-//                ary.add(json);
+    /**
+     * 新增工艺下发规范
+     * @param request
+     * @return
+     */
+    @RequestMapping("/apSpe")
+    @ResponseBody
+    public String apSpe(HttpServletRequest request){
+        Wps wps = new Wps();
+        MyUser myuser = (MyUser) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JSONObject obj = new JSONObject();
+
+        Integer finitial = 0;
+        Integer fcontroller = 0;
+        int ftorch = 0;
+        BigInteger fwpslib_id = new BigInteger("0");
+        Long specificationId = new Long(0);
+
+        String addORupdate = request.getParameter("addORupdate");
+        String fid = request.getParameter("fid");   //工艺库id
+        if (null != fid && !"".equals(fid)){
+            fwpslib_id = BigInteger.valueOf(Long.valueOf(fid));
+        }
+        String specification_id = request.getParameter("specification_id");   //子工艺规范id
+        if (null != specification_id && !"".equals(specification_id)){
+            specificationId = Long.valueOf(specification_id);
+        }
+        if (null != request.getParameter("finitial")){
+            finitial = Integer.valueOf(request.getParameter("finitial"));
+        }
+        if (null != request.getParameter("fcontroller")){
+            fcontroller = Integer.valueOf(request.getParameter("fcontroller"));
+        }
+        if (null != request.getParameter("ftorch")){
+            ftorch = Integer.valueOf(request.getParameter("ftorch"));
+        }
+        Integer fselect = Integer.valueOf(request.getParameter("fselect")); //焊接模式：个别/一元
+        Integer farc = Integer.valueOf(request.getParameter("farc"));
+        Integer fmaterial = Integer.valueOf(request.getParameter("fmaterial"));
+        Integer fgas = Integer.valueOf(request.getParameter("fgas"));
+        Double fdiameter = new Double(request.getParameter("fdiameter"));
+        Integer chanel = Integer.valueOf(request.getParameter("fchanel"));
+        //函数三元运算判断表达式
+        double ftime = Double.valueOf((null!=request.getParameter("ftime")&&!"".equals(request.getParameter("ftime")))?request.getParameter("ftime"):"0");
+        double fadvance = Double.valueOf((null!=request.getParameter("fadvance")&&!"".equals(request.getParameter("fadvance")))?request.getParameter("fadvance"):"0");
+
+        String ftime1 = request.getParameter("ftime");
+        String fini_ele1 = request.getParameter("fini_ele");
+        System.out.println(fini_ele1);
+
+        double fini_ele = Double.valueOf(request.getParameter("fini_ele"));
+        double fweld_ele = Double.valueOf(request.getParameter("fweld_ele"));
+        double farc_ele = Double.valueOf(request.getParameter("farc_ele"));
+        double fhysteresis = Double.valueOf(request.getParameter("fhysteresis"));
+        int fcharacter = Integer.valueOf(request.getParameter("fcharacter"));
+        double fweld_tuny_ele = Double.valueOf(request.getParameter("fweld_tuny_ele"));
+        double farc_tuny_ele = Double.valueOf(request.getParameter("farc_tuny_ele"));
+        double fini_vol = Double.valueOf(request.getParameter("fini_vol"));
+        double fweld_vol = Double.valueOf(request.getParameter("fweld_vol"));
+        double farc_vol = Double.valueOf(request.getParameter("farc_vol"));
+        double fini_vol1 = Double.valueOf(request.getParameter("fini_vol1"));
+        double fweld_vol1 = Double.valueOf(request.getParameter("fweld_vol1"));
+        double farc_vol1 = Double.valueOf(request.getParameter("farc_vol1"));
+        double fweld_tuny_vol = Double.valueOf(request.getParameter("fweld_tuny_vol"));
+        double farc_tuny_vol = Double.valueOf(request.getParameter("farc_tuny_vol"));
+        //BigInteger machine = new BigInteger(request.getParameter("modelname")); //焊机型号
+        double frequency = Double.valueOf(request.getParameter("frequency"));
+        int fprocess = Integer.valueOf(request.getParameter("fweldprocess"));//焊接过程
+        //double gasflow = Double.valueOf(request.getParameter("gasflow"));//气体流量
+        //double weldingratio = Double.valueOf(request.getParameter("weldingratio"));//焊丝负极比率
+        try{
+            wps.setFspe_num(chanel);
+            wps.setFinitial(String.valueOf(finitial));
+            wps.setFcontroller(String.valueOf(fcontroller));
+            wps.setFselect(fselect);
+            wps.setFarc(farc);
+            wps.setFcharacter(fcharacter);
+            //wps.setFmode();           //柔软电弧模式
+            wps.setFtime(ftime);
+            wps.setFmaterial(fmaterial);
+            wps.setFadvance(fadvance);
+            wps.setFhysteresis(fhysteresis);
+            wps.setFgas(fgas);
+            wps.setFdiameter(fdiameter);
+            wps.setFini_ele(fini_ele);
+            wps.setFini_vol(fini_vol);
+            wps.setFini_vol1(fini_vol1);
+            wps.setFweld_ele(fweld_ele);
+            wps.setFweld_vol(fweld_vol);
+            wps.setFweld_vol1(fweld_vol1);
+            wps.setFarc_ele(farc_ele);
+            wps.setFarc_vol(farc_vol);
+            wps.setFarc_vol1(farc_vol1);
+            wps.setFweld_tuny_ele(fweld_tuny_ele);
+            wps.setFweld_tuny_vol(fweld_tuny_vol);
+            wps.setFarc_tuny_ele(farc_tuny_ele);
+            wps.setFarc_tuny_vol(farc_tuny_vol);
+            //wps.setFmachine_id();         //焊机id
+            wps.setFfrequency(String.valueOf(frequency));
+            //wps.setFgasflow();            //气体流量
+            wps.setFwelding_process(fprocess);
+            wps.setFwater_cooled_torch(ftorch);
+            wps.setFcreater(myuser.getId());
+            wps.setFupdater(myuser.getId());
+            //wps.setFweldingratio();       //焊丝负极比率
+            //wps.setFirsttime();           //初期时间
+            //wps.setFarc_time();           //收弧时间
+            //wps.setRush();                //回烧修正
+            //wps.setHandarc_ele();         //热引弧电流
+            //wps.setHandarc_time();      //手工焊热引弧时间
+            //wps.setHand_ele();            //手工焊电流
+            //wps.setBase_ele();          //基值电流
+            //wps.setBase_vol();            //基值电压
+            //wps.setBase_vol1();         //基值电压一元
+            //wps.setFargon();            //氩弧焊模式选择
+            //wps.setManual_weld();       //手工焊/气保焊选择
+            //wps.setArc_length();        //弧长控制
+            //wps.setPulse();             //双脉冲
+            //wps.setFweldparameters();       //焊接参数
+            //wps.setRise_time();             //缓升时间
+            //wps.setDecline_time();          //缓降时间
+            //wps.setThrust_ele();            //推力电流
+            //wps.setPulse_ratio();           //双脉冲占空比
+            //wps.setPoint_speed();           //点动送丝速度
+            //wps.setPulse_ele();             //脉冲电流
+            //wps.setAc_frequency();          //ac频率
+            //wps.setClean_width();           //清洁宽度
+            //wps.setAc_dc();                 //ac-dc转换频率
+            //wps.setPulse_width();           //脉冲宽度设定
+            //wps.setAc_ratio();              //ac比率
+            //wps.setAc_wave();               //ac波形
+            //wps.setPulse_tuny_ele();        //脉冲电流微调
+            //wps.setSpecial_arcorder();      //特殊收弧时序
+            //wps.setSpecial_arc_initial();   //特殊收弧时序初期时间
+            //wps.setSpecial_arctime();       //特殊收弧时序收弧时间
+            //wps.setClick_ele();             //单机操作的电流增减量
+            //wps.setTwo_click_ele();         //双击操作的电流增减量
+            //wps.setRepeat_end();            //反复时的结束方法
+            //wps.setGuide();                 //设定指南（otc350）
+            //wps.setSlope();                 //斜坡控制
+            //wps.setSpecialarc();            //特殊收弧
+            //wps.setSpecialarc_rep();        //特殊收弧反复
+            //wps.setTs_condition();          //通过ts变更条件
+            wps.setFwpslib_id(fwpslib_id);
+//            if(wpsService.findCount(machine,chanel.toString())<=0){
+//                wpsService.saveSpe(wps);
+//            }else{
+//                wpsService.updateSpe(wps);
 //            }
-//        } catch (Exception e) {
-//            e.getMessage();
-//        }
-//        obj.put("rows", ary);
-//        return obj.toString();
-//    }
+            if ("add".equals(addORupdate)){
+                wpsService.saveSpe(wps);
+            }else if ("update".equals(addORupdate)){
+                wps.setFid(specificationId);
+                wpsService.updateSpe(wps);
+            }
+            obj.put("success", true);
+        }catch(Exception e){
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+            e.getMessage();
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    @RequestMapping("/getAllSpe")
+    @ResponseBody
+    public String getAllSpe(HttpServletRequest request) {
+        BigInteger machine = new BigInteger(request.getParameter("machine"));
+        BigInteger chanel = new BigInteger(request.getParameter("chanel"));
+        List<Wps> findAll = wpsService.findAllSpe(machine, chanel);
+
+        request.setAttribute("wpsList", findAll);
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+			/*if(findAll.size()==0){
+				json.put("FWPSNum", 1);//通道号
+				json.put("Fweld_I", 62);//初期条件
+				json.put("Fweld_V", 62);//溶孔深度
+				json.put("Fweld_I_MAX",102);//一元个别
+				json.put("Fweld_I_MIN", 111);//收弧模式
+				json.put("Fweld_V_MAX", 0);//电弧特性
+				json.put("Fweld_V_MIN", 0);//模式
+				json.put("Fweld_Alter_I", 91);//材料
+				json.put("Fweld_Alter_V", 121);//气体
+				json.put("Fweld_PreChannel", 132);//半径
+				json.put("ftime", 30.0);
+				json.put("fadvance", 1.0);
+				json.put("fhysteresis", 1.0);
+				json.put("fini_ele", 100.0);//初期电流
+				json.put("fweld_ele", 100.0);//焊接电流
+				json.put("farc_ele", 100.0);//收弧电流
+				json.put("fweld_tuny_ele", 0.0);//焊接微调电流
+				json.put("fweld_tuny_vol", 0.0);//焊接微调电压
+				json.put("farc_tuny_ele", 0.0);//收弧微调电流
+				if(Integer.valueOf(cla.toString())==102){
+					json.put("fini_vol", 19.0);//初期电压
+					json.put("fweld_vol", 19.0);//焊接电压
+					json.put("farc_vol", 19.0);//收弧电压
+					json.put("fweld_tuny_vol", 0.0);//焊接微调电压
+					json.put("Fdiameter", 0.0);//收弧微调电压
+				}else{
+					json.put("fini_vol", 0.0);//初期电压
+					json.put("fweld_vol", 0.0);//焊接电压
+					json.put("farc_vol", 0.0);//收弧电压
+					json.put("fweld_tuny_vol", 0.0);//焊接微调电压
+					json.put("Fdiameter", 0.0);//收弧微调电压
+				}
+				ary.add(json);
+			}else{*/
+            for (Wps wps : findAll) {
+                json.put("FID", wps.getFid());
+                json.put("FWPSNum", wps.getWelderid());
+                json.put("Fweld_I", wps.getFinitial());
+                json.put("Fweld_V", wps.getFcontroller());
+                json.put("Fweld_I_MAX", wps.getInsname());
+                json.put("Fweld_I_MIN", wps.getWeldername());
+                json.put("Fweld_V_MAX", wps.getFweld_v_max());
+                json.put("Fweld_V_MIN", wps.getFmode());
+                json.put("Fweld_Alter_I", wps.getUpdatename());
+                json.put("Fweld_Alter_V", wps.getFback());
+                json.put("Fweld_PreChannel", wps.getFname());
+                json.put("ftime", wps.getFtime());
+                json.put("fadvance", wps.getFadvance());
+                json.put("fhysteresis", wps.getFhysteresis());
+                json.put("fini_ele", wps.getFini_ele());
+                json.put("fini_vol", wps.getFini_vol());
+                json.put("fini_vol1", wps.getFini_vol1());
+                json.put("fweld_ele", wps.getFweld_ele());
+                json.put("fweld_vol", wps.getFweld_vol());
+                json.put("fweld_vol1", wps.getFweld_vol1());
+                json.put("farc_ele", wps.getFarc_ele());
+                json.put("farc_vol", wps.getFarc_vol());
+                json.put("farc_vol1", wps.getFarc_vol1());
+                json.put("fweld_tuny_ele", wps.getFweld_tuny_ele());
+                json.put("fweld_tuny_vol", wps.getFweld_tuny_vol());
+                json.put("farc_tuny_ele", wps.getFarc_tuny_ele());
+                json.put("Fdiameter", wps.getFdiameter());
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("rows", ary);
+        return obj.toString();
+    }
 //
 //    @RequestMapping("/Spe")
 //    @ResponseBody
@@ -548,20 +768,21 @@ public class WpsController {
 //        return obj.toString();
 //    }
 //
-//    @RequestMapping("/removeMainWps")
-//    @ResponseBody
-//    public String removeMainWps(HttpServletRequest request) {
-//        BigInteger fid = new BigInteger(request.getParameter("fid"));
-//        JSONObject obj = new JSONObject();
-//        try {
-//            wpsService.deleteMainWps(fid);
-//            obj.put("success", true);
-//        } catch (Exception e) {
-//            obj.put("success", false);
-//            obj.put("errorMsg", e.getMessage());
-//        }
-//        return obj.toString();
-//    }
+    @RequestMapping("/removeMainWps")
+    @ResponseBody
+    public String removeMainWps(HttpServletRequest request) {
+        BigInteger fid = new BigInteger(request.getParameter("fid"));
+        JSONObject obj = new JSONObject();
+        try {
+            wpsService.deleteMainWps(fid);
+            obj.put("success", true);
+        } catch (Exception e) {
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
 
 //    @RequestMapping("/saveCopy")
 //    @ResponseBody
@@ -836,192 +1057,231 @@ public class WpsController {
 //        /*		return "redirect:/user/AllUser";*/
 //    }
 
-//    @RequestMapping("/getWpslibList")
-//    @ResponseBody
-//    public String getWpslibList(HttpServletRequest request) {
-//        pageIndex = Integer.parseInt(request.getParameter("page"));
-//        pageSize = Integer.parseInt(request.getParameter("rows"));
-//        String search = request.getParameter("searchStr");
-//        page = new Page(pageIndex, pageSize, total);
-//        List<Wps> getWpslibList = wpsService.getWpslibList(page, search);
-//        long total = 0;
-//        if (getWpslibList != null) {
-//            PageInfo<Wps> pageinfo = new PageInfo<Wps>(getWpslibList);
-//            total = pageinfo.getTotal();
-//        }
-//        JSONObject json = new JSONObject();
-//        JSONArray ary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        try {
-//            for (Wps wps : getWpslibList) {
-//                json.put("fid", wps.getFid());
-//                json.put("wpslibName", wps.getFwpsnum());
-//                json.put("createdate", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(wps.getFcreatedate()));
-//                json.put("status", wps.getInsname());
-//                json.put("statusId", wps.getFstatus());
-//                json.put("model", wps.getMacid());
-//                json.put("modelname", wps.getFname());
-//                json.put("manu", wps.getConname());
-//                ary.add(json);
-//            }
-//        } catch (Exception e) {
-//            e.getMessage();
-//        }
-//        obj.put("total", total);
-//        obj.put("rows", ary);
-//        return obj.toString();
-//    }
+    @RequestMapping("/getWpslibList")
+    @ResponseBody
+    public String getWpslibList(HttpServletRequest request) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+        String search = request.getParameter("searchStr");
+        page = new Page(pageIndex, pageSize, total);
+        List<Wps> getWpslibList = wpsService.getWpslibList(page, search);
+        long total = 0;
+        if (getWpslibList != null) {
+            PageInfo<Wps> pageinfo = new PageInfo<Wps>(getWpslibList);
+            total = pageinfo.getTotal();
+        }
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            for (Wps wps : getWpslibList) {
+                json.put("fid", wps.getFid());
+                json.put("wpslibName", wps.getFwpsnum());
+                if (null != wps.getFcreatedate() && !"".equals(wps.getFcreatedate())) {
+                    json.put("createdate", sdf.format(wps.getFcreatedate()));
+                } else {
+                    json.put("createdate", "");
+                }
+                json.put("status", wps.getInsname());
+                json.put("statusId", wps.getFstatus());
+                json.put("model", wps.getMacid());
+                json.put("modelname", wps.getFname());
+                json.put("manu", wps.getConname()); //设备厂商147：OTC
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
 
-//    @RequestMapping("/addWpslib")
-//    @ResponseBody
-//    public String addWpslib(HttpServletRequest request) {
-//        Wps wps = new Wps();
-//        MyUser myuser = (MyUser) SecurityContextHolder.getContext()
-//                .getAuthentication()
-//                .getPrincipal();
-//        JSONObject obj = new JSONObject();
-//        String wpslibName = request.getParameter("wpslibName");
-//        String machineModel = request.getParameter("machineModel");
-//        int status = Integer.valueOf(request.getParameter("fstatus"));
-//        try {
-//            wps.setFwpsnum(wpslibName);
-//            wps.setFback(machineModel);
-//            wps.setFcreater(myuser.getId());
-//            wps.setFstatus(status);
-//            wpsService.saveWpslib(wps);
-//            obj.put("success", true);
-//        } catch (Exception e) {
-//            obj.put("success", false);
-//            obj.put("errorMsg", e.getMessage());
-//        }
-//        return obj.toString();
-//    }
+    @RequestMapping("/addWpslib")
+    @ResponseBody
+    public String addWpslib(HttpServletRequest request) {
+        Wps wps = new Wps();
+        MyUser myuser = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JSONObject obj = new JSONObject();
+        String wpslibName = request.getParameter("wpslibName");
+        String machineModel = request.getParameter("machineModel");
+        String fstatus = request.getParameter("fstatus");
+        if (isNotEmpty(wpslibName) && isNotEmpty(machineModel) && isNotEmpty(fstatus)) {
+            int status = Integer.valueOf(fstatus);
+            try {
+                wps.setFwpsnum(wpslibName);
+                wps.setFback(machineModel);
+                wps.setFcreater(myuser.getId());
+                wps.setFstatus(status);
+                wpsService.saveWpslib(wps);
+                obj.put("success", true);
+            } catch (Exception e) {
+                obj.put("success", false);
+                obj.put("errorMsg", e.getMessage());
+            }
+        } else {
+            obj.put("success", false);
+            obj.put("errorMsg", "数据字段不能为空");
+        }
+        return obj.toString();
+    }
 
-//    @RequestMapping("/updateWpslib")
-//    @ResponseBody
-//    public String updateWpslib(HttpServletRequest request) {
-//        Wps wps = new Wps();
-//        JSONObject obj = new JSONObject();
-//        String wpslibName = request.getParameter("wpslibName");
-//        int status = Integer.valueOf(request.getParameter("fstatus"));
-//        long fid = new Long(request.getParameter("fid"));
-//        try {
-//            wps.setFid(fid);
-//            wps.setFwpsnum(wpslibName);
-//            wps.setFstatus(status);
-//            wpsService.updateWpslib(wps);
-//            obj.put("success", true);
-//        } catch (Exception e) {
-//            obj.put("success", false);
-//            obj.put("errorMsg", e.getMessage());
-//        }
-//        return obj.toString();
-//    }
-//
-//    @RequestMapping("/removeWpslib")
-//    @ResponseBody
-//    public String removeWpslib(HttpServletRequest request) {
-//        BigInteger fid = new BigInteger(request.getParameter("fid"));
-//        JSONObject obj = new JSONObject();
-//        try {
-//            wpsService.deleteWpslib(fid);
-//            wpsService.deleteWpsBelongLib(fid);
-//            obj.put("success", true);
-//        } catch (Exception e) {
-//            obj.put("success", false);
-//            obj.put("errorMsg", e.getMessage());
-//        }
-//        return obj.toString();
-//    }
+    @RequestMapping("/updateWpslib")
+    @ResponseBody
+    public String updateWpslib(HttpServletRequest request) {
+        Wps wps = new Wps();
+        JSONObject obj = new JSONObject();
+        String wpslibName = request.getParameter("wpslibName");
+        String fstatus = request.getParameter("fstatus");
+        String fid1 = request.getParameter("fid");
+        if (isNotEmpty(wpslibName) && isNotEmpty(fstatus) && isNotEmpty(fid1)) {
+            int status = Integer.valueOf(fstatus);
+            long fid = new Long(fid1);
+            try {
+                wps.setFid(fid);
+                wps.setFwpsnum(wpslibName);
+                wps.setFstatus(status);
+                wpsService.updateWpslib(wps);
+                obj.put("success", true);
+            } catch (Exception e) {
+                obj.put("success", false);
+                obj.put("errorMsg", e.getMessage());
+            }
+        } else {
+            obj.put("success", false);
+        }
+        return obj.toString();
+    }
 
-//    @RequestMapping("/getMainwpsList")
-//    @ResponseBody
-//    public String getMainwpsList(HttpServletRequest request) {
-//        pageIndex = Integer.parseInt(request.getParameter("page"));
-//        pageSize = Integer.parseInt(request.getParameter("rows"));
-//        page = new Page(pageIndex, pageSize, total);
-//        String parentId = request.getParameter("parent");
-//        BigInteger parent = null;
-//        if (iutil.isNull(parentId)) {
-//            parent = new BigInteger(parentId);
-//        }
-//        List<Wps> getMainwpsList = wpsService.getMainwpsList(page, parent);
-//        long total = 0;
-//        if (getMainwpsList != null) {
-//            PageInfo<Wps> pageinfo = new PageInfo<Wps>(getMainwpsList);
-//            total = pageinfo.getTotal();
-//        }
-//        JSONObject json = new JSONObject();
-//        JSONArray ary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        try {
-//            for (Wps wps : getMainwpsList) {
-//                json.put("fid", wps.getFid());
-//                json.put("fsolder_layer", wps.getFsolder_layer());
-//                json.put("fweld_bead", wps.getFweld_bead());
-//                json.put("fwpsnum", wps.getFwpsnum());
-//                json.put("fweld_method", wps.getFweld_method());
-//                json.put("fmaterial", wps.getFmaterial());
-//                json.put("materialname", wps.getMaterialname());
-//                json.put("fdiameter", wps.getFdiameter());
-//                json.put("dianame", wps.getDianame());
-//                json.put("fpreset_ele_bottom", wps.getFpreset_ele_bottom());
-//                json.put("fpreset_ele_top", wps.getFpreset_ele_top());
-//                json.put("fpreset_vol_bottom", wps.getFpreset_vol_bottom());
-//                json.put("fpreset_vol_top", wps.getFpreset_vol_top());
-//                json.put("fpower_polarity", wps.getFpower_polarity());
-//                json.put("fgas_flow", wps.getFgas_flow());
-//                json.put("fweld_speed", wps.getFweld_speed());
-//                json.put("fprocessid", wps.getFprocessid());
-//                json.put("fprocessname", wps.getFprocessname());
-//                json.put("insid", wps.getInsid());
-//                json.put("insname", wps.getInsname());
-//                ary.add(json);
-//            }
-//        } catch (Exception e) {
-//            e.getMessage();
-//        }
-//        obj.put("total", total);
-//        obj.put("rows", ary);
-//        return obj.toString();
-//    }
+    @RequestMapping("/removeWpslib")
+    @ResponseBody
+    public String removeWpslib(HttpServletRequest request) {
+        BigInteger fid = new BigInteger(request.getParameter("fid"));
+        JSONObject obj = new JSONObject();
+        try {
+            wpsService.deleteWpslib(fid);
+            wpsService.deleteWpsBelongLib(fid);
+            obj.put("success", true);
+        } catch (Exception e) {
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+        }
+        return obj.toString();
+    }
 
-//    @RequestMapping("/wlvalidate")
-//    @ResponseBody
-//    private String gidvalidate(HttpServletRequest request) {
-//        String wpsName = request.getParameter("wpsName");
-//        boolean data = true;
-//        int count = wpsService.getWpslibNameCount(wpsName);
-//        if (count > 0) {
-//            data = false;
-//        }
-//        return data + "";
-//    }
-//
-//    /**
-//     * 获取工艺库状态
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/getStatusAll")
-//    @ResponseBody
-//    public String getStatusAll() {
-//        JSONObject json = new JSONObject();
-//        JSONArray ary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        try {
-//            List<Wps> getWpslibStatus = wpsService.getWpslibStatus();
-//            for (Wps wps : getWpslibStatus) {
-//                json.put("id", wps.getInsid());
-//                json.put("name", wps.getInsname());
-//                ary.add(json);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        obj.put("ary", ary);
-//        return obj.toString();
-//    }
+    @RequestMapping("/getMainwpsList")
+    @ResponseBody
+    public String getMainwpsList(HttpServletRequest request) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+        page = new Page(pageIndex, pageSize, total);
+        String parentId = request.getParameter("parent");
+        BigInteger parent = null;
+        if (iutil.isNull(parentId)) {
+            parent = new BigInteger(parentId);
+        }
+        List<Wps> getMainwpsList = wpsService.getMainwpsList(page, parent);
+        long total = 0;
+        if (getMainwpsList != null) {
+            PageInfo<Wps> pageinfo = new PageInfo<Wps>(getMainwpsList);
+            total = pageinfo.getTotal();
+        }
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            for (Wps wps : getMainwpsList) {
+                json.put("fid", wps.getFid());
+                json.put("fchanel", wps.getWelderid());
+                json.put("fselect", wps.getInsname());
+                json.put("fselectname", wps.getSelectname());
+                json.put("fcharacter", wps.getFweld_v_max());
+                json.put("fmaterial", wps.getUpdatename());
+                json.put("materialname", wps.getMaterialname());
+                json.put("fgas", wps.getFback());
+                json.put("gasname", wps.getGasname());
+                json.put("fdiameter", wps.getFname());
+                json.put("dianame", wps.getDianame());
+                json.put("fweld_ele", wps.getFweld_ele());
+                json.put("fweld_vol", wps.getFweld_vol());
+                json.put("fweld_vol1", wps.getFweld_vol1());    //焊接电压(一元)
+                json.put("fspeed", wps.getFspeed());
+                json.put("fadvance", wps.getFadvance());
+                json.put("farc_speed", wps.getFarc_speed());
+                json.put("farc_tuny_speed", wps.getFarc_tuny_speed());
+                json.put("fini_ele", wps.getFini_ele());
+                json.put("fini_vol", wps.getFini_vol());    //初期电压
+                json.put("fini_vol1", wps.getFini_vol1());    //初期电压1元
+                json.put("farc_ele", wps.getFarc_ele());
+                json.put("farc_vol", wps.getFarc_vol());
+                json.put("farc_vol1", wps.getFarc_vol1());  //收弧电压(一元)
+                json.put("fweld_tuny_ele", wps.getFweld_tuny_ele());
+                json.put("fweld_tuny_vol", wps.getFweld_tuny_vol());
+                json.put("farc_tuny_vol", wps.getFarc_tuny_vol());
+                json.put("farc_tuny_ele", wps.getFarc_tuny_ele());
+                json.put("fini_tuny_vol", wps.getFini_tuny_vol());
+                json.put("frequency", wps.getFfrequency());     //双脉冲频率
+                json.put("fselectstep", wps.getFselectstep());
+                json.put("fselectstepname", wps.getConname());
+                json.put("ftime", wps.getFtime());
+                json.put("fmodel", wps.getModel());
+                json.put("fwpsback", wps.getFwpsback());
+                json.put("fwelding_process", wps.getFwelding_process());    //焊接过程
+                json.put("fhysteresis", wps.getFhysteresis());    //滞后送气
+                json.put("gasflow", wps.getGasflow());    //气体流量
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+            e.printStackTrace();
+        }
+        obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+
+    /**
+     * easyui 验证工艺库名称
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/wlvalidate")
+    @ResponseBody
+    private String gidvalidate(HttpServletRequest request) {
+        String wpsName = request.getParameter("wpsName");
+        boolean data = true;
+        int count = wpsService.getWpslibNameCount(wpsName);
+        if (count > 0) {
+            data = false;
+        }
+        return data + "";
+    }
+
+    /**
+     * 获取工艺库状态
+     *
+     * @return
+     */
+    @RequestMapping("/getStatusAll")
+    @ResponseBody
+    public String getStatusAll() {
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            List<Wps> getWpslibStatus = wpsService.getWpslibStatus();
+            for (Wps wps : getWpslibStatus) {
+                json.put("id", wps.getInsid());
+                json.put("name", wps.getInsname());
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        obj.put("ary", ary);
+        return obj.toString();
+    }
 //
 //    /**
 //     * 获取工艺库状态
@@ -1178,25 +1438,25 @@ public class WpsController {
      *
      * @return
      */
-//    @RequestMapping("/getDictionary")
-//    @ResponseBody
-//    public String getMaterial(HttpServletRequest request) {
-//        JSONObject json = new JSONObject();
-//        JSONArray ary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        try {
-//            List<Dictionarys> dictionary = dm.getDictionaryValue(Integer.parseInt(request.getParameter("typeid")));
-//            for (Dictionarys d : dictionary) {
-//                json.put("id", d.getValue());
-//                json.put("name", d.getValueName());
-//                ary.add(json);
-//            }
-//        } catch (Exception e) {
-//            e.getMessage();
-//        }
-//        obj.put("ary", ary);
-//        return obj.toString();
-//    }
+    @RequestMapping("/getDictionary")
+    @ResponseBody
+    public String getMaterial(HttpServletRequest request) {
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            List<Dictionarys> dictionary = dm.getDictionaryValue(Integer.parseInt(request.getParameter("typeid")));
+            for (Dictionarys d : dictionary) {
+                json.put("id", d.getValue());
+                json.put("name", d.getValueName());
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("ary", ary);
+        return obj.toString();
+    }
 //
 //    @RequestMapping("/CRC7Check")
 //    @ResponseBody
@@ -1464,130 +1724,130 @@ public class WpsController {
 //        return obj.toString();
 //    }
 
-//    @RequestMapping("/saveGiveWpsHistory")
-//    @ResponseBody
-//    public String saveGiveWpsHistory(HttpServletRequest request) {
-//        JSONObject json = new JSONObject();
-//        JSONArray wpsary = new JSONArray();
-//        JSONArray machineary = new JSONArray();
-//        JSONObject obj = new JSONObject();
-//        String mainwps = request.getParameter("mainwps");
-//        String machine = request.getParameter("machine");
-//        String wpslib = request.getParameter("wpslib");
-//        int flag = Integer.valueOf(request.getParameter("flag"));
-//        wpsary = JSONArray.fromObject(mainwps);
-//        machineary = JSONArray.fromObject(machine);
-//        try {
-//            Wps wps = new Wps();
-//            if (flag == 0) {
-//                for (int i = 0; i < machineary.size(); i++) {
-//                    for (int j = 0; j < wpsary.size(); j++) {
-//                        wps.setFweld_i_max(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fchanel"))));
-//                        wps.setFweld_i_min(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("initial"))));
-//                        wps.setFweld_alter_i(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("controller"))));
-//                        wps.setFweld_v_min(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("mode"))));
-//                        wps.setFweld_i(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fselect"))));
-//                        wps.setFweld_v(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc"))));
-//                        wps.setFweld_v_max(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fcharacter"))));
-//                        wps.setFweld_prechannel(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fmaterial"))));
-//                        wps.setFweld_alter_v(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fgas"))));
-//                        wps.setInsid(new BigInteger(String.valueOf(wpsary.getJSONObject(j).get("fdiameter"))));
-//                        wps.setFtime(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ftime"))));
-//                        wps.setFadvance(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fadvance"))));
-//                        wps.setFhysteresis(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fhysteresis"))));
-//                        wps.setFini_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele"))));
-//                        wps.setFini_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol"))));
-//                        wps.setFini_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol1"))));
-//                        wps.setFweld_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_ele"))));
-//                        wps.setFweld_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol"))));
-//                        wps.setFweld_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol1"))));
-//                        wps.setFarc_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele"))));
-//                        wps.setFarc_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol"))));
-//                        wps.setFarc_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol1"))));
-//                        wps.setFweld_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_ele"))));
-//                        wps.setFweld_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_vol"))));
-//                        wps.setFarc_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_ele"))));
-//                        wps.setFdiameter(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_vol"))));
-//                        wps.setFid(Long.valueOf(wpslib));
-//                        wps.setFprocessid(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweldprocess"))));
-//                        wps.setFtorch(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("torch"))));
-//                        wps.setFwarn_ele_up(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_ele_up"))));
-//                        wps.setFwarn_ele_down(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_ele_down"))));
-//                        wps.setFwarn_vol_up(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_vol_up"))));
-//                        wps.setFwarn_vol_down(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_vol_down"))));
-//                        wps.setMacid(new BigInteger(String.valueOf(machineary.getJSONObject(i).get("id"))));
-//                        wpsService.saveOtcWpsHistory(wps);
-//                        obj.put("success", true);
-//                    }
-//                }
-//            } else {
-//                for (int i = 0; i < machineary.size(); i++) {
-//                    for (int j = 0; j < wpsary.size(); j++) {
-//                        wps.setFid(Long.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fid"))));
-//                        wps.setFwpsnum(String.valueOf(wpsary.getJSONObject(j).get("fwpsnum")));
-//                        wps.setFcharacter(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("sxfcharacter"))));
-//                        wps.setFtime(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ftime"))));
-//                        wps.setFhysteresis(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fhysteresis"))));
-//                        wps.setFadvance(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fadvance"))));
-//                        wps.setFini_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele"))));
-//                        wps.setFini_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol"))));
-//                        wps.setFini_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol1"))));
-//                        wps.setFweld_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_ele"))));
-//                        wps.setFweld_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol"))));
-//                        wps.setFweld_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol1"))));
-//                        wps.setFarc_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele"))));
-//                        wps.setFarc_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol"))));
-//                        wps.setFarc_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol1"))));
-//                        wps.setFweld_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_ele"))));
-//                        wps.setFweld_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_vol"))));
-//                        wps.setFarc_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_vol"))));
-//                        wps.setFarc_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_ele"))));
-//                        wps.setFpreset_ele_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_top"))));
-//                        wps.setFpreset_vol_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_top"))));
-//                        wps.setFpreset_ele_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_bottom"))));
-//                        wps.setFpreset_vol_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_bottom"))));
-//                        wps.setFarc_vol_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_top"))));
-//                        wps.setFpreset_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_warn_top"))));
-//                        wps.setFpreset_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_warn_top"))));
-//                        wps.setFpreset_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_warn_bottom"))));
-//                        wps.setFpreset_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_warn_bottom"))));
-//                        wps.setFini_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele_warn_top"))));
-//                        wps.setFini_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol_warn_top"))));
-//                        wps.setFini_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele_warn_bottom"))));
-//                        wps.setFini_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol_warn_bottom"))));
-//                        wps.setFarc_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele_warn_top"))));
-//                        wps.setFarc_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_warn_top"))));
-//                        wps.setFarc_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele_warn_bottom"))));
-//                        wps.setFarc_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_warn_bottom"))));
-//                        wps.setFarc_delay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_delay_time"))));
-//                        wps.setFwarn_delay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_delay_time"))));
-//                        wps.setFwarn_stop_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_stop_time"))));
-//                        wps.setFflow_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fflow_top"))));
-//                        wps.setFflow_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fflow_bottom"))));
-//                        wps.setFdelay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fdelay_time"))));
-//                        wps.setFover_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fover_time"))));
-//                        wps.setFfixed_cycle(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ffixed_cycle"))));
-//                        wps.setFselect(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fselect"))));
-//                        wps.setFarc(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc"))));
-//                        wps.setFmaterial(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fmaterial"))));
-//                        wps.setFdiameter(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fdiameter"))));
-//                        wps.setFcontroller(String.valueOf(wpsary.getJSONObject(j).get("fcontroller")));
-//                        wps.setFinitial(String.valueOf(wpsary.getJSONObject(j).get("finitial")));
-//                        wps.setFgas(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fgas"))));
-//                        wps.setMacid(new BigInteger(String.valueOf(machineary.getJSONObject(i).get("id"))));
-//                        wps.setFwpslib_id(new BigInteger(wpslib));
-//                        wpsService.saveSxWpsHistory(wps);
-//                        obj.put("success", true);
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            obj.put("success", false);
-//            obj.put("errorMsg", e.getMessage());
-//            e.getMessage();
-//        }
-//        return obj.toString();
-//    }
+    @RequestMapping("/saveGiveWpsHistory")
+    @ResponseBody
+    public String saveGiveWpsHistory(HttpServletRequest request) {
+        JSONObject json = new JSONObject();
+        JSONArray wpsary = new JSONArray();
+        JSONArray machineary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        String mainwps = request.getParameter("mainwps");
+        String machine = request.getParameter("machine");
+        String wpslib = request.getParameter("wpslib");
+        int flag = Integer.valueOf(request.getParameter("flag"));
+        wpsary = JSONArray.fromObject(mainwps);
+        machineary = JSONArray.fromObject(machine);
+        try {
+            Wps wps = new Wps();
+            if (flag == 0) {
+                for (int i = 0; i < machineary.size(); i++) {
+                    for (int j = 0; j < wpsary.size(); j++) {
+                        wps.setFweld_i_max(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fchanel"))));
+                        wps.setFweld_i_min(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("initial"))));
+                        wps.setFweld_alter_i(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("controller"))));
+                        wps.setFweld_v_min(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("mode"))));
+                        wps.setFweld_i(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fselect"))));
+                        wps.setFweld_v(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc"))));
+                        wps.setFweld_v_max(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fcharacter"))));
+                        wps.setFweld_prechannel(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fmaterial"))));
+                        wps.setFweld_alter_v(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fgas"))));
+                        wps.setInsid(new BigInteger(String.valueOf(wpsary.getJSONObject(j).get("fdiameter"))));
+                        wps.setFtime(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ftime"))));
+                        wps.setFadvance(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fadvance"))));
+                        wps.setFhysteresis(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fhysteresis"))));
+                        wps.setFini_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele"))));
+                        wps.setFini_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol"))));
+                        wps.setFini_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol1"))));
+                        wps.setFweld_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_ele"))));
+                        wps.setFweld_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol"))));
+                        wps.setFweld_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol1"))));
+                        wps.setFarc_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele"))));
+                        wps.setFarc_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol"))));
+                        wps.setFarc_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol1"))));
+                        wps.setFweld_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_ele"))));
+                        wps.setFweld_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_vol"))));
+                        wps.setFarc_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_ele"))));
+                        wps.setFdiameter(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_vol"))));
+                        wps.setFid(Long.valueOf(wpslib));
+                        wps.setFprocessid(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweldprocess"))));
+                        wps.setFtorch(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("torch"))));
+                        wps.setFwarn_ele_up(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_ele_up"))));
+                        wps.setFwarn_ele_down(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_ele_down"))));
+                        wps.setFwarn_vol_up(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_vol_up"))));
+                        wps.setFwarn_vol_down(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_vol_down"))));
+                        wps.setMacid(new BigInteger(String.valueOf(machineary.getJSONObject(i).get("id"))));
+                        wpsService.saveOtcWpsHistory(wps);
+                        obj.put("success", true);
+                    }
+                }
+            } else {
+                for (int i = 0; i < machineary.size(); i++) {
+                    for (int j = 0; j < wpsary.size(); j++) {
+                        wps.setFid(Long.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fid"))));
+                        wps.setFwpsnum(String.valueOf(wpsary.getJSONObject(j).get("fwpsnum")));
+                        wps.setFcharacter(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("sxfcharacter"))));
+                        wps.setFtime(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ftime"))));
+                        wps.setFhysteresis(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fhysteresis"))));
+                        wps.setFadvance(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fadvance"))));
+                        wps.setFini_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele"))));
+                        wps.setFini_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol"))));
+                        wps.setFini_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol1"))));
+                        wps.setFweld_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_ele"))));
+                        wps.setFweld_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol"))));
+                        wps.setFweld_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_vol1"))));
+                        wps.setFarc_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele"))));
+                        wps.setFarc_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol"))));
+                        wps.setFarc_vol1(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol1"))));
+                        wps.setFweld_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_ele"))));
+                        wps.setFweld_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fweld_tuny_vol"))));
+                        wps.setFarc_tuny_vol(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_vol"))));
+                        wps.setFarc_tuny_ele(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_tuny_ele"))));
+                        wps.setFpreset_ele_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_top"))));
+                        wps.setFpreset_vol_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_top"))));
+                        wps.setFpreset_ele_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_bottom"))));
+                        wps.setFpreset_vol_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_bottom"))));
+                        wps.setFarc_vol_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_top"))));
+                        wps.setFpreset_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_warn_top"))));
+                        wps.setFpreset_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_warn_top"))));
+                        wps.setFpreset_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_ele_warn_bottom"))));
+                        wps.setFpreset_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fpreset_vol_warn_bottom"))));
+                        wps.setFini_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele_warn_top"))));
+                        wps.setFini_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol_warn_top"))));
+                        wps.setFini_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_ele_warn_bottom"))));
+                        wps.setFini_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fini_vol_warn_bottom"))));
+                        wps.setFarc_ele_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele_warn_top"))));
+                        wps.setFarc_vol_warn_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_warn_top"))));
+                        wps.setFarc_ele_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_ele_warn_bottom"))));
+                        wps.setFarc_vol_warn_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_vol_warn_bottom"))));
+                        wps.setFarc_delay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc_delay_time"))));
+                        wps.setFwarn_delay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_delay_time"))));
+                        wps.setFwarn_stop_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fwarn_stop_time"))));
+                        wps.setFflow_top(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fflow_top"))));
+                        wps.setFflow_bottom(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fflow_bottom"))));
+                        wps.setFdelay_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fdelay_time"))));
+                        wps.setFover_time(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fover_time"))));
+                        wps.setFfixed_cycle(Double.valueOf(String.valueOf(wpsary.getJSONObject(j).get("ffixed_cycle"))));
+                        wps.setFselect(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fselect"))));
+                        wps.setFarc(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("farc"))));
+                        wps.setFmaterial(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fmaterial"))));
+                        wps.setFdiameter(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fdiameter"))));
+                        wps.setFcontroller(String.valueOf(wpsary.getJSONObject(j).get("fcontroller")));
+                        wps.setFinitial(String.valueOf(wpsary.getJSONObject(j).get("finitial")));
+                        wps.setFgas(Integer.valueOf(String.valueOf(wpsary.getJSONObject(j).get("fgas"))));
+                        wps.setMacid(new BigInteger(String.valueOf(machineary.getJSONObject(i).get("id"))));
+                        wps.setFwpslib_id(new BigInteger(wpslib));
+                        wpsService.saveSxWpsHistory(wps);
+                        obj.put("success", true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+            e.getMessage();
+        }
+        return obj.toString();
+    }
 
 //    @RequestMapping("/getFnsDetail")
 //    @ResponseBody
@@ -1911,41 +2171,41 @@ public class WpsController {
 //        return obj.toString();
 //    }
 
-//    @RequestMapping("/getDictionaryValue")
-//    @ResponseBody
-//    public String getDictionaryValue(HttpServletRequest request) {
-//        JSONObject obj = new JSONObject();
-//        List<Dictionarys> materialList = dm.getDictionaryValue(9);
-//        List<Dictionarys> diameterList = dm.getDictionaryValue(13);
-//        List<Dictionarys> processList = dm.getDictionaryValue(22);
-//        JSONObject json = new JSONObject();
-//        JSONArray mary = new JSONArray();
-//        JSONArray dary = new JSONArray();
-//        JSONArray pary = new JSONArray();
-//        try {
-//            for (Dictionarys d : materialList) {
-//                json.put("id", d.getValue());
-//                json.put("name", d.getValueName());
-//                mary.add(json);
-//            }
-//            for (Dictionarys d : diameterList) {
-//                json.put("id", d.getValue());
-//                json.put("name", d.getValueName());
-//                dary.add(json);
-//            }
-//            for (Dictionarys d : processList) {
-//                json.put("id", d.getValue());
-//                json.put("name", d.getValueName());
-//                pary.add(json);
-//            }
-//        } catch (Exception e) {
-//            e.getMessage();
-//        }
-//        obj.put("mary", mary);
-//        obj.put("dary", dary);
-//        obj.put("pary", pary);
-//        return obj.toString();
-//    }
+    @RequestMapping("/getDictionaryValue")
+    @ResponseBody
+    public String getDictionaryValue(HttpServletRequest request) {
+        JSONObject obj = new JSONObject();
+        List<Dictionarys> materialList = dm.getDictionaryValue(9);
+        List<Dictionarys> diameterList = dm.getDictionaryValue(13);
+        List<Dictionarys> processList = dm.getDictionaryValue(22);
+        JSONObject json = new JSONObject();
+        JSONArray mary = new JSONArray();
+        JSONArray dary = new JSONArray();
+        JSONArray pary = new JSONArray();
+        try {
+            for (Dictionarys d : materialList) {
+                json.put("id", d.getValue());
+                json.put("name", d.getValueName());
+                mary.add(json);
+            }
+            for (Dictionarys d : diameterList) {
+                json.put("id", d.getValue());
+                json.put("name", d.getValueName());
+                dary.add(json);
+            }
+            for (Dictionarys d : processList) {
+                json.put("id", d.getValue());
+                json.put("name", d.getValueName());
+                pary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("mary", mary);
+        obj.put("dary", dary);
+        obj.put("pary", pary);
+        return obj.toString();
+    }
 
 //    @RequestMapping("/addWps")
 //    @ResponseBody

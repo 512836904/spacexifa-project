@@ -1,6 +1,7 @@
 package com.spring.controller;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ public class MaintainController {
 	private int pageIndex = 1;
 	private int pageSize = 10;
 	private int total = 0;
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
 	private MaintainService mm;
@@ -129,8 +131,17 @@ public class MaintainController {
 				json.put("wid", wm.getWelding().getId());
 				json.put("mid", wm.getMaintenance().getId());
 				json.put("viceman", wm.getMaintenance().getViceman());
-				json.put("starttime",wm.getMaintenance().getStartTime());
-				json.put("endtime", wm.getMaintenance().getEndTime());
+				if (null != wm.getMaintenance().getStartTime() && !"".equals(wm.getMaintenance().getStartTime())){
+					json.put("starttime", sdf.format(wm.getMaintenance().getStartTime()));
+				}else {
+					json.put("starttime", "");
+				}
+				if (null != wm.getMaintenance().getEndTime() && !"".equals(wm.getMaintenance().getEndTime())){
+					json.put("endtime", sdf.format(wm.getMaintenance().getEndTime()));
+				}else {
+					json.put("endtime", "");
+				}
+				//json.put("endtime", wm.getMaintenance().getEndTime());
 				json.put("typeid", wm.getMaintenance().getTypeId());
 				json.put("typename", wm.getMaintenance().getTypename());
 				json.put("desc", wm.getMaintenance().getDesc());

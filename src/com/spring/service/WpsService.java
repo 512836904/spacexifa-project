@@ -27,6 +27,7 @@ public interface WpsService {
 	List<Wps> findStepFile(String condition);
 	void deleteHistory(BigInteger fid);
 	Wps findSpeById(BigInteger fid);
+	//根据通道号和焊机id查询工艺下发规范
 	int findCount(BigInteger machine, String string);
 	void saveSpe(Wps wps);
 	void updateSpe(Wps wps);

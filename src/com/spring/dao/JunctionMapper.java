@@ -24,4 +24,6 @@ public interface JunctionMapper extends Mapper<Junction> {
 
     //批量删除工艺和焊缝关联记录
     int deleteLiarbryJunctionByIds(List<Integer> ids);
+
+    List<Junction> getListByLibraryId(int library_id);
 }

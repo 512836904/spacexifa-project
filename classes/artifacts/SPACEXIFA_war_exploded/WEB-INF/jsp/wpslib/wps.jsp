@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>工艺管理</title>
+    <title>工艺规程管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -108,7 +108,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 
 	     <!-- 添加修改工艺台账 -->
-		<div id="addOrUpdate" class="easyui-dialog" style="width: 400px; height: 400px; padding:10px 20px" closed="true" buttons="#tdd-buttons">
+		<div id="addOrUpdate" class="easyui-dialog" style="width: 400px; height: 500px; padding:10px 20px" closed="true" buttons="#tdd-buttons">
 			<form id="addOrUpdatefm" class="easyui-form" method="post" data-options="novalidate:true">
 				<div style="width: 100%">
 					<div class="fitem">
@@ -132,6 +132,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>
 						<input class="easyui-textbox" name="junctionName" id="junctionName" readonly/>
 						<input type="hidden" id="fids" name="fids">
+					</div>
+					<div class="fitem">
+						<lable><span class="required">*</span>工票编号</lable>
+						<input class="easyui-textbox" name="workticket_number" id="workticket_number"  data-options="required:true"/>
+					</div>
+					<div class="fitem">
+						<lable><span class="required">*</span>工艺参数</lable>
+						<input class="easyui-textbox" name="raw_material" id="raw_material"  data-options="required:true"/>
+					</div>
+					<div class="fitem">
+						<lable><span class="required">*</span>原料</lable>
+						<input class="easyui-textbox" name="craft_param" id="craft_param"  data-options="required:true"/>
+					</div>
+					<div class="fitem">
+						<lable><span class="required">*</span>工序</lable>
+						<input class="easyui-textbox" name="process" id="process"  data-options="required:true"/>
 					</div>
 					<div align="center">
 						<a href="javascript:saveWps();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>

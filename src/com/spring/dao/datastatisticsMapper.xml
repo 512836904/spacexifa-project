@@ -1229,15 +1229,18 @@
 		select sum(fworktime) /60/60 hour,w.fname,w.fwelder_no welderno,i.fname insname FROM  tb_work l
 		left JOIN  tb_welder w on w.fid = l.fwelder_id 
 		INNER join tb_insframework i on i.fid = l.fwelder_itemid INNER join tb_insframework ins on ins.fid = i.fparent 
-		where fstarttime &gt;= #{time} and fendtime &lt; date_sub(date_sub(#{time},interval -1 day),interval 0 minute)
+		where fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
+		<!-- and fendtime &lt; date_sub(date_sub(#{time},interval -1 day),interval 0 minute) -->
+		and to_date(#{time}, 'yyyy-mm-dd') - 1 > fendtime
 		<if test="parent!=null and parent!=''">
 			AND ins.fid=#{parent}
 		</if>
-		group by w.fname ORDER by hour desc
-		LIMIT 10
+		AND 10 >= rownum
+		group by w.fname,w.fwelder_no,i.fname ORDER by hour desc
+		<!--LIMIT 10 -->
 	</select>
-	
-	<!-- 获取工作的焊机数-->
+
+<!-- 获取工作的焊机数-->
 	<select id="getWorkMachineCount" resultMap="dataMap">
 		select count(DISTINCT(fmachine_id)) machinenum
 		from tb_work w INNER JOIN tb_insframework i on i.fid  = w.fmachine_itemid left JOIN tb_insframework ins on ins.fid = i.fparent

@@ -23,19 +23,19 @@ $(function() {
 	});
 })
 
-//选择工艺
+//选择工艺(工艺库下发)
 function selectMainWps(value,model){
 	wpslibId = value;
-	if(model == 149){
-		flag = 1;
-		$('#sxSelectdlg').window( {
-			title : "选择工艺",
-			modal : true
-		});
-		$('#sxSelectdlg').window('open');
-		showSelectSxWps(value);
-		return;
-	}
+	// if(model == 149){
+	// 	flag = 1;
+	// 	$('#sxSelectdlg').window( {
+	// 		title : "选择工艺",
+	// 		modal : true
+	// 	});
+	// 	$('#sxSelectdlg').window('open');
+	// 	showSelectSxWps(value);
+	// 	return;
+	// }
 	$('#smwfm').form('clear');
 	$('#smwdlg').window( {
 		title : "选择工艺",
@@ -44,7 +44,7 @@ function selectMainWps(value,model){
 	$("#mainWpsTable").datagrid( {
 		height : $("#smwdlg").height(),
 		width : $("#smwdlg").width(),
-		idField : 'id',
+		idField : 'fid',
 		pageSize : 10,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		url : "wps/getMainwpsList?parent="+value,
@@ -54,193 +54,72 @@ function selectMainWps(value,model){
         columns : [ [ {
 		    field:'ck',
 			checkbox:true
-		},{ 
-			field : 'fid',
-			title : 'id',
-			halign : "center",
-			align : "left",
-			width : 30,
-			hidden:true
-		},{ 
-			field : 'fchanel',
-			title : '通道号',
-			halign : "center",
-			align : "left"
-		},{ 
-			field : 'finitial',
-			title : '初期条件',
-			halign : "center",
-			align : "left"
-		},{ 
-			field : 'fcontroller',
-			title : '熔深控制',
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'fselectname',
-			title : '一元/个别',
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'fselect',
-			title : '一元/个别id',
-			halign : "center",
-			align : "left",
-			hidden : true
-		}, {
-			field : 'farc',
-			title : '收弧id',
-			halign : "center",
-			align : "left",
+		},{
+			field: 'fid',
+			title: 'FID',
+			halign: "center",
+			align: "left",
 			hidden: true
-		},{
-			field : 'farcname',
-			title : '收弧',
-			halign : "center",
-			align : "left"
 		}, {
-			field : 'fcharacter',
-			title : '电弧特性',
-			halign : "center",
-			align : "left"
+			field: 'fmodel',
+			title: '焊机型号',
+			halign: "center",
+			align: "left",
+			hidden: true
 		}, {
-			field : 'fmode',
-			title : '柔软电弧模式',
-			halign : "center",
-			align : "left"
+			field: 'fselect',
+			title: '焊接模式',
+			halign: "center",
+			align: "left",
+			hidden: true
 		}, {
-			field : 'fmaterialname',
-			title : '焊丝材质',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fmaterial',
-			title : '焊丝材质id',
-			halign : "center",
-			align : "left",
-			hidden : true
-		},{
-			field : 'fgasname',
-			title : '气体',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fgas',
-			title : '气体id',
-			halign : "center",
-			align : "left",
-			hidden : true
-		},{
-			field : 'fdiametername',
-			title : '焊丝直径',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fdiameter',
-			title : '焊丝直径id',
-			halign : "center",
-			align : "left",
-			hidden : true
-		},{
-			field : 'ftime',
-			title : '点焊时间',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fadvance',
-			title : '提前送气',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fhysteresis',
-			title : '滞后送气',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fini_ele',
-			title : '初期电流',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fini_vol',
-			title : '初期电压',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fini_vol1',
-			title : '初期电压一元',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fweld_ele',
-			title : '焊接电流',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fweld_vol',
-			title : '焊接电压',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fweld_vol1',
-			title : '焊接电压一元',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'farc_ele',
-			title : '收弧电流',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'farc_vol',
-			title : '收弧电压',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'farc_vol1',
-			title : '收弧电压一元',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fweld_tuny_ele',
-			title : '焊接电流微调',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fweld_tuny_vol',
-			title : '焊接电压微调',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'farc_tuny_ele',
-			title : '收弧电流微调',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'farc_tuny_vol',
-			title : '收弧电压微调',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fwarn_ele_up',
-			title : '报警电流上限',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fwarn_ele_down',
-			title : '报警电流下限',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fwarn_vol_up',
-			title : '报警电压上限',
-			halign : "center",
-			align : "left"
-		},{
-			field : 'fwarn_vol_down',
-			title : '报警电压下限',
-			halign : "center",
-			align : "left"
+			field: 'fchanel',
+			title: '通道号',
+			width: 100,
+			halign: "center",
+			align: "center"
+		}, {
+			field: 'fselectname',
+			title: '焊接模式',
+			width: 100,
+			halign: "center",
+			align: "center",
+			hidden: true
+		} , {
+			field: 'fweld_ele',
+			title: '焊接电流',
+			width: 100,
+			halign: "center",
+			align: "center"
+		} , {
+			field: 'fweld_vol',
+			title: '焊接电压',
+			width: 100,
+			halign: "center",
+			align: "center"
+		} , {
+			field: 'fweld_tuny_ele',
+			title: '焊接电流微调',
+			width: 100,
+			halign: "center",
+			align: "center"
+		}, {
+			field: 'fweld_tuny_vol',
+			title: '焊接电压微调',
+			width: 100,
+			halign: "center",
+			align: "center"
+		}, {
+			field: 'edit',
+			title: '操作',
+			width: 130,
+			halign: "center",
+			align: "center",
+			formatter: function (value, row, index) {
+				var str = "";
+				str += '<a id="wpsLibDetail" class="easyui-linkbutton" href="javascript:wpsLibDetail('+encodeURI(JSON.stringify(row))+')"/>';
+				return str;
+			}
 		}
 		] ],
 		pagination : true,
@@ -251,7 +130,9 @@ function selectMainWps(value,model){
 //	                color.class="rowColor";
                 return color;
             }
-        }
+        }, onLoadSuccess: function (data) {
+			$("a[id='wpsLibDetail']").linkbutton({text: '详情', plain: true, iconCls: 'icon-detail'});
+		},
 	});
 	$('#smwdlg').window('open');
 /*	if($('#ddv-'+value).datagrid()){
@@ -262,6 +143,32 @@ function selectMainWps(value,model){
 			selectMachineList(1);
 		}
 	}*/
+}
+
+//子工艺详情
+function wpsLibDetail(row){
+	$('#fmwpsCraft').form('load', row);
+	$('#wpsCraft').dialog("open");
+	// editMainWps(row);
+	$('#wpsCraft').dialog({
+		title: '工艺详情',
+		width: 900,
+		height: 600,
+		closed: false,
+		cache: false,
+		content: '',
+		modal: true,
+		buttons:[{
+			text:'关闭',
+			iconCls:'icon-no',
+			handler:function(){
+				$("#wpsCraft").dialog('close');
+			}
+		}],
+		onClose : function() {
+			$(this).dialog('close');
+		}
+	});
 }
 
 //松下工艺选择
@@ -480,12 +387,13 @@ function selectMachineList(value){
 	}else{
 		url = "weldingMachine/getWedlingMachineList?searchStr="+"w.fmanufacturer_id="+147;
 	}
+	//url:weldingMachine/getWedlingMachineList?searchStr=w.fmanufacturer_id=147
 	$('#smfm').form('clear');
-	$('#smdlg').window( {
+	$('#smdlg').window({
 		title : "选择焊机",
 		modal : true
 	});
-	$("#weldingmachineTable").datagrid( {
+	$("#weldingmachineTable").datagrid({
 		height : $("#smdlg").height(),
 		width : $("#smdlg").width(),
 		idField : 'id',
@@ -508,13 +416,13 @@ function selectMachineList(value){
 		}, {
 			field : 'equipmentNo',
 			title : '设备名称',
-//				width : 80,
+			width : 120,
 			halign : "center",
 			align : "left"
 		}, {
 			field : 'typeName',
 			title : '设备类型',
-//				width : 80,
+			width : 60,
 			halign : "center",
 			align : "left"
 		}, /*{
@@ -532,13 +440,13 @@ function selectMachineList(value){
 			},*/ {
 			field : 'statusName',
 			title : '状态',
-//				width : 80,
+			width : 60,
 			halign : "center",
 			align : "left"
 		} , {
 			field : 'manufacturerName',
 			title : '厂家',
-//				width : 150,
+			width : 100,
 			halign : "center",
 			align : "left"
 		}, /*{
@@ -550,7 +458,7 @@ function selectMachineList(value){
 			},*/ {
 			field : 'gatherId',
 			title : '采集序号',
-//				width : 100,
+			width : 80,
 			halign : "center",
 			align : "left"
 		}, /*{
@@ -650,14 +558,21 @@ function selectMachineList(value){
 	$('#smdlg').window('open');
 }
 
-function selectModel(){
+function selectModelSure(){
+	//参数检测
+	//wblSendCheck();
 	if(selectflag==0){
+		//索取规范
 		requestWps();
 	}else if(selectflag==1){
-		giveMainWps();
+		//test 下发规范
+		// giveMainWps();
+		CPVEW();
 	}else if(selectflag==2){
+		//密码校验();
 		passfun();
 	}else if(selectflag==3){
+		//控制命令下发
 		controlfun();
 	}else{
 		return;
@@ -683,7 +598,7 @@ function showResult(){
         columns : [ [ {
 			field : 'machineNo',
 			title : '焊机编号',
-			width : 80,
+			width : 150,
 			halign : "center",
 			align : "left"
 		}, {
@@ -691,23 +606,23 @@ function showResult(){
 			title : '采集序号',
 			width : 80,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'successNum',
 			title : '成功通道',
-			width : 300,
+			width : 270,
 			halign : "center",
 			align : "left"
 		}, {
 			field : 'failNum',
 			title : '失败通道',
-			width : 300,
+			width : 270,
 			halign : "center",
 			align : "left"
 		}, {
 			field : 'noNum',
 			title : '未响应通道',
-			width : 300,
+			width : 270,
 			halign : "center",
 			align : "left"
 		}
@@ -737,93 +652,139 @@ function requestWps() {
 		return;
 	}
 	var flag = 0;
-	var websocket = null;
-	if (typeof (WebSocket) == "undefined") {
-		WEB_SOCKET_SWF_LOCATION = "resources/js/WebSocketMain.swf";
-		WEB_SOCKET_DEBUG = true;
+//  var websocket = null;
+//  if (typeof (WebSocket) == "undefined") {
+//    WEB_SOCKET_SWF_LOCATION = "resources/js/WebSocketMain.swf";
+//    WEB_SOCKET_DEBUG = true;
+//  }
+//  websocket = new WebSocket(websocketUrl);
+//  websocket.onopen = function() {
+	var chanel = $('#fchanel').combobox('getValue').toString(16);
+	if (chanel.length < 2) {
+		var length = 2 - chanel.length;
+		for (var i = 0; i < length; i++) {
+			chanel = "0" + chanel;
+		}
 	}
-	websocket = new WebSocket(websocketUrl);
-	websocket.onopen = function() {
-		var chanel = $('#fchanel').combobox('getValue').toString(16);
-		if (chanel.length < 2) {
-			var length = 2 - chanel.length;
-			for (var i = 0; i < length; i++) {
-				chanel = "0" + chanel;
-			}
+	var mach = parseInt(selectMachine.gatherId).toString(16);
+	if (mach.length < 4) {
+		var length = 4 - mach.length;
+		for (var i = 0; i < length; i++) {
+			mach = "0" + mach;
 		}
-		var mach = selectMachine.gatherId;
-		if (mach.length < 4) {
-			var length = 4 - mach.length;
-			for (var i = 0; i < length; i++) {
-				mach = "0" + mach;
-			}
-			;
-		}
-		var xxx = "7E0901010156" + mach + chanel;
-		var check = 0;
-		for (var i = 0; i < (xxx.length / 2); i++) {
-			var tstr1 = xxx.substring(i * 2, i * 2 + 2);
-			var k = parseInt(tstr1, 16);
-			check += k;
-		}
+		;
+	}
+	var xxx = "7E0901010156" + mach + chanel;
+	var check = 0;
+	for (var i = 0; i < (xxx.length / 2); i++) {
+		var tstr1 = xxx.substring(i * 2, i * 2 + 2);
+		var k = parseInt(tstr1, 16);
+		check += k;
+	}
 
-		var checksend = parseInt(check).toString(16);
-		var a2 = checksend.length;
-		checksend = checksend.substring(a2 - 2, a2);
-		checksend = checksend.toUpperCase();
-		websocket.send(xxx + checksend + "7D");
-		if (flag == 0) {
-			var jctimer = window.setTimeout(function() {
-				if (flag == 0) {
-					websocket.close();
-					alert("焊机长时间未响应，索取失败!!!");
+	var checksend = parseInt(check).toString(16);
+	var a2 = checksend.length;
+	checksend = checksend.substring(a2 - 2, a2);
+	checksend = checksend.toUpperCase();
+	var symbol = 0;
+	var message = new Paho.MQTT.Message(xxx + checksend + "7D");
+	message.destinationName = "weldmes/downparams";
+	client.send(message);
+//    websocket.send(xxx + checksend + "7D");
+//    if (flag == 0) {
+//      var jctimer = window.setTimeout(function() {
+//        if (flag == 0) {
+//          websocket.close();
+//          alert("焊机长时间未响应，索取失败!!!");
+//        }
+//      }, 60000)
+//    }
+	var oneMinuteTimer = window.setTimeout(function() {
+		if (symbol == 0) {
+			client.unsubscribe("weldmes/upparams", {
+				onSuccess : function(e) {
+					console.log("取消订阅成功");
+				},
+				onFailure : function(e) {
+					console.log(e);
 				}
-			}, 60000)
+			})
+//        $('#buttonCancel').linkbutton('enable');
+//        $('#buttonOk').linkbutton('enable');
+			alert("下发超时");
 		}
-		websocket.onmessage = function(msg) {
-			var da = msg.data;
-			if (da.substring(0, 2) == "7E" && da.substring(10, 12) == "56") {
-				if (da.substring(18, 20) == "FF") {
-					flag++;
-					websocket.close();
-					if (websocket.readyState != 1) {
-						alert("此通道没有规范!!!");
-						flag = 0;
+	}, 5000);
+	client.subscribe("weldmes/upparams", {
+		qos: 0,
+		onSuccess:function(e){
+			console.log("订阅成功");
+		},
+		onFailure: function(e){
+			console.log(e);
+		}
+	})
+	client.onMessageArrived = function(e){
+		console.log("onMessageArrived:" + e.payloadString);
+		var da = e.payloadString;
+		if (da.substring(0, 2) == "7E" && da.substring(10, 12) == "56") {
+			if (da.substring(18, 20) == "FF") {
+				flag++;
+//          websocket.close();
+//          if (websocket.readyState != 1) {
+				client.unsubscribe("weldmes/upparams", {
+					onSuccess : function(e) {
+						console.log("取消订阅成功");
+					},
+					onFailure : function(e) {
+						console.log(e);
 					}
-				} else {
-					var wpslibrow = $('#wpslibTable').datagrid("getSelected");
-					if (wpslibrow.model == 174) {
-						EPWGET(da);
-					} else if (wpslibrow.model == 175) {
-						EPSGET(da);
-					} else if (wpslibrow.model == 176) {
-						WBMLGET(da);
-					} else if (wpslibrow.model == 177) {
-						WBPGET(da);
-					} else if (wpslibrow.model == 178) {
-						WBLGET(da);
-					} else if (wpslibrow.model == 171) {
-						CPVEWGET(da);
-					}
-					flag++;
-					websocket.close();
-					if (websocket.readyState != 1) {
-						window.clearTimeout(jctimer);
-						alert("索取成功");
-						flag = 0;
-						$('#smdlg').window('close');
-						$('#weldingmachineTable').datagrid('clearSelections');
-						$('#smdlg').form('clear');
-					}
+				});
+				alert("此通道没有规范!!!");
+				flag = 0;
+				window.clearTimeout(oneMinuteTimer);
+				symbol = 1;
+//          }
+			} else {
+				var wpslibrow = $('#wpslibTable').datagrid("getSelected");
+				if (wpslibrow.model == 174) {
+					EPWGET(da);
+				} else if (wpslibrow.model == 175) {
+					EPSGET(da);
+				} else if (wpslibrow.model == 176) {
+					WBMLGET(da);
+				} else if (wpslibrow.model == 177) {
+					WBPGET(da);
+				} else if (wpslibrow.model == 178) {
+					WBLGET(da);
+				} else if (wpslibrow.model == 171) {
+					CPVEWGET(da);
 				}
+				flag++;
+				client.unsubscribe("weldmes/upparams", {
+					onSuccess : function(e) {
+						console.log("取消订阅成功");
+					},
+					onFailure : function(e) {
+						console.log(e);
+					}
+				});
+				flag = 0;
+				window.clearTimeout(oneMinuteTimer);
+				symbol = 1;
+				alert("索取成功");
+				$('#smdlg').window('close');
+				$('#weldingmachineTable').datagrid('clearSelections');
+				$('#smdlg').form('clear');
 			}
 		}
 	}
+//  }
 }
 
 //下发规范
 function giveMainWps(){
 	var wpslibrow = $('#wpslibTable').datagrid("getSelected");
+	//工艺库焊机型号：182
 	if(wpslibrow.model==174){
 		if(EPW()==false){
 			return;

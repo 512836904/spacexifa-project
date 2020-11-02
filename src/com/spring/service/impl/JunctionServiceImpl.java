@@ -8,6 +8,8 @@ import com.spring.service.JunctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @Transactional
@@ -63,6 +65,17 @@ public class JunctionServiceImpl implements JunctionService {
 
     @Override
     public int deleteLiarbryJunctionByIds(List<Integer> ids) {
-        return junctionMapper.deleteLiarbryJunctionByIds(ids);
+        //先去查询改id是否存在，存在则删除，不存在不删除
+        List<Integer> list = new ArrayList<>();
+        List<Junction> listByLibraryId = null;
+        if (null != ids && ids.size() > 0){
+            for (Integer id : ids){
+                listByLibraryId  = junctionMapper.getListByLibraryId(id);
+                if (null != listByLibraryId && listByLibraryId.size() > 0){
+                    list.add(id);
+                }
+            }
+        }
+        return junctionMapper.deleteLiarbryJunctionByIds(list);
     }
 }

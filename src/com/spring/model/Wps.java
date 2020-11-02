@@ -196,6 +196,568 @@ public class Wps {
 	private BigInteger unstandardtime;
 	private String fwelded_junction_no;	//电子跟踪卡号
 
+	/**
+	 * 字段新增 2020.10.20
+	 */
+	private String fspeed;
+	private String model;
+	private String fwpsback;
+	private String fini_tuny_vol;
+	private String ffrequency;
+	private String fselectstep;
+	private String farc_tuny_speed;
+	private String farc_speed;
+
+
+	/**
+	 * 工艺参数下发字段修改
+	 * @return
+	 */
+	private double weldingratio;
+	private double firsttime;
+	private double farc_time;
+	private double Rush;
+	private double handarc_ele;
+	private double handarc_time;
+	private double hand_ele;
+	private double Base_ele;
+	private double Base_vol;
+	private double Base_vol1;
+	private double fargon;
+	private double manual_weld;
+	private double arc_length;
+	private double pulse;
+	private double fweldparameters;
+	private double rise_time;
+	private double decline_time;
+	private double thrust_ele;
+	private double pulse_ratio;
+	private double point_speed;
+
+	private double frequency;
+	private double gasflow;
+
+	/**
+	 *  工艺下发规范实体类（与数据库字段对应）
+	 * @return
+	 */
+	private int fspe_num;
+	private int fmachine_id;
+	private int fgasflow;
+	private int fwelding_process;
+	private int fwater_cooled_torch;
+	private int fweldingratio;
+	private int pulse_ele;
+	private int ac_frequency;
+	private int clean_width;
+	private int ac_dc;
+	private int pulse_width;
+	private int ac_ratio;
+	private int ac_wave;
+	private int pulse_tuny_ele;
+	private int special_arcorder;
+	private int special_arc_initial;
+	private int special_arctime;
+	private int click_ele;
+	private int two_click_ele;
+	private int repeat_end;
+	private int guide;
+	private int slope;
+	private int specialarc;
+	private int specialarc_rep;
+	private int ts_condition;
+
+	/**
+	 * 电子跟踪卡字段新增
+	 * @return
+	 */
+	private String workticket_number;
+	private String craft_param;
+	private String raw_material;
+	private String process;
+
+	//任务完成状态
+	private Integer FOPERATETYPE;
+
+	public String getWorkticket_number() {
+		return workticket_number;
+	}
+
+	public void setWorkticket_number(String workticket_number) {
+		this.workticket_number = workticket_number;
+	}
+
+	public String getCraft_param() {
+		return craft_param;
+	}
+
+	public void setCraft_param(String craft_param) {
+		this.craft_param = craft_param;
+	}
+
+	public String getRaw_material() {
+		return raw_material;
+	}
+
+	public void setRaw_material(String raw_material) {
+		this.raw_material = raw_material;
+	}
+
+	public String getProcess() {
+		return process;
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
+	}
+
+	public Integer getFOPERATETYPE() {
+		return FOPERATETYPE;
+	}
+
+	public void setFOPERATETYPE(Integer FOPERATETYPE) {
+		this.FOPERATETYPE = FOPERATETYPE;
+	}
+
+	public int getFspe_num() {
+		return fspe_num;
+	}
+
+	public void setFspe_num(int fspe_num) {
+		this.fspe_num = fspe_num;
+	}
+
+	public int getFmachine_id() {
+		return fmachine_id;
+	}
+
+	public void setFmachine_id(int fmachine_id) {
+		this.fmachine_id = fmachine_id;
+	}
+
+	public int getFgasflow() {
+		return fgasflow;
+	}
+
+	public void setFgasflow(int fgasflow) {
+		this.fgasflow = fgasflow;
+	}
+
+	public int getFwelding_process() {
+		return fwelding_process;
+	}
+
+	public void setFwelding_process(int fwelding_process) {
+		this.fwelding_process = fwelding_process;
+	}
+
+	public int getFwater_cooled_torch() {
+		return fwater_cooled_torch;
+	}
+
+	public void setFwater_cooled_torch(int fwater_cooled_torch) {
+		this.fwater_cooled_torch = fwater_cooled_torch;
+	}
+
+	public int getFweldingratio() {
+		return fweldingratio;
+	}
+
+	public void setFweldingratio(int fweldingratio) {
+		this.fweldingratio = fweldingratio;
+	}
+
+	public int getPulse_ele() {
+		return pulse_ele;
+	}
+
+	public void setPulse_ele(int pulse_ele) {
+		this.pulse_ele = pulse_ele;
+	}
+
+	public int getAc_frequency() {
+		return ac_frequency;
+	}
+
+	public void setAc_frequency(int ac_frequency) {
+		this.ac_frequency = ac_frequency;
+	}
+
+	public int getClean_width() {
+		return clean_width;
+	}
+
+	public void setClean_width(int clean_width) {
+		this.clean_width = clean_width;
+	}
+
+	public int getAc_dc() {
+		return ac_dc;
+	}
+
+	public void setAc_dc(int ac_dc) {
+		this.ac_dc = ac_dc;
+	}
+
+	public int getPulse_width() {
+		return pulse_width;
+	}
+
+	public void setPulse_width(int pulse_width) {
+		this.pulse_width = pulse_width;
+	}
+
+	public int getAc_ratio() {
+		return ac_ratio;
+	}
+
+	public void setAc_ratio(int ac_ratio) {
+		this.ac_ratio = ac_ratio;
+	}
+
+	public int getAc_wave() {
+		return ac_wave;
+	}
+
+	public void setAc_wave(int ac_wave) {
+		this.ac_wave = ac_wave;
+	}
+
+	public int getPulse_tuny_ele() {
+		return pulse_tuny_ele;
+	}
+
+	public void setPulse_tuny_ele(int pulse_tuny_ele) {
+		this.pulse_tuny_ele = pulse_tuny_ele;
+	}
+
+	public int getSpecial_arcorder() {
+		return special_arcorder;
+	}
+
+	public void setSpecial_arcorder(int special_arcorder) {
+		this.special_arcorder = special_arcorder;
+	}
+
+	public int getSpecial_arc_initial() {
+		return special_arc_initial;
+	}
+
+	public void setSpecial_arc_initial(int special_arc_initial) {
+		this.special_arc_initial = special_arc_initial;
+	}
+
+	public int getSpecial_arctime() {
+		return special_arctime;
+	}
+
+	public void setSpecial_arctime(int special_arctime) {
+		this.special_arctime = special_arctime;
+	}
+
+	public int getClick_ele() {
+		return click_ele;
+	}
+
+	public void setClick_ele(int click_ele) {
+		this.click_ele = click_ele;
+	}
+
+	public int getTwo_click_ele() {
+		return two_click_ele;
+	}
+
+	public void setTwo_click_ele(int two_click_ele) {
+		this.two_click_ele = two_click_ele;
+	}
+
+	public int getRepeat_end() {
+		return repeat_end;
+	}
+
+	public void setRepeat_end(int repeat_end) {
+		this.repeat_end = repeat_end;
+	}
+
+	public int getGuide() {
+		return guide;
+	}
+
+	public void setGuide(int guide) {
+		this.guide = guide;
+	}
+
+	public int getSlope() {
+		return slope;
+	}
+
+	public void setSlope(int slope) {
+		this.slope = slope;
+	}
+
+	public int getSpecialarc() {
+		return specialarc;
+	}
+
+	public void setSpecialarc(int specialarc) {
+		this.specialarc = specialarc;
+	}
+
+	public int getSpecialarc_rep() {
+		return specialarc_rep;
+	}
+
+	public void setSpecialarc_rep(int specialarc_rep) {
+		this.specialarc_rep = specialarc_rep;
+	}
+
+	public int getTs_condition() {
+		return ts_condition;
+	}
+
+	public void setTs_condition(int ts_condition) {
+		this.ts_condition = ts_condition;
+	}
+
+	public double getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(double frequency) {
+		this.frequency = frequency;
+	}
+
+	public double getGasflow() {
+		return gasflow;
+	}
+
+	public void setGasflow(double gasflow) {
+		this.gasflow = gasflow;
+	}
+
+	public double getWeldingratio() {
+		return weldingratio;
+	}
+
+	public void setWeldingratio(double weldingratio) {
+		this.weldingratio = weldingratio;
+	}
+
+	public double getFirsttime() {
+		return firsttime;
+	}
+
+	public void setFirsttime(double firsttime) {
+		this.firsttime = firsttime;
+	}
+
+	public double getFarc_time() {
+		return farc_time;
+	}
+
+	public void setFarc_time(double farc_time) {
+		this.farc_time = farc_time;
+	}
+
+	public double getRush() {
+		return Rush;
+	}
+
+	public void setRush(double rush) {
+		Rush = rush;
+	}
+
+	public double getHandarc_ele() {
+		return handarc_ele;
+	}
+
+	public void setHandarc_ele(double handarc_ele) {
+		this.handarc_ele = handarc_ele;
+	}
+
+	public double getHandarc_time() {
+		return handarc_time;
+	}
+
+	public void setHandarc_time(double handarc_time) {
+		this.handarc_time = handarc_time;
+	}
+
+	public double getHand_ele() {
+		return hand_ele;
+	}
+
+	public void setHand_ele(double hand_ele) {
+		this.hand_ele = hand_ele;
+	}
+
+	public double getBase_ele() {
+		return Base_ele;
+	}
+
+	public void setBase_ele(double base_ele) {
+		Base_ele = base_ele;
+	}
+
+	public double getBase_vol() {
+		return Base_vol;
+	}
+
+	public void setBase_vol(double base_vol) {
+		Base_vol = base_vol;
+	}
+
+	public double getBase_vol1() {
+		return Base_vol1;
+	}
+
+	public void setBase_vol1(double base_vol1) {
+		Base_vol1 = base_vol1;
+	}
+
+	public double getFargon() {
+		return fargon;
+	}
+
+	public void setFargon(double fargon) {
+		this.fargon = fargon;
+	}
+
+	public double getManual_weld() {
+		return manual_weld;
+	}
+
+	public void setManual_weld(double manual_weld) {
+		this.manual_weld = manual_weld;
+	}
+
+	public double getArc_length() {
+		return arc_length;
+	}
+
+	public void setArc_length(double arc_length) {
+		this.arc_length = arc_length;
+	}
+
+	public double getPulse() {
+		return pulse;
+	}
+
+	public void setPulse(double pulse) {
+		this.pulse = pulse;
+	}
+
+	public double getFweldparameters() {
+		return fweldparameters;
+	}
+
+	public void setFweldparameters(double fweldparameters) {
+		this.fweldparameters = fweldparameters;
+	}
+
+	public double getRise_time() {
+		return rise_time;
+	}
+
+	public void setRise_time(double rise_time) {
+		this.rise_time = rise_time;
+	}
+
+	public double getDecline_time() {
+		return decline_time;
+	}
+
+	public void setDecline_time(double decline_time) {
+		this.decline_time = decline_time;
+	}
+
+	public double getThrust_ele() {
+		return thrust_ele;
+	}
+
+	public void setThrust_ele(double thrust_ele) {
+		this.thrust_ele = thrust_ele;
+	}
+
+	public double getPulse_ratio() {
+		return pulse_ratio;
+	}
+
+	public void setPulse_ratio(double pulse_ratio) {
+		this.pulse_ratio = pulse_ratio;
+	}
+
+	public double getPoint_speed() {
+		return point_speed;
+	}
+
+	public void setPoint_speed(double point_speed) {
+		this.point_speed = point_speed;
+	}
+
+	public String getFwpsback() {
+		return fwpsback;
+	}
+
+	public void setFwpsback(String fwpsback) {
+		this.fwpsback = fwpsback;
+	}
+
+	public String getFspeed() {
+		return fspeed;
+	}
+
+	public void setFspeed(String fspeed) {
+		this.fspeed = fspeed;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getFini_tuny_vol() {
+		return fini_tuny_vol;
+	}
+
+	public void setFini_tuny_vol(String fini_tuny_vol) {
+		this.fini_tuny_vol = fini_tuny_vol;
+	}
+
+	public void setFarc_tuny_speed(String farc_tuny_speed) {
+		this.farc_tuny_speed = farc_tuny_speed;
+	}
+
+	public void setFarc_speed(String farc_speed) {
+		this.farc_speed = farc_speed;
+	}
+
+	public String getFfrequency() {
+		return ffrequency;
+	}
+
+	public void setFfrequency(String ffrequency) {
+		this.ffrequency = ffrequency;
+	}
+
+	public String getFselectstep() {
+		return fselectstep;
+	}
+
+	public void setFselectstep(String fselectstep) {
+		this.fselectstep = fselectstep;
+	}
+
+	public String getFarc_tuny_speed() {
+		return farc_tuny_speed;
+	}
+
+	public String getFarc_speed() {
+		return farc_speed;
+	}
 
 	public String getJOB_NUMBER() {
 		return JOB_NUMBER;

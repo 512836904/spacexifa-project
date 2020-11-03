@@ -40,7 +40,17 @@ public class DataStatistics {
 	private String flon_air_flow;
 	private double gas;
 	private double weldwire;
-	
+
+	private double wirefeedrate;
+
+	public double getWirefeedrate() {
+		return wirefeedrate;
+	}
+
+	public void setWirefeedrate(double wirefeedrate) {
+		this.wirefeedrate = wirefeedrate;
+	}
+
 	public int getType() {
 		return type;
 	}

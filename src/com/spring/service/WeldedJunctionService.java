@@ -299,4 +299,6 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	String getWpsIdByCardId(String fid);
+
+
 }

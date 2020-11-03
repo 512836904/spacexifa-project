@@ -98,4 +98,6 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getHistoryData(@Param("str") String str, @Param("filed") String filed);
 	
 	List<DataStatistics> getMachineData(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
+
+	List<DataStatistics> findAverageWorkingTime();
 }

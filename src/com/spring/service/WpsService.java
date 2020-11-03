@@ -673,4 +673,6 @@ public interface WpsService {
 	 * @param stepId
 	 */
 	void deleteStepJunction(String stepId,String search);
+
+	List<Wps> findJobSetNumber(Page page,WeldDto dto);
 }

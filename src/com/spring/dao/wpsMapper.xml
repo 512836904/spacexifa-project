@@ -1242,4 +1242,22 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="findJobSetNumber" resultType="Wps">
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_NAME,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60*1000) wirefeedrate,sum(fworktime) worktime
+        from TB_WELDED_JUNCTION j
+        LEFT JOIN tb_work w ON j.FID=w.FCARD_ID
+        LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and w.fmachinemodel=m.fmodel
+        where (w.FSTATUS=3 OR w.FSTATUS=99)
+        <if test="dto!=null and dto!=''">
+            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
+                and fstarttime >= TO_DATE(#{dto.dtoTime1}, 'yyyy-MM-dd')
+            </if>
+            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
+                and TO_DATE(#{dto.dtoTime2}, 'yyyy-MM-dd') >= fendtime
+            </if>
+        </if>
+        GROUP BY j.JOB_NUMBER,J.SET_NUMBER,J.PART_NAME
+        ORDER BY wirefeedrate DESC
+    </select>
 </mapper>

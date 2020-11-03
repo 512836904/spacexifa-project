@@ -136,4 +136,6 @@ public interface WpsMapper {
 	void addWeldpramatia(Wps wps);
 	void addStepJunction(@Param("stepId")String stepId,@Param("junctionId")String junctionId );
 	void deleteStepJunction(@Param("stepId")String stepId,@Param("search")String search);
+
+	List<Wps> findJobSetNumber(@Param("dto") WeldDto dto);
 }

@@ -279,6 +279,25 @@ public class Wps {
 	//任务完成状态
 	private Integer FOPERATETYPE;
 
+	private Double wirefeedrate;
+	private Double worktime;
+
+	public Double getWirefeedrate() {
+		return wirefeedrate;
+	}
+
+	public void setWirefeedrate(Double wirefeedrate) {
+		this.wirefeedrate = wirefeedrate;
+	}
+
+	public Double getWorktime() {
+		return worktime;
+	}
+
+	public void setWorktime(Double worktime) {
+		this.worktime = worktime;
+	}
+
 	public String getWorkticket_number() {
 		return workticket_number;
 	}

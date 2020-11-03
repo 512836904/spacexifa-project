@@ -687,4 +687,10 @@ public class WpsServiceImpl implements WpsService{
 		// TODO Auto-generated method stub
 		mapper.deleteStepJunction(stepId,search);
 	}
+
+	@Override
+	public List<Wps> findJobSetNumber(Page page,WeldDto dto) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return mapper.findJobSetNumber(dto);
+	}
 }

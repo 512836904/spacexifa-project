@@ -212,7 +212,8 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
-	public List<DataStatistics> getWorkRank(BigInteger parent, String time) {
+	public List<DataStatistics> getWorkRank(Page page,BigInteger parent, String time) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return ds.getWorkRank(parent, time);
 	}
 
@@ -375,5 +376,10 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	public List<DataStatistics> getMachineData(Page page, BigInteger insid, WeldDto dto) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return ds.getMachineData(insid, dto);
+	}
+
+	@Override
+	public List<DataStatistics> findAverageWorkingTime() {
+		return ds.findAverageWorkingTime();
 	}
 }

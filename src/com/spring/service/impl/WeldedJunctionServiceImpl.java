@@ -1,12 +1,5 @@
 package com.spring.service.impl;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageHelper;
 import com.spring.dao.WeldedJunctionMapper;
 import com.spring.dto.WeldDto;
@@ -14,6 +7,12 @@ import com.spring.model.WeldedJunction;
 import com.spring.model.Wps;
 import com.spring.page.Page;
 import com.spring.service.WeldedJunctionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigInteger;
+import java.util.List;
 
 @Service
 @Transactional
@@ -240,4 +239,5 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		// TODO Auto-generated method stub
 		return wjm.getWpsIdByCardId(fid);
 	}
+
 }

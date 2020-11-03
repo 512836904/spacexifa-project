@@ -202,54 +202,54 @@
 		SELECT 
 		<if test="dto!=null and dto!=''">
 			<if test="dto.year!=null and dto.year!=''">
-				DATE_FORMAT( fstarttime,  '%Y' )
+				TO_CHAR(fstarttime, 'yyyy')
 			</if>
 			<if test="dto.month!=null and dto.month!=''">
-				DATE_FORMAT( fstarttime,  '%Y-%m' )
+				TO_CHAR(fstarttime, 'yyyy-MM')
 			</if>
 			<if test="dto.day!=null and dto.day!=''">
-				DATE_FORMAT( fstarttime,  '%Y-%m-%d' )
+				TO_CHAR(fstarttime, 'yyyy-MM-dd')
 			</if>
-			<if test="dto.week!=null and dto.week!=''">
-				weekofyear(fstarttime)
-			</if>
+<!--			<if test="dto.week!=null and dto.week!=''">-->
+<!--				weekofyear(fstarttime)-->
+<!--			</if>-->
 		</if> weldTime
 		FROM tb_work WHERE 1=1
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
-		group by weldTime
+		group by fstarttime
         UNION  
 		SELECT 
 		<if test="dto!=null and dto!=''">
 			<if test="dto.year!=null and dto.year!=''">
-				DATE_FORMAT( fstarttime,  '%Y' )
+				TO_CHAR( fstarttime,  'yyyy' )
 			</if>
 			<if test="dto.month!=null and dto.month!=''">
-				DATE_FORMAT( fstarttime,  '%Y-%m' )
+				TO_CHAR( fstarttime,  'yyyy-MM' )
 			</if>
 			<if test="dto.day!=null and dto.day!=''">
-				DATE_FORMAT( fstarttime,  '%Y-%m-%d' )
+				TO_CHAR( fstarttime,  'yyyy-MM-dd' )
 			</if>
-			<if test="dto.week!=null and dto.week!=''">
-				weekofyear(fstarttime)
-			</if>
+<!--			<if test="dto.week!=null and dto.week!=''">-->
+<!--				weekofyear(fstarttime)-->
+<!--			</if>-->
 		</if> weldTime
 		FROM tb_standby WHERE 1=1
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
-		group by weldTime order by weldTime
+		group by fstarttime order by weldTime
      	)temp
 	</select>
 	

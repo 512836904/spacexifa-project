@@ -193,10 +193,10 @@
 		</if>
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		UNION 
@@ -209,10 +209,10 @@
 		</if>
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		UNION
@@ -225,10 +225,10 @@
 		</if>
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		)temp
@@ -246,10 +246,10 @@
 		</if>
 		<if test="dto!=null and dto!=''">
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 	</select>
@@ -269,10 +269,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		union
@@ -288,10 +288,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		)temp
@@ -355,10 +355,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		UNION ALL
@@ -373,10 +373,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		UNION ALL
@@ -391,10 +391,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		)temp
@@ -537,10 +537,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 	</select>
@@ -606,10 +606,10 @@
 				and fmachine_id = #{dto.machineid}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
 		)temp
@@ -1226,18 +1226,27 @@
 	
 	<!-- 	焊工工作排行榜 -->
 	<select id="getWorkRank" resultMap="dataMap">
-		select sum(fworktime) /60/60 hour,w.fname,w.fwelder_no welderno,i.fname insname FROM  tb_work l
-		left JOIN  tb_welder w on w.fid = l.fwelder_id 
-		INNER join tb_insframework i on i.fid = l.fwelder_itemid INNER join tb_insframework ins on ins.fid = i.fparent 
-		where fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
-		<!-- and fendtime &lt; date_sub(date_sub(#{time},interval -1 day),interval 0 minute) -->
-		and to_date(#{time}, 'yyyy-mm-dd') - 1 > fendtime
-		<if test="parent!=null and parent!=''">
-			AND ins.fid=#{parent}
-		</if>
-		AND 10 >= rownum
-		group by w.fname,w.fwelder_no,i.fname ORDER by hour desc
+<!--		select sum(fworktime) /60/60 hour,w.fname,w.fwelder_no welderno,i.fname insname FROM  tb_work l-->
+<!--		left JOIN  tb_welder w on w.fid = l.fwelder_id -->
+<!--		INNER join tb_insframework i on i.fid = l.fwelder_itemid INNER join tb_insframework ins on ins.fid = i.fparent -->
+<!--		where fstarttime >= to_date(#{time}, 'yyyy-mm-dd')-->
+<!--		&lt;!&ndash; and fendtime &lt; date_sub(date_sub(#{time},interval -1 day),interval 0 minute) &ndash;&gt;-->
+<!--		and to_date(#{time}, 'yyyy-mm-dd') - 1 > fendtime-->
+<!--		<if test="parent!=null and parent!=''">-->
+<!--			AND ins.fid=#{parent}-->
+<!--		</if>-->
+<!--		AND 10 >= rownum-->
+<!--		group by w.fname,w.fwelder_no,i.fname ORDER by hour desc-->
 		<!--LIMIT 10 -->
+		SELECT l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname insname,SUM(fworktime)/3600 hour FROM tb_work l
+		INNER JOIN tb_welder w ON l.FWELDER_ID = w.fid
+		LEFT JOIN tb_insframework i on i.fid = l.fwelder_itemid
+		WHERE 10 >= rownum
+		<if test="time != null and time != ''">
+			and fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
+		</if>
+		GROUP BY l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname
+		ORDER BY hour DESC
 	</select>
 
 <!-- 获取工作的焊机数-->
@@ -1254,7 +1263,7 @@
 	
 	<!-- 查询组织机构正常焊接时长 -->
 	<select id="getItemWeldTime"  resultMap="dataMap">
-		select * from (select i.fid,i.fname,SUM(fworktime)/60/60 hour,DATE_FORMAT( fstarttime,'%Y-%m-%d' ) time from tb_insframework i 
+		select * from (select i.fid,i.fname,SUM(fworktime)/60/60 hour,to_char(fstarttime, 'yyyy-MM-dd') time from tb_insframework i
 		inner join tb_work w on w.fmachine_itemid=i.fid
 		where i.ftype=23
 		<if test="dto!=null and dto!=''">
@@ -1262,20 +1271,20 @@
 				and i.fparent = #{dto.parent}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
-		group by i.fid,time
+		group by i.fid,i.fname,fstarttime
 		)temp
 	</select>
 
 	<!-- 查询组织机构超规范焊接时长 -->
 	<select id="getItemOverProofTime"  resultMap="dataMap">
 		select * from (
-		select i.fid,i.fname,SUM(w.fwarntime)/60/60 hour,DATE_FORMAT( fstarttime,'%Y-%m-%d' ) time from tb_insframework i 
+		select i.fid,i.fname,SUM(w.fwarntime)/60/60 hour,to_char(fstarttime,'yyyy-MM-dd') time from tb_insframework i
 		inner join tb_warn w on w.fmachine_itemid=i.fid
 		where i.ftype=23 and fstatus=99
 		<if test="dto!=null and dto!=''">
@@ -1283,14 +1292,22 @@
 				and i.fparent = #{dto.parent}
 			</if>
 			<if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-				and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+				and fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
 			</if>
 			<if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-				and fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+				and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss') >= fendtime
 			</if>
 		</if>
-		group by i.fid,time
+		group by i.fid,i.fname,fstarttime
 		)temp
+	</select>
+
+	<!-- 组织机构分组，查询人均工作时间 -->
+	<select id="findAverageWorkingTime" resultMap="dataMap">
+		select i.fid,i.fname,SUM(fworktime)/3600 hour,COUNT(w.FWELDER_ID) num
+		from tb_insframework i
+		left join tb_work w on w.fmachine_itemid=i.fid
+		GROUP BY i.fid,i.fname
 	</select>
 	
 	<select id="getWireAndFlow" resultMap="dataMap">

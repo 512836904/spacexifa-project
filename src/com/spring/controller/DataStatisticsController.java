@@ -1163,6 +1163,13 @@ public class DataStatisticsController {
 		JSONObject obj = new JSONObject();
 		JSONArray ary = new JSONArray();
 		JSONObject json = new JSONObject();
+		if(iutil.isNull(request.getParameter("page"))){
+			pageIndex = Integer.parseInt(request.getParameter("page"));
+		}
+		if(iutil.isNull(request.getParameter("rows"))){
+			pageSize = Integer.parseInt(request.getParameter("rows"));
+		}
+		page = new Page(pageIndex,pageSize,total);
 		try{ 
 			String parentid = request.getParameter("parent");
 			BigInteger parent = null;
@@ -1171,7 +1178,7 @@ public class DataStatisticsController {
 			}
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			List<DataStatistics> list = dss.getWorkRank(parent, sdf.format(date));
+			List<DataStatistics> list = dss.getWorkRank(page,parent, sdf.format(date));
 			for(int i=0;i<list.size();i++){
 				json.put("rownum", i+1);
 				json.put("welderno", list.get(i).getWelderno());

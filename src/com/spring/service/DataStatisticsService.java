@@ -296,7 +296,7 @@ public interface DataStatisticsService {
 	 * @param time 时间
 	 * @return
 	 */
-	List<DataStatistics> getWorkRank(BigInteger parent,String time);
+	List<DataStatistics> getWorkRank(Page page,BigInteger parent,String time);
 	
 	/**
 	 * 获取用户当前组织机构下的焊丝消耗量和气体消耗量
@@ -421,4 +421,9 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getMachineData(Page page, BigInteger insid, WeldDto dto);
+
+	/**
+	 * 查询人均工作时长
+	 */
+	List<DataStatistics> findAverageWorkingTime();
 }

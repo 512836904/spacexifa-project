@@ -173,7 +173,7 @@ function weldingMachineDatagrid(){
 function editMachine(flags){
 	var id="",wid="";
 	var row = null;
-	row = $('#weldingmachineTable').datagrid('getSelected'); 
+	row = $('#weldingmachineTable').datagrid('getSelected');
 	if (row) {
 		id = row.iId;
 		wid = row.id;

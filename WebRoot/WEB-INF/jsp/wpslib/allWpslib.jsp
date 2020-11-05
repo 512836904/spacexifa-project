@@ -444,7 +444,7 @@
     <div id="smdlg" class="easyui-dialog" style="width: 600px; height: 400px; padding:10px 20px" closed="true"
          buttons="#smdlg-buttons">
         <form id="smfm" class="easyui-form" method="post" data-options="novalidate:true">
-            <table id="weldingmachineTable" style="table-layout: fixed; width:100%;"></table>
+            <table id="weldingmachineWpsTable" style="table-layout: fixed; width:100%;"></table>
         </form>
     </div>
     <div id="smdlg-buttons">

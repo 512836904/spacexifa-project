@@ -41,10 +41,34 @@ public class DataStatistics {
 	private double gas;
 	private double weldwire;
 
+	/**
+	 * 焊丝消耗的重量（g）
+	 * 焊接时长（s）*送丝速度（m/min）*系数值（g/m）
+	 */
 	private double wirefeedrate;
+
+	//焊接时长和超规范焊接时长
+	private double wkhour;
+	private double wnhour;
 
 	public double getWirefeedrate() {
 		return wirefeedrate;
+	}
+
+	public double getWkhour() {
+		return wkhour;
+	}
+
+	public void setWkhour(double wkhour) {
+		this.wkhour = wkhour;
+	}
+
+	public double getWnhour() {
+		return wnhour;
+	}
+
+	public void setWnhour(double wnhour) {
+		this.wnhour = wnhour;
 	}
 
 	public void setWirefeedrate(double wirefeedrate) {

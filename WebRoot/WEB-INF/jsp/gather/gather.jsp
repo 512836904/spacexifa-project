@@ -166,7 +166,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<div class="fitem">
 					<lable>采集模块MAC地址</lable>
-					<input class="easyui-textbox" name="macurl" id="macurl" readonly="readonly"" />
+					<input class="easyui-textbox" name="macurl" id="macurl" readonly="readonly" />
 				</div>
 				<div class="fitem">
 					<lable>采集模块出厂时间</lable>

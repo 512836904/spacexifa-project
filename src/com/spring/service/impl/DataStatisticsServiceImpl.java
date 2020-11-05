@@ -382,4 +382,9 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	public List<DataStatistics> findAverageWorkingTime() {
 		return ds.findAverageWorkingTime();
 	}
+
+	@Override
+	public List<DataStatistics> findLoadRateList(BigInteger insid, WeldDto dto) {
+		return ds.findLoadRateList(insid, dto);
+	}
 }

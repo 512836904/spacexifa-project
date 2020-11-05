@@ -40,7 +40,7 @@ public interface WeldingMachineMapper extends Mapper<WeldingMachine>{
 	
 	List<WeldingMachine> getWeldingMachineByInsf(@Param("insfId")BigInteger insfId);
 	
-	BigInteger getIdByGatherid(@Param("gatherid")BigInteger gatherid);
+	BigInteger getIdByGatherid(@Param("gatherid")String gatherid);
 	
 	void editGatherid(@Param("wid")BigInteger wid);
 	

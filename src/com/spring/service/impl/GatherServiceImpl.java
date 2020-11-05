@@ -59,11 +59,11 @@ public class GatherServiceImpl implements GatherService {
 	}
 
 	@Override
-	public void deleteGather(BigInteger id) {
+	public void deleteGather(String id) {
 		//修改焊机采集序号为空
 		BigInteger wid = wmm.getIdByGatherid(id);
 		wmm.editGatherid(wid);
-		gm.deleteGather(id);
+		gm.deleteGather(BigInteger.valueOf(Long.valueOf(id)));
 	}
 
 	@Override
@@ -74,6 +74,11 @@ public class GatherServiceImpl implements GatherService {
 	@Override
 	public List<Gather> getGatherByInsfid(BigInteger insfid) {
 		return gm.getGatherByInsfid(insfid);
+	}
+
+	@Override
+	public List<Gather> findGatherByMachineId(BigInteger machineId) {
+		return gm.findGatherByMachineId(machineId);
 	}
 
 	@Override

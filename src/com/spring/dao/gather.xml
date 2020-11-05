@@ -69,5 +69,9 @@
 	<delete id="deleteGather" parameterType="java.math.BigInteger">
 		DELETE FROM tb_gather WHERE fid=#{id}
 	</delete>
-	
+
+	<select id="findGatherByMachineId" parameterType="java.math.BigInteger" resultMap="gatherMap">
+		SELECT fid,fgather_no,fmacurl FROM tb_gather WHERE FMACHINE_ID = #{machineId}
+	</select>
+
 </mapper>

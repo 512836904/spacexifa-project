@@ -426,4 +426,9 @@ public interface DataStatisticsService {
 	 * 查询人均工作时长
 	 */
 	List<DataStatistics> findAverageWorkingTime();
+
+	/**
+	 * 根据组织机构分组统计焊接规范符合率
+	 */
+	List<DataStatistics> findLoadRateList(BigInteger insid, WeldDto dto);
 }

@@ -131,24 +131,25 @@ public class MaintainController {
 				json.put("wid", wm.getWelding().getId());
 				json.put("mid", wm.getMaintenance().getId());
 				json.put("viceman", wm.getMaintenance().getViceman());
-				if (null != wm.getMaintenance().getStartTime() && !"".equals(wm.getMaintenance().getStartTime())){
-					json.put("starttime", sdf.format(wm.getMaintenance().getStartTime()));
-				}else {
-					json.put("starttime", "");
-				}
-				if (null != wm.getMaintenance().getEndTime() && !"".equals(wm.getMaintenance().getEndTime())){
-					json.put("endtime", sdf.format(wm.getMaintenance().getEndTime()));
-				}else {
-					json.put("endtime", "");
-				}
-				//json.put("endtime", wm.getMaintenance().getEndTime());
+//				if (null != wm.getMaintenance().getStartTime() && !"".equals(wm.getMaintenance().getStartTime())){
+//					json.put("starttime", sdf.format(wm.getMaintenance().getStartTime()));
+//				}else {
+//					json.put("starttime", "");
+//				}
+//				if (null != wm.getMaintenance().getEndTime() && !"".equals(wm.getMaintenance().getEndTime())){
+//					json.put("endtime", sdf.format(wm.getMaintenance().getEndTime()));
+//				}else {
+//					json.put("endtime", "");
+//				}
+				json.put("starttime", wm.getMaintenance().getStartTime());
+				json.put("endtime", wm.getMaintenance().getEndTime());
 				json.put("typeid", wm.getMaintenance().getTypeId());
 				json.put("typename", wm.getMaintenance().getTypename());
 				json.put("desc", wm.getMaintenance().getDesc());
 				ary.add(json);
 			}
 		}catch(Exception e){
-			e.getMessage();
+			e.printStackTrace();
 		}
 		obj.put("total", total);
 		obj.put("rows", ary);

@@ -186,7 +186,7 @@ public class GatherController {
 	public String removeGather(@RequestParam String id){
 		JSONObject obj = new JSONObject();
 		try{
-			gm.deleteGather(new BigInteger(id));
+			gm.deleteGather(id);
 			obj.put("success", true);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -198,7 +198,7 @@ public class GatherController {
 	
 	/**
 	 * 校验采集编号是否存在
-	 * @param name
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/gathernoValidate")

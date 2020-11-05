@@ -144,7 +144,7 @@
 		</if>
 	</select>
 	
-	<select id="getIdByGatherid" resultType="java.math.BigInteger">
+	<select id="getIdByGatherid" resultType="java.lang.String">
 		SELECT fid FROM tb_welding_machine WHERE  fgather_id = #{gatherid}
 	</select>
 	

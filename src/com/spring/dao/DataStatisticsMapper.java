@@ -100,4 +100,6 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getMachineData(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 
 	List<DataStatistics> findAverageWorkingTime();
+
+	List<DataStatistics> findLoadRateList(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 }

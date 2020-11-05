@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -198,8 +199,32 @@ public class WeldingMachineController {
 					json.put("modelname",null);
 				}
 				if(null != wm.getGatherId()){
-					json.put("gatherId", wm.getGatherId().getGatherNo());
-					json.put("gid", wm.getGatherId().getMacurl());
+//					json.put("gatherId", wm.getGatherId().getGatherNo());
+//					json.put("gid", wm.getGatherId().getMacurl());
+					String gatherId = "";
+					String gid = "";
+					List<Gather> gatherByMachineIds = gm.findGatherByMachineId(wm.getId());
+					if (null != gatherByMachineIds && gatherByMachineIds.size() > 0){
+						for (Gather gather : gatherByMachineIds){
+							if (gatherByMachineIds.indexOf(gather) == gatherByMachineIds.size() - 1){
+								if (!StringUtils.isEmpty(gather.getGatherNo())){
+									gatherId += gather.getGatherNo();
+								}
+								if (!StringUtils.isEmpty(gather.getMacurl())){
+									gid += gather.getMacurl();
+								}
+							}else {
+								if (!StringUtils.isEmpty(gather.getGatherNo())){
+									gatherId += gather.getGatherNo() + ",";
+								}
+								if (!StringUtils.isEmpty(gather.getMacurl())){
+									gid += gather.getMacurl() + ",";
+								}
+							}
+						}
+					}
+					json.put("gatherId", gatherId);
+					json.put("gid", gid);
 				}else{
 					json.put("gatherId", null);
 					json.put("gid", null);

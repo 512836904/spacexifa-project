@@ -39,40 +39,24 @@ function CPVEW() {
 	var noReceiveGiveChanel = new Array();
 	var realLength = 0;
 	var selectMainWpsRows = $('#mainWpsTable').datagrid('getSelections');	//子工艺规范
-	var selectMachine = $('#weldingmachineTable').datagrid('getSelections');	//焊机
+	var selectMachine = $('#weldingmachineWpsTable').datagrid('getSelections');	//焊机
 	if (selectMachine.length == 0) {
 		alert("请先选择焊机!!!");
 		return false;
 	}
 	for (var m = 0; m < selectMachine.length; m++) {
 		console.log("gatherId:"+selectMachine[m].gatherId);
-		// if (!selectMachine[m].gatherId) {
-		// 	alert(selectMachine[m].equipmentNo + "未绑定采集模块，请重新选择!!!");
-		// 	return false;
-		// }
+		if (!selectMachine[m].gatherId) {
+			alert(selectMachine[m].equipmentNo + "未绑定采集模块，请重新选择!!!");
+			return false;
+		}
 	}
 	var checkLength = selectMachine.length * selectMainWpsRows.length;
 	for (var smindex = 0; smindex < selectMachine.length; smindex++) {
 		noReceiveGiveChanel.length = 0;
 		for (var mwindex = 0; mwindex < selectMainWpsRows.length; mwindex++) {
-
-			var str = "";
-			str = selectMachine[smindex].gatherId;
-
-			console.log(str);
-
-			//console.log(str.replace(/\s*/g,""));
-			str   =   str.replace(/\s+/g,"");
-			console.log(str);
-			var math = parseInt(str).toString(16);
-
-			console.log("math:==="+math);
-			alert(str);
-			alert("math:"+math);
-
-			//console.log("------"+WBL(selectMainWpsRows[mwindex],selectMachine[smindex].gatherId));
-			//sochet_send_data.push(WBL(selectMainWpsRows[mwindex],selectMachine[smindex].gatherId));
-			//noReceiveGiveChanel.push(parseInt(selectMainWpsRows[mwindex].fchanel));
+			sochet_send_data.push(WBL(selectMainWpsRows[mwindex],selectMachine[smindex].gatherId));
+			noReceiveGiveChanel.push(parseInt(selectMainWpsRows[mwindex].fchanel));
 		}
 		var jsonstr = {
 			"machineNo" : selectMachine[smindex].equipmentNo,
@@ -98,7 +82,6 @@ function CPVEW() {
 			}
 		}
 	}
-	console.log("len:----------"+sochet_send_data.length);
 	if (sochet_send_data.length != 0 && noReceiveGiveChanel.length != 0){
 		putMQmessage(selectMainWpsRows,selectMachine,sochet_send_data,giveArray,noReceiveGiveChanel,resultData,realLength,checkLength,wpslibId);
 	}

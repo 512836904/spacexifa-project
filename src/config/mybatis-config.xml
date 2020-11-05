@@ -57,6 +57,7 @@
 		<mapper resource="com/spring/dao/productMapper.xml"/>
 		<mapper resource="com/spring/dao/datastatisticsMapper.xml"/>
 		<mapper resource="com/spring/dao/junctionMapper.xml"/>
+		<mapper resource="com/spring/dao/productionCraftMapper.xml"/>
 	</mappers>
 
 </configuration>  

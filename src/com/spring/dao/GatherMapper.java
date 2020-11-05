@@ -27,4 +27,6 @@ public interface GatherMapper extends Mapper<Gather>{
 	void deleteGather(@Param("id")BigInteger id);
 	
 	int getGatherNoByItemCount(@Param("gatherno")String gatherno,@Param("itemid")String itemid);
+
+	List<Gather> findGatherByMachineId(@Param("machineId")BigInteger machineId);
 }

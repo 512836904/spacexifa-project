@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.spring.dao.ProductionCraftMapper">
+
+	<sql id="production_craft">
+		FID,FNAME,PREHEAT,INTERLAMINATION,WELDING_MATERIAL,ELECTRICITY_FLOOR,ELECTRICITY_UPPER,VOLTAGE_FLOOR,VOLTAGE_UPPER,
+		SOLDER_SPEED_FLOOR,SOLDER_SPEED_UPPER,WIDE_SWING,RESTS,DATA_SOURCES,CREATOR,CREATE_TIME,MENDER,UPDATE_TIME
+	</sql>
+
+	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="findProductionCraftList" resultType="com.spring.model.ProductionCraft">
+		SELECT <include refid="production_craft"/> FROM TB_PRODUCTION_CRAFT
+		WHERE 1 = 1
+		<if test="searchStr != null and searchStr != ''">
+			AND FNAME LIKE CONCAT(#{searchStr}, '%')
+		</if>
+	</select>
+	
+	<insert id="addProductionCraft" parameterType="com.spring.model.ProductionCraft" flushCache="true">
+		<selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="FID">
+			select TB_PRODUCTION_CRAFT_ID.nextval as FID from dual
+		</selectKey>
+		<if test="FID != null and FID != ''">
+			INSERT INTO TB_PRODUCTION_CRAFT
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+					FID,
+				<if test="FNAME != null and FNAME != ''">
+					FNAME,
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					PREHEAT,
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					INTERLAMINATION,
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					WELDING_MATERIAL,
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					ELECTRICITY_FLOOR,
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					ELECTRICITY_UPPER,
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					VOLTAGE_FLOOR,
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					VOLTAGE_UPPER,
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					SOLDER_SPEED_FLOOR,
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					SOLDER_SPEED_UPPER,
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					WIDE_SWING,
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					RESTS,
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					DATA_SOURCES,
+				</if>
+				<if test="CREATOR != null and CREATOR != ''">
+					CREATOR,
+				</if>
+				<if test="CREATE_TIME != null and CREATE_TIME != ''">
+					CREATE_TIME,
+				</if>
+			</trim>
+			<trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+					#{FID},
+				<if test="FNAME != null and FNAME != ''">
+					#{FNAME},
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					#{PREHEAT},
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					#{INTERLAMINATION},
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					#{WELDING_MATERIAL},
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					#{ELECTRICITY_FLOOR},
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					#{ELECTRICITY_UPPER},
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					#{VOLTAGE_FLOOR},
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					#{VOLTAGE_UPPER},
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					#{SOLDER_SPEED_FLOOR},
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					#{SOLDER_SPEED_UPPER},
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					#{WIDE_SWING},
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					#{RESTS},
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					#{DATA_SOURCES},
+				</if>
+				<if test="CREATOR != null and CREATOR != ''">
+					#{CREATOR},
+				</if>
+				<if test="CREATE_TIME != null and CREATE_TIME != ''">
+					#{CREATE_TIME},
+				</if>
+			</trim>
+		</if>
+	</insert>
+
+	<update id="updateProductionCraft" parameterType="com.spring.model.ProductionCraft" flushCache="true">
+		<if test="FID != null and FID != ''">
+			UPDATE TB_PRODUCTION_CRAFT
+			<set>
+				<if test="FNAME != null and FNAME != ''">
+					FNAME = #{FNAME},
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					PREHEAT = #{PREHEAT},
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					INTERLAMINATION = #{INTERLAMINATION},
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					WELDING_MATERIAL = #{WELDING_MATERIAL},
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					ELECTRICITY_FLOOR = #{ELECTRICITY_FLOOR},
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					ELECTRICITY_UPPER = #{ELECTRICITY_UPPER},
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					VOLTAGE_FLOOR = #{VOLTAGE_FLOOR},
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					VOLTAGE_UPPER = #{VOLTAGE_UPPER},
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					SOLDER_SPEED_FLOOR = #{SOLDER_SPEED_FLOOR},
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					SOLDER_SPEED_UPPER = #{SOLDER_SPEED_UPPER},
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					WIDE_SWING = #{WIDE_SWING},
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					RESTS = #{RESTS},
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					DATA_SOURCES = #{DATA_SOURCES},
+				</if>
+				<if test="MENDER != null and MENDER != ''">
+					MENDER = #{MENDER},
+				</if>
+			</set>
+			WHERE FID = #{FID}
+		</if>
+	</update>
+
+	<delete id="deleteProductionCraft" parameterType="com.spring.model.ProductionCraft" flushCache="true">
+		<if test="FID != null and FID != ''">
+			DELETE FROM TB_PRODUCTION_CRAFT WHERE FID = #{FID}
+		</if>
+	</delete>
+</mapper>

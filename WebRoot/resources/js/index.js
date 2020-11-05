@@ -2,7 +2,8 @@ $(function(){
 //	getHiddenMenu();
 	checkBrowser();
 	getUserInsframework();
-	addWelcom("欢迎使用","first.jsp");
+	addWelcom("欢迎使用","index.html");
+	// addWelcom("欢迎使用","first.jsp");
 	tabsIncident();
 	$("#persondiv").hide();
 	$("#junctiondiv").hide();

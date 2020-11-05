@@ -25,14 +25,14 @@ public interface GatherService {
 	
 	/**
 	 * 根据编号查询id
-	 * @param gatherno采集编号
+	 * @param
 	 * @return
 	 */
 	BigInteger getGatherByNo(String gatherno);
 	
 	/**
 	 * 判断采集编号是否存在
-	 * @param gatherno采集编号
+	 * @param
 	 * @return
 	 */
 	int getGatherNoCount(String gatherno,BigInteger item);
@@ -47,21 +47,21 @@ public interface GatherService {
 	
 	/**
 	 * 添加采集信息
-	 * @param ins采集对象
+	 * @param
 	 */
 	void addGather(Gather ins);
 	
 	/**
 	 * 修改采集信息
-	 * @param ins采集对象
+	 * @param
 	 */
 	void editGather(Gather ins);
 	
 	/**
 	 * 删除采集信息
-	 * @param id采集id
+	 * @param
 	 */
-	void deleteGather(BigInteger id);
+	void deleteGather(String id);
 	
 	/**
 	 * 根据组织机构id查找采集id及编号
@@ -69,4 +69,9 @@ public interface GatherService {
 	 * @return
 	 */
 	List<Gather> getGatherByInsfid(BigInteger insfid);
+
+	/**
+	 * 根据焊机id查询采集模块
+	 */
+	List<Gather> findGatherByMachineId(BigInteger machineId);
 }

@@ -221,7 +221,7 @@ function WBL(yshu, gather) {	//yshu:
                 con = "0" + con;
             }
         }
-        var mach = parseInt(gather).toString(16);   ///////////////////
+        var mach = parseInt(gather).toString(16);
         if (mach.length < 4) {
             var length = 4 - mach.length;
             for (var i = 0; i < length; i++) {

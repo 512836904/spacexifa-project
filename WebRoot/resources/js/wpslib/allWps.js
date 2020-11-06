@@ -23,7 +23,7 @@ function wpslibDatagrid(){
 		pageSize : 10,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		url : "wps/getWpsList",
-		singleSelect : false,
+		singleSelect : true,
 		rownumbers : true,
 		showPageList : false,
 		columns : [ [ {
@@ -59,7 +59,7 @@ function wpslibDatagrid(){
 			align : "center"
 		}, {
 			field : 'JUNCTION',
-			title : '焊缝名称',
+			title : '生产工艺名称',
 			width : 300,
 			halign : "center",
 			align : "center"

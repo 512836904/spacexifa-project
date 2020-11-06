@@ -9,7 +9,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>工艺规程管理</title>
+    <title>电子跟踪卡管理</title>
+<%--    <title>工艺规程管理</title>--%>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -31,8 +32,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="resources/js/search/search.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/allWps.js"></script>
  	<script type="text/javascript" src="resources/js/wpslib/addeditWps.js"></script>
-<%--	<script type="text/javascript" src="resources/js/wpslib/removeWps.js"></script>--%>
-	<script type="text/javascript" src="resources/js/junction/junction.js"></script>
+	<script type="text/javascript" src="resources/js/wpslib/removeWps.js"></script>
+<%--	<script type="text/javascript" src="resources/js/junction/junction.js"></script>--%>
 <!--	<script type="text/javascript" src="resources/js/wpslib/giveWpslib.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/differentMachine.js"></script>
 	<script type="text/javascript" src="resources/js/wpslib/control.js"></script>
@@ -108,63 +109,93 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 
 	     <!-- 添加修改工艺台账 -->
-		<div id="addOrUpdate" class="easyui-dialog" style="width: 400px; height: 500px; padding:10px 20px" closed="true" buttons="#tdd-buttons">
-			<form id="addOrUpdatefm" class="easyui-form" method="post" data-options="novalidate:true">
+<%--		<div id="addOrUpdate" class="easyui-dialog" style="width: 400px; height: 500px; padding:10px 20px" closed="true" buttons="#tdd-buttons">--%>
+<%--			<form id="addOrUpdatefm" class="easyui-form" method="post" data-options="novalidate:true">--%>
+<%--				<div style="width: 100%">--%>
+<%--					<div class="fitem">--%>
+<%--						<input id="fid" name="fid" type="hidden">--%>
+<%--						<lable><span class="required">*</span>工作号</lable>--%>
+<%--						<input class="easyui-textbox" name="JOB_NUMBER" id="JOB_NUMBER"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>部套号</lable>--%>
+<%--						<input class="easyui-textbox" name="SET_NUMBER" id="SET_NUMBER"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>零级图号</lable>--%>
+<%--						<input class="easyui-textbox" name="PART_DRAWING_NUMBER" id="PART_DRAWING_NUMBER"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>零件名</lable>--%>
+<%--						<input class="easyui-textbox" name="PART_NAME" id="PART_NAME"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>--%>
+<%--						<input class="easyui-textbox" name="junctionName" id="junctionName" readonly/>--%>
+<%--						<input type="hidden" id="fids" name="fids">--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>工票编号</lable>--%>
+<%--						<input class="easyui-textbox" name="workticket_number" id="workticket_number"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>工艺参数</lable>--%>
+<%--						<input class="easyui-textbox" name="raw_material" id="raw_material"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>原料</lable>--%>
+<%--						<input class="easyui-textbox" name="craft_param" id="craft_param"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>工序</lable>--%>
+<%--						<input class="easyui-textbox" name="process" id="process"  data-options="required:true"/>--%>
+<%--					</div>--%>
+<%--					<div align="center">--%>
+<%--						<a href="javascript:saveWps();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>--%>
+<%--						<!-- <a href="javascript:closeDialog('wltdlg');" class="easyui-linkbutton" iconCls="icon-cancel" >取消</a> -->--%>
+<%--					</div>--%>
+<%--				</div>--%>
+<%--			</form>--%>
+<%--		</div>--%>
+
+		<!-- 新增电子跟踪卡 -->
+		<div id="addTarckingCard" class="easyui-dialog" style="width: 1100px; height: 600px; padding:10px 20px" closed="true" buttons="#tdd-buttons">
+			<form id="addTarckingCardfm" class="easyui-form" method="post" data-options="novalidate:true">
 				<div style="width: 100%">
 					<div class="fitem">
 						<input id="fid" name="fid" type="hidden">
-						<lable><span class="required">*</span>工作号</lable>
+						<input id="productionCraftId" name="productionCraftId" type="hidden">
+						<lable><span class="required">*</span>工作号：</lable>
 						<input class="easyui-textbox" name="JOB_NUMBER" id="JOB_NUMBER"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>部套号</lable>
+						<lable><span class="required">*</span>部套号：</lable>
 						<input class="easyui-textbox" name="SET_NUMBER" id="SET_NUMBER"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>零级图号</lable>
-						<input class="easyui-textbox" name="PART_DRAWING_NUMBER" id="PART_DRAWING_NUMBER"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>零件名</lable>
-						<input class="easyui-textbox" name="PART_NAME" id="PART_NAME"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>
-						<input class="easyui-textbox" name="junctionName" id="junctionName" readonly/>
-						<input type="hidden" id="fids" name="fids">
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>工票编号</lable>
+						<lable><span class="required">*</span>工票编号：</lable>
 						<input class="easyui-textbox" name="workticket_number" id="workticket_number"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>工艺参数</lable>
-						<input class="easyui-textbox" name="raw_material" id="raw_material"  data-options="required:true"/>
+						<lable><span class="required">*</span>零级图号：</lable>
+						<input class="easyui-textbox" name="PART_DRAWING_NUMBER" id="PART_DRAWING_NUMBER"  data-options="required:true"/>
+						<lable><span class="required">*</span>零件名：</lable>
+						<input class="easyui-textbox" name="PART_NAME" id="PART_NAME"  data-options="required:true"/>
+						<lable><span class="required">*</span>原料：</lable>
+						<input class="easyui-textbox" name="raw_materi" id="raw_materi"  data-options="required:true"/>
 					</div>
 					<div class="fitem">
-						<lable><span class="required">*</span>原料</lable>
+						<lable><span class="required">*</span>工艺参数：</lable>
 						<input class="easyui-textbox" name="craft_param" id="craft_param"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
-						<lable><span class="required">*</span>工序</lable>
+						<lable><span class="required">*</span>工序：</lable>
 						<input class="easyui-textbox" name="process" id="process"  data-options="required:true"/>
-					</div>
-					<div align="center">
-						<a href="javascript:saveWps();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
-						<!-- <a href="javascript:closeDialog('wltdlg');" class="easyui-linkbutton" iconCls="icon-cancel" >取消</a> -->
 					</div>
 				</div>
 			</form>
+			<table id="productionTable" style="table-layout: fixed; width:100%;height: 450px"></table>
 		</div>
-<%--		<div id="addVersion-buttons">--%>
-<%--			<a href="javascript:saveVersion();" class="easyui-linkbutton" iconCls="icon-ok">保存</a>--%>
-<%--			<a href="javascript:closeDialog('addVersionDiv');" class="easyui-linkbutton" iconCls="icon-cancel" >取消</a>--%>
-<%--		</div>--%>
+
 	    <div class="functiondiv">
 			<div>
-				<a href="javascript:addWps();" class="easyui-linkbutton" iconCls="icon-newadd">新增工艺</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:editWps('');" class="easyui-linkbutton" iconCls="icon-update">修改工艺</a>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:deleteWps();" class="easyui-linkbutton" iconCls="icon-delete">删除工艺</a>
+				<a href="javascript:addWpsTrackCard();" class="easyui-linkbutton" iconCls="icon-newadd">新增电子跟踪卡</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:editWpsTrackCard();" class="easyui-linkbutton" iconCls="icon-update">修改电子跟踪卡</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:deleteWpsTrackCard();" class="easyui-linkbutton" iconCls="icon-delete">删除电子跟踪卡</a>
 <%--				<a href="javascript:wpsDetails();" class="easyui-linkbutton" iconCls="icon-navigation">工艺规程详情</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
 <%--				<a href="javascript:addVersion();" class="easyui-linkbutton" iconCls="icon-navigation">新建版本</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>
 <%--				<a href="javascript:importclick();" class="easyui-linkbutton" iconCls="icon-newadd"> 工艺导入</a>&nbsp;&nbsp;&nbsp;&nbsp;--%>

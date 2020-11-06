@@ -1224,8 +1224,8 @@
                 <if test="craft_param != null and craft_param != ''">
                     CRAFT_PARAM = #{craft_param},
                 </if>
-                <if test="raw_material != null and raw_material != ''">
-                    RAW_MATERI = #{raw_material},
+                <if test="raw_materi != null and raw_materi != ''">
+                    RAW_MATERI = #{raw_materi},
                 </if>
                 <if test="process != null and process != ''">
                     PROCESS = #{process},

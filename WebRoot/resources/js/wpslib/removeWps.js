@@ -1,9 +1,9 @@
 /**
  * 
  */
-function deleteWps(){
+function deleteWpsTrackCard(){
 	var deleteRows = $("#wpslibTable").datagrid('getSelections'); //获取删除的数据
-	if(deleteRows){
+	if(deleteRows.length > 0){
 		if(deleteRows[0].flag == 1){
 			alert("该参数从MES获取，无法进行修改删除操作！！！");
 			return;

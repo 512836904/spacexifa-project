@@ -13,6 +13,15 @@ public class Wps {
 	private String SET_NUMBER;	//部套号
 	private String PART_DRAWING_NUMBER;	//零件图号
 	private String PART_NAME;	//零件名
+	/**
+	 * 电子跟踪卡字段新增
+	 * @return
+	 */
+	private String workticket_number;	//工票编号
+	private String craft_param;			//工艺参数
+	private String raw_materi;		//原料
+	private String process;				//工序
+	private BigInteger productionCraftId;	//生产工艺id
 
 	private long library_id;
 	private long junction_id;
@@ -267,15 +276,6 @@ public class Wps {
 	private int specialarc_rep;
 	private int ts_condition;
 
-	/**
-	 * 电子跟踪卡字段新增
-	 * @return
-	 */
-	private String workticket_number;
-	private String craft_param;
-	private String raw_material;
-	private String process;
-
 	//任务完成状态
 	private Integer FOPERATETYPE;
 
@@ -314,12 +314,12 @@ public class Wps {
 		this.craft_param = craft_param;
 	}
 
-	public String getRaw_material() {
-		return raw_material;
+	public String getRaw_materi() {
+		return raw_materi;
 	}
 
-	public void setRaw_material(String raw_material) {
-		this.raw_material = raw_material;
+	public void setRaw_materi(String raw_materi) {
+		this.raw_materi = raw_materi;
 	}
 
 	public String getProcess() {
@@ -328,6 +328,14 @@ public class Wps {
 
 	public void setProcess(String process) {
 		this.process = process;
+	}
+
+	public BigInteger getProductionCraftId() {
+		return productionCraftId;
+	}
+
+	public void setProductionCraftId(BigInteger productionCraftId) {
+		this.productionCraftId = productionCraftId;
 	}
 
 	public Integer getFOPERATETYPE() {

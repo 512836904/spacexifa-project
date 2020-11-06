@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.spring.model.*;
 import com.spring.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,12 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.spring.dto.WeldDto;
-import com.spring.model.Dictionarys;
-import com.spring.model.Insframework;
-import com.spring.model.MyUser;
-import com.spring.model.Td;
-import com.spring.model.WeldedJunction;
-import com.spring.model.Wps;
 import com.spring.page.Page;
 import com.spring.util.IsnullUtil;
 
@@ -47,8 +42,10 @@ public class WpsController {
     private String wpspre;
     @Autowired
     private WpsService wpsService;
+    //    @Autowired
+//    JunctionService junctionService;
     @Autowired
-    JunctionService junctionService;
+    ProductionCraftService productionCraftService;
     //    @Autowired
 //    private TdService tdService;
 //    @Autowired
@@ -130,6 +127,11 @@ public class WpsController {
 //        return "wpslib/process";
 //    }
 
+    /**
+     * 电子跟踪卡列表
+     * @param request
+     * @return
+     */
     @RequestMapping("/getWpsList")
     @ResponseBody
     public String getWpsList(HttpServletRequest request) {
@@ -156,20 +158,21 @@ public class WpsController {
                 json.put("PART_NAME", wps.getPART_NAME());
                 json.put("workticket_number", wps.getWorkticket_number());   //工票编号
                 json.put("craft_param", wps.getCraft_param());   //工艺参数
-                json.put("raw_material", wps.getRaw_material());   //原料
+                json.put("raw_material", wps.getRaw_materi());   //原料
                 json.put("process", wps.getProcess());   //工序
                 json.put("FOPERATETYPE", wps.getFOPERATETYPE());   //任务完成状态
                 //焊缝id
-                List<Long> junctionIds = new ArrayList<>();
-                List<Wps> libraryJunction = wpsService.getLibraryJunction(String.valueOf(wps.getFid()));
-                if (null != libraryJunction && libraryJunction.size() > 0) {
-                    for (Wps wps1 : libraryJunction) {
-                        if (0 == libraryJunction.indexOf(wps1)) {
-                            str = wps1.getJunction_name();
+                List<BigInteger> junctionIds = new ArrayList<>();
+                //根据电子跟踪卡id查询生产工艺库
+                List<ProductionCraft> productionCrafts = productionCraftService.getLibraryJunction(BigInteger.valueOf(wps.getFid()));
+                if (null != productionCrafts && productionCrafts.size() > 0){
+                    for (ProductionCraft craft : productionCrafts){
+                        if (0 == productionCrafts.indexOf(craft)) {
+                            str = craft.getFNAME();
                         } else {
-                            str = str + "、" + wps1.getJunction_name();
+                            str = str + "、" + craft.getFNAME();
                         }
-                        junctionIds.add(wps1.getJunction_id());
+                        junctionIds.add(craft.getFID());
                     }
                 }
                 json.put("JUNCTION", str);
@@ -186,47 +189,24 @@ public class WpsController {
 
     /**
      * 新增电子信息卡
-     * @param request
+     *
+     * @param
      * @return
      */
     @RequestMapping("/addWpsLibrary")
     @ResponseBody
-    public String addWpsLibrary(HttpServletRequest request) {
+    public String addWpsLibrary(@ModelAttribute Wps wps) {
         JSONObject obj = new JSONObject();
-        Wps wps = new Wps();
         try {
-            String job_number = request.getParameter("JOB_NUMBER");
-            String set_number = request.getParameter("SET_NUMBER");
-            String part_drawing_number = request.getParameter("PART_DRAWING_NUMBER");
-            String part_name = request.getParameter("PART_NAME");
-            String fids = request.getParameter("fids");
-            String workticket_number = request.getParameter("workticket_number");
-            String raw_material = request.getParameter("raw_material");
-            String craft_param = request.getParameter("craft_param");
-            String process = request.getParameter("process");
-
-            wps.setJOB_NUMBER(job_number);
-            wps.setSET_NUMBER(set_number);
-            wps.setPART_DRAWING_NUMBER(part_drawing_number);
-            wps.setPART_NAME(part_name);
-            wps.setWorkticket_number(workticket_number);
-            wps.setRaw_material(raw_material);
-            wps.setCraft_param(craft_param);
-            wps.setProcess(process);
-            int i = wpsService.addWpsLibrary(wps);
-            if (i != 0) {
-                obj.put("success", true);
-                List<Integer> jun = new ArrayList<>();
-                if (null != fids && fids.length() > 0) {
-                    String[] fid = fids.split(",");
-                    for (int m = 0; m < fid.length; m++) {
-                        jun.add(Integer.valueOf(fid[m]));
-                    }
+            if (null != wps) {
+                int i = wpsService.addWpsLibrary(wps);
+                if (i != 0) {
+                    obj.put("success", true);
+                    //新增工艺信息焊缝关联记录
+                    productionCraftService.addLiarbryJunction(BigInteger.valueOf(i),wps.getProductionCraftId());
+                } else {
+                    obj.put("success", false);
                 }
-                //新增工艺信息焊缝关联记录
-                junctionService.addLiarbryJunction(i, jun);
-            } else {
-                obj.put("success", false);
             }
         } catch (Exception e) {
             obj.put("success", false);
@@ -236,49 +216,27 @@ public class WpsController {
         return obj.toString();
     }
 
+    /**
+     * 电子跟踪卡修改
+     * @param
+     * @return
+     */
     @RequestMapping("/updateWpsLibrary")
     @ResponseBody
-    public String updateWpsLibrary(HttpServletRequest request) {
+    public String updateWpsLibrary(@ModelAttribute Wps wps) {
         JSONObject obj = new JSONObject();
-        Wps wps = new Wps();
-        List<Integer> ids = new ArrayList<>();
         try {
-            String fid = request.getParameter("fid");
-            String job_number = request.getParameter("JOB_NUMBER");
-            String set_number = request.getParameter("SET_NUMBER");
-            String part_drawing_number = request.getParameter("PART_DRAWING_NUMBER");
-            String part_name = request.getParameter("PART_NAME");
-            String fids = request.getParameter("fids");
-            String workticket_number = request.getParameter("workticket_number");
-            String raw_material = request.getParameter("raw_material");
-            String craft_param = request.getParameter("craft_param");
-            String process = request.getParameter("process");
-
-            wps.setFid(Long.valueOf(fid));
-            wps.setJOB_NUMBER(job_number);
-            wps.setSET_NUMBER(set_number);
-            wps.setPART_DRAWING_NUMBER(part_drawing_number);
-            wps.setPART_NAME(part_name);
-            wps.setWorkticket_number(workticket_number);
-            wps.setRaw_material(raw_material);
-            wps.setCraft_param(craft_param);
-            wps.setProcess(process);
-            ids.add(Integer.valueOf(fid));
-            int i = wpsService.updateWpsLibrary(wps);
-            if (i != 0) {
-                obj.put("success", true);
-                List<Integer> jun = new ArrayList<>();
-                if (null != fids && fids.length() > 0) {
-                    String[] id = fids.split(",");
-                    for (int m = 0; m < id.length; m++) {
-                        jun.add(Integer.valueOf(id[m]));
-                    }
+            if (null != wps){
+                int i = wpsService.updateWpsLibrary(wps);
+                if (i != 0) {
+                    obj.put("success", true);
+                    //根据电子跟踪卡id删除生产工艺关联关系
+                    productionCraftService.deleteLibraryJunctionByTRACKINGCARD_ID(BigInteger.valueOf(wps.getFid()));
+                    productionCraftService.addLiarbryJunction(BigInteger.valueOf(wps.getFid()),wps.getProductionCraftId());
+                } else {
+                    obj.put("success", false);
                 }
-                //先删除所有的关联记录再新增
-                junctionService.deleteLiarbryJunctionByIds(ids);
-                //新增工艺信息焊缝关联记录
-                junctionService.addLiarbryJunction(Integer.valueOf(fid), jun);
-            } else {
+            }else {
                 obj.put("success", false);
             }
         } catch (Exception e) {
@@ -307,9 +265,9 @@ public class WpsController {
                 for (int i = 0; i < ary.size(); i++) {
                     obj = ary.getJSONObject(i);
                     ids.add(Integer.valueOf(obj.getString("fid")));
+                    i2 = productionCraftService.deleteLibraryJunctionByTRACKINGCARD_ID(BigInteger.valueOf(Long.valueOf(obj.getString("fid"))));
                 }
                 i1 = wpsService.deleteWpsByIds(ids);
-                i2 = junctionService.deleteLiarbryJunctionByIds(ids);
             }
             if (i1 != 0 && i2 != 0) {
                 obj.put("success", true);
@@ -387,12 +345,13 @@ public class WpsController {
 
     /**
      * 新增工艺下发规范
+     *
      * @param request
      * @return
      */
     @RequestMapping("/apSpe")
     @ResponseBody
-    public String apSpe(HttpServletRequest request){
+    public String apSpe(HttpServletRequest request) {
         Wps wps = new Wps();
         MyUser myuser = (MyUser) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -408,20 +367,20 @@ public class WpsController {
 
         String addORupdate = request.getParameter("addORupdate");
         String fid = request.getParameter("fid");   //工艺库id
-        if (null != fid && !"".equals(fid)){
+        if (null != fid && !"".equals(fid)) {
             fwpslib_id = BigInteger.valueOf(Long.valueOf(fid));
         }
         String specification_id = request.getParameter("specification_id");   //子工艺规范id
-        if (null != specification_id && !"".equals(specification_id)){
+        if (null != specification_id && !"".equals(specification_id)) {
             specificationId = Long.valueOf(specification_id);
         }
-        if (null != request.getParameter("finitial")){
+        if (null != request.getParameter("finitial")) {
             finitial = Integer.valueOf(request.getParameter("finitial"));
         }
-        if (null != request.getParameter("fcontroller")){
+        if (null != request.getParameter("fcontroller")) {
             fcontroller = Integer.valueOf(request.getParameter("fcontroller"));
         }
-        if (null != request.getParameter("ftorch")){
+        if (null != request.getParameter("ftorch")) {
             ftorch = Integer.valueOf(request.getParameter("ftorch"));
         }
         Integer fselect = Integer.valueOf(request.getParameter("fselect")); //焊接模式：个别/一元
@@ -431,8 +390,8 @@ public class WpsController {
         Double fdiameter = new Double(request.getParameter("fdiameter"));
         Integer chanel = Integer.valueOf(request.getParameter("fchanel"));
         //函数三元运算判断表达式
-        double ftime = Double.valueOf((null!=request.getParameter("ftime")&&!"".equals(request.getParameter("ftime")))?request.getParameter("ftime"):"0");
-        double fadvance = Double.valueOf((null!=request.getParameter("fadvance")&&!"".equals(request.getParameter("fadvance")))?request.getParameter("fadvance"):"0");
+        double ftime = Double.valueOf((null != request.getParameter("ftime") && !"".equals(request.getParameter("ftime"))) ? request.getParameter("ftime") : "0");
+        double fadvance = Double.valueOf((null != request.getParameter("fadvance") && !"".equals(request.getParameter("fadvance"))) ? request.getParameter("fadvance") : "0");
 
         String ftime1 = request.getParameter("ftime");
         String fini_ele1 = request.getParameter("fini_ele");
@@ -458,7 +417,7 @@ public class WpsController {
         int fprocess = Integer.valueOf(request.getParameter("fweldprocess"));//焊接过程
         //double gasflow = Double.valueOf(request.getParameter("gasflow"));//气体流量
         //double weldingratio = Double.valueOf(request.getParameter("weldingratio"));//焊丝负极比率
-        try{
+        try {
             wps.setFspe_num(chanel);
             wps.setFinitial(String.valueOf(finitial));
             wps.setFcontroller(String.valueOf(fcontroller));
@@ -537,14 +496,14 @@ public class WpsController {
 //            }else{
 //                wpsService.updateSpe(wps);
 //            }
-            if ("add".equals(addORupdate)){
+            if ("add".equals(addORupdate)) {
                 wpsService.saveSpe(wps);
-            }else if ("update".equals(addORupdate)){
+            } else if ("update".equals(addORupdate)) {
                 wps.setFid(specificationId);
                 wpsService.updateSpe(wps);
             }
             obj.put("success", true);
-        }catch(Exception e){
+        } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
             e.getMessage();
@@ -712,7 +671,7 @@ public class WpsController {
 //        return "specification/editSpe";
 //    }
 
-//    @RequestMapping("/toDestroyWps")
+    //    @RequestMapping("/toDestroyWps")
 //    public String toDestroyWps(@RequestParam BigInteger fid, HttpServletRequest request) {
 //        Wps wps = wpsService.findById(fid);
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

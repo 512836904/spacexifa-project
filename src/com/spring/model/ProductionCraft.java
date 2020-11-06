@@ -26,6 +26,8 @@ public class ProductionCraft {
     private String MENDER;
     private String UPDATE_TIME;
 
+    private BigInteger TRACKINGCARD_ID;     //电子跟踪卡id
+    private BigInteger PRODUCTION_ID;     //生产工艺库id
 
     public BigInteger getFID() {
         return FID;
@@ -169,5 +171,21 @@ public class ProductionCraft {
 
     public void setUPDATE_TIME(String UPDATE_TIME) {
         this.UPDATE_TIME = UPDATE_TIME;
+    }
+
+    public BigInteger getTRACKINGCARD_ID() {
+        return TRACKINGCARD_ID;
+    }
+
+    public void setTRACKINGCARD_ID(BigInteger TRACKINGCARD_ID) {
+        this.TRACKINGCARD_ID = TRACKINGCARD_ID;
+    }
+
+    public BigInteger getPRODUCTION_ID() {
+        return PRODUCTION_ID;
+    }
+
+    public void setPRODUCTION_ID(BigInteger PRODUCTION_ID) {
+        this.PRODUCTION_ID = PRODUCTION_ID;
     }
 }

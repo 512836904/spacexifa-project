@@ -466,37 +466,182 @@ $(function () {
 		$(ed.target).focus();
 		editIndex = index;
 	}
-}
+}*/
 
-//单元格失去焦点执行的方法  
-function onAfterEdit(index, row, changes) {  
-	$('#femployeeTable').datagrid("endEdit", index);
-    var updated = $('#femployeeTable').datagrid('getChanges');  
-    if (updated.length < 1) {  
-        editRow = undefined;  
-        $('#femployeeTable').datagrid('unselectAll');  
-        return;  
-    } else {  
-        // 传值  
-		alert("xxx");
-//      submitForm(index, row, changes);  
-    }        
-}  */
 
 // var employeeUrl = "/", stepUrl = "/", junctionUrl = "/", detailUrl = "/", url = "";
-var flag = "";
+var flagWps = "";
 
-function addWps() {
-    $("#tdd-buttons").hide();
-    flag = "add";
-    wpsId = "";
-    $("#addOrUpdatefm").form("disableValidation");
-    $('#addOrUpdate').window({
-        title: "新增工艺",
-        modal: true
+function addWpsTrackCard() {
+    // $("#tdd-buttons").hide();
+    flagWps = "add";
+    // $("#addOrUpdatefm").form("disableValidation");
+    // $('#addOrUpdate').window({
+    //     title: "新增工艺",
+    //     modal: true
+    // });
+    // $('#addOrUpdate').window('open');
+    // $('#addOrUpdatefm').form('clear');
+    $("#addTarckingCardfm").form("disableValidation");
+    $('#addTarckingCardfm').form('clear');
+    $('#addTarckingCard').dialog({
+        title: '新增电子跟踪卡',
+        width: 1100,
+        height: 600,
+        closed: false,
+        cache: false,
+        // href: src,
+        content: '',
+        modal: true,
+        buttons:[{
+                text:'保存',
+                iconCls:'icon-save',
+                handler:function(){
+                    saveWps();
+                }
+            },{
+                text:'关闭',
+                iconCls:'icon-no',
+                handler:function(){
+                    $("#addTarckingCard").dialog('close');
+                }
+            }],
+        onClose : function() {
+            $("#addTarckingCard").dialog('close');
+        },
+        onLoad:function(){
+        }
+    }).dialog("open");
+    loadProductionTable();
+    $('#productionTable').datagrid({onLoadSuccess : function (){
+        $('#productionTable').datagrid('clearChecked');
+    }});
+}
+
+function loadProductionTable(){
+    $("#productionTable").datagrid({
+        height: $("#addTarckingCard").height()-127,
+        width: $("#addTarckingCard").width(),
+        idField: 'FID',
+        pageSize: 10,
+        pageList: [10, 20, 30, 40, 50],
+        url: "production/getProductionCraftList",
+        singleSelect: true,
+        checkOnSelect: true,
+        selectOncheck: true,
+        rownumbers: true,
+        remoteSort: false,
+        showPageList: false,
+        columns: [[{
+            field:'ck',
+            checkbox:true
+        },
+        {
+            field: 'FID',
+            title: '序号',
+            width: 50,
+            halign: "center",
+            align: "left",
+            hidden: true
+        }, {
+            field: 'FNAME',
+            title: '工艺名',
+            width: 80,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'PREHEAT',
+            title: '预热℃',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'INTERLAMINATION',
+            title: '层间℃',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'WELDING_MATERIAL',
+            title: '焊材mm',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'ELECTRICITY_FLOOR',
+            title: '电流下限A',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'ELECTRICITY_UPPER',
+            title: '电流上限A',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'VOLTAGE_FLOOR',
+            title: '电压下限V',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'VOLTAGE_UPPER',
+            title: '电压上限V',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'SOLDER_SPEED_FLOOR',
+            title: '焊速下限mm/min',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'SOLDER_SPEED_UPPER',
+            title: '焊速上限mm/min',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'WIDE_SWING',
+            title: '摆宽mm',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'RESTS',
+            title: '其他',
+            width: 50,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'DATA_SOURCES',
+            title: '数据来源',
+            width: 50,
+            halign: "center",
+            align: "center",
+            formatter: function (value, row, index) {
+                var str = "";
+                if (value == 1){
+                    str += "系统录入";
+                }else if (value == 2){
+                    str += "终端扫码录入";
+                }
+                return str;
+            }
+        }
+        ]],
+        pagination: true,
+        fitColumns: true,
+        rowStyler: function (index, row) {
+            if ((index % 2) != 0) {
+                //处理行代背景色后无法选中
+                var color = new Object();
+                return color;
+            }
+        }
     });
-    $('#addOrUpdate').window('open');
-    $('#addOrUpdatefm').form('clear');
 }
 
 function junctionButton() {
@@ -539,38 +684,74 @@ function determine() {
     $('#dialogDiv').dialog("close");
 }
 
-function editWps(addVersionRow) {
-    flag = "edit";
-    wpsId = "";
-    $('#addOrUpdatefm').form('clear');
-    //var row = $('#wpslibTable').datagrid('getSelected');
-    var row = $('#wpslibTable').datagrid('getSelections');
-    if (addVersionRow != "") {
-        row = addVersionRow;
-    }
-    if (row.length == 1) {
-        $('#addOrUpdate').window({
-            title: "修改工艺",
-            modal: true
-        });
-        $('#addOrUpdate').window('open');
-        $('#junctionName').textbox('setValue', row[0].JUNCTION);
-        $('#fids').val(row[0].junctionIds);
-        $('#addOrUpdatefm').form('load', row[0]);
-    } else {
-        alert("请先选择一条数据。");
+function editWpsTrackCard() {
+    var row = $('#wpslibTable').datagrid('getSelected');
+    if (row){
+        flagWps = "edit";
+        $('#addTarckingCardfm').form('load', row);
+        $('#addTarckingCard').dialog({
+            title: '修改电子跟踪卡',
+            width: 1100,
+            height: 600,
+            closed: false,
+            cache: false,
+            // href: src,
+            content: '',
+            modal: true,
+            buttons:[{
+                text:'保存',
+                iconCls:'icon-save',
+                handler:function(){
+                    saveWps();
+                }
+            },{
+                text:'关闭',
+                iconCls:'icon-no',
+                handler:function(){
+                    $("#addTarckingCard").dialog('close');
+                }
+            }],
+            onClose : function() {
+                $("#addTarckingCard").dialog('close');
+            },
+            onLoad:function(){
+            }
+        }).dialog("open");
+        //加载数据
+        loadProductionTable();
+        $('#productionTable').datagrid({onLoadSuccess : function (){
+            if (row.junctionIds == null || row.junctionIds == 0 || row.junctionIds == ''){
+                $('#productionTable').datagrid('clearChecked');
+            }else {
+                var data = $('#productionTable').datagrid("getData").rows;
+                for (var index in data){
+                    if (data[index].FID == row.junctionIds){
+                        //获取id所在的行数据，指定选中行
+                        var index = $('#productionTable').datagrid('getRowIndex', data[index].FID);
+                        // $('#productionTable').datagrid('scrollTo', index);
+                        $('#productionTable').datagrid('selectRow', index);
+                    }
+                }
+            }
+        }});
+    }else {
+        alert("请选择一行数据");
     }
 }
 
 function saveWps() {
     //var wpsFlag = $('#flag').combobox('getValue');//焊缝名称
+    var row = $("#productionTable").datagrid("getSelected");
+    if (row){
+        $("#productionCraftId").val(row.FID);
+    }
     var url2 = "";
-    if (flag == "add") {
+    if (flagWps == "add") {
         url2 = "wps/addWpsLibrary";
-    } else if (flag == "edit"){
+    } else if (flagWps == "edit"){
         url2 = "wps/updateWpsLibrary";
     }
-    $('#addOrUpdatefm').form('submit', {
+    $('#addTarckingCardfm').form('submit', {
         url: url2,
         onSubmit: function () {
             return $(this).form('enableValidation').form('validate');
@@ -585,7 +766,7 @@ function saveWps() {
                     });
                 } else {
                     alert("保存成功");
-                    $('#addOrUpdate').window('close');
+                    $('#addTarckingCard').window('close');
                     $('#wpslibTable').datagrid('reload');
                 }
             }

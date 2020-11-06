@@ -99,9 +99,9 @@
         </if>
     </delete>
 
-    <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.Junction">
-        SELECT "fid","library_id","junction_id" FROM TB_LIBRARY_JUNCTION
-        WHERE "library_id" = #{library_id} AND "junction_id" = #{junction_id}
+    <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.ProductionCraft">
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID FROM TB_LIBRARY_JUNCTION
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
     </select>
 
     <insert id="addLiarbryJunction" parameterType="com.spring.model.Junction">

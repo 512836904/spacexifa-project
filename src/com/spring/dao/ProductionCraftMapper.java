@@ -1,5 +1,6 @@
 package com.spring.dao;
 
+import com.spring.model.Junction;
 import com.spring.model.ProductionCraft;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,12 @@ public interface ProductionCraftMapper {
     int updateProductionCraft(ProductionCraft productionCraft);
 
     int deleteProductionCraft(ProductionCraft productionCraft);
+
+    List<ProductionCraft> getLiarbryJunctionById(ProductionCraft productionCraft);
+
+    int addLiarbryJunction(ProductionCraft productionCraft);
+
+    List<ProductionCraft> getLibraryJunction(BigInteger TRACKINGCARD_ID);
+
+    int deleteLibraryJunctionByTRACKINGCARD_ID(BigInteger TRACKINGCARD_ID);
 }

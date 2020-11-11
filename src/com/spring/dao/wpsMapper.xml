@@ -309,7 +309,7 @@
         s.fini_ele,s.fini_vol,s.farc_ele,s.farc_vol,s.fadvance,s.fweld_tuny_ele,s.fweld_tuny_vol,
         s.ftime,s.farc_tuny_ele,s.farc_tuny_vol,d1.fvaluename selectname,d2.fvaluename materialname,d3.fvaluename dianame,d4.fvaluename
         gasname,d5.fvaluename conname,s.fwelding_process,s.fini_vol1,s.fweld_vol1,s.farc_vol1,s.fhysteresis,s.FGASFLOW gasflow,
-        s.fspeed,s.farc_speed,s.farc_tuny_speed,s.fselectstep,s.ffrequency,s.fini_tuny_vol,l.fmachinemodel model,s.fwpsback
+        s.fspeed,s.farc_speed,s.farc_tuny_speed,s.fselectstep,s.ffrequency,s.fini_tuny_vol,l.fmachinemodel model,d6.FVALUENAME modelName
         FROM tb_specification s
         LEFT JOIN tb_dictionary d1 on s.fselect=d1.fvalue and d1.ftypeid=10
         LEFT JOIN tb_dictionary d2 on s.fmaterial=d2.fvalue and d2.ftypeid=9
@@ -318,6 +318,7 @@
         LEFT JOIN tb_dictionary d5 on s.fselectstep=d5.fvalue and d5.ftypeid=10
         <!-- LEFT JOIN tb_wps_library l on s.fwpslib_id=l.fid -->
         LEFT JOIN TB_WPS_CRAFT l on s.fwpslib_id=l.fid
+        LEFT JOIN tb_dictionary d6 ON l.fmachinemodel = d6.FVALUE
         WHERE 1=1
         <if test="parent!=null and parent!=''">
             AND s.FWPSLIB_ID = #{parent}

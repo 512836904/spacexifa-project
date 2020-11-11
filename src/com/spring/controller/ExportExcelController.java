@@ -1,18 +1,10 @@
 package com.spring.controller;
 
-import java.io.File;
-import java.math.BigInteger;
-import java.nio.channels.GatheringByteChannel;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.spring.dto.WeldDto;
+import com.spring.model.*;
+import com.spring.service.*;
+import com.spring.util.CommonExcelUtil;
+import com.spring.util.IsnullUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,30 +16,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.dto.WeldDto;
-import com.spring.model.DataStatistics;
-import com.spring.model.Gather;
-import com.spring.model.Insframework;
-import com.spring.model.MyUser;
-import com.spring.model.Person;
-import com.spring.model.Report;
-import com.spring.model.WeldedJunction;
-import com.spring.model.WeldingMachine;
-import com.spring.model.WeldingMaintenance;
-import com.spring.model.Wps;
-import com.spring.page.Page;
-import com.spring.service.DataStatisticsService;
-import com.spring.service.InsframeworkService;
-import com.spring.service.MaintainService;
-import com.spring.service.PersonService;
-import com.spring.service.ReportService;
-import com.spring.service.WeldedJunctionService;
-import com.spring.service.WelderService;
-import com.spring.service.WeldingMachineService;
-import com.spring.service.GatherService;
-import com.spring.service.WpsService;
-import com.spring.util.CommonExcelUtil;
-import com.spring.util.IsnullUtil;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/export", produces = { "text/json;charset=UTF-8" })
@@ -94,7 +72,7 @@ public class ExportExcelController {
 			String str = (String) request.getSession().getAttribute("searchStr");
 			List<WeldingMachine> list = wmm.getWeldingMachine(str);
 			String dtime = null;
-			String[] titles = new String[] { "设备编码", "设备类型", "入厂时间", "所属项目", "状态", "厂家", "是否在网", "采集序号", "位置", "ip地址",
+			String[] titles = new String[] { "设备名称", "设备类型", "入厂时间", "所属项目", "状态", "厂家", "是否在网", "采集序号", "位置", "ip地址",
 					"型号" };
 			Object[][] data = new Object[list.size()][11];
 			for (int i = 0; i < list.size(); i++) {

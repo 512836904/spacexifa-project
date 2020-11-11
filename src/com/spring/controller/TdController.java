@@ -1,37 +1,23 @@
 package com.spring.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.spring.model.*;
+import com.spring.service.*;
+import com.spring.util.IsnullUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.model.Insframework;
-import com.spring.model.MyUser;
-import com.spring.model.Person;
-import com.spring.model.Td;
-import com.spring.model.WeldingMachine;
-import com.spring.model.Wps;
-import com.spring.service.InsframeworkService;
-import com.spring.service.LiveDataService;
-import com.spring.service.PersonService;
-import com.spring.service.TdService;
-import com.spring.service.WeldingMachineService;
-import com.spring.util.IsnullUtil;
-import com.spring.service.WpsService;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/td",produces = { "text/json;charset=UTF-8" })
@@ -521,7 +507,7 @@ public class TdController {
 					ary.add(json);
 				}
 			}catch(Exception e){
-				e.getMessage();
+				e.printStackTrace();
 			}
 		}else{
 			MyUser myuser = (MyUser) SecurityContextHolder.getContext()  
@@ -556,7 +542,7 @@ public class TdController {
 						ary.add(json);
 					}
 				}catch(Exception e){
-					e.getMessage();
+					e.printStackTrace();
 				}
 			}else{
 				List<Insframework> in = insm.getInsIdByParent(insm.getInsByUserid(BigInteger.valueOf(uid)).get(0).getId(),24);
@@ -589,7 +575,7 @@ public class TdController {
 						}
 					}
 				}catch(Exception e){
-					e.getMessage();
+					e.printStackTrace();
 				}
 			}
 		}

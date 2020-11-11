@@ -216,7 +216,7 @@ public class Wps {
 	private String fselectstep;
 	private String farc_tuny_speed;
 	private String farc_speed;
-
+	private String modelName;	//焊机型号名称
 
 	/**
 	 * 工艺参数下发字段修改
@@ -760,6 +760,14 @@ public class Wps {
 
 	public void setFarc_speed(String farc_speed) {
 		this.farc_speed = farc_speed;
+	}
+
+	public String getModelName() {
+		return modelName;
+	}
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
 	}
 
 	public String getFfrequency() {

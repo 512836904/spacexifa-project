@@ -1,33 +1,30 @@
 package com.spring.controller;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.channels.SocketChannel;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.spring.model.*;
-import com.spring.service.*;
+import com.github.pagehelper.PageInfo;
+import com.spring.model.Dictionarys;
+import com.spring.model.MyUser;
+import com.spring.model.ProductionCraft;
+import com.spring.model.Wps;
+import com.spring.page.Page;
+import com.spring.service.DictionaryService;
+import com.spring.service.ProductionCraftService;
+import com.spring.service.WpsService;
+import com.spring.util.IsnullUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.pagehelper.PageInfo;
-import com.spring.dto.WeldDto;
-import com.spring.page.Page;
-import com.spring.util.IsnullUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.nio.channels.SocketChannel;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/wps", produces = {"text/json;charset=UTF-8"})
@@ -207,6 +204,8 @@ public class WpsController {
                 } else {
                     obj.put("success", false);
                 }
+            }else {
+                obj.put("success", false);
             }
         } catch (Exception e) {
             obj.put("success", false);
@@ -353,9 +352,7 @@ public class WpsController {
     @ResponseBody
     public String apSpe(HttpServletRequest request) {
         Wps wps = new Wps();
-        MyUser myuser = (MyUser) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        MyUser myuser = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject obj = new JSONObject();
 
@@ -384,19 +381,16 @@ public class WpsController {
             ftorch = Integer.valueOf(request.getParameter("ftorch"));
         }
         Integer fselect = Integer.valueOf(request.getParameter("fselect")); //焊接模式：个别/一元
+
         Integer farc = Integer.valueOf(request.getParameter("farc"));
         Integer fmaterial = Integer.valueOf(request.getParameter("fmaterial"));
         Integer fgas = Integer.valueOf(request.getParameter("fgas"));
         Double fdiameter = new Double(request.getParameter("fdiameter"));
         Integer chanel = Integer.valueOf(request.getParameter("fchanel"));
+
         //函数三元运算判断表达式
         double ftime = Double.valueOf((null != request.getParameter("ftime") && !"".equals(request.getParameter("ftime"))) ? request.getParameter("ftime") : "0");
         double fadvance = Double.valueOf((null != request.getParameter("fadvance") && !"".equals(request.getParameter("fadvance"))) ? request.getParameter("fadvance") : "0");
-
-        String ftime1 = request.getParameter("ftime");
-        String fini_ele1 = request.getParameter("fini_ele");
-        System.out.println(fini_ele1);
-
         double fini_ele = Double.valueOf(request.getParameter("fini_ele"));
         double fweld_ele = Double.valueOf(request.getParameter("fweld_ele"));
         double farc_ele = Double.valueOf(request.getParameter("farc_ele"));
@@ -413,7 +407,7 @@ public class WpsController {
         double fweld_tuny_vol = Double.valueOf(request.getParameter("fweld_tuny_vol"));
         double farc_tuny_vol = Double.valueOf(request.getParameter("farc_tuny_vol"));
         //BigInteger machine = new BigInteger(request.getParameter("modelname")); //焊机型号
-        double frequency = Double.valueOf(request.getParameter("frequency"));
+        double frequency = Double.valueOf((null != request.getParameter("frequency") && !"".equals(request.getParameter("frequency"))) ? request.getParameter("frequency") : "0.0");
         int fprocess = Integer.valueOf(request.getParameter("fweldprocess"));//焊接过程
         //double gasflow = Double.valueOf(request.getParameter("gasflow"));//气体流量
         //double weldingratio = Double.valueOf(request.getParameter("weldingratio"));//焊丝负极比率
@@ -491,11 +485,6 @@ public class WpsController {
             //wps.setSpecialarc_rep();        //特殊收弧反复
             //wps.setTs_condition();          //通过ts变更条件
             wps.setFwpslib_id(fwpslib_id);
-//            if(wpsService.findCount(machine,chanel.toString())<=0){
-//                wpsService.saveSpe(wps);
-//            }else{
-//                wpsService.updateSpe(wps);
-//            }
             if ("add".equals(addORupdate)) {
                 wpsService.saveSpe(wps);
             } else if ("update".equals(addORupdate)) {
@@ -506,7 +495,6 @@ public class WpsController {
         } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
-            e.getMessage();
             e.printStackTrace();
         }
         return obj.toString();
@@ -1176,7 +1164,7 @@ public class WpsController {
                 json.put("farc_vol1", wps.getFarc_vol1());  //收弧电压(一元)
                 json.put("fweld_tuny_ele", wps.getFweld_tuny_ele());
                 json.put("fweld_tuny_vol", wps.getFweld_tuny_vol());
-                json.put("farc_tuny_vol", wps.getFarc_tuny_vol());
+                json.put("farc_tuny_vol", wps.getFarc_tuny_vol());  //收弧电压微调
                 json.put("farc_tuny_ele", wps.getFarc_tuny_ele());
                 json.put("fini_tuny_vol", wps.getFini_tuny_vol());
                 json.put("frequency", wps.getFfrequency());     //双脉冲频率
@@ -1184,6 +1172,7 @@ public class WpsController {
                 json.put("fselectstepname", wps.getConname());
                 json.put("ftime", wps.getFtime());
                 json.put("fmodel", wps.getModel());
+                json.put("modelName", wps.getModelName());
                 json.put("fwpsback", wps.getFwpsback());
                 json.put("fwelding_process", wps.getFwelding_process());    //焊接过程
                 json.put("fhysteresis", wps.getFhysteresis());    //滞后送气

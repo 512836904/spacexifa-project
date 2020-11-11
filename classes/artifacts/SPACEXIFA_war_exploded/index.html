@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>项目展板</title>
+    <link rel="stylesheet" href="resources/css/css/index.css" />
+    <link rel="stylesheet" href="resources/css/css/element-ui.css">
+    <script type="text/javascript" src="resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery.easyui.min.js"></script>
+</head>
+
+<body>
+<!-- 头部的盒子 -->
+<header>
+    <h1><span>项目展板</span></h1>
+    <div class="leftCompany"></div>
+    <div class="rightTime"></div>
+    <script>
+        var t = null;
+        t = setTimeout(time, 1000); //開始运行
+        function time() {
+            clearTimeout(t); //清除定时器
+            dt = new Date();
+            var y = dt.getFullYear();
+            var mt = dt.getMonth() + 1;
+            var day = dt.getDate();
+            var h = dt.getHours(); //获取时
+            var m = dt.getMinutes(); //获取分
+            var s = dt.getSeconds(); //获取秒
+            document.querySelector(".rightTime").innerHTML =
+                h +
+                ":" +
+                m +
+                ":" +
+                s +
+                "  丨  " +
+                y +
+                "-" +
+                mt +
+                "-" +
+                day +
+                "星期一 多云转晴 8-13℃";
+            t = setTimeout(time, 1000); //设定定时器，循环运行
+        }
+    </script>
+
+</header>
+
+<!-- 页面主体部分 -->
+<section class="mainbox">
+    <!-- 第一列 -->
+    <div class="column1">
+        <div class="panel panel-header">
+            <h2></h2>
+            <div class="chart" id="Left1" style="height: 3.6rem;"></div>
+            <div class="panel-footer"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel01">
+                <h2 class="h2-side"><span>焊工工作时间排行</span></h2>
+            </div>
+            <div class="panel02">
+                <div class="chart" id="Left2"></div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel01">
+                <h2 class="h2-side"><span>工区电能、气体消耗量 ( KWH、L )</span></h2>
+            </div>
+            <div class="panel02">
+                <div class="chart" id="Left3"></div>
+                <div class="panel-footer"></div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 第二列 -->
+    <div class="column2">
+        <div class="panel" style="height: 6.05rem;">
+            <div class="panel01">
+                <h2 class="h2-mid"><span>工区焊接工艺规范符合率 ( % )</span></h2>
+            </div>
+            <div class="panel02">
+                <div class="chart1" id="Middle1"></div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+        <div class="panel" style="height: 6.05rem;">
+            <div class="panel01">
+                <h2 class="h2-mid"><span>焊工人均工作时间 ( h )</span></h2>
+            </div>
+            <div class="panel02">
+                <div class="chart1" id="Middle2"></div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 第三列 -->
+    <div class="column3">
+        <div class="panel">
+            <div class="panel01">
+                <h2 class="h2-side"><span>工区耗材消耗量 ( G )</span></h2>
+            </div>
+            <div class="panel02">
+                <div class="chart" id="Right1"></div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel01">
+                <h2 class="h2-side"><span>工区设备使用率 ( % )</span></h2>
+            </div>
+
+            <div class="panel02">
+                <div class="chart" id="Right2"></div>
+                <div class="panel-footer"></div>
+            </div>
+
+        </div>
+        <div class="panel">
+            <div class="panel01">
+                <h2 class="h2-side"><span>工作号/部套号相关信息</span></h2>
+            </div>
+
+            <div class="panel02" style="overflow: auto;">
+                <div class="chart" id="Right3">
+                    <div id="app">
+                        <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '24px'}" border
+                                  style="width: 100%">
+
+                            <el-table-column prop="gzh" label="工作号">
+                            </el-table-column>
+
+                            <el-table-column prop="bth" label="布套号">
+                            </el-table-column>
+
+                            <el-table-column prop="ljm" label="零件名">
+                            </el-table-column>
+
+                            <el-table-column prop="gzzsc" label="工作总时长">
+                            </el-table-column>
+
+                            <el-table-column prop="zhcxh" label="总耗材消耗">
+                            </el-table-column>
+
+                        </el-table>
+                    </div>
+                </div>
+
+                <div class="panel-footer"></div>
+            </div>
+
+        </div>
+    </div>
+
+
+</section>
+
+
+</body>
+
+<script src="resources/js/js/flexible.js"></script>
+<script src="resources/js/js/echarts.min.js"></script>
+<script src="resources/js/js/index.js"></script>
+
+<!-- import Vue before Element -->
+<script src="resources/js/js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="resources/js/js/element-ui.js"></script>
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                tableData: [{
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }, {
+                    gzh: 'A001233-1',
+                    bth: 'FTG100601',
+                    ljm: '基础法兰',
+                    gzzsc: '15',
+                    zhcxh: '200'
+                }]
+            }
+        }
+    })
+</script>
+<style>
+    /* Element 样式覆盖 */
+
+    .el-table {
+        background-color: transparent;
+    }
+
+    .el-table th,
+    .el-table tr,
+    .el-table td {
+        background-color: transparent;
+        color: #00f2f1;
+        text-align: center;
+    }
+
+    .el-table th {
+        background-color: rgba(20, 60, 133, 0.4);
+    }
+
+    .el-table td,
+    .el-table th.is-leaf,
+    .el-table--border,
+    .el-table--group {
+        border-color: #193882;
+    }
+
+    .el-table--border::after,
+    .el-table--group::after,
+    .el-table::before {
+        background-color: #193882;
+    }
+
+    /* 表格hover */
+    .el-table--enable-row-hover .el-table__body tr:hover>td {
+        background-color: transparent;
+    }
+
+
+    /* element-ui table的右侧滚动条的样式   ::代表全局 */
+    ::-webkit-scrollbar {
+        width: 2px;
+        height: 5px;
+        /*background-color: #16889A;*/
+    }
+
+    /*  滚动条的滑块 */
+    ::-webkit-scrollbar-thumb {
+        background-color: #16889a;
+        border-radius: 10px;
+    }
+</style>
+
+</html>

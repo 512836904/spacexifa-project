@@ -322,7 +322,7 @@
   // 哈电机大屏获取焊工工作时间
   $.ajax({
 		type : "post",
-		async : false,
+		async : true,
 		url : "frontEnd/getWorkRank",
 		data : {},
 		dataType : "json", //返回数据形式为json  
@@ -487,7 +487,7 @@
    // 哈电机大屏获取电能、气体消耗
    $.ajax({
 		type : "post",
-		async : false,
+		async : true,
 		url : "frontEnd/findElectricityAndGas",
 		data : {},
 		dataType : "json", //返回数据形式为json  
@@ -685,7 +685,7 @@
   // 哈电机大屏获取规范符合率
   $.ajax({
     type : "post",
-    async : false,
+    async : true,
     url : "frontEnd/getLoadRate",
     data : {},
     dataType : "json", //返回数据形式为json  
@@ -832,7 +832,7 @@
   // 哈电机大屏获取人均工作时间
   $.ajax({
     type : "post",
-    async : false,
+    async : true,
     url : "frontEnd/findAverageWorkingTime",
     data : {},
     dataType : "json", //返回数据形式为json  
@@ -988,7 +988,7 @@
   // 哈电机大屏获取焊丝消耗量
   $.ajax({
   type : "post",
-  async : false,
+  async : true,
   url : "frontEnd/findElectricityAndGas",
   data : {},
   dataType : "json", //返回数据形式为json  
@@ -1124,7 +1124,7 @@
   // 哈电机大屏获取焊丝消耗量
   $.ajax({
     type : "post",
-    async : false,
+    async : true,
     url : "frontEnd/findElectricityAndGas",
     data : {},
     dataType : "json", //返回数据形式为json  

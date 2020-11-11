@@ -741,10 +741,10 @@ function editWpsTrackCard() {
 
 function saveWps() {
     //var wpsFlag = $('#flag').combobox('getValue');//焊缝名称
-    var row = $("#productionTable").datagrid("getSelected");
-    if (row){
-        $("#productionCraftId").val(row.FID);
-    }
+    // var row = $("#productionTable").datagrid("getSelected");
+    // if (row){
+    //     $("#productionCraftId").val(row.FID);
+    // }
     var url2 = "";
     if (flagWps == "add") {
         url2 = "wps/addWpsLibrary";

@@ -9,7 +9,7 @@
 <head>
     <base href="<%=basePath%>">
 
-    <title>Pwps工艺管理</title>
+    <title>焊机工艺管理</title>
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
@@ -42,6 +42,9 @@
     <script type="text/javascript" src="resources/js/web_socket.js"></script>
 
     <script type="text/javascript" src="resources/js/wpslib/craft/WB-P500L.js"></script>
+    <script type="text/javascript" src="resources/js/paho-mqtt.js"></script>
+    <script type="text/javascript" src="resources/js/paho-mqtt-min.js"></script>
+    <script type="text/javascript" src="resources/js/first.js"></script>
     <style type="text/css">
         table tr td {
             font-size: 14px;
@@ -104,8 +107,7 @@
     </div>
 
     <!-- 添加修改工艺 -->
-    <div id="wpsCraft" class="easyui-dialog" style="width: 900px; height: 600px; padding:10px 20px" closed="true"
-         data-options="iconCls:'icon-navigation',modal:true">
+    <div id="wpsCraft" class="easyui-dialog" style="width: 900px; height: 600px; padding:10px 20px" closed="true" data-options="iconCls:'icon-navigation',modal:true">
         <form id="fmwpsCraft" class="easyui-form" method="post" data-options="novalidate:true">
             <input type="hidden" id="modelname" name="modelname">
             <input type="hidden" id="fid" name="fid">
@@ -118,8 +120,7 @@
                             <lable>通道号：</lable>
                         </td>
                         <td class="rightTd">
-                            <select class="easyui-combobox" name="fchanel" id="fchanel"
-                                    data-options="editable:false"></select>
+                            <select class="easyui-combobox" name="fchanel" id="fchanel" data-options="editable:false"></select>
                         </td>
                         <td id="tcontroller" class="leftTd">
                             <lable>熔深控制：</lable>
@@ -137,8 +138,7 @@
                             <lable><span class="required">*</span>焊接过程：</lable>
                         </td>
                         <td id="rfweldprocess" class="rightTd">
-                            <select class="easyui-combobox" name="fweldprocess" id="fweldprocess"
-                                    data-options="editable:false"></select>
+                            <select class="easyui-combobox" name="fweldprocess" id="fweldprocess" data-options="editable:false"></select>
                         </td>
                         <td id="dtorch" class="leftTd">
                             <lable>水冷焊枪：</lable>
@@ -164,8 +164,7 @@
                             <lable><span class="required">*</span>焊丝材质：</lable>
                         </td>
                         <td id="rmaterial" class="rightTd">
-                            <select class="easyui-combobox" name="fmaterial" id="fmaterial"
-                                    data-options="editable:false">
+                            <select class="easyui-combobox" name="fmaterial" id="fmaterial" data-options="editable:false">
                                 <option value="91">低碳钢实心</option>
                                 <option value="92">不锈钢实心</option>
                                 <option value="93">低碳钢药芯</option>
@@ -182,8 +181,7 @@
                             <lable><span class="required">*</span>焊丝直径：</lable>
                         </td>
                         <td class="rightTd">
-                            <select class="easyui-combobox" name="fdiameter" id="fdiameter"
-                                    data-options="editable:false">
+                            <select class="easyui-combobox" name="fdiameter" id="fdiameter" data-options="editable:false">
                                 <option value="131">Φ1.0</option>
                                 <option value="132">Φ1.2</option>
                                 <option value="133">Φ1.4</option>
@@ -209,15 +207,13 @@
                             <lable><span class="required">*</span>焊接电流：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fweld_ele" id="fweld_ele" value="" class="easyui-numberbox"
-                                   data-options="required:true">(A)
+                            <input name="fweld_ele" id="fweld_ele" value="" class="easyui-numberbox" data-options="required:true">(A)
                         </td>
                         <td class="leftTd">
                             <lable><span class="required">*</span>焊接电流微调：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fweld_tuny_ele" id="fweld_tuny_ele" class="easyui-numberbox"
-                                   data-options="required:true">(A)
+                            <input name="fweld_tuny_ele" id="fweld_tuny_ele" class="easyui-numberbox" data-options="required:true">(A)
                         </td>
 
                     </tr>
@@ -230,15 +226,13 @@
                             <lable><span class="required">*</span>提前送气：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fadvance" id="fadvance" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(s)
+                            <input name="fadvance" id="fadvance" class="easyui-numberbox" data-options="precision:1">(s)
                         </td>
                         <td class="leftTd">
                             <lable><span class="required">*</span>滞后送气：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fhysteresis" id="fhysteresis" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(s)
+                            <input name="fhysteresis" id="fhysteresis" class="easyui-numberbox" data-options="precision:1">(s)
                         </td>
                     </tr>
                 </table>
@@ -249,8 +243,8 @@
                         <td id="tinitial" class="leftTd">
                             <lable>初期条件：</lable>
                         </td>
-                        <td id="rinitial" class="rightTd"><input name="finitial" id="finitial" type="checkbox"
-                                                                 value="1"/>
+                        <td id="rinitial" class="rightTd">
+                            <input name="finitial" id="finitial" type="checkbox" value="1"/>
                         </td>
                         <td id="dmodel" class="leftTd">
                             <lable>柔软电弧模式：</lable>
@@ -266,18 +260,13 @@
                             <lable><span class="required">*</span>初期电流：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fini_ele" id="fini_ele" class="easyui-numberbox" value="100.0" data-options="required:true">(A)
+                            <input name="fini_ele" id="fini_ele" class="easyui-numberbox" value="100.0" data-options="precision:1">(A)
                         </td>
                         <td id="dfarc" class="leftTd">
                             <lable><span class="required">*</span>收弧：</lable>
                         </td>
                         <td id="rfarc" class="rightTd">
-                            <select class="easyui-combobox" name="farc" id="farc" data-options="editable:false">
-                                <option value="111">无</option>
-                                <option value="112">有</option>
-                                <option value="113">反复</option>
-                                <option value="114">点焊</option>
-                            </select>
+                            <select class="easyui-combobox" name="farc" id="farc" data-options="editable:false"></select>
                         </td>
                     </tr>
                 </table>
@@ -289,15 +278,13 @@
                             <lable><span class="required">*</span>收弧电流：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="farc_ele" id="farc_ele" class="easyui-numberbox" value="100.0"
-                                   data-options="required:true">(A)
+                            <input name="farc_ele" id="farc_ele" class="easyui-numberbox" value="100.0" data-options="precision:1">(A)
                         </td>
                         <td class="leftTd">
                             <lable><span class="required">*</span>收弧电流微调：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="farc_tuny_ele" id="farc_tuny_ele" class="easyui-numberbox" value="0.0"
-                                   data-options="required:true">(A)
+                            <input name="farc_tuny_ele" id="farc_tuny_ele" class="easyui-numberbox" value="0.0" data-options="precision:1">(A)
                         </td>
                     </tr>
                 </table>
@@ -309,21 +296,19 @@
                             <lable><span class="required">*</span>点焊时间：</lable>
                         </td>
                         <td id="rftime" class="rightTd">
-                            <input name="ftime" id="ftime" value="30.0" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(s)
+                            <input name="ftime" id="ftime" value="30.0" class="easyui-numberbox" data-options="precision:1">(s)
                         </td>
                         <td id="cwavt" class="leftTd">
                             <lable><span class="required">*</span>收弧电压微调：</lable>
                         </td>
                         <td id="cwtavt" class="rightTd">
-                            <input name="farc_tuny_vol" id="farc_tuny_vol" class="easyui-numberbox" value="0.0"
-                                   data-options="required:true,precision:1">(V)
+                            <input name="farc_tuny_vol" id="farc_tuny_vol" class="easyui-numberbox" value="0.0" data-options="precision:1">(V)
                         </td>
                         <td id="cwivo" class="leftTd">
                             <lable><span class="required">*</span>初期电压(一元)：</lable>
                         </td>
-                        <td id="cwtivo" class="rightTd"><input name="fini_vol1" id="fini_vol1" class="easyui-numberbox"
-                                                               value="0" data-options="required:true">(±25)
+                        <td id="cwtivo" class="rightTd">
+                            <input name="fini_vol1" id="fini_vol1" class="easyui-numberbox" value="0">(±25)
                         </td>
                     </tr>
                 </table>
@@ -335,15 +320,13 @@
                             <lable><span class="required">*</span>电弧特性：</lable>
                         </td>
                         <td class="rightTd">
-                            <input id="fcharacter" name="fcharacter" class="easyui-numberbox"
-                                   data-options="required:true">(±10)
+                            <input id="fcharacter" name="fcharacter" class="easyui-numberbox" value="0">(±10)
                         </td>
                         <td id="dfrequency" class="leftTd">
                             <lable><span class="required">*</span>双脉冲频率：</lable>
                         </td>
                         <td id="ifrequency" class="rightTd">
-                            <input name="frequency" id="frequency" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(Hz)
+                            <input name="frequency" id="frequency" class="easyui-numberbox" value="3.0" data-options="precision:1">(Hz)
                         </td>
                     </tr>
                 </table>
@@ -355,15 +338,13 @@
                             <lable><span class="required">*</span>焊接电压：</lable>
                         </td>
                         <td id="cwtwv" class="rightTd">
-                            <input name="fweld_vol" id="fweld_vol" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(V)
+                            <input name="fweld_vol" id="fweld_vol" class="easyui-numberbox" data-options="required:true,precision:1">(V)
                         </td>
                         <td id="cwwvt" class="leftTd">
                             <lable><span class="required">*</span>焊接电压微调：</lable>
                         </td>
                         <td id="cwtwvt" class="rightTd">
-                            <input name="fweld_tuny_vol" id="fweld_tuny_vol" class="easyui-numberbox"
-                                   data-options="required:true,precision:1">(V)
+                            <input name="fweld_tuny_vol" id="fweld_tuny_vol" class="easyui-numberbox" data-options="required:true,precision:1">(V)
                         </td>
                     </tr>
                 </table>
@@ -374,15 +355,14 @@
                         <td id="cwiv" class="leftTd">
                             <lable><span class="required">*</span>初期电压：</lable>
                         </td>
-                        <td id="cwtiv" class="rightTd"><input name="fini_vol" id="fini_vol" class="easyui-numberbox"
-                                                              value="19.0" data-options="required:true,precision:1">(V)
+                        <td id="cwtiv" class="rightTd">
+                            <input name="fini_vol" id="fini_vol" class="easyui-numberbox" value="19.0" data-options="precision:1">(V)
                         </td>
                         <td id="cwav" class="leftTd">
                             <lable><span class="required">*</span>收弧电压：</lable>
                         </td>
                         <td id="cwtav" class="rightTd">
-                            <input name="farc_vol" id="farc_vol" class="easyui-numberbox" value="19.0"
-                                   data-options="required:true,precision:1">(V)
+                            <input name="farc_vol" id="farc_vol" class="easyui-numberbox" value="19.0" data-options="precision:1">(V)
                         </td>
                     </tr>
                 </table>
@@ -394,15 +374,13 @@
                             <lable><span class="required">*</span>焊接电压(一元)：</lable>
                         </td>
                         <td id="cwtwvo" class="rightTd">
-                            <input name="fweld_vol1" id="fweld_vol1" class="easyui-numberbox"
-                                   data-options="required:true">(±25)
+                            <input name="fweld_vol1" id="fweld_vol1" class="easyui-numberbox">(±25)
                         </td>
                         <td id="cwwvto" class="leftTd">
                             <lable><span class="required">*</span>焊接电压微调(一元)：</lable>
                         </td>
                         <td id="cwtwvto" class="rightTd">
-                            <input name="fweld_tuny_vol1" id="fweld_tuny_vol1" class="easyui-numberbox"
-                                   data-options="required:true">(%)
+                            <input name="fweld_tuny_vol1" id="fweld_tuny_vol1" class="easyui-numberbox">(%)
                         </td>
                     </tr>
                 </table>
@@ -414,13 +392,13 @@
                             <lable><span class="required">*</span>收弧电压(一元)：</lable>
                         </td>
                         <td id="cwtavo" class="rightTd">
-                            <input name="farc_vol1" id="farc_vol1" class="easyui-numberbox" value="0" data-options="required:true">(±25)
+                            <input name="farc_vol1" id="farc_vol1" class="easyui-numberbox" value="0">(±25)
                         </td>
                         <td id="cwavto" class="leftTd">
                             <lable><span class="required">*</span>收弧电压微调(一元)：</lable>
                         </td>
                         <td id="cwtavto" class="rightTd">
-                            <input name="farc_tuny_vol1" id="farc_tuny_vol1" class="easyui-numberbox" value="0" data-options="required:true">(%)
+                            <input name="farc_tuny_vol1" id="farc_tuny_vol1" class="easyui-numberbox" value="0">(%)
                         </td>
                     </tr>
                 </table>

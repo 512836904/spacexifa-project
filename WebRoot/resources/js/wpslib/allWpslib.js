@@ -29,11 +29,11 @@ $(function () {
 
 function wpslibDatagrid() {
     $("#wpslibTable").datagrid({
-//		fitColumns : true,
+		fitColumns : true,
         view: detailview,
         height: $("#body").height(),
         width: $("#body").width(),
-        idField: 'id',
+        idField: 'fid',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
         url: "wps/getWpslibList",
@@ -101,7 +101,7 @@ function wpslibDatagrid() {
             align: "left",
             formatter: function (value, row, index) {
                 var str = "";
-                str += '<a id="wpslibgive" class="easyui-linkbutton" href="javascript:selectMainWps(' + row.fid + ',' + row.manu + ')"/>';
+                str += '<a id="wpslibgive" class="easyui-linkbutton" href="javascript:selectMainWps('+encodeURI(JSON.stringify(row))+')"/>';
                 str += '<a id="wpslibadd" class="easyui-linkbutton" href="javascript:addMainWps('+encodeURI(JSON.stringify(row))+')"/>';
                 str += '<a id="wpslibedit" class="easyui-linkbutton" href="javascript:editWpslib()"/>';
                 str += '<a id="wpslibremove" class="easyui-linkbutton" href="javascript:openRemoveWpslib()"/>';

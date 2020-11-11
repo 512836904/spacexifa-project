@@ -170,13 +170,13 @@ function WBL(yshu, gather) {	//yshu:
         var fdiameter = parseInt(yshu.fdiameter).toString(16);
         var fmaterial = parseInt(yshu.fmaterial).toString(16);
         var fweld_tuny_ele = (yshu.fweld_tuny_ele).toString(16);
-        var farc_tuny_ele = (yshu.farc_tuny_ele).toString(16);
+        var farc_tuny_ele = (yshu.farc_tuny_ele).toString(16);      //收弧电流微调
         if (yshu.fselect == 101) {
             var fweld_tuny_vol = (yshu.fweld_tuny_vol).toString(16);
-            var farc_tuny_vol = (yshu.fdiameter).toString(16);
+            var farc_tuny_vol = (yshu.farc_tuny_vol).toString(16);  //收弧电压微调
         } else {
             var fweld_tuny_vol = (yshu.fweld_tuny_vol * 10).toString(16);
-            var farc_tuny_vol = (yshu.fdiameter * 10).toString(16);
+            var farc_tuny_vol = (yshu.farc_tuny_vol * 10).toString(16);
         }
         var frequency = (yshu.frequency * 10).toString(16);
         var gasflow = (yshu.gasflow * 10).toString(16);
@@ -429,6 +429,7 @@ function WBL(yshu, gather) {	//yshu:
         }
     }
     ;
+    //data_length:35.8
     xxx = "7E" + data_length + "01010152" + xiafasend1;
     var check = 0;
     for (var i = 0; i < (xxx.length / 2); i++) {
@@ -443,61 +444,11 @@ function WBL(yshu, gather) {	//yshu:
     checksend = checksend.toUpperCase();
 
     var xiafasend2 = (xxx + checksend).substring(2);
-    console.log(xiafasend2);
+    // console.log(xiafasend2);
     if (yshu != null) {
-        return "7E" + xiafasend2 + "7D";
-    }
-    var symbol = 0;
-    var message = new Paho.MQTT.Message("7E" + xiafasend2 + "7D");
-    message.destinationName = "weldmes-webdatadown";
-    client.send(message);
-    var oneMinuteTimer = window.setTimeout(function () {
-        if (symbol == 0) {
-            client.unsubscribe("weldmes-webdataup", {
-                onSuccess: function (e) {
-                    console.log("取消订阅成功");
-                },
-                onFailure: function (e) {
-                    console.log(e);
-                }
-            })
-//			$('#buttonCancel').linkbutton('enable');
-//			$('#buttonOk').linkbutton('enable');
-            alert("下发超时");
-        }
-    }, 3000);
-    client.subscribe("weldmes-webdataup", {
-        qos: 0,
-        onSuccess: function (e) {
-            console.log("订阅成功");
-        },
-        onFailure: function (e) {
-            console.log(e);
-        }
-    })
-    client.onMessageArrived = function (e) {
-        console.log("onMessageArrived:" + e.payloadString);
-        var fan = e.payloadString;
-        if (fan.substring(0, 2) == "7E" && fan.substring(10, 12) == "52") {
-            client.unsubscribe("weldmes-webdataup", {
-                onSuccess: function (e) {
-                    console.log("取消订阅成功");
-                },
-                onFailure: function (e) {
-                    console.log(e);
-                }
-            });
-            window.clearTimeout(oneMinuteTimer);
-            symbol = 1;
-            if (parseInt(fan.substring(18, 20), 16) == 1) {
-//				websocket.close();
-                alert("下发失败");
-            } else {
-//				websocket.close();
-                WBLSAVE(1);
-                alert("下发成功");
-            }
-        }
+        return "00" + "7E" + xiafasend2 + "7D";
+    } else {
+        return "00" + "7E" + xiafasend2 + "7D";
     }
 }
 
@@ -686,6 +637,8 @@ function WBLGET() {
 
 //参数初始化
 function WBLINITwps() {
+    //WB-P500L型号
+    //通道号
     $('#fchanel').combobox('clear');
     var str = "";
     for (var i = 1; i < 101; i++) {
@@ -694,25 +647,24 @@ function WBLINITwps() {
     $('#fchanel').append(str);
     $('#fchanel').combobox();
     $('#fchanel').combobox('select', "1");
-    $('#farc').combobox('clear');
-    $('#farc').combobox('loadData', [{
-        "text": "无填弧坑",
-        "value": "111"
+    //焊接过程
+    $('#fweldprocess').combobox('clear');
+    $('#fweldprocess').combobox('loadData', [{
+        "text": "直流脉冲",
+        "value": "0"
     }, {
-        "text": "直流填弧坑",
-        "value": "112"
+        "text": "直流",
+        "value": "1"
     }, {
-        "text": "脉冲填弧坑",
-        "value": "113"
+        "text": "直流低飞溅",
+        "value": "2"
     }, {
-        "text": "电弧点焊",
-        "value": "114"
+        "text": "直流双脉冲",
+        "value": "3"
     }]);
+    //气体
     $('#fgas').combobox('clear');
     $('#fgas').combobox('loadData', [{
-        "text": "CO2",
-        "value": "121"
-    }, {
         "text": "MAG",
         "value": "122"
     }, {
@@ -722,6 +674,13 @@ function WBLINITwps() {
         "text": "MIG_2O2",
         "value": "124"
     }]);
+    //焊丝材质
+    $('#fmaterial').combobox('clear');
+    $('#fmaterial').combobox('loadData', [{
+        "text": "低碳钢实芯",
+        "value": "91"
+    }]);
+    //焊丝直径
     $('#fdiameter').combobox('clear');
     $('#fdiameter').combobox('loadData', [{
         "text": "Φ0.8",
@@ -742,48 +701,31 @@ function WBLINITwps() {
         "text": "Φ1.6",
         "value": "134"
     }]);
-    $('#fmaterial').combobox('clear');
-    $('#fmaterial').combobox('loadData', [{
-        "text": "低碳钢实芯",
-        "value": "91"
+    //收弧
+    $('#farc').combobox('clear');
+    $('#farc').combobox('loadData', [{
+        "text": "无填弧坑",
+        "value": "111"
     }, {
-        "text": "不锈钢实芯",
-        "value": "92"
+        "text": "直流填弧坑",
+        "value": "112"
     }, {
-        "text": "低碳钢药芯",
-        "value": "93"
+        "text": "脉冲填弧坑",
+        "value": "113"
     }, {
-        "text": "不锈钢药芯",
-        "value": "94"
-    }, {
-        "text": "铁氧体不锈钢实芯",
-        "value": "95"
-    }, {
-        "text": "纯铝",
-        "value": "96"
-    }, {
-        "text": "铝镁合金",
-        "value": "97"
-    }]);
-    $('#fweldprocess').combobox('clear');
-    $('#fweldprocess').combobox('loadData', [{
-        "text": "直流脉冲",
-        "value": "0"
-    }, {
-        "text": "直流",
-        "value": "1"
-    }, {
-        "text": "直流低飞溅",
-        "value": "2"
-    }, {
-        "text": "直流双脉冲",
-        "value": "3"
+        "text": "电弧点焊",
+        "value": "114"
     }]);
     $("#fmode").prop("checked", false);
     $("#finitial").prop("checked", false);
     $("#fcontroller").prop("checked", false);
     $("#ftorch").prop("checked", false);
     $('#fselect').combobox('select', 102);
+    $('#farc').combobox('select', 111);
+    $('#fgas').combobox('select', 122);
+    $('#fweldprocess').combobox('select', 0);
+    $('#fmaterial').combobox('select', 91);
+    $('#fdiameter').combobox('select', 132);
     $("#ftime").numberbox('setValue', 3.0);
     $("#fadvance").numberbox('setValue', 0.1);
     $("#fini_ele").numberbox('setValue', 100);
@@ -791,10 +733,6 @@ function WBLINITwps() {
     $("#farc_ele").numberbox('setValue', 100);
     $("#fhysteresis").numberbox('setValue', 0.4);
     $("#fcharacter").numberbox('setValue', 0);
-    $('#fweldprocess').combobox('select', 0);
-    $('#fgas').combobox('select', 122);
-    $('#fmaterial').combobox('select', 91);
-    $('#fdiameter').combobox('select', 132);
     $("#fweld_tuny_ele").numberbox('setValue', 0);
     $("#farc_tuny_ele").numberbox('setValue', 0);
     $("#fini_vol").numberbox('setValue', 21.5);
@@ -807,8 +745,7 @@ function WBLINITwps() {
     $("#farc_vol1").numberbox('setValue', 0);
     $("#fweld_tuny_vol1").numberbox('setValue', 0);
     $("#farc_tuny_vol1").numberbox('setValue', 0);
-    $('#farc').combobox('select', 111);
-    $("#frequency").numberbox('setValue', 3);
+    $("#frequency").numberbox('setValue', 3.0);
 }
 
 //用户输入参数检测
@@ -1056,13 +993,12 @@ function WBLRULEwps() {
 // 			});
 // 		}
 // 	});
-
-    $("#fweldprocess").combobox({//焊接方法
+    //焊接过程
+    $("#fweldprocess").combobox({
         onChange: function () {
             var fweldprocess = $("#fweldprocess").combobox('getValue');
             if (fweldprocess == 1) {//直流
                 fgas_3();
-//				$("#farc").combobox({disabled: true});
                 $('#farc').combobox('clear');
                 $('#farc').combobox('loadData', [{
                     "text": "无填弧坑",
@@ -1081,7 +1017,6 @@ function WBLRULEwps() {
                 $("#frequency").numberbox({disabled: true});
             } else if (fweldprocess == 2) {	//直流底飞溅
                 fgas_2();
-//				$("#farc").combobox({disabled: true});
                 $('#farc').combobox('clear');
                 $('#farc').combobox('loadData', [{
                     "text": "无填弧坑",
@@ -1100,7 +1035,6 @@ function WBLRULEwps() {
                 $("#frequency").numberbox({disabled: true});
             } else if (fweldprocess == 0) {	//直流脉冲
                 fgas_4();
-//				$("#farc").combobox({disabled: false});
                 $('#farc').combobox('clear');
                 $('#farc').combobox('loadData', [{
                     "text": "无填弧坑",
@@ -1119,7 +1053,6 @@ function WBLRULEwps() {
                 $("#frequency").numberbox({disabled: true});
             } else if (fweldprocess == 3) {	//直流双脉冲
                 fgas_4();
-//				$("#farc").combobox({disabled: false});
                 $('#farc').combobox('clear');
                 $('#farc').combobox('loadData', [{
                     "text": "无填弧坑",
@@ -1140,9 +1073,9 @@ function WBLRULEwps() {
             var data = $('#fgas').combobox('getData');
             $('#fgas').combobox('select', data[0].value);
         }
-    })
-
-    $("#farc").combobox({//焊接方法
+    });
+    //收弧
+    $("#farc").combobox({
         onChange: function () {
             var farc = $("#farc").combobox('getValue');
             if (farc == 111) {
@@ -1173,9 +1106,9 @@ function WBLRULEwps() {
             var data = $('#fgas').combobox('getData');
             $('#fgas').combobox('select', data[0].value);
         }
-    })
-
-    $("#fmaterial").combobox({//焊丝种类
+    });
+    //焊丝材质
+    $("#fmaterial").combobox({
         onChange: function () {
             var fweldprocess = $("#fweldprocess").combobox('getValue');
             var fgas = $("#fgas").combobox('getValue');
@@ -1247,8 +1180,9 @@ function WBLRULEwps() {
             var data = $('#fdiameter').combobox('getData');
             $('#fdiameter').combobox('select', data[0].value);
         }
-    })
-    $("#fgas").combobox({//气体
+    });
+    //气体
+    $("#fgas").combobox({
         onChange: function () {
             var fweldprocess = $("#fweldprocess").combobox('getValue');
             var fgas = $("#fgas").combobox('getValue');
@@ -1331,11 +1265,7 @@ function WBLRULEwps() {
                 $('#fmaterial').combobox('select', data[0].value);
             }
         }
-    })
-    /*	$('#fweldprocess').combobox('select', 0);
-        fmaterial_2();
-        var data = $('#fmaterial').combobox('getData');
-        $('#fmaterial').combobox('select',data[0].value);*/
+    });
 }
 
 function WBLSAVE(value) {

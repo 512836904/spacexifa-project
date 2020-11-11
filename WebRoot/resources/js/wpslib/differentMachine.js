@@ -93,7 +93,7 @@ function putMQmessage(selectMainWpsRows,selectMachine,sochet_send_data,giveArray
 		alert("部分焊机下发超时");
 		$('#smdlg').window('close');
 		$('#smwdlg').window('close');
-		$('#weldingmachineTable').datagrid('clearSelections');
+		$('#weldingmachineWpsTable').datagrid('clearSelections');
 		$('#mainWpsTable').datagrid('clearSelections');
 		selectMainWpsRows.length = 0;
 		selectMachine.length = 0;
@@ -111,10 +111,11 @@ function putMQmessage(selectMainWpsRows,selectMachine,sochet_send_data,giveArray
 			var message = new Paho.MQTT.Message(popdata);
 			message.destinationName = "weldmes/downparams";
 			client.send(message);
+			console.log("下发成功");
 		} else {
 			window.clearInterval(timer);
 		}
-	}, 300)
+	}, 300);
 	client.subscribe("weldmes/upparams", {
 		qos: 0,
 		onSuccess:function(e){
@@ -124,6 +125,7 @@ function putMQmessage(selectMainWpsRows,selectMachine,sochet_send_data,giveArray
 			console.log(e);
 		}
 	});
+	//客户端收到消息时执行的方法
 	client.onMessageArrived = function(e){
 		var fan = e.payloadString;
 		if (fan.substring(0, 2) == "7E" && fan.substring(10, 12) == "52") {
@@ -361,6 +363,8 @@ function CPVEWGET(data) {
 	}
 }
 function CPVEWINITwps() {
+	//CPVE500型号参数初始化
+	//通道号1-30
 	$('#fchanel').combobox('clear');
 	var str = "";
 	for (var i = 1; i < 31; i++) {
@@ -369,20 +373,13 @@ function CPVEWINITwps() {
 	$('#fchanel').append(str);
 	$('#fchanel').combobox();
 	$('#fchanel').combobox('select', "1");
-	$('#farc').combobox('clear');
-	$('#farc').combobox('loadData', [ {
-		"text" : "无填弧坑",
-		"value" : "111"
-	}, {
-		"text" : "直流填弧坑",
-		"value" : "112"
-	}, {
-		"text" : "脉冲填弧坑",
-		"value" : "113"
-	}, {
-		"text" : "电弧点焊",
-		"value" : "114"
-	} ]);
+	//焊接过程
+	$('#fweldprocess').combobox('clear');
+	$('#fweldprocess').combobox('loadData', [ {
+		"text" : "直流",
+		"value" : "1"
+	}]);
+	//气体
 	$('#fgas').combobox('clear');
 	$('#fgas').combobox('loadData', [ {
 		"text" : "CO2",
@@ -390,33 +387,8 @@ function CPVEWINITwps() {
 	}, {
 		"text" : "MAG",
 		"value" : "122"
-	}, {
-		"text" : "MIG",
-		"value" : "123"
-	}, {
-		"text" : "MIG_2O2",
-		"value" : "124"
-	} ]);
-	$('#fdiameter').combobox('clear');
-	$('#fdiameter').combobox('loadData', [ {
-		"text" : "Φ0.8",
-		"value" : "135"
-	}, {
-		"text" : "Φ0.9",
-		"value" : "136"
-	}, {
-		"text" : "Φ1.0",
-		"value" : "131"
-	}, {
-		"text" : "Φ1.2",
-		"value" : "132"
-	}, {
-		"text" : "Φ1.4",
-		"value" : "133"
-	}, {
-		"text" : "Φ1.6",
-		"value" : "134"
-	} ]);
+	}]);
+	//焊丝材质
 	$('#fmaterial').combobox('clear');
 	$('#fmaterial').combobox('loadData', [ {
 		"text" : "低碳钢实芯",
@@ -430,40 +402,37 @@ function CPVEWINITwps() {
 	}, {
 		"text" : "不锈钢药芯",
 		"value" : "94"
+	}]);
+	//焊丝直径
+	$('#fdiameter').combobox('clear');
+	$('#fdiameter').combobox('loadData', [ {
+		"text" : "Φ1.0",
+		"value" : "131"
 	}, {
-		"text" : "铁氧体不锈钢实芯",
-		"value" : "95"
+		"text" : "Φ1.2",
+		"value" : "132"
 	}, {
-		"text" : "纯铝",
-		"value" : "96"
+		"text" : "Φ1.4",
+		"value" : "133"
 	}, {
-		"text" : "铝镁合金",
-		"value" : "97"
+		"text" : "Φ1.6",
+		"value" : "134"
 	} ]);
-	$('#fweldprocess').combobox('clear');
-	$('#fweldprocess').combobox('loadData', [ {
-		"text" : "直流脉冲",
-		"value" : "0"
+	//收弧
+	$('#farc').combobox('clear');
+	$('#farc').combobox('loadData', [ {
+		"text" : "无",
+		"value" : "111"
 	}, {
-		"text" : "直流",
-		"value" : "1"
+		"text" : "有",
+		"value" : "112"
 	}, {
-		"text" : "直流低飞溅",
-		"value" : "2"
+		"text" : "反复",
+		"value" : "113"
 	}, {
-		"text" : "直流双脉冲",
-		"value" : "3"
+		"text" : "点焊",
+		"value" : "114"
 	} ]);
-	$("#cwwvo").hide();
-	$("#cwtwvo").hide();
-	$("#cwwvto").hide();
-	$("#cwtwvto").hide();
-	$("#cwivo").hide();
-	$("#cwtivo").hide();
-	$("#cwavo").hide();
-	$("#cwtavo").hide();
-	$("#cwavto").hide();
-	$("#cwtavto").hide();
 	$("#fmode").prop("checked", false);
 	$("#finitial").prop("checked", false);
 	$("#fcontroller").prop("checked", false);
@@ -476,7 +445,7 @@ function CPVEWINITwps() {
 	$("#farc_ele").numberbox('setValue', 100);
 	$("#fhysteresis").numberbox('setValue', 0.4);
 	$("#fcharacter").numberbox('setValue', 0);
-	$('#fweldprocess').combobox('select', 0);
+	$('#fweldprocess').combobox('select', 1);
 	$('#fgas').combobox('select', 122);
 	$('#fmaterial').combobox('select', 91);
 	$('#fdiameter').combobox('select', 132);
@@ -493,7 +462,7 @@ function CPVEWINITwps() {
 	$("#fweld_tuny_vol1").numberbox('setValue', 0);
 	$("#farc_tuny_vol1").numberbox('setValue', 0);
 	$('#farc').combobox('select', 111);
-	$("#frequency").numberbox('setValue', 3);
+	$("#frequency").numberbox('setValue', 3.0);
 }
 function CPVEWCHECK() {
 	if ($('#ftime').numberbox('getValue') < 0.1 || $('#ftime').numberbox('getValue') > 10) {

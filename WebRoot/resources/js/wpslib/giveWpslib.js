@@ -24,8 +24,8 @@ $(function () {
 })
 
 //选择工艺(工艺库下发)
-function selectMainWps(value, model) {
-    wpslibId = value;
+function selectMainWps(wpsLibRow) {
+    wpslibId = wpsLibRow.fid;
     // if(model == 149){
     // 	flag = 1;
     // 	$('#sxSelectdlg').window( {
@@ -47,7 +47,7 @@ function selectMainWps(value, model) {
         idField: 'fid',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
-        url: "wps/getMainwpsList?parent=" + value,
+        url: "wps/getMainwpsList?parent=" + wpsLibRow.fid,
         singleSelect: false,
         rownumbers: true,
         showPageList: false,
@@ -62,7 +62,7 @@ function selectMainWps(value, model) {
             hidden: true
         }, {
             field: 'fmodel',
-            title: '焊机型号',
+            title: '焊机型号id',
             halign: "center",
             align: "left",
             hidden: true
@@ -147,6 +147,7 @@ function selectMainWps(value, model) {
 
 //子工艺详情
 function wpsLibDetail(row) {
+    wpsLibRule(row.modelName);
     $('#fmwpsCraft').form('load', row);
     $('#wpsCraft').dialog("open");
     // editMainWps(row);
@@ -605,7 +606,8 @@ function showResult() {
 
 //索取规范
 function requestWps() {
-    var selectMachine = $('#weldingmachineTable').datagrid('getSelected');
+    console.log("索取规范");
+    var selectMachine = $('#weldingmachineWpsTable').datagrid('getSelected');
     if (selectMachine) {
         if (!selectMachine.gatherId) {
             alert("该焊机未绑定采集模块");
@@ -645,24 +647,23 @@ function requestWps() {
         var k = parseInt(tstr1, 16);
         check += k;
     }
-
     var checksend = parseInt(check).toString(16);
     var a2 = checksend.length;
     checksend = checksend.substring(a2 - 2, a2);
     checksend = checksend.toUpperCase();
+    var str = xxx + checksend + "7D";
+    suoquData(str);
+    $('#smdlg').window('close');
+    $('#weldingmachineWpsTable').datagrid('clearSelections');
+    $('#smdlg').form('clear');
+}
+
+function suoquData(str){
     var symbol = 0;
-    var message = new Paho.MQTT.Message(xxx + checksend + "7D");
-    message.destinationName = "weldmes/downparams";
+    //str:7E0901010156000101E27D
+    var message = new Paho.MQTT.Message(str);
+    message.destinationName = "weldmeswebdatadown";
     client.send(message);
-//    websocket.send(xxx + checksend + "7D");
-//    if (flag == 0) {
-//      var jctimer = window.setTimeout(function() {
-//        if (flag == 0) {
-//          websocket.close();
-//          alert("焊机长时间未响应，索取失败!!!");
-//        }
-//      }, 60000)
-//    }
     var oneMinuteTimer = window.setTimeout(function () {
         if (symbol == 0) {
             client.unsubscribe("weldmes/upparams", {
@@ -675,9 +676,10 @@ function requestWps() {
             })
 //        $('#buttonCancel').linkbutton('enable');
 //        $('#buttonOk').linkbutton('enable');
-            alert("下发超时");
+            alert("索取超时");
         }
     }, 5000);
+    //订阅主题
     client.subscribe("weldmes/upparams", {
         qos: 0,
         onSuccess: function (e) {
@@ -686,15 +688,15 @@ function requestWps() {
         onFailure: function (e) {
             console.log(e);
         }
-    })
+    });
+    //客户端收到消息时执行的方法
     client.onMessageArrived = function (e) {
-        console.log("onMessageArrived:" + e.payloadString);
+        // console.log("onMessageArrived:" + e.payloadString);
         var da = e.payloadString;
+        console.log(da.toString());
         if (da.substring(0, 2) == "7E" && da.substring(10, 12) == "56") {
             if (da.substring(18, 20) == "FF") {
                 flag++;
-//          websocket.close();
-//          if (websocket.readyState != 1) {
                 client.unsubscribe("weldmes/upparams", {
                     onSuccess: function (e) {
                         console.log("取消订阅成功");
@@ -707,22 +709,21 @@ function requestWps() {
                 flag = 0;
                 window.clearTimeout(oneMinuteTimer);
                 symbol = 1;
-//          }
             } else {
-                var wpslibrow = $('#wpslibTable').datagrid("getSelected");
-                if (wpslibrow.model == 174) {
-                    EPWGET(da);
-                } else if (wpslibrow.model == 175) {
-                    EPSGET(da);
-                } else if (wpslibrow.model == 176) {
-                    WBMLGET(da);
-                } else if (wpslibrow.model == 177) {
-                    WBPGET(da);
-                } else if (wpslibrow.model == 178) {
-                    WBLGET(da);
-                } else if (wpslibrow.model == 171) {
-                    CPVEWGET(da);
-                }
+                // var wpslibrow = $('#wpslibTable').datagrid("getSelected");
+                // if (wpslibrow.model == 174) {
+                //     EPWGET(da);
+                // } else if (wpslibrow.model == 175) {
+                //     EPSGET(da);
+                // } else if (wpslibrow.model == 176) {
+                //     WBMLGET(da);
+                // } else if (wpslibrow.model == 177) {
+                //     WBPGET(da);
+                // } else if (wpslibrow.model == 178) {
+                //     WBLGET(da);
+                // } else if (wpslibrow.model == 171) {
+                //     CPVEWGET(da);
+                // }
                 flag++;
                 client.unsubscribe("weldmes/upparams", {
                     onSuccess: function (e) {
@@ -737,12 +738,11 @@ function requestWps() {
                 symbol = 1;
                 alert("索取成功");
                 $('#smdlg').window('close');
-                $('#weldingmachineTable').datagrid('clearSelections');
+                $('#weldingmachineWpsTable').datagrid('clearSelections');
                 $('#smdlg').form('clear');
             }
         }
     }
-//  }
 }
 
 //下发规范

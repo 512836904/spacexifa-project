@@ -164,6 +164,8 @@ function saveProduction() {
     if (urls != "") {
         $('#fm').form('submit', {
             url: urls,
+            type: 'POST',
+            dataType: "text",
             onSubmit: function () {
                 return $(this).form('enableValidation').form('validate');
             },
@@ -181,14 +183,12 @@ function saveProduction() {
                         $('#productionTable').datagrid('reload');
                     }
                 }
-
             },
             error: function (errorMsg) {
                 alert("数据请求失败，请联系系统管理员!");
             }
         });
     }
-    vlogoflag = "";
 }
 
 //编辑

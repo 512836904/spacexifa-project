@@ -185,8 +185,8 @@
 	</delete>
 
 	<select id="getLiarbryJunctionById" parameterType="com.spring.model.ProductionCraft" resultType="com.spring.model.ProductionCraft">
-        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID FROM TB_LIBRARY_JUNCTION
-        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID} AND JUNCTION_ID = #{JUNCTION_ID}
     </select>
 
 	<insert id="addLiarbryJunction" parameterType="com.spring.model.ProductionCraft" flushCache="true">
@@ -194,13 +194,15 @@
 			select TB_LIBRARY_JUNCTION_ID.nextval as FID from dual
 		</selectKey>
 		<if test="FID != null and FID != '' and FID != 0">
-			INSERT INTO TB_LIBRARY_JUNCTION(FID,TRACKINGCARD_ID,PRODUCTION_ID) VALUES (#{FID},#{TRACKINGCARD_ID},#{PRODUCTION_ID})
+			INSERT INTO TB_LIBRARY_JUNCTION(FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID) VALUES (#{FID},#{TRACKINGCARD_ID},#{PRODUCTION_ID},#{JUNCTION_ID})
 		</if>
 	</insert>
 
 	<select id="getLibraryJunction" parameterType="java.math.BigInteger" resultType="com.spring.model.ProductionCraft">
- 		SELECT lj.FID,TRACKINGCARD_ID,PRODUCTION_ID,pc.FNAME FROM TB_LIBRARY_JUNCTION lj
+ 		SELECT lj.FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID,pc.FNAME,j.FJUNCTION,j.JUNCTION_NAME
+ 		FROM TB_LIBRARY_JUNCTION lj
  		LEFT JOIN TB_PRODUCTION_CRAFT pc ON lj.PRODUCTION_ID = pc.FID
+ 		LEFT JOIN TB_JUNCTION j ON lj.JUNCTION_ID = j.FID
         WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID}
 	</select>
 

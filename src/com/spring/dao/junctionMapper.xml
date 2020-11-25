@@ -10,7 +10,8 @@
 
     <!-- 查询焊缝信息列表   -->
     <select id="getJunctionList" parameterType="com.spring.model.Junction" resultType="com.spring.model.Junction">
-        SELECT FID,FJUNCTION,"junction_length","junction_format","current_limit","current_lower_limit",JUNCTION_NAME from TB_JUNCTION
+        SELECT  FID,FJUNCTION,JUNCTION_LENGTH,JUNCTION_FORMAT,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,JUNCTION_NAME
+        from TB_JUNCTION
         WHERE 1 = 1
         <if test="fjunction != null and fjunction != ''">
             and FJUNCTION = #{fjunction}
@@ -25,19 +26,19 @@
         INSERT INTO TB_JUNCTION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="fjunction != null and fjunction != ''">
-                "FJUNCTION",
+                FJUNCTION,
             </if>
             <if test="junction_length != null and junction_length != ''">
-                "junction_length",
+                JUNCTION_LENGTH,
             </if>
             <if test="junction_format != null and junction_format != ''">
-                "junction_format",
+                JUNCTION_FORMAT,
             </if>
             <if test="current_limit != null and current_limit != ''">
-                "current_limit",
+                CURRENT_LIMIT,
             </if>
             <if test="current_lower_limit != null and current_lower_limit != ''">
-                "current_lower_limit",
+                CURRENT_LOWER_LIMIT,
             </if>
             <if test="junction_name != null and junction_name != ''">
                 JUNCTION_NAME,
@@ -71,19 +72,19 @@
         <if test="fid != null and fid != 0">
             <set>
                 <if test="fjunction != null and fjunction != ''">
-                    "FJUNCTION" = #{fjunction},
+                    FJUNCTION = #{fjunction},
                 </if>
                 <if test="junction_length != null and junction_length != ''">
-                    "junction_length" = #{junction_length},
+                    JUNCTION_LENGTH = #{junction_length},
                 </if>
                 <if test="junction_format != null and junction_format != ''">
-                    "junction_format" = #{junction_format},
+                    JUNCTION_FORMAT = #{junction_format},
                 </if>
                 <if test="current_limit != null and current_limit != ''">
-                    "current_limit" = #{current_limit},
+                    CURRENT_LIMIT = #{current_limit},
                 </if>
                 <if test="current_lower_limit != null and current_lower_limit != ''">
-                    "current_lower_limit" = #{current_lower_limit},
+                    CURRENT_LOWER_LIMIT = #{current_lower_limit},
                 </if>
                 <if test="junction_name != null and junction_name != ''">
                     JUNCTION_NAME = #{junction_name},
@@ -99,8 +100,8 @@
         </if>
     </delete>
 
-    <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.ProductionCraft">
-        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID FROM TB_LIBRARY_JUNCTION
+    <!-- <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.ProductionCraft">
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION
         WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
     </select>
 
@@ -119,6 +120,6 @@
     </delete>
 
     <select id="getListByLibraryId" parameterType="int" resultType="com.spring.model.Junction">
-        SELECT "fid","library_id","junction_id" FROM TB_LIBRARY_JUNCTION WHERE "library_id" = #{library_id}
-    </select>
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION WHERE "library_id" = #{library_id}
+    </select> -->
 </mapper>

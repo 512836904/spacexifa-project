@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 @Service
 @Transactional
@@ -40,42 +39,4 @@ public class JunctionServiceImpl implements JunctionService {
         return junctionMapper.deleteJunction(fid);
     }
 
-    @Override
-    public int addLiarbryJunction(int library_id, List<Integer> junction_ids) {
-        int i = 0;
-        if (null != junction_ids && junction_ids.size() > 0 && library_id != 0){
-            for (Integer junction_id: junction_ids){
-                //根据工艺id和焊缝id查询关联表
-                List<Junction> junctionList = junctionMapper.getLiarbryJunctionById(library_id, junction_id);
-                if (junctionList.size() != 0){
-                    //已经存在关联记录，不再增加
-                }else {
-                    Junction junction = new Junction();
-                    junction.setLibrary_id(library_id);
-                    junction.setJunction_id(junction_id);
-                    int i1 = junctionMapper.addLiarbryJunction(junction);
-                    if (i1 != 0){
-                        i = i1;
-                    }
-                }
-            }
-        }
-        return i;
-    }
-
-    @Override
-    public int deleteLiarbryJunctionByIds(List<Integer> ids) {
-        //先去查询改id是否存在，存在则删除，不存在不删除
-        List<Integer> list = new ArrayList<>();
-        List<Junction> listByLibraryId = null;
-        if (null != ids && ids.size() > 0){
-            for (Integer id : ids){
-                listByLibraryId  = junctionMapper.getListByLibraryId(id);
-                if (null != listByLibraryId && listByLibraryId.size() > 0){
-                    list.add(id);
-                }
-            }
-        }
-        return junctionMapper.deleteLiarbryJunctionByIds(list);
-    }
 }

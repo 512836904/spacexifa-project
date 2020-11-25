@@ -1,25 +1,12 @@
 package com.spring.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PushbackInputStream;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
-
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import com.spring.dao.WpsMapper;
+import com.spring.model.*;
+import com.spring.service.*;
+import com.spring.util.IsnullUtil;
+import com.spring.util.UploadUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -36,35 +23,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spring.dao.InsframeworkMapper;
-import com.spring.dao.WpsMapper;
-import com.spring.model.Dictionarys;
-import com.spring.model.Gather;
-import com.spring.model.Insframework;
-import com.spring.model.MaintenanceRecord;
-import com.spring.model.MyUser;
-import com.spring.model.Person;
-import com.spring.model.WeldedJunction;
-import com.spring.model.WeldingMachine;
-import com.spring.model.WeldingMaintenance;
-import com.spring.model.Wps;
-import com.spring.service.DictionaryService;
-import com.spring.service.GatherService;
-import com.spring.service.InsframeworkService;
-import com.spring.service.MaintainService;
-import com.spring.service.PersonService;
-import com.spring.service.WeldedJunctionService;
-import com.spring.service.WeldingMachineService;
-import com.spring.service.WpsService;
-import com.spring.util.IsnullUtil;
-import com.spring.util.UploadUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * excel导入数据库
@@ -257,8 +229,7 @@ public class ImportExcelController {
 	 */
 	@RequestMapping("/importWelder")
 	@ResponseBody
-	public String importWelder(HttpServletRequest request,
-			HttpServletResponse response){
+	public String importWelder(HttpServletRequest request, HttpServletResponse response){
 		UploadUtil u = new UploadUtil();
 		JSONObject obj = new JSONObject();
 		try{
@@ -283,13 +254,13 @@ public class ImportExcelController {
 				w.setUpdater(new BigInteger(user.getId()+""));
 				w.setWelderno(w.getWelderno());
 				String phone = w.getCellphone();
-				if(iutil.isNull(phone)){
-					if(!phone.matches("^1[3-8]\\d{9}$")){
-						obj.put("msg","导入失败，请检查您的手机号码是否正确！");
-						obj.put("success",false);
-						return obj.toString();
-					}
-				}
+//				if(iutil.isNull(phone)){
+//					if(!phone.matches("^1[3-8]\\d{9}$")){
+//						obj.put("msg","导入失败，请检查您的手机号码是否正确！");
+//						obj.put("success",false);
+//						return obj.toString();
+//					}
+//				}
 				//编码唯一
 				int count1 = ps.getUsernameCount(w.getWelderno());
 				if(count1>0){
@@ -659,7 +630,7 @@ public class ImportExcelController {
 					return obj.toString();
 				}else {
 				wpss.addWps1(w);
-				if(w.getFid()!= 0) {
+				if(w.getFid() != BigInteger.valueOf(0)) {
 					wpsId = String.valueOf(w.getFid());
 					w.setFwpslib_id(new BigInteger(wpsId));
 					wpss.addEmployee1(w);

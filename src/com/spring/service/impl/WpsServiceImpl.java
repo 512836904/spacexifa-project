@@ -156,6 +156,11 @@ public class WpsServiceImpl implements WpsService{
 	}
 
 	@Override
+	public List<Wps> findSpecificationByFid(BigInteger wpslibid) {
+		return mapper.findSpecificationByFid(wpslibid);
+	}
+
+	@Override
 	public List<Wps> getLibraryJunction(String library_id) {
 		return mapper.getLibraryJunction(library_id);
 	}

@@ -1,13 +1,11 @@
 package com.spring.dao;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.spring.dto.WeldDto;
 import com.spring.model.Wps;
-import com.spring.page.Page;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface WpsMapper {
 	List<Wps> findAll(@Param("parent")BigInteger parent,@Param("str")String str);
@@ -30,6 +28,7 @@ public interface WpsMapper {
 	void saveSpe(Wps wps);
 	void updateSpe(Wps wps);
 	List<Wps> getWpslibList(@Param("search")String search);
+	public List<Wps> findSpecificationByFid(@Param("wpslibid") BigInteger wpslibid);
 	List<Wps> getLibraryJunction(@Param("library_id")String library_id);
 	List<Wps> getMainwpsList(@Param("parent")BigInteger parent);
 	int getWpslibNameCount(@Param("wpsName")String wpsName);

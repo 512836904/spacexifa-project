@@ -530,9 +530,8 @@ function selectModelSure() {
         //索取规范
         requestWps();
     } else if (selectflag == 1) {
-        //test 下发规范
-        // giveMainWps();
-        CPVEW();
+        //下发规范
+        craftNormIssue();
     } else if (selectflag == 2) {
         //密码校验();
         passfun();
@@ -547,7 +546,7 @@ function selectModelSure() {
 function showResult() {
     $('#resultfm').form('clear');
     $('#resultdlg').window({
-        title: "下发中，请稍等。。。",
+        title: "工艺下发结果列表",
         modal: true
     });
     $("#giveResultTable").datagrid({
@@ -617,14 +616,6 @@ function requestWps() {
         alert("请选择焊机");
         return;
     }
-    var flag = 0;
-//  var websocket = null;
-//  if (typeof (WebSocket) == "undefined") {
-//    WEB_SOCKET_SWF_LOCATION = "resources/js/WebSocketMain.swf";
-//    WEB_SOCKET_DEBUG = true;
-//  }
-//  websocket = new WebSocket(websocketUrl);
-//  websocket.onopen = function() {
     var chanel = $('#fchanel').combobox('getValue').toString(16);
     if (chanel.length < 2) {
         var length = 2 - chanel.length;
@@ -651,7 +642,8 @@ function requestWps() {
     var a2 = checksend.length;
     checksend = checksend.substring(a2 - 2, a2);
     checksend = checksend.toUpperCase();
-    var str = xxx + checksend + "7D";
+    var str = "00" + xxx + checksend + "7D";
+    // console.log("str:"+str);
     suoquData(str);
     $('#smdlg').window('close');
     $('#weldingmachineWpsTable').datagrid('clearSelections');
@@ -660,18 +652,19 @@ function requestWps() {
 
 function suoquData(str){
     var symbol = 0;
-    //str:7E0901010156000101E27D
+    //str:007E0901010156000101E27D
+    //007E0901010156000105E67D
     var message = new Paho.MQTT.Message(str);
     message.destinationName = "weldmeswebdatadown";
     client.send(message);
     var oneMinuteTimer = window.setTimeout(function () {
-        if (symbol == 0) {
+        if (symbol === 0) {
             client.unsubscribe("weldmes/upparams", {
                 onSuccess: function (e) {
                     console.log("取消订阅成功");
                 },
                 onFailure: function (e) {
-                    console.log(e);
+                    console.log("取消订阅失败："+e.errorCode);
                 }
             })
 //        $('#buttonCancel').linkbutton('enable');
@@ -683,17 +676,16 @@ function suoquData(str){
     client.subscribe("weldmes/upparams", {
         qos: 0,
         onSuccess: function (e) {
-            console.log("订阅成功");
+            console.log("主题订阅成功");
         },
         onFailure: function (e) {
-            console.log(e);
+            console.log("主题订阅失败："+e.errorCode);
         }
     });
     //客户端收到消息时执行的方法
     client.onMessageArrived = function (e) {
         // console.log("onMessageArrived:" + e.payloadString);
         var da = e.payloadString;
-        console.log(da.toString());
         if (da.substring(0, 2) == "7E" && da.substring(10, 12) == "56") {
             if (da.substring(18, 20) == "FF") {
                 flag++;
@@ -710,20 +702,14 @@ function suoquData(str){
                 window.clearTimeout(oneMinuteTimer);
                 symbol = 1;
             } else {
-                // var wpslibrow = $('#wpslibTable').datagrid("getSelected");
-                // if (wpslibrow.model == 174) {
-                //     EPWGET(da);
-                // } else if (wpslibrow.model == 175) {
-                //     EPSGET(da);
-                // } else if (wpslibrow.model == 176) {
-                //     WBMLGET(da);
-                // } else if (wpslibrow.model == 177) {
-                //     WBPGET(da);
-                // } else if (wpslibrow.model == 178) {
-                //     WBLGET(da);
-                // } else if (wpslibrow.model == 171) {
-                //     CPVEWGET(da);
-                // }
+                var wpslibrow = $('#wpslibTable').datagrid("getSelected");
+                //焊机型号id
+                if (wpslibrow.model == 180) {           //CPVE500(S-2) :180
+                    CPVEWGET(da);
+                } else if (wpslibrow.model == 181) {    //WB-P500L :181
+                    WBLGET(da);
+                }
+                alert("索取成功");
                 flag++;
                 client.unsubscribe("weldmes/upparams", {
                     onSuccess: function (e) {
@@ -736,7 +722,6 @@ function suoquData(str){
                 flag = 0;
                 window.clearTimeout(oneMinuteTimer);
                 symbol = 1;
-                alert("索取成功");
                 $('#smdlg').window('close');
                 $('#weldingmachineWpsTable').datagrid('clearSelections');
                 $('#smdlg').form('clear');

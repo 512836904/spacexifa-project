@@ -59,17 +59,26 @@ function weldingMachineDatagrid(){
 			halign : "center",
 			align : "left"
 		}, {
-			field : 'isnetworking',
+			field : 'isnetworkingId',
 			title : '是否在网',
 			width : 100,
 			halign : "center",
-			align : "left"
+			align : "center",
+			formatter:function (value,row,index){
+				var str = "";
+				if (value == 0){
+					str += "是";
+				}else if (value == 1){
+					str += "否";
+				}
+				return str;
+			}
 		}, {
 			field : 'gatherId',
 			title : '采集序号',
 			width : 200,
 			halign : "center",
-			align : "left"
+			align : "center"
 		}, {
 			field : 'position',
 			title : '位置',
@@ -103,13 +112,6 @@ function weldingMachineDatagrid(){
 			align : "left",
 			hidden: true
 		}, {
-			field : 'isnetworkingId',
-			title : '是否联网id',
-			width : 100,
-			halign : "center",
-			align : "left",
-			hidden: true
-		}, {
 			field : 'manuno',
 			title : '厂商id',
 			width : 100,
@@ -132,7 +134,7 @@ function weldingMachineDatagrid(){
 			hidden: true
 		}, {
 			field : 'gid',
-			title : '采集id',
+			title : '采集模块id',
 			width : 100,
 			halign : "center",
 			align : "left",
@@ -161,12 +163,12 @@ function weldingMachineDatagrid(){
 //                color.class="rowColor";
                 return color;
             }
-        },
-		onLoadSuccess:function(data){
-	        $("a[id='edit']").linkbutton({text:'修改',plain:true,iconCls:'icon-update'});
-	        $("a[id='remove']").linkbutton({text:'删除',plain:true,iconCls:'icon-delete'});
-//	        $("a[id='maintain']").linkbutton({text:'维修记录',plain:true,iconCls:'icon-update'});
-		}
+        }
+// 		onLoadSuccess:function(data){
+// 	        $("a[id='edit']").linkbutton({text:'修改',plain:true,iconCls:'icon-update'});
+// 	        $("a[id='remove']").linkbutton({text:'删除',plain:true,iconCls:'icon-delete'});
+// //	        $("a[id='maintain']").linkbutton({text:'维修记录',plain:true,iconCls:'icon-update'});
+// 		}
 	});
 }
 
@@ -299,8 +301,8 @@ function searchData(){
 	var sip = $("#sip").textbox('getValue');
 	var smodel = $("#smodel").combobox("getValue");
 	var sid = "";
-	if($("input[name='sstatusId']:checked").val()){
-		sid = $("input[name='sstatusId']:checked").val();
+	if($("input[name='statusId']:checked").val()){
+		sid = $("input[name='statusId']:checked").val();
 	}
 	var isnetworking = "";
 	if($("input[name='sisnetworkingId']:checked").val()){

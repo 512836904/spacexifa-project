@@ -400,6 +400,10 @@ function closedlg() {
     if (!$("#condlg").parent().is(":hidden")) {
         $('#condlg').window('close');
     }
+    //密码下发
+    if (!$("#pwd").parent().is(":hidden")) {
+        $('#pwd').window('close');
+    }
 }
 
 function sxDefault() {

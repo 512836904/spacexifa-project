@@ -1,14 +1,11 @@
 package com.spring.service;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.spring.dto.WeldDto;
-import com.spring.model.User;
 import com.spring.model.Wps;
 import com.spring.page.Page;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface WpsService {
 	List<Wps> findAll(Page page, BigInteger parent,String str);
@@ -32,6 +29,7 @@ public interface WpsService {
 	void saveSpe(Wps wps);
 	void updateSpe(Wps wps);
 	List<Wps> getWpslibList(Page page, String search);
+	List<Wps> findSpecificationByFid(BigInteger wpslibid);
 	List<Wps> getLibraryJunction(String library_id);
 	List<Wps> getTaskstatus(String search1);
 	List<Wps> getMainwpsList(Page page, BigInteger parent);

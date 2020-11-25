@@ -121,7 +121,7 @@
     <!-- 新增子工艺规范下发 -->
     <insert id="saveSpe" parameterType="Wps">
         <!-- INSERT INTO tb_specification(fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode, ftime, fmaterial, fadvance, fhysteresis, fgas, fdiameter, fini_ele, fini_vol, fini_vol1, fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol, farc_vol1, fweld_tuny_ele, fweld_tuny_vol, farc_tuny_ele, farc_tuny_vol, Fcreater, fwpslib_id, fwater_cooled_torch, fwelding_process, fwarn_ele_up, fwarn_ele_down, fwarn_vol_up, fwarn_vol_down, fmachine_id) VALUES (#{fweld_i_max},#{fweld_i_min},#{fweld_alter_i},#{fweld_i},#{fweld_v},#{fweld_v_max},#{fweld_v_min},#{ftime},#{fweld_prechannel},#{fadvance},#{fhysteresis},#{fweld_alter_v},#{insid},#{fini_ele},#{fini_vol},#{fini_vol1},#{fweld_ele},#{fweld_vol},#{fweld_vol1},#{farc_ele},#{farc_vol},#{farc_vol1},#{fweld_tuny_ele},#{fweld_tuny_vol},#{farc_tuny_ele},#{fdiameter},#{fcreater},#{fid},#{ftorch},#{fprocessid},#{fwarn_ele_up},#{fwarn_ele_down},#{fwarn_vol_up},#{fwarn_vol_down},#{macid}) -->
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_SPECIFICATION_ID.nextval as fid from dual
         </selectKey>
         <if test="fwpslib_id != null and fwpslib_id != '' and fwpslib_id != 0">
@@ -230,7 +230,7 @@
         </if>
         ORDER by fid -->
         SELECT wc.FID,wc.FWPS_LIB_NAME fwpsnum,wc.FMACHINEMODEL macid,wc.FCREATEDATE,
-        di.fvaluename fname,d.fvaluename insname,em.ftype conname
+        di.fvaluename fname,d.fvaluename insname,em.ftype conname,wc.FSTATUS
         FROM TB_WPS_CRAFT wc
         LEFT JOIN tb_dictionary d ON wc.fstatus=d.fvalue and d.ftypeid=6
         LEFT JOIN tb_dictionary di ON wc.fmachinemodel=di.fvalue AND di.ftypeid=17
@@ -240,6 +240,11 @@
             AND wc.FWPS_LIB_NAME = #{search}
         </if>
         ORDER by wc.FID
+    </select>
+
+    <select id="findSpecificationByFid" resultType="Wps" parameterType="java.math.BigInteger">
+        SELECT FID,FSPE_NUM,FWPSLIB_ID FROM tb_specification WHERE FWPSLIB_ID = #{wpslibid}
+        ORDER BY FSPE_NUM ASC
     </select>
 
     <select id="gettrackcard" parameterType="BigInteger" resultType="Wps">
@@ -259,7 +264,7 @@
 	</select>
 
     <insert id="saveWpslib" parameterType="com.spring.model.Wps">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_WPS_CRAFT_ID.nextval as id from dual
         </selectKey>
         INSERT INTO TB_WPS_CRAFT(fid,fwps_lib_name,fmachinemodel, fcreater, fcreatedate, fstatus) VALUES
@@ -274,41 +279,25 @@
     </update>
 
     <select id="getMainwpsList" resultType="Wps" parameterType="java.math.BigInteger">
-        <!-- 		select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc weldername,
-        s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter fname,s.ftime,s.fhysteresis,s.fadvance,
-        s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,
-        s.fwarn_ele_up,s.fwarn_ele_down,s.fwarn_vol_up,s.fwarn_vol_down,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol fdiameter,
-        dm.fvaluename materialname,ds.fvaluename selectname,dg.fvaluename gasname,da.fvaluename arcname,dd.fvaluename dianame,
-        s.fwater_cooled_torch ftorch,s.fwelding_process fprocessid,dp.fvaluename fprocessname FROM tb_specification s
-                LEFT JOIN tb_dictionary dm ON s.fmaterial=dm.fvalue and dm.ftypeid=9
-                LEFT JOIN tb_dictionary ds ON s.fselect=ds.fvalue and ds.ftypeid=10
-                LEFT JOIN tb_dictionary da ON s.farc=da.fvalue and da.ftypeid=11
-                LEFT JOIN tb_dictionary dg ON s.fgas=dg.fvalue and dg.ftypeid=12
-                LEFT JOIN tb_dictionary dd ON s.fdiameter=dd.fvalue and dd.ftypeid=13
-                LEFT JOIN tb_dictionary dp ON s.fwelding_process=dp.fvalue AND dp.ftypeid=22
-                where 1=1  -->
-        <!-- todo update for 2020.10.20
-          SELECT s.fid,fspe_num fwpsnum,fsolder_layer,fweld_bead,fweld_method,fmaterial,d.fvaluename
-        materialname,fdiameter,di.fvaluename dianame,fweld_ele+fweld_tuny_ele fpreset_ele_top,fweld_ele-fweld_tuny_ele
-        fpreset_ele_bottom,
-        fweld_vol+fweld_tuny_vol fpreset_vol_top,fweld_vol-fweld_tuny_vol
-        fpreset_vol_bottom,fpower_polarity,fgas_flow,fweld_speed,fwelding_process fprocessid,dic.fvaluename
-        fprocessname,fwpslib_id insid,l.fwps_lib_name insname
-        FROM tb_specification s
-        LEFT JOIN tb_dictionary d on d.fvalue=s.fmaterial and d.ftypeid=9
-        LEFT JOIN tb_dictionary di on di.fvalue=s.fdiameter and di.ftypeid=13
-        LEFT JOIN tb_dictionary dic on dic.fvalue=s.fwelding_process and dic.ftypeid=22
-        LEFT JOIN tb_wps_library l on l.fid=s.fwpslib_id
-        WHERE 1=1
-        <if test="parent!=null and parent!=''">
-            AND s.fwpslib_id=#{parent}
-        </if>
-        ORDER by s.fweld_bead -->
-        SELECT s.FID fid,s.FSPE_NUM welderid,s.fselect insname,s.fcharacter fweld_v_max,s.fmaterial updatename,s.fgas
-        fback,s.fdiameter fname,s.fweld_ele,s.fweld_vol,
+        <!-- select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc weldername,
+            s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter fname,s.ftime,s.fhysteresis,s.fadvance,
+            s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,
+            s.fwarn_ele_up,s.fwarn_ele_down,s.fwarn_vol_up,s.fwarn_vol_down,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol fdiameter,
+            dm.fvaluename materialname,ds.fvaluename selectname,dg.fvaluename gasname,da.fvaluename arcname,dd.fvaluename dianame,
+            s.fwater_cooled_torch ftorch,s.fwelding_process fprocessid,dp.fvaluename fprocessname FROM tb_specification s
+            LEFT JOIN tb_dictionary dm ON s.fmaterial=dm.fvalue and dm.ftypeid=9
+            LEFT JOIN tb_dictionary ds ON s.fselect=ds.fvalue and ds.ftypeid=10
+            LEFT JOIN tb_dictionary da ON s.farc=da.fvalue and da.ftypeid=11
+            LEFT JOIN tb_dictionary dg ON s.fgas=dg.fvalue and dg.ftypeid=12
+            LEFT JOIN tb_dictionary dd ON s.fdiameter=dd.fvalue and dd.ftypeid=13
+            LEFT JOIN tb_dictionary dp ON s.fwelding_process=dp.fvalue AND dp.ftypeid=22
+            where 1=1
+        -->
+        SELECT s.FID fid,s.FSPE_NUM welderid,s.fselect insname,s.fcharacter fweld_v_max,s.fmaterial updatename,s.fgas fback,
+        s.fdiameter fname,s.fweld_ele,s.fweld_vol,s.finitial,s.fcontroller,s.farc,s.fwater_cooled_torch ftorch,
         s.fini_ele,s.fini_vol,s.farc_ele,s.farc_vol,s.fadvance,s.fweld_tuny_ele,s.fweld_tuny_vol,
-        s.ftime,s.farc_tuny_ele,s.farc_tuny_vol,d1.fvaluename selectname,d2.fvaluename materialname,d3.fvaluename dianame,d4.fvaluename
-        gasname,d5.fvaluename conname,s.fwelding_process,s.fini_vol1,s.fweld_vol1,s.farc_vol1,s.fhysteresis,s.FGASFLOW gasflow,
+        s.ftime,s.farc_tuny_ele,s.farc_tuny_vol,d1.fvaluename selectname,d2.fvaluename materialname,d3.fvaluename dianame,d4.fvaluename gasname,
+        d5.fvaluename conname,s.fwelding_process,s.fini_vol1,s.fweld_vol1,s.farc_vol1,s.fhysteresis,s.FGASFLOW gasflow,
         s.fspeed,s.farc_speed,s.farc_tuny_speed,s.fselectstep,s.ffrequency,s.fini_tuny_vol,l.fmachinemodel model,d6.FVALUENAME modelName
         FROM tb_specification s
         LEFT JOIN tb_dictionary d1 on s.fselect=d1.fvalue and d1.ftypeid=10
@@ -670,7 +659,7 @@
     </select>
 
     <insert id="addWps" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_WPS_LIBRARY_ID.nextval as id from dual
         </selectKey>
         INSERT INTO tb_wps_library (fid,fproduct_drawing_no,
@@ -757,7 +746,7 @@
 	</delete>
 
     <insert id="addEmployee" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_EMPLOYEE_ID.nextval as id from dual
         </selectKey>
         INSERT INTO tb_employee (fid,femployee_id, femployee_version, femployee_name,fwps_lib_id) VALUES
@@ -818,7 +807,7 @@
 	</delete>
 
     <insert id="addStep" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_STEP_ID.nextval as id from dual
         </selectKey>
         INSERT INTO tb_step (fid,femployee_id, fstep_number, fstep_name, fstep_version) VALUES
@@ -854,7 +843,7 @@
 	</delete>
 
     <insert id="addJunction" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="AFTER" keyProperty="fid">
             select TB_JUNCTION_ID.currval as id from dual
         </selectKey>
         INSERT INTO tb_junction (fstep_id, fjunction,fwelding_area) VALUES
@@ -954,7 +943,7 @@
 	</select>
 
     <insert id="addWps1" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_WPS_LIBRARY_ID.nextval as id from dual
         </selectKey>
         INSERT INTO tb_wps_library (fid,fproduct_drawing_no,
@@ -1033,7 +1022,7 @@
     </select>
 
     <insert id="addTaskresultRow" parameterType="Wps">
-        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="AFTER" keyProperty="fid">
             select TB_TASKRESULT_ID.currval as fid from dual
         </selectKey>
         INSERT INTO TB_TASKRESULT
@@ -1139,14 +1128,12 @@
 
     <!-- 新增电子跟踪卡 -->
     <insert id="addWpsLibrary" parameterType="Wps" keyColumn="FID" keyProperty="fid" useGeneratedKeys="true">
-        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_WELDED_JUNCTION_ID.nextval as fid from dual
         </selectKey>
         INSERT INTO TB_WELDED_JUNCTION
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="fid != null and fid != ''">
                 FID,
-            </if>
             <if test="JOB_NUMBER != null and JOB_NUMBER != ''">
                 JOB_NUMBER,
             </if>
@@ -1165,7 +1152,7 @@
             <if test="craft_param != null and craft_param != ''">
                  CRAFT_PARAM,
             </if>
-            <if test="raw_material != null and raw_material != ''">
+            <if test="raw_materi != null and raw_materi != ''">
                 RAW_MATERI,
             </if>
             <if test="process != null and process != ''">
@@ -1173,9 +1160,7 @@
             </if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
-            <if test="fid != null and fid != ''">
                 #{fid},
-            </if>
             <if test="JOB_NUMBER != null and JOB_NUMBER != ''">
                 #{JOB_NUMBER},
             </if>
@@ -1194,8 +1179,8 @@
             <if test="craft_param != null and craft_param != ''">
                 #{craft_param},
             </if>
-            <if test="raw_material != null and raw_material != ''">
-                #{raw_material},
+            <if test="raw_materi != null and raw_materi != ''">
+                #{raw_materi},
             </if>
             <if test="process != null and process != ''">
                 #{process},
@@ -1244,18 +1229,17 @@
         </foreach>
     </delete>
 
+    <!-- 查询工作号、部套号信息 -->
     <select id="findJobSetNumber" resultType="Wps">
         select j.JOB_NUMBER,j.SET_NUMBER,j.PART_NAME,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60*1000) wirefeedrate,sum(fworktime) worktime
         from TB_WELDED_JUNCTION j
         LEFT JOIN tb_work w ON j.FID=w.FCARD_ID
         LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and w.fmachinemodel=m.fmodel
-        where (w.FSTATUS=3 OR w.FSTATUS=99)
+        where 1 = 1
+        <!-- (w.FSTATUS=3 OR w.FSTATUS=99) -->
         <if test="dto!=null and dto!=''">
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime >= TO_DATE(#{dto.dtoTime1}, 'yyyy-MM-dd')
-            </if>
-            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-                and TO_DATE(#{dto.dtoTime2}, 'yyyy-MM-dd') >= fendtime
             </if>
         </if>
         GROUP BY j.JOB_NUMBER,J.SET_NUMBER,J.PART_NAME

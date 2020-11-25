@@ -1,14 +1,14 @@
 package com.spring.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.spring.dto.ModelDto;
 import com.spring.dto.WeldDto;
 import com.spring.model.DataStatistics;
-import com.spring.model.LiveData;
-import com.spring.model.WeldedJunction;
 import com.spring.model.Wps;
 import com.spring.page.Page;
-import com.spring.service.*;
+import com.spring.service.DataStatisticsService;
+import com.spring.service.InsframeworkService;
+import com.spring.service.LiveDataService;
+import com.spring.service.WpsService;
 import com.spring.util.IsnullUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -19,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.plaf.synth.SynthScrollBarUI;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,41 +64,36 @@ public class FrontEndController {
         if (iutil.isNull(request.getParameter("rows"))) {
             pageSize = Integer.parseInt(request.getParameter("rows"));
         }
-//        String time1 = request.getParameter("dtoTime1");
-//        String time2 = request.getParameter("dtoTime2");
         page = new Page(pageIndex, pageSize, total);
+        BigInteger parent = null;
         try {
-            BigInteger parent = null;
-//          List<DataStatistics> list = dss.getWorkRank(page, parent, sdfDay.format(System.currentTimeMillis()));
-//            if (null != list && list.size() > 0) {
-//                for (int i = 0; i < list.size(); i++) {
-//                    json.put("rownum", i + 1);
-//                    json.put("welderno", list.get(i).getWelderno());
-//                    json.put("name", list.get(i).getName());
-//                    json.put("item", list.get(i).getInsname());
-//                    json.put("hour", (double) Math.round(list.get(i).getHour() * 100) / 100);
-//                    ary.add(json);
-//                }
-//            } else {
-//                json.put("rownum", "");
-//                json.put("welderno", "");
-//                json.put("name", "");
-//                json.put("item", "");
-//                json.put("hour", "");
-//                ary.add(json);
-//            }
-            for (int i = 0; i < 5; i++) {
-                json.put("rownum", i + 1);
-                json.put("welderno", "焊工编号" + i);
-                json.put("name", "姓名" + i);
-                json.put("item", "组织机构");
-                json.put("hour", 100 - (i * 10));
+//            String time1 = request.getParameter("startTime");
+            String time1 = "2020-08-25";
+            if (null == time1 || "".equals(time1)) {
+                time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
+            }
+            List<DataStatistics> list = dss.getWorkRank(page, parent, time1);
+            if (null != list && list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    json.put("rownum", i + 1);
+                    json.put("welderno", list.get(i).getWelderno());
+                    json.put("name", list.get(i).getName());
+                    json.put("item", list.get(i).getInsname());
+                    json.put("hour", (double) Math.round(list.get(i).getHour() * 100) / 100);
+                    ary.add(json);
+                }
+            } else {
+                json.put("rownum", "");
+                json.put("welderno", "");   //焊工编号
+                json.put("name", "");   //焊工姓名
+                json.put("item", "");   //组织机构
+                json.put("hour", "");
                 ary.add(json);
             }
-            obj.put("rows", ary);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        obj.put("rows", ary);
         return obj.toString();
     }
 
@@ -118,29 +111,30 @@ public class FrontEndController {
         JSONObject json = new JSONObject();
         WeldDto weldDto = new WeldDto();
         BigInteger parent = null;
-        String startTime = request.getParameter("startTime");
-        if (StringUtils.isEmpty(startTime)){
+//        String startTime = request.getParameter("startTime");
+        String startTime = "2020-08-25";
+        if (StringUtils.isEmpty(startTime)) {
             weldDto.setDtoTime1(sdfDay.format(System.currentTimeMillis()));
-        }else {
+        } else {
             weldDto.setDtoTime1(startTime);
         }
         try {
             List<DataStatistics> loadRateList = dss.findLoadRateList(parent, weldDto);
-            if (null != loadRateList && loadRateList.size() > 0){
-                for (DataStatistics data : loadRateList){
-                    json.put("id" ,data.getId());
-                    json.put("itemname" ,data.getName());
-                    if (data.getWkhour() != 0 && data.getWkhour() > data.getWnhour()){
-                        json.put("hour", (data.getWkhour() - data.getWnhour()) / data.getWkhour()*100);
-                    }else {
+            if (null != loadRateList && loadRateList.size() > 0) {
+                for (DataStatistics data : loadRateList) {
+                    json.put("id", data.getId());
+                    json.put("itemname", data.getName());
+                    if (data.getWkhour() != 0 && data.getWkhour() > data.getWnhour()) {
+                        json.put("hour", (data.getWkhour() - data.getWnhour()) / data.getWkhour() * 100);
+                    } else {
                         json.put("hour", 0);
                     }
                     ary.add(json);
                 }
-            }else {
-                json.put("id" , "");
-                json.put("itemname" , "");
-                json.put("hour" , 0);
+            } else {
+                json.put("id", "");
+                json.put("itemname", "");
+                json.put("hour", 0);
                 ary.add(json);
             }
         } catch (Exception e) {
@@ -158,31 +152,40 @@ public class FrontEndController {
     public String findAverageWorkingTime(HttpServletRequest request) {
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
-        List<DataStatistics> list = dss.findAverageWorkingTime();
-        if (null != list && list.size() > 0) {
-            for (DataStatistics data : list) {
-                json.put("id", data.getId());       //组织机构id
-                json.put("name", data.getName());   //组织机构名称
-                json.put("hour", data.getHour());   //总时长（h）
-                json.put("num", data.getNum());     //总人数
-                BigDecimal bd = null;
-                if (data.getNum() != 0) {
-                    bd = new BigDecimal(data.getHour() / data.getNum() * 100);
-                    bd = bd.setScale(2, RoundingMode.HALF_UP);
-                    json.put("rate", Double.valueOf(bd.toString()));     //符合率
-                } else {
-                    json.put("rate", Double.valueOf(0.1));     //符合率
+//        String startTime = request.getParameter("startTime");
+        String startTime = "2020-08-25";
+        try {
+            if (StringUtils.isEmpty(startTime)) {
+                startTime = sdfDay.format(System.currentTimeMillis());  //默认当天时间
+            }
+            List<DataStatistics> list = dss.findAverageWorkingTime(startTime);
+            if (null != list && list.size() > 0) {
+                for (DataStatistics data : list) {
+                    json.put("id", data.getId());       //组织机构id
+                    json.put("name", data.getName());   //组织机构名称
+                    json.put("hour", data.getHour());   //总时长（h）
+                    json.put("num", data.getNum());     //总人数
+                    BigDecimal bd = null;
+                    if (data.getNum() != 0) {
+                        bd = new BigDecimal(data.getHour() / data.getNum() * 100);
+                        bd = bd.setScale(2, RoundingMode.HALF_UP);
+                        json.put("rate", Double.valueOf(bd.toString()));     //符合率
+                    } else {
+                        json.put("rate", Double.valueOf(0.1));     //符合率
 
+                    }
+                    ary.add(json);
                 }
+            } else {
+                json.put("id", "");
+                json.put("name", "");
+                json.put("hour", "");
+                json.put("num", "");
+                json.put("rate", "");
                 ary.add(json);
             }
-        } else {
-            json.put("id", "");
-            json.put("name", "");
-            json.put("hour", "");
-            json.put("num", "");
-            json.put("rate", "");
-            ary.add(json);
+        }catch (Exception e){
+            e.printStackTrace();
         }
         JSONObject obj = new JSONObject();
         obj.put("ary", ary);
@@ -201,8 +204,8 @@ public class FrontEndController {
         if (iutil.isNull(request.getParameter("rows"))) {
             pageSize = Integer.parseInt(request.getParameter("rows"));
         }
-//        String time1 = request.getParameter("dtoTime1");
-//        String time2 = request.getParameter("dtoTime2");
+//        String time1 = request.getParameter("startTime");
+        String time1 = "2020-08-25";
         page = new Page(pageIndex, pageSize, total);
         JSONObject obj = new JSONObject();
         JSONArray ary = new JSONArray();
@@ -212,7 +215,10 @@ public class FrontEndController {
         JSONArray titleary = new JSONArray();
         long total = 0;
         try {
-            dto.setDtoTime1(sdfDay.format(System.currentTimeMillis()));
+            if (null == time1 || "".equals(time1)) {
+                time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
+            }
+            dto.setDtoTime1(time1);
             List<DataStatistics> list = dss.getItemMachineCount(page, im.getUserInsframework()); //根据组织机构统计焊机总数
             if (list != null) {
                 PageInfo<DataStatistics> pageinfo = new PageInfo<DataStatistics>(list);
@@ -344,18 +350,21 @@ public class FrontEndController {
         }
         page = new Page(pageIndex, pageSize, total);
         WeldDto dto = new WeldDto();
-        Date date = new Date(System.currentTimeMillis());
-        dto.setDtoTime1(sdfDay.format(date));
-        dto.setDtoTime2(null);
+//        String time1 = request.getParameter("startTime");
+        String time1 = "2020-08-25";
         try {
+            if (null == time1 || "".equals(time1)) {
+                time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
+            }
+            dto.setDtoTime1(time1);
             List<Wps> list = wpsService.findJobSetNumber(page, dto);
             if (null != list && list.size() > 0) {
                 for (Wps li : list) {
                     json.put("JOB_NUMBER", li.getJOB_NUMBER());
                     json.put("SET_NUMBER", li.getSET_NUMBER());
                     json.put("PART_NAME", li.getPART_NAME());
-                    json.put("wirefeedrate", li.getWirefeedrate());
-                    json.put("worktime", li.getWorktime());
+                    json.put("wirefeedrate", li.getWirefeedrate().toString());
+                    json.put("worktime", li.getWorktime().toString());
                     ary.add(json);
                 }
             } else {

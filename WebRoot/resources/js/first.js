@@ -243,7 +243,7 @@ function mqttTest() {
         useSSL: false,
         onSuccess: onConnect,
         onFailure: function (e) {
-            console.log(e);
+            console.log("failed:"+e.errorCode);
         },
         reconnect: true
     }
@@ -264,19 +264,20 @@ function onConnect() {
     client.subscribe("weldmesrealdata", {
         qos: 0,
         onSuccess: function (e) {
-            console.log("订阅成功");
+            console.log("主题订阅成功");
             // var loadingMask = document.getElementById('loadingDiv');
             // loadingMask.parentNode.removeChild(loadingMask);
         },
         onFailure: function (e) {
-            console.log(e + "订阅失败");
+            console.log("主题订阅失败:"+e.errorCode);
             // var loadingMask = document.getElementById('loadingDiv');
-            // loadingMask.parentNode.removeChild(loadingMask);
+            // loadingMask.parentNode.removeChild(loadingMask); //parentNode无法找到，这个会导致MQTT连接丢失问题
         }
     });
 }
 
 //called when the client loses its connection
+//连接丢失时，触发事件
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
@@ -284,6 +285,7 @@ function onConnectionLost(responseObject) {
 }
 
 //called when a message arrives
+//客户端收到消息时，触发事件
 function onMessageArrived(message) {
 	// console.log("onMessageArrived:"+message.payloadString);
     redata = message.payloadString;

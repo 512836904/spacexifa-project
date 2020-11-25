@@ -45,8 +45,7 @@
 <div id="body" style="width:1670px;height: 80%">
     <table id="productionTable" style="table-layout: fixed; width:100%;height: 600px"></table>
     <!-- 添加修改 -->
-    <div id="dlg" class="easyui-dialog" style="width: 600px; height: 550px; padding:10px 20px" closed="true"
-         buttons="#dlg-buttons">
+    <div id="dlg" class="easyui-dialog" style="width: 600px; height: 550px; padding:10px 20px" closed="true" buttons="#dlg-buttons">
         <form id="fm" class="easyui-form" method="post" data-options="novalidate:true"><br/>
             <div class="fitem">
                 <input type="hidden" id="FID" name="FID">

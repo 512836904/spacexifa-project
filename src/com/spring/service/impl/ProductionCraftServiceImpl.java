@@ -1,12 +1,12 @@
 package com.spring.service.impl;
 
 import com.spring.dao.ProductionCraftMapper;
-import com.spring.model.Junction;
 import com.spring.model.ProductionCraft;
 import com.spring.page.Page;
 import com.spring.service.ProductionCraftService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.List;
@@ -38,17 +38,19 @@ public class ProductionCraftServiceImpl implements ProductionCraftService {
     }
 
     @Override
-    public int addLiarbryJunction(BigInteger TRACKINGCARD_ID, BigInteger PRODUCTION_ID) {
+    public int addLiarbryJunction(BigInteger TRACKINGCARD_ID, BigInteger PRODUCTION_ID,BigInteger JUNCTION_ID) {
         int i = 0;
         ProductionCraft craft = new ProductionCraft();
-        if (null != PRODUCTION_ID && TRACKINGCARD_ID != null){
-            //根据工艺id和焊缝id查询关联表
+        if (null != PRODUCTION_ID && TRACKINGCARD_ID != null && JUNCTION_ID != null){
             craft.setTRACKINGCARD_ID(TRACKINGCARD_ID);
             craft.setPRODUCTION_ID(PRODUCTION_ID);
+            craft.setJUNCTION_ID(JUNCTION_ID);
+            //根据电子跟踪卡id、生产工艺id、焊缝id查询关联表
             List<ProductionCraft> junctionList = mapper.getLiarbryJunctionById(craft);
-            if (junctionList.size() != 0){
+            if (null != junctionList && junctionList.size() != 0){
                 //已经存在关联记录，不再增加
             }else {
+                //关联记录不存在，则新增
                 int i1 = mapper.addLiarbryJunction(craft);
                 if (i1 != 0){
                     i = i1;

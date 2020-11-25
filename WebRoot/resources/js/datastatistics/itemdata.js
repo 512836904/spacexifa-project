@@ -20,28 +20,42 @@ function dgDatagrid(){
         dataType : "json", //返回数据形式为json  
         success : function(result) {
             if (result) {
-            	 for(var i=0;i<result.ary.length;i++){
-            		 if(i==4){
-                		 column.push({field:"t"+i,title:result.ary[i].title,width:200,halign : "center",align : "left",sortable : true,
-             				sorter : function(a,b){
-             					return (a>b?1:-1);
-             				},formatter:function(value,row,index){
-             					var str = "";
-             					str += '<a id="mnt" class="easyui-linkbutton" href="javascript:alertDetail('+encodeURI(JSON.stringify(row))+')">&nbsp;&nbsp;&nbsp;&nbsp;'+row.t4+'&nbsp;&nbsp;&nbsp;&nbsp;</a>';
-             					return str; 
-             				}});
-            		 }else if(i==13){
-            			 column.push({field:"t"+i,title:result.ary[i].title,width:100,halign : "center",align : "left",sortable : true,
-              				sorter : function(a,b){
-              					return (a>b?1:-1);
-              				},hidden: true});
-            		 }else{
-                		 column.push({field:"t"+i,title:result.ary[i].title,width:100,halign : "center",align : "left",sortable : true,
-             				sorter : function(a,b){
-             					return (a>b?1:-1);
-             				}});
-            		 }
-             	 }
+            	 // for(var i=0;i<result.ary.length;i++){
+            		//  if(i==4){
+                	// 	 column.push({field:"t"+i,title:result.ary[i].title,width:200,halign : "center",align : "left",sortable : true,
+             	// 			sorter : function(a,b){
+             	// 				return (a>b?1:-1);
+             	// 			},formatter:function(value,row,index){
+             	// 				var str = "";
+             	// 				str += '<a id="mnt" class="easyui-linkbutton" href="javascript:alertDetail('+encodeURI(JSON.stringify(row))+')">&nbsp;&nbsp;&nbsp;&nbsp;'+row.t4+'&nbsp;&nbsp;&nbsp;&nbsp;</a>';
+             	// 				return str;
+             	// 			}});
+            		//  }else if(i==13){
+            		// 	 column.push({field:"t"+i,title:result.ary[i].title,width:100,halign : "center",align : "left",sortable : true,
+              	// 			sorter : function(a,b){
+              	// 				return (a>b?1:-1);
+              	// 			},hidden: true});
+            		//  }else{
+                	// 	 column.push({field:"t"+i,title:result.ary[i].title,width:100,halign : "center",align : "left",sortable : true,
+             	// 			sorter : function(a,b){
+             	// 				return (a>b?1:-1);
+             	// 			}});
+            		//  }
+             	//  }
+                var str = ["所属班组","设备总数", "开机设备数", "实焊设备数", "未绑定设备数", "设备利用率(%)", "焊接任务数", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "未绑定设备明细"];
+                for (var i = 0; i < str.length; i++) {
+                    column.push({
+                        field: "t" + i,
+                        title: str[i],
+                        width: 100,
+                        halign: "center",
+                        align: "left",
+                        sortable: true,
+                        sorter: function (a, b) {
+                            return (a > b ? 1 : -1);
+                        }
+                    });
+                }
             	 var grid = {
             			 fitColumns : true,
         				 height : $("#body").height(),

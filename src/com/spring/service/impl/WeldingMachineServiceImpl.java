@@ -1,18 +1,17 @@
 package com.spring.service.impl;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageHelper;
 import com.spring.dao.InsframeworkMapper;
 import com.spring.dao.WeldingMachineMapper;
 import com.spring.model.WeldingMachine;
 import com.spring.page.Page;
 import com.spring.service.WeldingMachineService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigInteger;
+import java.util.List;
 
 @Service
 @Transactional
@@ -137,6 +136,11 @@ public class WeldingMachineServiceImpl implements WeldingMachineService {
 	public void updateGather(String machineId, String gatherId) {
 		// TODO Auto-generated method stub
 		wmm.updateGather(machineId, gatherId);
+	}
+
+	@Override
+	public int findMachineByGatherId(String gather_id) {
+		return wmm.findMachineByGatherId(gather_id);
 	}
 
 	@Override

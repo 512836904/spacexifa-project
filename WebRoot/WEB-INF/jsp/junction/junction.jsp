@@ -55,7 +55,7 @@
     </div>
 </div>
 <div id="body" style="width:1670px;height: 80%">
-    <table id="junctionTable" style="table-layout: fixed; width:100%;height: 600px"></table>
+    <table id="junctionTable" style="table-layout: fixed; width:100%;height: 550px"></table>
     <!-- 自定义多条件查询 -->
     <div id="searchdiv" class="easyui-dialog" style="width:800px; height:400px;" closed="true" buttons="#searchButton"
          title="自定义条件查询">

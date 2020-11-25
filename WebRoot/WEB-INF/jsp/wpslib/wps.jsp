@@ -86,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		</div>
 
 		<!-- 焊缝信息列表 -->
-		<div id="dialogDiv" class="easyui-dialog" style="width: 1150px; height: 700px;" closed="true" buttons="#tdd-buttons">
+		<div id="dialogDiv" class="easyui-dialog" style="width: 1150px; height: 660px;" closed="true" buttons="#tdd-buttons">
 			<div class="functiondiv">
 				<div>
 					<div style="float: left;">
@@ -102,7 +102,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 				</div>
 			</div>
-			<table id="junctionTable" style="width:100%;height: 508px"></table>
+			<table id="junctionTable" style="width:100%;height: 480px"></table>
 			<div align="center">
 				<a href="javascript:determine();" style="width: 13%;height: 40px" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
 			</div>
@@ -185,6 +185,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input class="easyui-textbox" name="craft_param" id="craft_param"  data-options="required:true"/>
 						<lable><span class="required">*</span>工序：</lable>
 						<input class="easyui-textbox" name="process" id="process"  data-options="required:true"/>
+						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>
+						<input class="easyui-textbox" id="junctionName" name="junctionName" readonly data-options="required:true"/>
+						<input type="hidden" id="junctionId" name="junctionId">
 					</div>
 				</div>
 			</form>

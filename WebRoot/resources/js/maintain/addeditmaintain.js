@@ -17,7 +17,7 @@ var maintainfalg = true;
 function addMaintain(){
 	maintainfalg = true;
 	$('#dlg').window( {
-		title : "新增组织机构",
+		title : "新增维修记录",
 		modal : true
 	});
 	$('#dlg').window('open');

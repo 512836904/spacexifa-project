@@ -180,7 +180,7 @@ function WBL(yshu, gather) {	//yshu:
         }
         var frequency = (yshu.frequency * 10).toString(16);
         var gasflow = (yshu.gasflow * 10).toString(16);
-        var fweldprocess = (yshu.fwelding_process).toString(16);
+        var fweldprocess = (yshu.fweldprocess).toString(16);        //焊接过程
         //con需要修改
         var con = "";
         con = yshu.finitial;
@@ -640,13 +640,21 @@ function WBLINITwps() {
     //WB-P500L型号
     //通道号
     $('#fchanel').combobox('clear');
-    var str = "";
-    for (var i = 1; i < 101; i++) {
-        str += '<option value="' + i + '">通道号' + i + '</option>';
+    // var str = "";
+    // for (var i = 1; i < 101; i++) {
+    //     str += '<option value="' + i + '">通道号' + i + '</option>';
+    // }
+    // $('#fchanel').append(str);
+    // $('#fchanel').combobox();
+    var fchanels = [];
+    for (var i = 0; i < 100; i++){
+        let fchanel = {};
+        fchanel["value"] = ""+(i+1);
+        fchanel["text"] = "通道号"+(i+1);
+        fchanels[i] = fchanel;
     }
-    $('#fchanel').append(str);
-    $('#fchanel').combobox();
-    $('#fchanel').combobox('select', "1");
+    $('#fchanel').combobox('loadData', fchanels);
+    // $('#fchanel').combobox('select', "1");
     //焊接过程
     $('#fweldprocess').combobox('clear');
     $('#fweldprocess').combobox('loadData', [{

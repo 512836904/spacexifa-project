@@ -205,12 +205,12 @@
     <select id="getStartingUpMachineNum" resultType="java.lang.Integer">
         SELECT COUNT(FID) num FROM tb_standby
         WHERE 1 = 1
-        <if test="itemid != null and itemid != ''">-->
+        <if test="itemid != null and itemid != ''">
             AND fmachine_itemid = #{itemid}
         </if>
         <if test="dto != null and dto != ''">
             <if test="dto.dtoTime1 != null and dto.dtoTime1 != ''">
-                AND FSTARTTIME >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd')
+                AND FSTARTTIME >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
         </if>
         <!--        select count(*) from(-->
@@ -644,7 +644,7 @@
         </if>
         <if test="dto!=null and dto!=''">-->
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-                AND w.FSTARTTIME >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd')
+                AND w.FSTARTTIME >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
         </if>
         <!--        SELECT * from (-->
@@ -1314,12 +1314,15 @@
         <!--		AND 10 >= rownum-->
         <!--		group by w.fname,w.fwelder_no,i.fname ORDER by hour desc-->
         <!--LIMIT 10 -->
-        SELECT l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname insname,SUM(fworktime)/3600 hour FROM tb_work l
+        SELECT l.fwelder_id,w.FNAME,w.FWELDER_NO welderno,i.fname insname,SUM(fworktime)/3600 hour FROM tb_work l
         INNER JOIN tb_welder w ON l.FWELDER_ID = w.fid
-        LEFT JOIN tb_insframework i on i.fid = l.fwelder_itemid
-        WHERE 10 >= rownum
+        LEFT JOIN tb_insframework i on i.fid = w.FOWNER
+        WHERE 1 = 1
         <if test="time != null and time != ''">
             and fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
+        </if>
+        <if test="parent != null and parent != ''">
+            AND i.FPARENT = #{parent}
         </if>
         GROUP BY l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname
         ORDER BY hour DESC
@@ -1397,9 +1400,12 @@
 
     <!-- 组织机构分组，查询人均工作时间 -->
     <select id="findAverageWorkingTime" resultMap="dataMap">
-		select i.fid,i.fname,SUM(fworktime)/3600 hour,COUNT(w.FWELDER_ID) num
-		from tb_insframework i
-		left join tb_work w on w.fmachine_itemid=i.fid
+		SELECT i.fid,i.fname,SUM(fworktime)/3600 hour,COUNT(w.FWELDER_ID) num
+		FROM tb_insframework i
+		LEFT JOIN tb_work w on w.fmachine_itemid=i.fid
+        <if test="time != null and time != ''">
+            AND w.FSTARTTIME >= TO_DATE(#{time}, 'yyyy-MM-dd')
+        </if>
 		GROUP BY i.fid,i.fname
 	</select>
 

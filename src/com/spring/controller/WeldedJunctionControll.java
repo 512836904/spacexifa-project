@@ -1,21 +1,5 @@
 package com.spring.controller;
 
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.github.pagehelper.PageInfo;
 import com.spring.dto.WeldDto;
 import com.spring.model.MyUser;
@@ -25,9 +9,21 @@ import com.spring.service.InsframeworkService;
 import com.spring.service.LiveDataService;
 import com.spring.service.WeldedJunctionService;
 import com.spring.util.IsnullUtil;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/weldedjunction", produces = {"text/json;charset=UTF-8"})
@@ -488,6 +484,27 @@ public class WeldedJunctionControll {
             e.getMessage();
         }
         obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+
+    @RequestMapping("/getWeldTask")
+    @ResponseBody
+    public String getWeldTask(HttpServletRequest request){
+        List<WeldedJunction> list = wjm.getWeldedJunction("");
+//        BigInteger userInsframework = insm.getUserInsframework();
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try{
+            for(WeldedJunction w:list){
+                json.put("id", w.getId());
+                json.put("weldedJunctionno", w.getWeldedJunctionno());
+                ary.add(json);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         obj.put("rows", ary);
         return obj.toString();
     }

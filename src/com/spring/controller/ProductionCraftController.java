@@ -1,9 +1,7 @@
 package com.spring.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.spring.model.Junction;
 import com.spring.model.MyUser;
-import com.spring.model.Product;
 import com.spring.model.ProductionCraft;
 import com.spring.page.Page;
 import com.spring.service.ProductionCraftService;
@@ -16,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
@@ -94,7 +93,7 @@ public class ProductionCraftController {
             if (null != productionCraft){
                 MyUser myuser = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 productionCraft.setCREATOR(String.valueOf(myuser.getId()));
-                productionCraft.setDATA_SOURCES(1);     //数据来源：系统录入
+                productionCraft.setDATA_SOURCES(new BigInteger("1"));     //数据来源：系统录入
                 int i = productionCraftService.addProductionCraft(productionCraft);
                 if (i != 0){
                     obj.put("success", true);

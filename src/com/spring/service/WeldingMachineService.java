@@ -1,10 +1,10 @@
 package com.spring.service;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import com.spring.model.WeldingMachine;
 import com.spring.page.Page;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface WeldingMachineService {
 	
@@ -117,5 +117,10 @@ public interface WeldingMachineService {
 	
 	void resetGatherMachineid(String machineId);
 	void updateGather(String machineId,String gatherId);
-	
+
+	/**
+	 * 根据采集模块id查询焊机信息
+	 * @return
+	 */
+	int findMachineByGatherId(String gather_id);
 }

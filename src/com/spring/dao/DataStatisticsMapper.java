@@ -1,14 +1,12 @@
 package com.spring.dao;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.spring.dto.WeldDto;
 import com.spring.model.DataStatistics;
-
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getItemMachineCount(@Param("parent") BigInteger parent);
@@ -99,7 +97,7 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	
 	List<DataStatistics> getMachineData(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 
-	List<DataStatistics> findAverageWorkingTime();
+	List<DataStatistics> findAverageWorkingTime(@Param("time") String time);
 
 	List<DataStatistics> findLoadRateList(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 }

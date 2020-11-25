@@ -31,7 +31,18 @@ $(function () {
     });
     // initTables();
 //	getDictionary(10,"sxfselect");
-})
+});
+
+//查找
+function searchJunction() {
+    var junctionSearchs = $('#junction_search').textbox("getValue");          //焊缝编号
+    var junction_name_searchs = $('#junction_name_search').textbox("getValue");    //焊缝名称
+
+    var query = {junctionSearch: junctionSearchs, junction_name_search: junction_name_searchs}; //把查询条件拼接成JSON
+
+    $("#junctionTable").datagrid('options').queryParams = query; //把查询条件赋值给datagrid内部变量
+    $('#junctionTable').datagrid('reload');
+}
 
 // function initTables(){
 // 	$("#femployeeTable").datagrid( {
@@ -482,9 +493,9 @@ function addWpsTrackCard() {
     // });
     // $('#addOrUpdate').window('open');
     // $('#addOrUpdatefm').form('clear');
-    $("#addTarckingCardfm").form("disableValidation");
+    // $("#addTarckingCardfm").form("disableValidation");
     $('#addTarckingCardfm').form('clear');
-    $('#addTarckingCard').dialog({
+    $("#addTarckingCard").dialog({
         title: '新增电子跟踪卡',
         width: 1100,
         height: 600,
@@ -493,34 +504,124 @@ function addWpsTrackCard() {
         // href: src,
         content: '',
         modal: true,
-        buttons:[{
-                text:'保存',
-                iconCls:'icon-save',
-                handler:function(){
-                    saveWps();
-                }
-            },{
-                text:'关闭',
-                iconCls:'icon-no',
-                handler:function(){
-                    $("#addTarckingCard").dialog('close');
-                }
-            }],
-        onClose : function() {
+        buttons: [{
+            text: '保存',
+            iconCls: 'icon-save',
+            handler: function () {
+                saveWps();
+            }
+        }, {
+            text: '关闭',
+            iconCls: 'icon-no',
+            handler: function () {
+                $("#addTarckingCard").dialog('close');
+            }
+        }],
+        onClose: function () {
             $("#addTarckingCard").dialog('close');
-        },
-        onLoad:function(){
         }
-    }).dialog("open");
+    });
+    $("#addTarckingCard").dialog("open");
     loadProductionTable();
-    $('#productionTable').datagrid({onLoadSuccess : function (){
-        $('#productionTable').datagrid('clearChecked');
-    }});
+    loadJunctionTable();
+    $('#productionTable').datagrid({
+        onLoadSuccess: function () {
+            $('#productionTable').datagrid('clearChecked');
+        }
+    });
 }
 
-function loadProductionTable(){
+function loadJunctionTable() {
+    $("#junctionTable").datagrid({
+        // height: $("#body").height(),
+        //width: $("#body").width(),
+        height: document.getElementById("junctionTable").style.height,
+        width: 1100,
+        idField: 'fid',
+        pageSize: 10,
+        pageList: [10, 20, 30, 40, 50],
+        url: "junction/getJunctionList",
+        singleSelect: true,
+        rownumbers: true,
+        remoteSort: false,
+        showPageList: false,
+        columns: [[{
+            field: 'fid',
+            title: '序号',
+            width: 50,
+            halign: "center",
+            align: "left",
+            hidden: true
+        }, {
+            field: 'fjunction',
+            title: '焊缝编号',
+            width: 120,
+            halign: "center",
+            align: "center",
+            sortable: true
+        }, {
+            field: 'junction_length',
+            title: '长度',
+            width: 120,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'junction_format',
+            title: '规格',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'current_limit',
+            title: '电流上限',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'current_lower_limit',
+            title: '电流下限',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'junction_name',
+            title: '焊缝名称',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'edit',
+            title: '操作',
+            width: 200,
+            halign: "center",
+            align: "left",
+            formatter: function (value, row, index) {
+                var str = "";
+                str += '<a id="edit" class="easyui-linkbutton" href="javascript:edit(' + row.fid + ')"/>';
+                str += '<a id="delete" class="easyui-linkbutton" href="javascript:deleteJunction(' + row.fid + ')"/>';
+                return str;
+            }
+        }
+        ]],
+        pagination: true,
+        fitColumns: true,
+        rowStyler: function (index, row) {
+            if ((index % 2) != 0) {
+                //处理行代背景色后无法选中
+                var color = new Object();
+                return color;
+            }
+        },
+        onLoadSuccess: function (data) {
+            $("a[id='edit']").linkbutton({text: '编辑', plain: true, iconCls: 'icon-update'});
+            $("a[id='delete']").linkbutton({text: '删除', plain: true, iconCls: 'icon-delete'});
+        }
+    });
+}
+
+function loadProductionTable() {
     $("#productionTable").datagrid({
-        height: $("#addTarckingCard").height()-127,
+        height: $("#addTarckingCard").height() - 127,
         width: $("#addTarckingCard").width(),
         idField: 'FID',
         pageSize: 10,
@@ -533,104 +634,104 @@ function loadProductionTable(){
         remoteSort: false,
         showPageList: false,
         columns: [[{
-            field:'ck',
-            checkbox:true
+            field: 'ck',
+            checkbox: true
         },
-        {
-            field: 'FID',
-            title: '序号',
-            width: 50,
-            halign: "center",
-            align: "left",
-            hidden: true
-        }, {
-            field: 'FNAME',
-            title: '工艺名',
-            width: 80,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'PREHEAT',
-            title: '预热℃',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'INTERLAMINATION',
-            title: '层间℃',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'WELDING_MATERIAL',
-            title: '焊材mm',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'ELECTRICITY_FLOOR',
-            title: '电流下限A',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'ELECTRICITY_UPPER',
-            title: '电流上限A',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'VOLTAGE_FLOOR',
-            title: '电压下限V',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'VOLTAGE_UPPER',
-            title: '电压上限V',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'SOLDER_SPEED_FLOOR',
-            title: '焊速下限mm/min',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'SOLDER_SPEED_UPPER',
-            title: '焊速上限mm/min',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'WIDE_SWING',
-            title: '摆宽mm',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'RESTS',
-            title: '其他',
-            width: 50,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'DATA_SOURCES',
-            title: '数据来源',
-            width: 50,
-            halign: "center",
-            align: "center",
-            formatter: function (value, row, index) {
-                var str = "";
-                if (value == 1){
-                    str += "系统录入";
-                }else if (value == 2){
-                    str += "终端扫码录入";
+            {
+                field: 'FID',
+                title: '序号',
+                width: 50,
+                halign: "center",
+                align: "left",
+                hidden: true
+            }, {
+                field: 'FNAME',
+                title: '工艺名',
+                width: 80,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'PREHEAT',
+                title: '预热℃',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'INTERLAMINATION',
+                title: '层间℃',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'WELDING_MATERIAL',
+                title: '焊材mm',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'ELECTRICITY_FLOOR',
+                title: '电流下限A',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'ELECTRICITY_UPPER',
+                title: '电流上限A',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'VOLTAGE_FLOOR',
+                title: '电压下限V',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'VOLTAGE_UPPER',
+                title: '电压上限V',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'SOLDER_SPEED_FLOOR',
+                title: '焊速下限mm/min',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'SOLDER_SPEED_UPPER',
+                title: '焊速上限mm/min',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'WIDE_SWING',
+                title: '摆宽mm',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'RESTS',
+                title: '其他',
+                width: 50,
+                halign: "center",
+                align: "center"
+            }, {
+                field: 'DATA_SOURCES',
+                title: '数据来源',
+                width: 50,
+                halign: "center",
+                align: "center",
+                formatter: function (value, row, index) {
+                    var str = "";
+                    if (value == 1) {
+                        str += "系统录入";
+                    } else if (value == 2) {
+                        str += "终端扫码录入";
+                    }
+                    return str;
                 }
-                return str;
             }
-        }
         ]],
         pagination: true,
         fitColumns: true,
@@ -647,7 +748,7 @@ function loadProductionTable(){
 function junctionButton() {
     var dialogDiv = (document.getElementById("dialogDiv").style.width).substring(0, 4);
     var dialogDivheight = (document.getElementById("dialogDiv").style.height).substring(0, 3);
-    $('#junctionTable').datagrid('clearChecked');
+    // $('#junctionTable').datagrid('clearChecked');
     $('#dialogDiv').dialog({
         title: '查找带回',
         width: dialogDiv,
@@ -661,13 +762,14 @@ function junctionButton() {
         resizable: true
     }).dialog("open");
     $('#dialogDiv').show();
+    $("#junctionTable").datagrid("reload");
 };
 
 function determine() {
     $('#fids').val('');
     var junctionName = [];
     var ids = [];
-    var rows = $('#junctionTable').datagrid('getSelections');
+    var rows = $('#junctionTable').datagrid('getSelections');   //焊缝信息选择
     if (rows.length > 0) {
         for (var i = 0; i < rows.length; i++) {
             if (i == (rows.length - 1)) {
@@ -680,13 +782,13 @@ function determine() {
     }
     // alert(ids.join());
     $('#junctionName').textbox('setValue', junctionName);
-    $('#fids').val(ids);
+    $('#junctionId').val(ids);
     $('#dialogDiv').dialog("close");
 }
 
 function editWpsTrackCard() {
     var row = $('#wpslibTable').datagrid('getSelected');
-    if (row){
+    if (row) {
         flagWps = "edit";
         $('#addTarckingCardfm').form('load', row);
         $('#addTarckingCard').dialog({
@@ -698,67 +800,83 @@ function editWpsTrackCard() {
             // href: src,
             content: '',
             modal: true,
-            buttons:[{
-                text:'保存',
-                iconCls:'icon-save',
-                handler:function(){
+            buttons: [{
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
                     saveWps();
                 }
-            },{
-                text:'关闭',
-                iconCls:'icon-no',
-                handler:function(){
+            }, {
+                text: '关闭',
+                iconCls: 'icon-no',
+                handler: function () {
                     $("#addTarckingCard").dialog('close');
                 }
             }],
-            onClose : function() {
+            onClose: function () {
                 $("#addTarckingCard").dialog('close');
             },
-            onLoad:function(){
+            onLoad: function () {
             }
         }).dialog("open");
         //加载数据
         loadProductionTable();
-        $('#productionTable').datagrid({onLoadSuccess : function (){
-            if (row.junctionIds == null || row.junctionIds == 0 || row.junctionIds == ''){
-                $('#productionTable').datagrid('clearChecked');
-            }else {
-                var data = $('#productionTable').datagrid("getData").rows;
-                for (var index in data){
-                    if (data[index].FID == row.junctionIds){
-                        //获取id所在的行数据，指定选中行
-                        var index = $('#productionTable').datagrid('getRowIndex', data[index].FID);
-                        // $('#productionTable').datagrid('scrollTo', index);
-                        $('#productionTable').datagrid('selectRow', index);
+        loadJunctionTable();
+        //生产工艺库加载完成事件
+        $('#productionTable').datagrid({
+            onLoadSuccess: function () {
+                if (row.productionCraftId == null || row.productionCraftId == 0 || row.productionCraftId == '') {
+                    $('#productionTable').datagrid('clearChecked');
+                } else {
+                    var data = $('#productionTable').datagrid("getData").rows;
+                    for (var index in data) {
+                        if (data[index].FID == row.productionCraftId) {
+                            //获取id所在的行数据，指定选中行
+                            var index = $('#productionTable').datagrid('getRowIndex', data[index].FID);
+                            // $('#productionTable').datagrid('scrollTo', index);
+                            $('#productionTable').datagrid('selectRow', index);
+                        }
                     }
                 }
             }
-        }});
-    }else {
+        });
+    } else {
         alert("请选择一行数据");
     }
 }
 
 function saveWps() {
-    //var wpsFlag = $('#flag').combobox('getValue');//焊缝名称
-    // var row = $("#productionTable").datagrid("getSelected");
-    // if (row){
-    //     $("#productionCraftId").val(row.FID);
-    // }
-    var url2 = "";
-    if (flagWps == "add") {
-        url2 = "wps/addWpsLibrary";
-    } else if (flagWps == "edit"){
-        url2 = "wps/updateWpsLibrary";
+    var pro_row = $("#productionTable").datagrid("getSelected");    //生产工艺库选中
+    $("#productionCraftId").val('');
+    $("#junctionId").val('');
+    var ids = [];
+    var rows = $("#junctionTable").datagrid('getSelected');   //焊缝信息选中
+    if (rows) {
+        $("#junctionId").val(rows.fid);
     }
-    $('#addTarckingCardfm').form('submit', {
-        url: url2,
+    if (pro_row) {
+        $("#productionCraftId").val(pro_row.FID);
+    }
+    var formUrl = '';
+    if (flagWps == "add") {
+        formUrl = 'wps/addWpsLibrary';
+    } else if (flagWps == "edit") {
+        formUrl = 'wps/updateWpsLibrary';
+    }
+    $('#addTarckingCardfm').form({
+        url: formUrl,
+        type: 'POST',
+        dataType: "text",
         onSubmit: function () {
             return $(this).form('enableValidation').form('validate');
+            if ($('#productionCraftId').val() == null || $('#productionCraftId').val() == '') {
+                alert("请选择一条生产工艺信息");
+                return false;
+            }
         },
-        success: function (result) {
-            if (result) {
-                var result = eval('(' + result + ')');
+        success: function (data) {
+            if (data) {
+                var result = eval('(' + data + ')');
                 if (!result.success) {
                     $.messager.show({
                         title: 'Error',
@@ -770,31 +888,31 @@ function saveWps() {
                     $('#wpslibTable').datagrid('reload');
                 }
             }
-
         },
         error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
+    $('#addTarckingCardfm').submit();
 }
 
-function deleteWps(){
+function deleteWps() {
     var deleteRows = $("#wpslibTable").datagrid('getSelections'); //获取删除的数据
-    if(deleteRows != null && deleteRows != ''){
+    if (deleteRows != null && deleteRows != '') {
         var c = confirm("该操作将删除所选数据及其关联数据，并且无法撤销，是否继续？")
         if (c) {
             $.ajax({
-                type : "post",
-                async : false,
-                url : "wps/deleteWps",
-                data : {deleteRows:JSON.stringify(deleteRows)},
-                dataType : "json", //返回数据形式为json
-                success : function(result) {
+                type: "post",
+                async: false,
+                url: "wps/deleteWps",
+                data: {deleteRows: JSON.stringify(deleteRows)},
+                dataType: "json", //返回数据形式为json
+                success: function (result) {
                     if (result) {
                         if (!result.success) {
-                            $.messager.show( {
-                                title : 'Error',
-                                msg : result.msg
+                            $.messager.show({
+                                title: 'Error',
+                                msg: result.msg
                             });
                         } else {
                             alert("删除成功！");
@@ -802,15 +920,16 @@ function deleteWps(){
                         }
                     }
                 },
-                error : function(errorMsg) {
+                error: function (errorMsg) {
                     alert("数据请求失败，请联系系统管理员!");
                 }
             });
         }
-    }else{
+    } else {
         alert("请先选择一条数据。");
     }
 }
+
 // function saveReview() {
 //     $.ajax({
 //         type: "post",

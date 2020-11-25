@@ -1,14 +1,13 @@
 package com.spring.model;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 /**
  * 工艺信息库
  */
 
 public class Wps {
-	private long fid;	//id
+	private BigInteger fid;	//id
 	private String JOB_NUMBER;	//工作号
 	private String SET_NUMBER;	//部套号
 	private String PART_DRAWING_NUMBER;	//零件图号
@@ -17,15 +16,16 @@ public class Wps {
 	 * 电子跟踪卡字段新增
 	 * @return
 	 */
-	private String workticket_number;	//工票编号
-	private String craft_param;			//工艺参数
-	private String raw_materi;		//原料
-	private String process;				//工序
+	private String workticket_number;		//工票编号
+	private String craft_param;				//工艺参数
+	private String raw_materi;				//原料
+	private String process;					//工序
 	private BigInteger productionCraftId;	//生产工艺id
+	private BigInteger junctionId;			//焊缝id（电子跟踪卡、生产工艺、焊缝）
 
 	private long library_id;
-	private long junction_id;
-	private String junction_name; //焊缝名称
+	private long junction_id;				//焊缝id
+	private String junction_name; 			//焊缝名称
 
 	private BigInteger insid;
 	private BigInteger macid;
@@ -43,8 +43,8 @@ public class Wps {
 	private int fweld_alter_i;
 	private int fweld_alter_v;
 	private int fweld_prechannel;
-	private Date fcreatedate;
-	private Date fupdatedate;
+	private String fcreatedate;
+	private String fupdatedate;
 	private long fcreater;
 	private long fupdater;
 	private long fowner;
@@ -336,6 +336,14 @@ public class Wps {
 
 	public void setProductionCraftId(BigInteger productionCraftId) {
 		this.productionCraftId = productionCraftId;
+	}
+
+	public BigInteger getJunctionId() {
+		return junctionId;
+	}
+
+	public void setJunctionId(BigInteger junctionId) {
+		this.junctionId = junctionId;
 	}
 
 	public Integer getFOPERATETYPE() {
@@ -909,10 +917,10 @@ public class Wps {
 	public Wps(){
 		super();
 	}
-	public long getFid() {
+	public BigInteger getFid() {
 		return fid;
 	}
-	public void setFid(long fid) {
+	public void setFid(BigInteger fid) {
 		this.fid = fid;
 	}
 	public BigInteger getWelderid() {
@@ -1011,16 +1019,16 @@ public class Wps {
 	public void setFweld_prechannel(int fweld_prechannel) {
 		this.fweld_prechannel = fweld_prechannel;
 	}
-	public Date getFcreatedate(){
+	public String getFcreatedate(){
 		return fcreatedate;
 	}
-	public void setFcreatedate(Date fcreatedate){
+	public void setFcreatedate(String fcreatedate){
 		this.fcreatedate = fcreatedate;
 	}
-	public Date getFupdatedate(){
+	public String getFupdatedate(){
 		return fupdatedate;
 	}
-	public void setFupdatedate(Date fupdatedate){
+	public void setFupdatedate(String fupdatedate){
 		this.fupdatedate = fupdatedate;
 	}
 	public long getFcreater() {
@@ -1058,127 +1066,6 @@ public class Wps {
 	}
 	public void setFdiameter(double fdiameter){
 		this.fdiameter = fdiameter;
-	}
-	public Wps(long fid,BigInteger insid,BigInteger macid,String insname,BigInteger welderid,String weldername,String updatename,String fwpsnum,
-			int fweld_i,int fweld_v,int fweld_i_max,int fweld_i_min,int fweld_v_max,int fweld_v_min,int fweld_alter_i,int fweld_alter_v,int fweld_prechannel,Date fcreatedate,Date fupdatedate,long fcreater,long fupdater,long fowner,
-			String fback,String fname,double fdiameter,double ftime,double fadvance,double fhysteresis,double fini_ele,double fini_vol,double fini_vol1,double fweld_ele,
-			double fweld_vol,double fweld_vol1,double farc_ele,double farc_vol,double farc_vol1,double fweld_tuny_ele,double fweld_tuny_vol,double farc_tuny_ele,String finitial,
-			String fcontroller,String fmode,int fstatus,String arcname,String selectname,String gasname,String dianame,String materialname,int ftorch,int fprocessid,
-			String fprocessname,double fwarn_ele_up,double fwarn_ele_down,double fwarn_vol_up,double fwarn_vol_down
-			,String f001,String f002,String f003,String f004,String f005,String f006,String f007,String f008,String f009,String f010,String f011,String f012,String f013,String f014,String f015,String f016,String f017,String f018,String f019,String f020,String f021,String f022, String f023,String f024,String f025
-			,String f026,String f027,String f028,String f029,String f030,String f031,String f032,String f033,String f034,String f035,String f036,String f037,String f038,String f039,String f040,String f041,String f042,String f043,String f044,String f045,String f046,String f047, String f048,String f049,String f050
-			,String fsolder_layer,String fweld_bead,String fweld_method,String fpower_polarity,String fgas_flow,String fweld_speed) {
-		super();
-		this.macid = macid;
-		this.insname = insname;
-		this.weldername = weldername;
-		this.updatename = updatename;
-		this.insid = insid;
-		this.welderid = welderid;
-		this.fid = fid;
-		this.fwpsnum = fwpsnum;
-		this.fweld_i = fweld_i;
-		this.fweld_v = fweld_v;
-		this.fweld_i_max = fweld_i_max;
-		this.fweld_i_min = fweld_i_min;
-		this.fweld_v_max = fweld_v_max;
-		this.fweld_v_min = fweld_v_min;
-		this.fweld_alter_i = fweld_alter_i;
-		this.fweld_alter_v = fweld_alter_v;
-		this.fweld_prechannel = fweld_prechannel;
-		this.fcreatedate = fcreatedate;
-		this.fupdatedate = fupdatedate;
-		this.fcreater = fcreater;
-		this.fupdater = fupdater;
-		this.fowner = fowner;
-		this.fback = fback;
-		this.fname = fname;
-		this.fdiameter = fdiameter;
-		this.ftime = ftime;
-		this.fadvance = fadvance;
-		this.fhysteresis = fhysteresis;
-		this.fini_ele = fini_ele;
-		this.fini_vol = fini_vol;
-		this.fini_vol1 = fini_vol1;
-		this.fweld_ele = fweld_ele;
-		this.fweld_vol = fweld_vol1;
-		this.farc_ele = farc_ele;
-		this.farc_vol = farc_vol;
-		this.farc_vol1 = farc_vol1;
-		this.fweld_tuny_ele = fweld_tuny_ele;
-		this.fweld_tuny_vol = fweld_tuny_vol;
-		this.farc_tuny_ele = farc_tuny_ele;
-		this.finitial = finitial;
-		this.fcontroller = fcontroller;
-		this.fmode = fmode;
-		this.fstatus = fstatus;
-		this.arcname = arcname;
-		this.gasname = gasname;
-		this.selectname = selectname;
-		this.materialname = materialname;
-		this.dianame = dianame;
-		this.fprocessid = fprocessid;
-		this.fprocessname = fprocessname;
-		this.ftorch = ftorch;
-		this.fwarn_ele_up = fwarn_ele_up;
-		this.fwarn_ele_down = fwarn_ele_down;
-		this.fwarn_vol_up = fwarn_vol_up;
-		this.fwarn_vol_down = fwarn_vol_down;
-		this.fsolder_layer = fsolder_layer;
-		this.fweld_method = fweld_method;
-		this.fpower_polarity = fpower_polarity;
-		this.fgas_flow = fgas_flow;
-		this.fweld_speed = fweld_speed;
-		this.f001 = f001;
-		this.f002 = f002;
-		this.f003 = f003;
-		this.f004 = f004;
-		this.f005 = f005;
-		this.f006 = f006;
-		this.f007 = f007;
-		this.f008 = f008;
-		this.f009 = f009;
-		this.f010 = f010;
-		this.f011 = f011;
-		this.f012 = f012;
-		this.f013 = f013;
-		this.f014 = f014;
-		this.f015 = f015;
-		this.f016 = f016;
-		this.f017 = f017;
-		this.f018 = f018;
-		this.f019 = f019;
-		this.f020 = f020;
-		this.f021 = f021;
-		this.f022 = f022;
-		this.f023 = f023;
-		this.f024 = f024;
-		this.f025 = f025;
-		this.f026 = f026;
-		this.f027 = f027;
-		this.f028 = f028;
-		this.f029 = f029;
-		this.f030 = f030;
-		this.f031 = f031;
-		this.f032 = f032;
-		this.f033 = f033;
-		this.f034 = f034;
-		this.f035 = f035;
-		this.f036 = f036;
-		this.f037 = f037;
-		this.f038 = f038;
-		this.f039 = f039;
-		this.f040 = f040;
-		this.f041 = f041;
-		this.f042 = f042;
-		this.f043 = f043;
-		this.f044 = f044;
-		this.f045 = f045;
-		this.f046 = f046;
-		this.f047 = f047;
-		this.f048 = f048;
-		this.f049 = f049;
-		this.f050 = f050;
 	}
 	public double getFtime() {
 		return ftime;

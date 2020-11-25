@@ -130,7 +130,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<div class="fitem">
 					<lable><span class="required">*</span>设备类型</lable>
-					<select class="easyui-combobox" name="typeId" id="tId" data-options="required:true,editable:false"" ></select>
+					<select class="easyui-combobox" name="typeId" id="tId" data-options="required:true,editable:false"></select>
 				</div>
 				<div class="fitem">
 					<lable>入厂时间</lable>
@@ -139,29 +139,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="fitem">
 					<lable><span class="required">*</span>所属项目</lable>
 					<input type="hidden" id="validinsf">
-					<select class="easyui-combobox" name="iId" id="iId" data-options="required:true,editable:false""></select>
+					<select class="easyui-combobox" name="iId" id="iId" data-options="required:true,editable:false"></select>
 				</div>
 				<div class="fitem">
 					<lable><span class="required">*</span>生产厂商</lable>
-					<select class="easyui-combobox" name="manuno" id="manuno" data-options="required:true,editable:false""></select>
+					<select class="easyui-combobox" name="manuno" id="manuno" data-options="required:true,editable:false"></select>
 				</div>
 				<div class="fitem">
-					<lable><span class="required"></span>采集序号</lable>
+					<lable><span class="required">*</span>采集序号</lable>
 					<input type="hidden" id="validgid">
-					<select class="easyui-combobox" name="gid" id="gid" data-options="validType:['wmGatheridValidate'],multiple:true"></select>
+					<select class="easyui-combobox" name="gid" id="gid" data-options="validType:['wmGatheridValidate'],multiple:false,required:true"></select>
+					<input type="hidden" id="old_gid" name="old_gid">
 				</div>
 				<div class="fitem">
-					<lable>设备型号</lable>
+					<lable>位置</lable>
 					<input class="easyui-textbox" name="position" id="position"/>
 				</div>
 				<div class="fitem">
 					<lable>ip地址</lable>
-					<input class="easyui-textbox" name="ip" id="ip"/>
+					<input class="easyui-textbox" name="ip" id="ipname"/>
 				</div>
 				<div class="fitem">
 					<lable>型号</lable>
 					<!-- <input class="easyui-textbox" name="model" id="model"/> -->
-					<select class="easyui-combobox" name="model" id="model" data-options="required:true,editable:false""></select>
+					<select class="easyui-combobox" name="model" id="model" data-options="required:true,editable:false"></select>
 				</div>
 				<div class="fitem" >
 					<lable>是否联网</lable>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

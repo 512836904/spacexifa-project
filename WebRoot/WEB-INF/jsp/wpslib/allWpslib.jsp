@@ -29,22 +29,20 @@
     <script type="text/javascript" src="resources/js/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="resources/js/easyui-extend-check.js"></script>
     <script type="text/javascript" src="resources/js/search/search.js"></script>
-
     <script type="text/javascript" src="resources/js/wpslib/allWpslib.js"></script>
     <script type="text/javascript" src="resources/js/wpslib/addeditWpslib.js"></script>
     <script type="text/javascript" src="resources/js/wpslib/removeWpslib.js"></script>
-    <script type="text/javascript" src="resources/js/wpslib/giveWpslib.js"></script>
     <script type="text/javascript" src="resources/js/wpslib/differentMachine.js"></script>
     <script type="text/javascript" src="resources/js/wpslib/control.js"></script>
     <script type="text/javascript" src="resources/js/wpslib/comboboxCheck.js"></script>
     <script type="text/javascript" src="resources/js/getTimeToHours.js"></script>
     <script type="text/javascript" src="resources/js/swfobject.js"></script>
     <script type="text/javascript" src="resources/js/web_socket.js"></script>
-
     <script type="text/javascript" src="resources/js/wpslib/craft/WB-P500L.js"></script>
     <script type="text/javascript" src="resources/js/paho-mqtt.js"></script>
     <script type="text/javascript" src="resources/js/paho-mqtt-min.js"></script>
     <script type="text/javascript" src="resources/js/first.js"></script>
+    <script type="text/javascript" src="resources/js/wpslib/giveWpslib.js"></script>
     <style type="text/css">
         table tr td {
             font-size: 14px;
@@ -207,7 +205,7 @@
                             <lable><span class="required">*</span>焊接电流：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fweld_ele" id="fweld_ele" value="" class="easyui-numberbox" data-options="required:true">(A)
+                            <input name="fweld_ele" id="fweld_ele" value="150" class="easyui-numberbox" data-options="required:true">(A)
                         </td>
                         <td class="leftTd">
                             <lable><span class="required">*</span>焊接电流微调：</lable>
@@ -226,13 +224,13 @@
                             <lable><span class="required">*</span>提前送气：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fadvance" id="fadvance" class="easyui-numberbox" data-options="precision:1">(s)
+                            <input name="fadvance" id="fadvance" class="easyui-numberbox" value="0.1" data-options="precision:1">(s)
                         </td>
                         <td class="leftTd">
                             <lable><span class="required">*</span>滞后送气：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="fhysteresis" id="fhysteresis" class="easyui-numberbox" data-options="precision:1">(s)
+                            <input name="fhysteresis" id="fhysteresis" class="easyui-numberbox" value="0.4" data-options="precision:1">(s)
                         </td>
                     </tr>
                 </table>
@@ -284,7 +282,7 @@
                             <lable><span class="required">*</span>收弧电流微调：</lable>
                         </td>
                         <td class="rightTd">
-                            <input name="farc_tuny_ele" id="farc_tuny_ele" class="easyui-numberbox" value="0.0" data-options="precision:1">(A)
+                            <input name="farc_tuny_ele" id="farc_tuny_ele" class="easyui-numberbox" value="0">(A)
                         </td>
                     </tr>
                 </table>
@@ -296,7 +294,7 @@
                             <lable><span class="required">*</span>点焊时间：</lable>
                         </td>
                         <td id="rftime" class="rightTd">
-                            <input name="ftime" id="ftime" value="30.0" class="easyui-numberbox" data-options="precision:1">(s)
+                            <input name="ftime" id="ftime" value="3.0" class="easyui-numberbox" data-options="precision:1">(s)
                         </td>
                         <td id="cwavt" class="leftTd">
                             <lable><span class="required">*</span>收弧电压微调：</lable>
@@ -338,13 +336,13 @@
                             <lable><span class="required">*</span>焊接电压：</lable>
                         </td>
                         <td id="cwtwv" class="rightTd">
-                            <input name="fweld_vol" id="fweld_vol" class="easyui-numberbox" data-options="required:true,precision:1">(V)
+                            <input name="fweld_vol" id="fweld_vol" class="easyui-numberbox" value="23.5" data-options="required:true,precision:1">(V)
                         </td>
                         <td id="cwwvt" class="leftTd">
                             <lable><span class="required">*</span>焊接电压微调：</lable>
                         </td>
                         <td id="cwtwvt" class="rightTd">
-                            <input name="fweld_tuny_vol" id="fweld_tuny_vol" class="easyui-numberbox" data-options="required:true,precision:1">(V)
+                            <input name="fweld_tuny_vol" id="fweld_tuny_vol" value="0.0" class="easyui-numberbox" data-options="required:true,precision:1">(V)
                         </td>
                     </tr>
                 </table>
@@ -438,13 +436,12 @@
         </form>
     </div>
     <div id="resultdlg-buttons">
-        <a href="javascript:closedlg();" class="easyui-linkbutton" iconCls="icon-ok">确认</a>
-        <a href="javascript:closedlg();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+        <a href="javascript:closedlg();" class="easyui-linkbutton" iconCls="icon-ok">关闭</a>
+<%--        <a href="javascript:closedlg();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>--%>
     </div>
 
     <!-- 控制命令下发 -->
-    <div id="condlg" class="easyui-dialog" style="width: 700px; height: 300px; padding:10px 20px" closed="true"
-         buttons="#condlg-buttons">
+    <div id="condlg" class="easyui-dialog" style="width: 700px; height: 300px; padding:10px 20px" closed="true" buttons="#condlg-buttons">
         <form id="confm" class="easyui-form" method="post" data-options="novalidate:true">
             <table width="100%" height="94%" border="1" style="text-align: center;">
                 <tr height="30px">
@@ -461,8 +458,7 @@
                 </tr>
                 <tr height="30px">
                     <td colspan="2" align="center">
-                        <a href="javascript:selectMachineList(3);" class="easyui-linkbutton"
-                           iconCls="icon-ok">下发控制命令</a>
+                        <a href="javascript:selectMachineList(3);" class="easyui-linkbutton" iconCls="icon-ok">下发控制命令</a>
                         <a href="javascript:openPassDlg();" class="easyui-linkbutton" iconCls="icon-ok">密码下发</a>
                     </td>
                 </tr>
@@ -475,9 +471,7 @@
     </div>
 
     <!-- 密码框 -->
-    <div id="pwd" class="easyui-dialog" style="text-align:center;width:400px;height:200px" closed="true"
-         buttons="#dlg-pwd"
-         algin="center">
+    <div id="pwd" class="easyui-dialog" style="text-align:center;width:400px;height:200px" closed="true" buttons="#dlg-pwd" algin="center">
         <br><br>
         <lable><span class="required">*</span>密码：</lable>
         <input name="passwd" id="passwd" type="password" class="easyui-numberbox"><br/>

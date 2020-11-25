@@ -13,7 +13,7 @@
 
     <script type="text/javascript" src="resources/js/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="resources/js/echarts.js"></script>
-    <script type="text/javascript" src="resources/js/getTime.js"></script>
+<!--    <script type="text/javascript" src="resources/js/getTime.js"></script>-->
     <script type="text/javascript" src="resources/js/swfobject.js"></script>
     <script type="text/javascript" src="resources/js/web_socket.js"></script>
     <script type="text/javascript" src="resources/js/tableExcel.js"></script>
@@ -22,10 +22,13 @@
 </head>
 
 <body>
+
 <!-- 头部的盒子 -->
 <header>
     <h1><span>项目展板</span></h1>
-    <div class="leftCompany"></div>
+    <div class="leftCompany">
+        <img src="resources/images/hadianlogo.png" style="background-color: black;width: 30%;height: 30%;margin-top: 3%"><span style="color: white">哈电集团</span>
+    </div>
     <div class="rightTime"></div>
     <script>
         var t = null;
@@ -40,18 +43,19 @@
             var m = dt.getMinutes(); //获取分
             var s = dt.getSeconds(); //获取秒
             document.querySelector(".rightTime").innerHTML =
-                h +
-                ":" +
-                m +
-                ":" +
-                s +
-                "  丨  " +
+                "当前时间：" +
                 y +
-                "-" +
+                "年" +
                 mt +
-                "-" +
+                "月" +
                 day +
-                "星期一 多云转晴 8-13℃";
+                "日 " +
+                h +
+                "时" +
+                m +
+                "分" +
+                s +
+                "秒";
             t = setTimeout(time, 1000); //设定定时器，循环运行
         }
     </script>
@@ -62,6 +66,7 @@
 <section class="mainbox">
     <!-- 第一列 -->
     <div class="column1">
+
         <div class="panel panel-header">
             <h2></h2>
             <div class="chart" id="Left1" style="height: 3.6rem;"></div>
@@ -70,7 +75,13 @@
 
         <div class="panel">
             <div class="panel01">
-                <h2 class="h2-side"><span>焊工工作时间排行</span></h2>
+                <h2 class="h2-side" id="L2">
+                    <span>焊工工作时间排行</span>
+
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+
+                </h2>
             </div>
             <div class="panel02">
                 <div class="chart" id="Left2"></div>
@@ -80,13 +91,16 @@
 
         <div class="panel">
             <div class="panel01">
-                <h2 class="h2-side"><span>工区电能、气体消耗量 ( KWH、L )</span></h2>
+                <h2 class="h2-side" id="L3">
+                    <span>工区电能、气体消耗量 ( KWH、L )</span>
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+                </h2>
             </div>
             <div class="panel02">
                 <div class="chart" id="Left3"></div>
                 <div class="panel-footer"></div>
             </div>
-
         </div>
     </div>
 
@@ -95,7 +109,11 @@
     <div class="column2">
         <div class="panel" style="height: 6.05rem;">
             <div class="panel01">
-                <h2 class="h2-mid"><span>工区焊接工艺规范符合率 ( % )</span></h2>
+                <h2 class="h2-mid" id="M1">
+                    <span>工区焊接工艺规范符合率 ( % )</span>
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+                </h2>
             </div>
             <div class="panel02">
                 <div class="chart1" id="Middle1"></div>
@@ -104,7 +122,11 @@
         </div>
         <div class="panel" style="height: 6.05rem;">
             <div class="panel01">
-                <h2 class="h2-mid"><span>焊工人均工作时间 ( h )</span></h2>
+                <h2 class="h2-mid" id="M2">
+                    <span>焊工人均工作时间 ( h )</span>
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+                </h2>
             </div>
             <div class="panel02">
                 <div class="chart1" id="Middle2"></div>
@@ -113,12 +135,15 @@
         </div>
     </div>
 
-
     <!-- 第三列 -->
     <div class="column3">
         <div class="panel">
             <div class="panel01">
-                <h2 class="h2-side"><span>工区耗材消耗量 ( G )</span></h2>
+                <h2 class="h2-side" id="R1">
+                    <span>工区耗材消耗量 ( G )</span>
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+                </h2>
             </div>
             <div class="panel02">
                 <div class="chart" id="Right1"></div>
@@ -127,7 +152,11 @@
         </div>
         <div class="panel">
             <div class="panel01">
-                <h2 class="h2-side"><span>工区设备使用率 ( % )</span></h2>
+                <h2 class="h2-side" id="R2">
+                    <span>工区设备使用率 ( % )</span>
+                    <button class="button button1">当月</button>
+                    <button class="button button2">当日</button>
+                </h2>
             </div>
 
             <div class="panel02">
@@ -138,14 +167,18 @@
         </div>
         <div class="panel">
             <div class="panel01">
-                <h2 class="h2-side"><span>工作号/部套号相关信息</span></h2>
+                <h2 class="h2-side" id="R3">
+                    <span>工作号/部套号相关信息</span>
+                    <button class="button button1" @click="changedata()">当月</button>
+                    <button class="button button2" @click="changedata()">当日</button>
+                </h2>
             </div>
 
             <div class="panel02" style="overflow: auto;">
                 <div class="chart" id="Right3">
-                    <div id="app">
-                        <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '24px'}" border
-                                  style="width: 100%">
+                    <div id="app1">
+                        <el-table :fit="true" :data="tableData1" :cell-style="{padding: '0', height: '24px'}"
+                                  border style="width: 100%">
 
                             <el-table-column prop="gzh" label="工作号">
                             </el-table-column>
@@ -172,13 +205,10 @@
         </div>
     </div>
 
-
 </section>
 
-
-</body>
-
 <script src="resources/js/js/flexible.js"></script>
+<script src="resources/js/js/jquery.js"></script>
 <script src="resources/js/js/echarts.min.js"></script>
 <script src="resources/js/js/index.js"></script>
 
@@ -188,16 +218,18 @@
 <script src="resources/js/js/element-ui.js"></script>
 
 <script>
-
+    var tablearray = [];
     new Vue({
-        el: '#app',
+        el: '#app1',
         data() {
             return {
-                tableData: [{
+                tableData1: tablearray,
+
+                tableData2: [{
                     gzh: 'A001233-1',
                     bth: 'FTG100601',
                     ljm: '基础法兰',
-                    gzzsc: '15',
+                    gzzsc: '1500',
                     zhcxh: '200'
                 }, {
                     gzh: 'A001233-1',
@@ -241,11 +273,38 @@
                     ljm: '基础法兰',
                     gzzsc: '15',
                     zhcxh: '200'
-                }]
+                }],
+            }
+        },
+
+    });
+
+    // 哈电机大屏获取工作号/部套号
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "frontEnd/findJobSetNumber",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                var data = result.ary;
+                for (var index in data) {
+                    let feild = {};
+                    feild["gzh"] = data[index].JOB_NUMBER;
+                    feild["bth"] = data[index].SET_NUMBER;
+                    feild["ljm"] = data[index].PART_NAME;
+                    feild["gzzsc"] = data[index].worktime;
+                    feild["zhcxh"] = data[index].wirefeedrate;
+                    tablearray[index] = feild;
+                }
             }
         }
-    })
+    });
+
 </script>
+</body>
+
 <style>
     /* Element 样式覆盖 */
 
@@ -295,6 +354,30 @@
     ::-webkit-scrollbar-thumb {
         background-color: #16889a;
         border-radius: 10px;
+    }
+
+
+    .button {
+        background-color: transparent;
+        margin-top: 6px;
+        border: 1px solid rgb(6, 105, 146);
+        color: rgb(7, 107, 227);
+        padding: 3px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        cursor: pointer;
+        float: right;
+        outline: none;
+    }
+
+    .button1 {
+        border-radius: 0 20px 20px 0;
+    }
+
+    .button2 {
+        border-radius: 20px 0 0 20px;
     }
 </style>
 

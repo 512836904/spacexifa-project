@@ -1,13 +1,11 @@
 package com.spring.service;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.spring.dto.WeldDto;
 import com.spring.model.DataStatistics;
 import com.spring.page.Page;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public interface DataStatisticsService {
 	/**
@@ -425,7 +423,7 @@ public interface DataStatisticsService {
 	/**
 	 * 查询人均工作时长
 	 */
-	List<DataStatistics> findAverageWorkingTime();
+	List<DataStatistics> findAverageWorkingTime(String time);
 
 	/**
 	 * 根据组织机构分组统计焊接规范符合率

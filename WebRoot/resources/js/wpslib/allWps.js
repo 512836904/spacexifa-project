@@ -58,9 +58,15 @@ function wpslibDatagrid(){
 			halign : "center",
 			align : "center"
 		}, {
-			field : 'JUNCTION',
+			field : 'PRODUCTION_CRAFT',
 			title : '生产工艺名称',
-			width : 300,
+			width : 150,
+			halign : "center",
+			align : "center"
+		}, {
+			field : 'junctionName',
+			title : '焊缝信息',
+			width : 150,
 			halign : "center",
 			align : "center"
 		}, {
@@ -76,7 +82,7 @@ function wpslibDatagrid(){
 			halign : "center",
 			align : "center"
 		}, {
-			field : 'raw_material',
+			field : 'raw_materi',
 			title : '原料',
 			width : 150,
 			halign : "center",

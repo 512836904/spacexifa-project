@@ -15,7 +15,7 @@ public interface ProductionCraftService {
 
     int deleteProductionCraft(ProductionCraft productionCraft);
 
-    int addLiarbryJunction(BigInteger TRACKINGCARD_ID, BigInteger PRODUCTION_ID);
+    int addLiarbryJunction(BigInteger TRACKINGCARD_ID, BigInteger PRODUCTION_ID,BigInteger JUNCTION_ID);
 
     List<ProductionCraft> getLibraryJunction(BigInteger TRACKINGCARD_ID);
 

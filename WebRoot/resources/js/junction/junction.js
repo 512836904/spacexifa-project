@@ -4,26 +4,26 @@ $(function () {
 var vlogoflag = "";
 var dialogDivWidth = "800";
 function junctionDatagrid() {
-    var singleSelect = true;
-    if (null == document.getElementById("dialogDiv")){
-        //焊缝管理列表
-        dialogDivWidth = (document.getElementById("body").style.width).substring(0,4);
-    }else {
-        //查找带回列表
-        dialogDivWidth = (document.getElementById("dialogDiv").style.width).substring(0,4);
-        singleSelect = false;
-    }
+    // var singleSelect = true;
+    // if (null == document.getElementById("dialogDiv")){
+    //     //焊缝管理列表
+    //     dialogDivWidth = (document.getElementById("body").style.width).substring(0,4);
+    // }else {
+    //     //查找带回列表
+    //     dialogDivWidth = (document.getElementById("dialogDiv").style.width).substring(0,4);
+    //     singleSelect = false;
+    // }
     $("#junctionTable").datagrid({
-        // height: $("#body").height(),
-        //width: $("#body").width(),
-        height: document.getElementById("junctionTable").style.height,
-        width: dialogDivWidth,
+        height: $("#body").height(),
+        width: $("#body").width(),
+        // height: document.getElementById("junctionTable").style.height,
+        // width: dialogDivWidth,
         idField: 'fid',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
         url: "junction/getJunctionList",
-        singleSelect: singleSelect,
-        // singleSelect: true,
+        // singleSelect: singleSelect,
+        singleSelect: true,
         rownumbers: true,
         remoteSort: false,
         showPageList: false,
@@ -37,51 +37,51 @@ function junctionDatagrid() {
         }, {
             field: 'fjunction',
             title: '焊缝编号',
-            width: (dialogDivWidth*0.2),
-            // width: 120,
+            // width: (dialogDivWidth*0.2),
+            width: 120,
             halign: "center",
             align: "center",
             sortable: true
         }, {
             field: 'junction_length',
             title: '长度',
-            width: (dialogDivWidth*0.3),
-            // width: 120,
+            // width: (dialogDivWidth*0.3),
+            width: 120,
             halign: "center",
             align: "center"
         }, {
             field: 'junction_format',
             title: '规格',
-            width: (dialogDivWidth*0.3),
-            // width: 100,
+            // width: (dialogDivWidth*0.3),
+            width: 100,
             halign: "center",
             align: "center"
         }, {
             field: 'current_limit',
             title: '电流上限',
-            width: (dialogDivWidth*0.2),
-            // width: 100,
+            // width: (dialogDivWidth*0.2),
+            width: 100,
             halign: "center",
             align: "center"
         }, {
             field: 'current_lower_limit',
             title: '电流下限',
-            width: (dialogDivWidth*0.2),
-            // width: 100,
+            // width: (dialogDivWidth*0.2),
+            width: 100,
             halign: "center",
             align: "center"
         }, {
             field: 'junction_name',
             title: '焊缝名称',
-            width: (dialogDivWidth*0.3),
-            // width: 100,
+            // width: (dialogDivWidth*0.3),
+            width: 100,
             halign: "center",
             align: "center"
         }, {
             field: 'edit',
             title: '操作',
-            width: (dialogDivWidth*0.3),
-            // width: 200,
+            // width: (dialogDivWidth*0.3),
+            width: 200,
             halign: "center",
             align: "left",
             formatter: function (value, row, index) {

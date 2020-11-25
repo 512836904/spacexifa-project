@@ -1,13 +1,11 @@
 package com.spring.dao;
 
+import com.spring.model.WeldingMachine;
+import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
+
 import java.math.BigInteger;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
-import com.spring.model.WeldingMachine;
-
-import tk.mybatis.mapper.common.Mapper;
 
 public interface WeldingMachineMapper extends Mapper<WeldingMachine>{
 	List<WeldingMachine> getWeldingMachineAll(@Param("parent") BigInteger parent,@Param("str") String str);
@@ -29,9 +27,9 @@ public interface WeldingMachineMapper extends Mapper<WeldingMachine>{
 	List<WeldingMachine> findAllweldmachine();
 	
 	int getEquipmentidCount(@Param("eid")String eid);
-	
+
 	int getGatheridCount(@Param("itemid")BigInteger itemid,@Param("gather")String gather);
-	
+
 	WeldingMachine getWeldingMachineById(@Param("wid")BigInteger wid);
 	
 	void editstatus(@Param("wid")BigInteger wid,@Param("status")int status);
@@ -64,5 +62,6 @@ public interface WeldingMachineMapper extends Mapper<WeldingMachine>{
 	
 	void resetGatherMachineid(@Param("machineId")String machineId);
 	void updateGather(@Param("machineId")String machineId,@Param("gatherId")String gatherId);
-	
+
+	int findMachineByGatherId(@Param("gather_id") String gather_id);
 }

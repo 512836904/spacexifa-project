@@ -1,21 +1,20 @@
 package com.spring.service.impl;
 
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageHelper;
 import com.spring.dao.DataStatisticsMapper;
 import com.spring.dto.WeldDto;
 import com.spring.model.DataStatistics;
 import com.spring.page.Page;
 import com.spring.service.DataStatisticsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -379,8 +378,8 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
-	public List<DataStatistics> findAverageWorkingTime() {
-		return ds.findAverageWorkingTime();
+	public List<DataStatistics> findAverageWorkingTime(String time) {
+		return ds.findAverageWorkingTime(time);
 	}
 
 	@Override

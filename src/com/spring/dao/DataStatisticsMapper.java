@@ -11,6 +11,8 @@ import java.util.List;
 public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getItemMachineCount(@Param("parent") BigInteger parent);
 
+	List<DataStatistics> getItemMachineByItemType(@Param("itemtype") int itemtype);
+
 	int getStartingUpMachineNum(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 	
 	DataStatistics getWorkMachineNum(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
@@ -97,7 +99,7 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	
 	List<DataStatistics> getMachineData(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 
-	List<DataStatistics> findAverageWorkingTime(@Param("time") String time);
+	List<DataStatistics> findAverageWorkingTime(@Param("startTime")String startTime,@Param("itemType")int itemType);
 
-	List<DataStatistics> findLoadRateList(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
+	List<DataStatistics> findLoadRateList(@Param("startTime")String startTime,@Param("itemType")int itemType);
 }

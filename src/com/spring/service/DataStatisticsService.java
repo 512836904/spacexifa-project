@@ -15,6 +15,15 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getItemMachineCount(Page page, BigInteger parent);
+
+	/**
+	 * 根据组织机构统计焊机
+	 * @param page
+	 * @param
+	 * @return
+	 */
+	List<DataStatistics> getItemMachineByItemType(Page page, int itemtype);
+
 	List<DataStatistics> getItemMachineCount(BigInteger parent);
 	
 	/**
@@ -414,7 +423,7 @@ public interface DataStatisticsService {
 	
 	/**
 	 * 班组生产数据报表
-	 * @param bigInteger 组织机构id
+	 * @param
 	 * @param dto 时间
 	 * @return
 	 */
@@ -423,10 +432,10 @@ public interface DataStatisticsService {
 	/**
 	 * 查询人均工作时长
 	 */
-	List<DataStatistics> findAverageWorkingTime(String time);
+	List<DataStatistics> findAverageWorkingTime(String time,int itemType);
 
 	/**
 	 * 根据组织机构分组统计焊接规范符合率
 	 */
-	List<DataStatistics> findLoadRateList(BigInteger insid, WeldDto dto);
+	List<DataStatistics> findLoadRateList(String startTime,int itemType);
 }

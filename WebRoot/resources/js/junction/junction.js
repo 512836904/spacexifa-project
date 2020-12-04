@@ -46,28 +46,42 @@ function junctionDatagrid() {
             field: 'junction_length',
             title: '长度',
             // width: (dialogDivWidth*0.3),
-            width: 120,
+            width: 60,
             halign: "center",
             align: "center"
         }, {
             field: 'junction_format',
             title: '规格',
             // width: (dialogDivWidth*0.3),
-            width: 100,
+            width: 60,
             halign: "center",
             align: "center"
         }, {
             field: 'current_limit',
             title: '电流上限',
             // width: (dialogDivWidth*0.2),
-            width: 100,
+            width: 80,
             halign: "center",
             align: "center"
         }, {
             field: 'current_lower_limit',
             title: '电流下限',
             // width: (dialogDivWidth*0.2),
-            width: 100,
+            width: 80,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'FMAXVOLTAGE',
+            title: '电压上限',
+            // width: (dialogDivWidth*0.2),
+            width: 80,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'FMINVOLTAGE',
+            title: '电压下限',
+            // width: (dialogDivWidth*0.2),
+            width: 80,
             halign: "center",
             align: "center"
         }, {

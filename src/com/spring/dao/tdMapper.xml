@@ -79,7 +79,8 @@
 	</select>
 	
 	<select id="getMachine" parameterType="String" resultType="Td">
-		select tb_welding_machine.fid id,fequipment_no fequipment_no,fposition fposition,finsframework_id fci,tb_insframework.fname fcn from tb_welding_machine LEFT JOIN tb_insframework ON tb_welding_machine.finsframework_id=tb_insframework.fid where 1=1
+		select tb_welding_machine.fid id,fequipment_no fequipment_no,fposition fposition,finsframework_id fci,tb_insframework.fname fcn
+		from tb_welding_machine LEFT JOIN tb_insframework ON tb_welding_machine.finsframework_id=tb_insframework.fid where 1=1
 		<if test="mach!=null and mach!=''">
 			AND tb_welding_machine.fid NOT IN (${mach})
 		</if>

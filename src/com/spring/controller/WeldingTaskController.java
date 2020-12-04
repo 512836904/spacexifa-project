@@ -1,15 +1,14 @@
 package com.spring.controller;
 
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import com.github.pagehelper.PageInfo;
+import com.spring.dto.WeldDto;
+import com.spring.model.*;
+import com.spring.page.Page;
+import com.spring.service.*;
+import com.spring.util.IsnullUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.cxf.endpoint.Client;
-import javax.xml.namespace.QName;
-
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,29 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.pagehelper.PageInfo;
-import com.spring.dto.WeldDto;
-import com.spring.model.MyUser;
-import com.spring.model.Person;
-import com.spring.model.WeldingMachine;
-import com.spring.model.Wps;
-import com.spring.model.Dictionarys;
-import com.spring.model.Insframework;
-import com.spring.model.WeldedJunction;
-import com.spring.model.Welder;
-import com.spring.page.Page;
-import com.spring.service.InsframeworkService;
-import com.spring.service.LiveDataService;
-import com.spring.service.PersonService;
-import com.spring.service.WeldedJunctionService;
-import com.spring.util.IsnullUtil;
-import com.spring.service.DictionaryService;
-import com.spring.service.WeldingMachineService;
-import com.spring.service.WpsService;
-import com.spring.service.UserService;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/weldtask", produces = { "text/json;charset=UTF-8" })
@@ -532,7 +515,7 @@ public class WeldingTaskController {
 				json.put("statusId", wm.getStatusId());
 				json.put("manufacturerName", wm.getMvaluename());
 				json.put("manuno", wm.getMvalueid());
-				if( wm.getInsframeworkId()!=null && !"".equals(wm.getInsframeworkId())){
+				if(wm.getInsframeworkId()!=null && !"".equals(wm.getInsframeworkId())){
 					json.put("insframeworkName", wm.getInsframeworkId().getName());
 					json.put("iId", wm.getInsframeworkId().getId());
 				}

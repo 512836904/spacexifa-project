@@ -85,13 +85,11 @@
             <div class="fitem">
                 <lable><span class="required">*</span>工艺库名称</lable>
                 <input type="hidden" id="validwl">
-                <input class="easyui-textbox" name="wpslibName" id="wpslibName"
-                       data-options="validType:['wpslibValidate'],required:true"/>
+                <input class="easyui-textbox" name="wpslibName" id="wpslibName" data-options="validType:['wpslibValidate'],required:true"/>
             </div>
             <div class="fitem">
                 <lable><span class="required">*</span>焊机型号</lable>
-                <select class="easyui-combobox" name="model" id="model"
-                        data-options="required:true,editable:false"></select>
+                <select class="easyui-combobox" name="model" id="model" data-options="required:true,editable:false"></select>
             </div>
             <div class="fitem">
                 <lable>状态</lable>
@@ -417,9 +415,14 @@
     </div>
 
     <!-- 选择焊机 -->
-    <div id="smdlg" class="easyui-dialog" style="width: 600px; height: 400px; padding:10px 20px" closed="true"
-         buttons="#smdlg-buttons">
+    <div id="smdlg" class="easyui-dialog" style="width: 900px; height: 580px; padding:10px 20px" closed="true" buttons="#smdlg-buttons">
         <form id="smfm" class="easyui-form" method="post" data-options="novalidate:true">
+            <div class="fitem">
+                <lable>归属部门筛选：</lable>
+                <select class="easyui-combobox" name="organize" id="organize" data-options="editable:false"></select>
+                <lable>状态筛选：</lable>
+                <select class="easyui-combobox" name="machineStatus" id="machineStatus" data-options="editable:false"></select>
+            </div>
             <table id="weldingmachineWpsTable" style="table-layout: fixed; width:100%;"></table>
         </form>
     </div>

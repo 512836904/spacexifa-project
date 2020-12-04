@@ -21,7 +21,7 @@ public class DataStatistics {
 	private String serialnumber;
 	private String valuename;
 	private String time;
-	private double hour;
+	private Double hour;
 	private String welderno;
 	private BigInteger warntime;
 	private BigInteger taskid;
@@ -141,10 +141,10 @@ public class DataStatistics {
 	public void setChannel(int channel) {
 		this.channel = channel;
 	}
-	public double getHour() {
+	public Double getHour() {
 		return hour;
 	}
-	public void setHour(double hour) {
+	public void setHour(Double hour) {
 		this.hour = hour;
 	}
 	public String getWelderno() {

@@ -43,7 +43,7 @@
 	</select>
 	
 	<select id="getDicValueByValue" resultMap="dMap">
-		SELECT fvalue, fvaluename FROM tb_dictionary WHERE ftypeid=#{typeid} and fvalue>#{value}
+		SELECT fvalue, fvaluename FROM tb_dictionary WHERE ftypeid=#{typeid} and fvalue>#{value} ORDER BY FVALUE ASC
 	</select>
 	
 	<select id="getDicValueByType" resultType="java.lang.String">

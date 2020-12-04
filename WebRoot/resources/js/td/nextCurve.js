@@ -126,31 +126,31 @@ $(function() {
 		}
 	});
 	//获取工作、焊接时间以及设备类型
-//	$.ajax({
-//		type : "post",
-//		async : false,
-//		url : "td/getLiveTime?machineid="+$("#machineid").val(),
-//		data : {},
-//		dataType : "json", //返回数据形式为json
-//		success : function(result) {
-//			if (result) {
-//				worktime = eval(result);
-//				if(worktime.worktime!=null && worktime.worktime!=''){
-//					time1 = worktime.worktime;
-//				}
-//				if(worktime.time!=null && worktime.time!=''){
-//					time2 = worktime.time;
-//				}
-//				var t1 = secondToDate(time1);
-//			    $("#r3").html(t1);
-//			    var t2 = secondToDate(time2);
-//			    $("#r4").html(t2);
-//			}
-//		},
-//		error : function(errorMsg) {
-//			alert("数据请求失败，请联系系统管理员!");
-//		}
-//	});
+	$.ajax({
+		type : "post",
+		async : false,
+		url : "td/getLiveTime?machineid="+$("#machineid").val(),
+		data : {},
+		dataType : "json", //返回数据形式为json
+		success : function(result) {
+			if (result) {
+				worktime = eval(result);
+				if(worktime.worktime!=null && worktime.worktime!=''){
+					time1 = worktime.worktime;
+				}
+				if(worktime.time!=null && worktime.time!=''){
+					time2 = worktime.time;
+				}
+				var t1 = secondToDate(time1);
+			    $("#r3").html(t1);
+			    var t2 = secondToDate(time2);
+			    $("#r4").html(t2);
+			}
+		},
+		error : function(errorMsg) {
+			alert("数据请求失败，请联系系统管理员!");
+		}
+	});
 //	websocket();
 	mqttTest();
 
@@ -205,7 +205,7 @@ function onConnect() {
 			loadingMask.parentNode.removeChild(loadingMask);
 		},
 		onFailure: function(e){
-			console.log(e);
+			console.log("订阅失败："+e.errorCode);
 			var loadingMask = document.getElementById('loadingDiv');
 			loadingMask.parentNode.removeChild(loadingMask);
 		}
@@ -410,10 +410,10 @@ function iview() {
 
 	console.log("redata.length:"+redata.length);
 
-	if(redata.length==297 || redata.length%99==0){
-		for (var i = 0; i < redata.length; i += 99) {
+	if(redata.length === 405 || redata.length % 135 === 0){
+		for (var i = 0; i < redata.length; i += 135) {
 			//				if(redata.substring(8+i, 12+i)!="0000"){
-			if (parseInt(redata.substring(4 + i, 8 + i),10) == $("#machineid").val()) {
+			if (redata.substring(8 + i, 12 + i).toString() == $("#machineid").val()) {
 
 				historytime = new Date().getTime();
 
@@ -432,7 +432,7 @@ function iview() {
 				time.push((new Date(ttme)).getTime());
 				$("#r8").html(parseFloat((parseInt(redata.substring(95 + i, 99 + i), 10)/10).toFixed(1)) + " m/min");
 				machstatus.push(redata.substring(36 + i, 38 + i));
-				if(parseInt(redata.substring(32+i, 36+i),10)==137){
+				if(parseInt(redata.substring(32 + i, 36 + i), 10) == 128){
 					ele.push(parseFloat((parseInt(redata.substring(38 + i, 42 + i), 10) / 10).toFixed(1)));
 					maxele = parseFloat((parseInt(redata.substring(75 + i, 79 + i), 10) / 10).toFixed(1));
 					minele = parseFloat((parseInt(redata.substring(79 + i, 83 + i), 10) / 10).toFixed(1));
@@ -463,16 +463,18 @@ function iview() {
 				$("#r14").html(presetvol + " v");
 				$("#c2").html(parseFloat((parseInt(redata.substring(42 + i, 46 + i), 10) / 10).toFixed(1)));
 //				$("#r6").html(parseInt(redata.substring(91 + i, 95 + i), 10));
-				for (var k = 0; k < welderName.length; k++) {
-					if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i),10)) {
-						$("#l4").html(welderName[k].fwelder_no);
-					}
-				}
-				for (var t = 0; t < taskNum.length; t++) {
-					if (taskNum[t].id == parseInt(redata.substring(12 + i, 16 + i),10)) {
-						$("#l3").html(taskNum[t].weldedJunctionno);
-					}
-				}
+// 				for (var k = 0; k < welderName.length; k++) {
+// 					if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i),10)) {
+// 						$("#l4").html(welderName[k].fwelder_no);
+// 					}
+// 				}
+				$("#l4").html(redata.substring(0 + i, 4 + i));
+// 				for (var t = 0; t < taskNum.length; t++) {
+// 					if (taskNum[t].id == parseInt(redata.substring(12 + i, 16 + i),10)) {
+// 						$("#l3").html(taskNum[t].weldedJunctionno);
+// 					}
+// 				}
+				$("#l3").html(redata.substring(12 + i, 20 + i));
 				if(parseInt(redata.substring(91 + i, 95 + i),10)==255){
 					$("#r6").html("自由调节状态");
 				}else{

@@ -1,5 +1,5 @@
 /**
- * 
+ * 焊工历史曲线
  */
         $(function(){
         	var width = $("#treeDiv").width();

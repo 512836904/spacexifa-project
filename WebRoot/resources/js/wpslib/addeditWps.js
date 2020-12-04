@@ -562,13 +562,13 @@ function loadJunctionTable() {
         }, {
             field: 'junction_length',
             title: '长度',
-            width: 120,
+            width: 80,
             halign: "center",
             align: "center"
         }, {
             field: 'junction_format',
             title: '规格',
-            width: 100,
+            width: 80,
             halign: "center",
             align: "center"
         }, {
@@ -584,6 +584,18 @@ function loadJunctionTable() {
             halign: "center",
             align: "center"
         }, {
+            field: 'FMAXVOLTAGE',
+            title: '电压上限',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'FMINVOLTAGE',
+            title: '电压下限',
+            width: 100,
+            halign: "center",
+            align: "center"
+        }, {
             field: 'junction_name',
             title: '焊缝名称',
             width: 100,
@@ -592,7 +604,7 @@ function loadJunctionTable() {
         }, {
             field: 'edit',
             title: '操作',
-            width: 200,
+            width: 150,
             halign: "center",
             align: "left",
             formatter: function (value, row, index) {

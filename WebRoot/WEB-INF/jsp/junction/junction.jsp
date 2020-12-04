@@ -98,6 +98,14 @@
                 <input class="easyui-textbox" name="current_lower_limit" id="current_lower_limit">
             </div>
             <div class="fitem">
+                <lable><span class="required">*</span>电压上限</lable>
+                <input name="FMAXVOLTAGE" id="FMAXVOLTAGE" class="easyui-textbox" data-options="required:true">
+            </div>
+            <div class="fitem">
+                <lable><span class="required">*</span>电压下限</lable>
+                <input class="easyui-textbox" name="FMINVOLTAGE" id="FMINVOLTAGE">
+            </div>
+            <div class="fitem">
                 <lable><span class="required">*</span>焊缝名称</lable>
                 <input class="easyui-textbox" name="junction_name" id="junction_name">
             </div>

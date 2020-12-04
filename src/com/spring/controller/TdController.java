@@ -107,7 +107,7 @@ public class TdController {
         String flag = request.getParameter("flag");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
 //	    String time = tdService.getBootTime(df.format(new Date())+" 00:00:00", new BigInteger(value));
-        request.setAttribute("value", value);
+        request.setAttribute("value", value);//采集序号
         request.setAttribute("valuename", valuename);
         request.setAttribute("type", type);
         request.setAttribute("model", model);
@@ -591,13 +591,13 @@ public class TdController {
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         if (iutil.isNull(parentId)) {
-            parent = new BigInteger(parentId);
-            List<Td> getAP = tdService.getAllPosition(parent, null);
             try {
+                parent = new BigInteger(parentId);
+                List<Td> getAP = tdService.getAllPosition(parent, null);
                 for (Td td : getAP) {
                     json.put("fid", td.getId());
-                    json.put("fequipment_no", td.getFequipment_no());
-                    json.put("fgather_no", td.getFstatus_id());
+                    json.put("fequipment_no", td.getFequipment_no());//设备名称
+                    json.put("fgather_no", td.getFstatus_id());//采集序号
                     json.put("fposition", td.getFposition());
                     json.put("finsid", td.getFci());
                     json.put("finsname", td.getFcn());
@@ -623,18 +623,15 @@ public class TdController {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                e.getMessage();
             }
         } else {
-            MyUser myuser = (MyUser) SecurityContextHolder.getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            long uid = myuser.getId();
-            List<Insframework> insframework = insm.getInsByUserid(BigInteger.valueOf(uid));
-            parent = insframework.get(0).getId();
-            if (insframework.get(0).getType() == 20) {
+            try {
+                MyUser myuser = (MyUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                long uid = myuser.getId();
+                List<Insframework> insframework = insm.getInsByUserid(BigInteger.valueOf(uid));
+                parent = insframework.get(0).getId();
                 List<Td> getAP = tdService.getAllPosition(parent, null);
-                try {
+                if (insframework.get(0).getType() == 20) {
                     for (Td td : getAP) {
                         json.put("fid", td.getId());
                         json.put("fequipment_no", td.getFequipment_no());
@@ -645,16 +642,12 @@ public class TdController {
                         json.put("type", td.getTypeid());
                         ary.add(json);
                     }
-                } catch (Exception e) {
-                    e.getMessage();
-                }
-            } else {
-                List<Insframework> in = insm.getInsIdByParent(insm.getInsByUserid(BigInteger.valueOf(uid)).get(0).getId(), 24);
-                List<Td> getAP = tdService.getAllPosition(parent, null);
-                try {
+                } else {
+                    List<Insframework> in = insm.getInsIdByParent(insm.getInsByUserid(BigInteger.valueOf(uid)).get(0).getId(), 24);
+                    //List<Td> getAP = tdService.getAllPosition(parent, null);
                     for (Td td : getAP) {
                         for (Insframework ins : in) {
-                            if (td.getFci() == Integer.valueOf(ins.getId().toString())) {
+                            if (ins.getId().equals(td.getFci())) {
                                 json.put("fid", td.getId());
                                 json.put("fequipment_no", td.getFequipment_no());
                                 json.put("fgather_no", td.getFstatus_id());
@@ -666,9 +659,9 @@ public class TdController {
                             }
                         }
                     }
-                } catch (Exception e) {
-                    e.getMessage();
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         obj.put("rows", ary);
@@ -682,14 +675,18 @@ public class TdController {
         String mach = request.getParameter("mach");
         String parentId = request.getParameter("parent");
         BigInteger parent = null;
+        BigInteger machs = null;
+        if (iutil.isNull(mach)) {
+            machs = new BigInteger("");
+        }
         if (iutil.isNull(parentId)) {
             parent = new BigInteger(parentId);
         }
-        List<Td> getAP = tdService.getMachine(new BigInteger(mach), parent);
         JSONObject obj = new JSONObject();
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         try {
+            List<Td> getAP = tdService.getMachine(machs, parent);
             for (Td td : getAP) {
                 json.put("fid", td.getId());
                 json.put("fequipment_no", td.getFequipment_no());
@@ -699,7 +696,7 @@ public class TdController {
                 ary.add(json);
             }
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         obj.put("rows", ary);
         return obj.toString();

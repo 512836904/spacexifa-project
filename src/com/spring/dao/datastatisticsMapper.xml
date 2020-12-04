@@ -201,6 +201,21 @@
         GROUP BY i.fid,i.fname
     </select>
 
+    <select id="getItemMachineByItemType" resultMap="dataMap" parameterType="int">
+        <!-- 22:工区，23：班组 -->
+        <if test="itemtype == 22">
+            SELECT i.fid,i.fname,sum(t.total) total FROM tb_insframework i	INNER JOIN(
+                SELECT i.fid,i.fname,count(w.fid) total,i.FPARENT FROM tb_insframework i LEFT JOIN tb_welding_machine w ON w.finsframework_id = i.fid
+                WHERE i.FTYPE = 23 GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+            )t ON t.FPARENT = i.fid
+            WHERE i.FTYPE = 22 GROUP BY i.fid,i.fname ORDER BY FID
+        </if>
+        <if test="itemtype == 23">
+            SELECT i.fid,i.fname,count(w.fid) total,i.FPARENT FROM tb_insframework i LEFT JOIN tb_welding_machine w ON w.finsframework_id = i.fid
+            WHERE i.FTYPE = 23 GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+        </if>
+    </select>
+
     <!-- 获取开机焊机数 -->
     <select id="getStartingUpMachineNum" resultType="java.lang.Integer">
         SELECT COUNT(FID) num FROM tb_standby
@@ -1301,7 +1316,7 @@
     </select>
 
     <!-- 	焊工工作排行榜 -->
-    <select id="getWorkRank" resultMap="dataMap">
+    <select id="getWorkRank" resultMap="dataMap" useCache="true">
         <!--		select sum(fworktime) /60/60 hour,w.fname,w.fwelder_no welderno,i.fname insname FROM  tb_work l-->
         <!--		left JOIN  tb_welder w on w.fid = l.fwelder_id -->
         <!--		INNER join tb_insframework i on i.fid = l.fwelder_itemid INNER join tb_insframework ins on ins.fid = i.fparent -->
@@ -1384,29 +1399,66 @@
     </select>
 
     <select id="findLoadRateList" resultMap="dataMap">
-        SELECT i.fid,i.fname,SUM(wk.fworktime)/60/60 wkhour,SUM(wn.fwarntime)/60/60 wnhour
-        FROM tb_insframework i
-        LEFT JOIN  tb_work wk ON wk.fmachine_itemid=i.fid
-        <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-            AND wk.FSTARTTIME >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd')
+        <if test="itemType == 22">
+            SELECT i.fid,i.fname,sum(t.wkhour) wkhour,sum(t.wnhour) wnhour FROM tb_insframework i
+            INNER JOIN(
+                SELECT i.fid,i.fname,sum(wk.fworktime)/3600 wkhour,sum(wn.FALARMTIME)/3600 wnhour,i.FPARENT
+                FROM tb_insframework i LEFT JOIN  tb_work wk ON wk.fmachine_itemid=i.fid
+                <if test="startTime != null and startTime != ''">
+                    AND wk.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+                </if>
+                LEFT JOIN TB_ALARM wn on wn.fmachine_itemid=i.fid
+                <if test="startTime != null and startTime != ''">
+                    AND wn.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+                </if>
+                WHERE i.FTYPE = 23
+                GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+            )t ON t.FPARENT = i.fid
+            WHERE i.FTYPE = 22 GROUP BY i.fid,i.fname ORDER BY FID
         </if>
-        LEFT JOIN tb_warn wn on wn.fmachine_itemid=i.fid
-        <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-            AND wn.fstarttime >= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd')
+        <if test="itemType == 23">
+            SELECT i.fid,i.fname,sum(wk.fworktime)/3600 wkhour,sum(wn.FALARMTIME)/3600 wnhour,i.FPARENT
+            FROM tb_insframework i LEFT JOIN  tb_work wk ON wk.fmachine_itemid=i.fid
+            <if test="startTime != null and startTime != ''">
+                AND wk.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+            </if>
+            LEFT JOIN TB_ALARM wn on wn.fmachine_itemid=i.fid
+            <if test="startTime != null and startTime != ''">
+                AND wn.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+            </if>
+            WHERE i.FTYPE = 23
+            GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
         </if>
-        WHERE 1 = 1
-        GROUP BY i.fid,i.fname
     </select>
 
     <!-- 组织机构分组，查询人均工作时间 -->
     <select id="findAverageWorkingTime" resultMap="dataMap">
-		SELECT i.fid,i.fname,SUM(fworktime)/3600 hour,COUNT(w.FWELDER_ID) num
-		FROM tb_insframework i
-		LEFT JOIN tb_work w on w.fmachine_itemid=i.fid
-        <if test="time != null and time != ''">
-            AND w.FSTARTTIME >= TO_DATE(#{time}, 'yyyy-MM-dd')
+        <if test="itemType == 22">
+            SELECT i.fid,i.fname,sum(t.wkhour) hour,sum(t.num) num FROM tb_insframework i
+            INNER JOIN(
+                SELECT i.fid,i.fname,sum(wk.fworktime)/3600 wkhour,i.FPARENT,COUNT(wr.FOWNER) num
+                FROM tb_insframework i
+                LEFT JOIN  tb_work wk ON wk.fmachine_itemid=i.fid
+                <if test="startTime != null and startTime != ''">
+                    AND wk.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+                </if>
+                LEFT JOIN  TB_WELDER wr ON i.fid = wr.FOWNER
+                WHERE i.FTYPE = 23
+                GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+            )t ON t.FPARENT = i.fid
+            WHERE i.FTYPE = 22 GROUP BY i.fid,i.fname ORDER BY FID
         </if>
-		GROUP BY i.fid,i.fname
+        <if test="itemType == 23">
+            SELECT i.fid,i.fname,sum(wk.fworktime)/3600 wkhour,i.FPARENT,COUNT(wr.FOWNER) num
+            FROM tb_insframework i
+            LEFT JOIN  tb_work wk ON wk.fmachine_itemid=i.fid
+            <if test="startTime != null and startTime != ''">
+                AND wk.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+            </if>
+            LEFT JOIN  TB_WELDER wr ON i.fid = wr.FOWNER
+            WHERE i.FTYPE = 23
+            GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+        </if>
 	</select>
 
     <select id="getWireAndFlow" resultMap="dataMap">

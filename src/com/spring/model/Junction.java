@@ -12,6 +12,8 @@ public class Junction {
     private String current_limit;          //电流上限
     private String current_lower_limit;     //电流下限
     private String junction_name;       //焊缝名称
+    private String FMAXVOLTAGE;       //电压上限
+    private String FMINVOLTAGE;       //电压下限
 
     /**
      * 工艺信息和焊缝关联表
@@ -70,6 +72,22 @@ public class Junction {
 
     public String getJunction_name() {
         return junction_name;
+    }
+
+    public String getFMAXVOLTAGE() {
+        return FMAXVOLTAGE;
+    }
+
+    public void setFMAXVOLTAGE(String FMAXVOLTAGE) {
+        this.FMAXVOLTAGE = FMAXVOLTAGE;
+    }
+
+    public String getFMINVOLTAGE() {
+        return FMINVOLTAGE;
+    }
+
+    public void setFMINVOLTAGE(String FMINVOLTAGE) {
+        this.FMINVOLTAGE = FMINVOLTAGE;
     }
 
     public void setJunction_name(String junction_name) {

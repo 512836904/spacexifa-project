@@ -146,24 +146,37 @@ public class WeldingMachineController {
         pageSize = Integer.parseInt(request.getParameter("rows"));
         String searchStr = request.getParameter("searchStr");
         String parentId = request.getParameter("parent");
+        String machineStatus = request.getParameter("machineStatus");
         BigInteger parent = null;
         if (iutil.isNull(parentId)) {
             parent = new BigInteger(parentId);
         }
+        String search = "";
+        if (null != searchStr && !"".equals(searchStr)){
+            if (null != machineStatus && !"".equals(machineStatus)){
+                search = searchStr + " and " +machineStatus;
+            }else {
+                search = searchStr;
+            }
+        }else {
+            if (null != machineStatus && !"".equals(machineStatus)){
+                search = machineStatus;
+            }else {
+                search = "";
+            }
+        }
         request.getSession().setAttribute("searchStr", searchStr);
         page = new Page(pageIndex, pageSize, total);
-        List<WeldingMachine> list = wmm.getWeldingMachineAll(page, parent, searchStr);
         long total = 0;
-
-        if (list != null) {
-            PageInfo<WeldingMachine> pageinfo = new PageInfo<WeldingMachine>(list);
-            total = pageinfo.getTotal();
-        }
-
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         JSONObject obj = new JSONObject();
         try {
+            List<WeldingMachine> list = wmm.getWeldingMachineAll(page, parent, search);
+            if (list != null) {
+                PageInfo<WeldingMachine> pageinfo = new PageInfo<WeldingMachine>(list);
+                total = pageinfo.getTotal();
+            }
             for (WeldingMachine wm : list) {
                 json.put("id", wm.getId());
                 json.put("ip", wm.getIp());
@@ -180,6 +193,9 @@ public class WeldingMachineController {
                 if (null != wm.getInsframeworkId()) {
                     json.put("insframeworkName", wm.getInsframeworkId().getName());
                     json.put("iId", wm.getInsframeworkId().getId());
+                }else {
+                    json.put("insframeworkName", "");
+                    json.put("iId", "");
                 }
                 if (wm.getModel() != null && !("").equals(wm.getModelname())) {
                     json.put("model", wm.getModel());

@@ -10,7 +10,7 @@
 
     <!-- 查询焊缝信息列表   -->
     <select id="getJunctionList" parameterType="com.spring.model.Junction" resultType="com.spring.model.Junction">
-        SELECT  FID,FJUNCTION,JUNCTION_LENGTH,JUNCTION_FORMAT,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,JUNCTION_NAME
+        SELECT  FID,FJUNCTION,JUNCTION_LENGTH,JUNCTION_FORMAT,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,JUNCTION_NAME,FMAXVOLTAGE,FMINVOLTAGE
         from TB_JUNCTION
         WHERE 1 = 1
         <if test="fjunction != null and fjunction != ''">
@@ -43,6 +43,12 @@
             <if test="junction_name != null and junction_name != ''">
                 JUNCTION_NAME,
             </if>
+            <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                FMAXVOLTAGE,
+            </if>
+            <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                FMINVOLTAGE,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fjunction != null and fjunction != ''">
@@ -62,6 +68,12 @@
             </if>
             <if test="junction_name != null and junction_name != ''">
                 #{junction_name},
+            </if>
+            <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                #{FMAXVOLTAGE},
+            </if>
+            <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                #{FMINVOLTAGE},
             </if>
         </trim>
     </insert>
@@ -88,6 +100,12 @@
                 </if>
                 <if test="junction_name != null and junction_name != ''">
                     JUNCTION_NAME = #{junction_name},
+                </if>
+                <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                    FMAXVOLTAGE = #{FMAXVOLTAGE},
+                </if>
+                <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                    FMINVOLTAGE = #{FMINVOLTAGE},
                 </if>
             </set>
             WHERE fid = #{fid}

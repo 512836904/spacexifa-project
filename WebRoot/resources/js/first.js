@@ -1,5 +1,5 @@
 var machine = new Array(), off = new Array(), on = new Array(), warn = new Array(), stand = new Array(),
-    cleardata = new Array();
+    cleardata = new Array(),welderNum = new Array();
 var chartsDiv11 = null, chartsDiv12 = null, chartsDiv221 = null, chartsDiv222 = null, chartsDiv21 = null,
     chartsDiv23 = null, chartsDiv13 = null;
 var lockReconnect = false;//避免重复连接
@@ -67,7 +67,7 @@ function showDiv12() {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
-
+    //查询所有焊机
     $.ajax({
         type: "post",
         async: false,
@@ -86,7 +86,22 @@ function showDiv12() {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
-
+    //焊工总数length
+    $.ajax({
+        type : "post",
+        async : false,
+        url : "td/allWeldname",
+        data : {},
+        dataType : "json", //返回数据形式为json
+        success : function(result) {
+            if (result) {
+                welderNum = eval(result.rows);
+            }
+        },
+        error : function(errorMsg) {
+            alert("数据请求失败，请联系系统管理员!");
+        }
+    });
     // chartsDiv12 = echarts.init(document.getElementById("div1-2"));
     // showChart12();
     /*
@@ -292,10 +307,11 @@ function onMessageArrived(message) {
 //	redata = redata.substring(0,99)+"00010001000100010001"+
 //	redata.substring(99,198)+"00010001000100010001"+
 //	redata.substring(198)+"00010001000100010001";
-    if (redata.length % 135 == 0) {
+    var onLineWelder = new Array();//在线焊工
+    if (redata.length === 405 || redata.length % 135 === 0) {
         for (var i = 0; i < redata.length; i += 135) {
             for (var f = 0; f < machine.length; f++) {
-                if (machine[f].fid == (parseInt(redata.substring(4 + i, 8 + i), 10))) {
+                if (machine[f].fgather_no === redata.substring(8 + i, 12 + i).toString()) {
                     if (redata.substring(4 + i, 8 + i) != "0000") {
                         var cleardataIndex = $.inArray(parseInt(redata.substring(4 + i, 8 + i), 10), cleardata);
                         if (cleardataIndex == (-1)) {
@@ -305,7 +321,7 @@ function onMessageArrived(message) {
                             cleardata.splice(cleardataIndex + 1, 1, new Date().getTime());
                         }
                         var mstatus = redata.substring(36 + i, 38 + i);
-                        if (mstatus == "00") {
+                        if (mstatus == "00") {  //待机
                             var num;
                             num = $.inArray(parseInt(redata.substring(4 + i, 8 + i), 10), stand);
                             if (num == (-1)) {
@@ -323,7 +339,7 @@ function onMessageArrived(message) {
                             if (num != (-1)) {
                                 on.splice(num, 1);
                             }
-                        } else if (mstatus == "03" || mstatus == "05" || mstatus == "07") {
+                        } else if (mstatus == "03" || mstatus == "05" || mstatus == "07") { //工作
                             var num;
                             num = $.inArray(parseInt(redata.substring(4 + i, 8 + i), 10), on);
                             if (num == (-1)) {
@@ -341,7 +357,7 @@ function onMessageArrived(message) {
                             if (num != (-1)) {
                                 stand.splice(num, 1);
                             }
-                        } else {
+                        } else {    //故障
                             var num;
                             num = $.inArray(parseInt(redata.substring(4 + i, 8 + i), 10), warn);
                             if (num == (-1)) {
@@ -363,19 +379,36 @@ function onMessageArrived(message) {
                     }
                 }
             }
+            //焊工状态处理
+            for (var y = 0;y < welderNum.length;y++){
+                if (redata.substring(0 + i, 4 + i) != "0000"){  //焊工号判断
+                    var fwelder_no = parseInt(welderNum[y].fwelder_no,10);//焊工编号
+                    var welder_no = parseInt(redata.substring(0 + i, 4 + i),10);
+                    if (fwelder_no == welder_no){
+                        var num;
+                        num = $.inArray(parseInt(welder_no, onLineWelder));
+                        if (num != (-1)) {
+                            onLineWelder.push(num, 1);
+                        }
+                    }
+                }
+            }
         }
     }
-    var option = chartsDiv12.getOption();
+    var lixian = welderNum.length - onLineWelder.length;
+    var machineStatus = echarts.init(document.querySelector("#Left1"));
+    var option = machineStatus.getOption();
     option.series[0].data = [
         {value: on.length, name: '工作', id: 0},
         {value: stand.length, name: '待机', id: 1},
         {value: warn.length, name: '故障', id: 2},
         {value: off.length, name: '关机', id: 3}
     ];
-    chartsDiv12.setOption(option);
-    /*	message = new Paho.MQTT.Message("1");
-        message.destinationName = "api2";
-        client.send(message);*/
+    option.series[1].data = [
+        {value: onLineWelder.length, name: '在线', id: 0},
+        {value: lixian, name: '离线', id: 1}
+    ];
+    machineStatus.setOption(option);
 }
 
 

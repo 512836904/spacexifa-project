@@ -169,90 +169,94 @@ var mflag = 1;
 
 //新增工艺
 function addMainWps(row) {
-    mflag = 1;
-    var height = 600;
-    //var src = 'wps/goWB_P500L';
-    //给子页面的文本框赋值
-    // function assgVal(){
-    // 	var fatherText = $("#fatherText").val();
-    // 	$('#son').contents().find("#sonId").val(fatherText);
-    // }
-    /* 引用子页面index1.html */
-    //var hrefs = "<iframe id='son' src='"+src+"' allowTransparency='true' style='border:0;width:99%;height:99%;padding-left:2px;' frameBorder='0'></iframe>";
-    // $("#centers").html(hrefs);
-    // $('#wpsCraft').window('open');
-    $('#fmwpsCraft').form('clear');
-    wpsLibRule(row.modelname);
-    if (row.modelname == 'DP500/CPVM500') {
-        height = 300;
-    }
-    var arr1 = [];
-    arr1 = $('#fchanel').combobox('getData');
-    //查询对应焊机型号下的所有规范
-    var arr2 = [];
-    arr2 = findSpecificationByFid(row.fid);
-    // console.log(arr1);
-    // console.log(arr2);
-    //求两个对象数组的差集
-    let diff = [...arr1];
-    for (let i = 0, len = arr1.length; i < len; i++ ) {
-        let flag = false
-        for (let j = 0, length = arr2.length; j < length; j++) {
-            if (arr1[i].value === arr2[j].id) {
-                flag = true
+    if (row.statusId == 61){
+        mflag = 1;
+        var height = 600;
+        //var src = 'wps/goWB_P500L';
+        //给子页面的文本框赋值
+        // function assgVal(){
+        // 	var fatherText = $("#fatherText").val();
+        // 	$('#son').contents().find("#sonId").val(fatherText);
+        // }
+        /* 引用子页面index1.html */
+        //var hrefs = "<iframe id='son' src='"+src+"' allowTransparency='true' style='border:0;width:99%;height:99%;padding-left:2px;' frameBorder='0'></iframe>";
+        // $("#centers").html(hrefs);
+        // $('#wpsCraft').window('open');
+        $('#fmwpsCraft').form('clear');
+        wpsLibRule(row.modelname);
+        if (row.modelname == 'DP500/CPVM500') {
+            height = 300;
+        }
+        var arr1 = [];
+        arr1 = $('#fchanel').combobox('getData');
+        //查询对应焊机型号下的所有规范
+        var arr2 = [];
+        arr2 = findSpecificationByFid(row.fid);
+        // console.log(arr1);
+        // console.log(arr2);
+        //求两个对象数组的差集
+        let diff = [...arr1];
+        for (let i = 0, len = arr1.length; i < len; i++ ) {
+            let flag = false
+            for (let j = 0, length = arr2.length; j < length; j++) {
+                if (arr1[i].value === arr2[j].id) {
+                    flag = true
+                }
+            }
+            if (flag) {
+                diff.splice(diff.find(item => item.id === arr1[i].value), 1);
             }
         }
-        if (flag) {
-            diff.splice(diff.find(item => item.id === arr1[i].value), 1);
-        }
-    }
-    // console.log(diff);
-    $('#fchanel').combobox('clear');
-    $('#fchanel').combobox('loadData', diff);
-    $('#fchanel').combobox('select', diff[0].value);
+        // console.log(diff);
+        $('#fchanel').combobox('clear');
+        $('#fchanel').combobox('loadData', diff);
+        $('#fchanel').combobox('select', diff[0].value);
 
-    //清空页面数据
-    $("#modelname").val(row.model);
-    $("#fid").val(row.fid);
-    $("#fchanel").combobox('readonly', false);
-    $('#wpsCraft').dialog("open");
-    $('#wpsCraft').dialog({
-        title: '新增工艺',
-        width: 900,
-        height: height,
-        closed: false,
-        cache: false,
-        // href: src,
-        content: '',
-        modal: true,
-        buttons: [
-            {
-                text: '索取规范',
-                iconCls: 'icon-getwps',
-                handler: function () {
-                    selectMachineList(0);
-                }
-            }, {
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    saveMainWps(row.modelname);
-                }
-            }, {
-                text: '关闭',
-                iconCls: 'icon-no',
-                handler: function () {
-                    // $("#wpsCraft").dialog('destroy');
-                    $("#wpsCraft").dialog('close');
-                }
-            }],
-        onClose: function () {
-            // $(this).dialog('destroy');
-            $("#wpsCraft").dialog('close');
-        },
-        onLoad: function () {
-        }
-    });
+        //清空页面数据
+        $("#modelname").val(row.model);
+        $("#fid").val(row.fid);
+        $("#fchanel").combobox('readonly', false);
+        $('#wpsCraft').dialog("open");
+        $('#wpsCraft').dialog({
+            title: '新增工艺',
+            width: 900,
+            height: height,
+            closed: false,
+            cache: false,
+            // href: src,
+            content: '',
+            modal: true,
+            buttons: [
+                {
+                    text: '索取规范',
+                    iconCls: 'icon-getwps',
+                    handler: function () {
+                        selectMachineList(0);
+                    }
+                }, {
+                    text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        saveMainWps(row.modelname);
+                    }
+                }, {
+                    text: '关闭',
+                    iconCls: 'icon-no',
+                    handler: function () {
+                        // $("#wpsCraft").dialog('destroy');
+                        $("#wpsCraft").dialog('close');
+                    }
+                }],
+            onClose: function () {
+                // $(this).dialog('destroy');
+                $("#wpsCraft").dialog('close');
+            },
+            onLoad: function () {
+            }
+        });
+    }else {
+        alert("该工艺库已被停用！");
+    }
 }
 
 function editMainWps(indexrow, row) {
@@ -276,7 +280,7 @@ function editMainWps(indexrow, row) {
                 text: '索取规范',
                 iconCls: 'icon-getwps',
                 handler: function () {
-                    alert("索取规范");
+                    selectMachineList(0);
                 }
             }, {
                 text: '保存',

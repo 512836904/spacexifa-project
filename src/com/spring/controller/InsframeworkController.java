@@ -90,7 +90,7 @@ public class InsframeworkController {
 	
 	@RequestMapping("/getInsframeworkList")
 	@ResponseBody
-	public String getWeldingMachine(HttpServletRequest request){
+	public String getInsframeworkList(HttpServletRequest request){
 		pageIndex = Integer.parseInt(request.getParameter("page"));
 		pageSize = Integer.parseInt(request.getParameter("rows"));
 		String searchStr = request.getParameter("searchStr");
@@ -227,7 +227,7 @@ public class InsframeworkController {
 
 	
 	/**
-	 * 获取父节点
+	 * 获取所有父节点
 	 * @return
 	 */
 	@RequestMapping("/getParent")
@@ -237,54 +237,30 @@ public class InsframeworkController {
 		JSONArray ary = new JSONArray();
 		JSONObject obj = new JSONObject();
 		try{
-			String id = request.getParameter("id");
-			int type = Integer.parseInt(request.getParameter("type"));
-			//获取用户id
+			String id = request.getParameter("id");//组织机构id
+			int type = Integer.parseInt(request.getParameter("type"));//组织机构字典类型
 			Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			MyUser myuser = (MyUser)object;
+			//根据用户id查询当前组织机构id和类型（不能大于当前组织机构）
 			List<Insframework> insparent = im.getInsByUserid(new BigInteger(myuser.getId()+""));
-			List<Insframework> ins = null;
-			for(Insframework i:insparent){
-				if(i.getType()==20){
-					ins = im.getInsAll(23);
-				}else if(i.getType()==21){
-					ins = im.getInsIdByParent(i.getId(),23);
-					Insframework insf = im.getInsById(i.getId());
-					ins.add(ins.size(),insf);
-					if(type==21){
-						Insframework insframework = im.getBloc();
-						ins.add(ins.size(),insframework);
-					}
-				}else if(i.getType()==22){
-					ins = im.getInsIdByParent(i.getId(),23);
-					if(type==22){
-						Insframework insf = new Insframework();
-						BigInteger parent = im.getParentById(i.getId());
-						insf.setId(parent);
-						insf.setName(im.getInsframeworkById(parent));
-						ins.add(ins.size(),insf);
-					}
-				}else{
-					ins = im.getInsIdByParent(i.getId(),23);
-					if(type==23){
-						Insframework insf = new Insframework();
-						BigInteger parent = im.getParentById(i.getId());
-						insf.setId(parent);
-						insf.setName(im.getInsframeworkById(parent));
-						ins.add(ins.size(),insf);
-					}
-				}
-			}
-
-			if(type==20){
-				json.put("id", 0);
-				json.put("name", "无");
-				ary.add(json);
-			}else{
-				for(Insframework in:ins){
-					if(!in.getId().toString().equals(id)){
-						json.put("id", in.getId());
-						json.put("name", in.getName());
+			for(Insframework i : insparent){
+				//当前组织机构为集团，不能选择父级
+				if(type == 20){
+					json.put("id", 0);
+					json.put("name", "无");
+					ary.add(json);
+				}else {
+					//根据当前组织机构id查询选择的组织机构以上父级列表
+					List<Insframework> insIdByParent = im.getInsIdByParent(i.getId(), type);
+					if (null != insIdByParent && insIdByParent.size() > 0){
+						for (Insframework p : insIdByParent){
+							json.put("id", p.getId());
+							json.put("name", p.getName());
+							ary.add(json);
+						}
+					}else {
+						json.put("id", 0);
+						json.put("name", "");
 						ary.add(json);
 					}
 				}
@@ -403,7 +379,7 @@ public class InsframeworkController {
 	
 	/**
 	 * 组织机构树形菜单
-	 * @param name
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/getConmpany")
@@ -674,7 +650,7 @@ public class InsframeworkController {
 			List<Insframework> ins = im.getInsByUserid(new BigInteger(myuser.getId()+""));
 			for(Insframework i:ins){
 				//如果用户为集团层或点击的是自己的层级时不做判断
-				if(i.getType()==21 || id.equals(i.getId())){
+				if(i.getType()==20 || id.equals(i.getId())){
 					obj.put("flag", true);
 				}else{
 					List<Insframework> list = im.getInsIdByParent(i.getId(),0);

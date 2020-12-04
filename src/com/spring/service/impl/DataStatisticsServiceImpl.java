@@ -27,7 +27,12 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return ds.getItemMachineCount(parent);
 	}
-	
+
+	@Override
+	public List<DataStatistics> getItemMachineByItemType(Page page, int itemtype) {
+		return ds.getItemMachineByItemType(itemtype);
+	}
+
 	@Override
 	public List<DataStatistics> getItemMachineCount(BigInteger parent) {
 		return ds.getItemMachineCount(parent);
@@ -378,12 +383,12 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
-	public List<DataStatistics> findAverageWorkingTime(String time) {
-		return ds.findAverageWorkingTime(time);
+	public List<DataStatistics> findAverageWorkingTime(String startTime,int itemType) {
+		return ds.findAverageWorkingTime(startTime,itemType);
 	}
 
 	@Override
-	public List<DataStatistics> findLoadRateList(BigInteger insid, WeldDto dto) {
-		return ds.findLoadRateList(insid, dto);
+	public List<DataStatistics> findLoadRateList(String startTime,int itemType) {
+		return ds.findLoadRateList(startTime, itemType);
 	}
 }

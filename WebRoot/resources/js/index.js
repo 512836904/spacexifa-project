@@ -2,12 +2,21 @@ $(function(){
 //	getHiddenMenu();
 	checkBrowser();
 	getUserInsframework();
-	addWelcom("欢迎使用","index.html");
+	addWelcom("项目展板","index.html");
+	addWelcom("生产管理展板","production.html");
+	addWelcom("质量管理展板","quality.html");
+	addWelcom("工作号管理展板","worknumber.html");
+	$("#tabs").tabs('select','项目展板');
 	// addWelcom("欢迎使用","first.jsp");
 	tabsIncident();
 	$("#persondiv").hide();
 	$("#junctiondiv").hide();
 	$("#machinediv").hide();
+
+	// $("#tabs").tabs('add',{
+	// 	title:'first',
+	// 	content:createFrame('first.jsp')
+	// });
 })
 
 var browsernum = "auto";

@@ -13,9 +13,10 @@
         	<result property="type" column="ftype"></result>
         	<result property="typename" column="typename"></result>
 	</resultMap>
-	
+
+	<!-- 采用递归查询所有子级列表（包括本级） -->
 	<select id="getInsframeworkAll" resultMap="insMap">
-		SELECT i.fid,i.fname,i.flogogram,i.fcode,i.fparent,i.ftype,ins.fname fparentname,d.fvaluename typename FROM tb_insframework i 
+		<!-- SELECT i.fid,i.fname,i.flogogram,i.fcode,i.fparent,i.ftype,ins.fname fparentname,d.fvaluename typename FROM tb_insframework i
 		INNER JOIN tb_dictionary d on d.fvalue = i.ftype
 		left join tb_insframework ins on ins.fid = i.fparent
 		where d.ftypeid=2
@@ -25,7 +26,19 @@
 		<if test="str!=null and str!=''">
 			and ${str}
 		</if>
-		ORDER BY nlssort(i.fname,'NLS_SORT=SCHINESE_PINYIN_M')
+		ORDER BY nlssort(i.fname,'NLS_SORT=SCHINESE_PINYIN_M') -->
+		SELECT DISTINCT i.fid,i.fname,i.flogogram,i.fcode,i.fparent,i.ftype,d.fvaluename typename
+		FROM tb_insframework i
+		INNER JOIN tb_dictionary d on d.fvalue = i.ftype
+		WHERE d.ftypeid = 2
+		<if test="str!=null and str!=''">
+			and ${str}
+		</if>
+		<if test="parent!=null and parent!=''">
+			START WITH i.fid = #{parent}
+		</if>
+		CONNECT BY PRIOR i.fid = i.fparent
+		ORDER BY i.FID ASC
 	</select>
 	
 	<select id="getInsById"  resultMap="insMap">
@@ -35,7 +48,7 @@
 	<select id="getInsAll"  resultMap="insMap">
 		select fid, fname from tb_insframework where 1=1
 		<if test="type>0">
-			and ftype&lt;#{type}
+			and ftype &lt; #{type}
 		</if>
 	</select>
 	
@@ -129,12 +142,23 @@
 	</select>
 	
 	<select id="getInsIdByParent" resultMap="insMap">
-		SELECT i.fid,i.fname FROM tb_insframework i INNER JOIN tb_insframework ins on ins.fid = i.fparent
+		<!-- SELECT i.fid,i.fname FROM tb_insframework i INNER JOIN tb_insframework ins on ins.fid = i.fparent
 		INNER join tb_insframework insf on insf.fid = ins.fparent
 		where (i.fid = #{parent} or ins.fid = #{parent} or insf.fid = #{parent})
 		<if test="type>0">
 			and i.ftype&lt;#{type}
+		</if> -->
+		SELECT i.fid,i.fname
+		FROM tb_insframework i
+		WHERE 1 = 1
+		<if test="type > 0">
+			#{type} > i.ftype
 		</if>
+		<if test="parent!=null and parent!=''">
+		START WITH i.fid = #{parent}
+		</if>
+		CONNECT BY PRIOR i.fid = i.fparent
+		ORDER BY i.FID ASC
 	</select>
 	
 	<select id="getInsByUserid" resultMap="insMap">

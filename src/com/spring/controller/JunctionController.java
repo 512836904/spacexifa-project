@@ -1,7 +1,6 @@
 package com.spring.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.google.gson.JsonObject;
 import com.spring.model.Junction;
 import com.spring.page.Page;
 import com.spring.service.JunctionService;
@@ -11,9 +10,9 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -77,6 +76,8 @@ public class JunctionController {
             json.put("current_limit" ,junction.getCurrent_limit());
             json.put("current_lower_limit" ,junction.getCurrent_lower_limit());
             json.put("junction_name" ,junction.getJunction_name());
+            json.put("FMAXVOLTAGE" ,junction.getFMAXVOLTAGE());
+            json.put("FMINVOLTAGE" ,junction.getFMINVOLTAGE());
             ary.add(json);
         }
         obj.put("total", total);
@@ -96,6 +97,8 @@ public class JunctionController {
             String current_limit = request.getParameter("current_limit");//电流上限
             String current_lower_limit = request.getParameter("current_lower_limit");//电流下限
             String junction_name = request.getParameter("junction_name");//焊缝名称
+            String FMAXVOLTAGE = request.getParameter("FMAXVOLTAGE");//电压上限
+            String FMINVOLTAGE = request.getParameter("FMINVOLTAGE");//电压下限
 
             junction.setFjunction(fjunction);
             junction.setJunction_length(junction_length);
@@ -103,6 +106,8 @@ public class JunctionController {
             junction.setCurrent_limit(current_limit);
             junction.setCurrent_lower_limit(current_lower_limit);
             junction.setJunction_name(junction_name);
+            junction.setFMAXVOLTAGE(FMAXVOLTAGE);
+            junction.setFMINVOLTAGE(FMINVOLTAGE);
 
             int i = junctionService.addJunction(junction);
             if (i != 0){
@@ -131,13 +136,17 @@ public class JunctionController {
             String current_limit = request.getParameter("current_limit");//电流上限
             String current_lower_limit = request.getParameter("current_lower_limit");//电流下限
             String junction_name = request.getParameter("junction_name");//焊缝名称
-            junction.setFid(Long.valueOf(fid));
+            String FMAXVOLTAGE = request.getParameter("FMAXVOLTAGE");//电压上限
+            String FMINVOLTAGE = request.getParameter("FMINVOLTAGE");//电压下限
+            junction.setFid(Long.parseLong(fid));
             junction.setFjunction(fjunction);
             junction.setJunction_length(junction_length);
             junction.setJunction_format(junction_format);
             junction.setCurrent_limit(current_limit);
             junction.setCurrent_lower_limit(current_lower_limit);
             junction.setJunction_name(junction_name);
+            junction.setFMAXVOLTAGE(FMAXVOLTAGE);
+            junction.setFMINVOLTAGE(FMINVOLTAGE);
             int i = junctionService.updateJunction(junction);
             if (i != 0){
                 obj.put("success", true);

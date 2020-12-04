@@ -374,7 +374,7 @@ public class WeldedJunctionControll {
         String time2 = request.getParameter("dtoTime2");
         String parentId = request.getParameter("parent");
         String wjno = request.getParameter("wjno");
-        String welderid = request.getParameter("welderid");
+        String welderid = request.getParameter("welderid");//焊工编号
         WeldDto dto = new WeldDto();
         if (!iutil.isNull(parentId)) {
             //数据权限处理

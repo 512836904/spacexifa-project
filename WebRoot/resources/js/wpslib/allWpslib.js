@@ -126,237 +126,242 @@ function wpslibDatagrid() {
             return '<div id="div' + index + '"><table id="ddv-' + index + '" style="min-height:80px;"></table></div>';
         },
         onExpandRow: function (index, row) {
-            var ddv = $(this).datagrid('getRowDetail', index).find('#ddv-' + index);
-            ddv.datagrid({
-                fitColumns: true,
-                width: $("#div" + index).width,
-                height: $("#div" + index).height,
-                idField: 'id',
-                pageSize: 30,
-                pageList: [10, 20, 30, 40, 50],
-                url: "wps/getMainwpsList?parent=" + row.fid,
-                singleSelect: true,
-                rownumbers: true,
-                showPageList: false,
-                columns: [[{
-                    field: 'fid',
-                    title: 'FID',
-                    halign: "center",
-                    align: "left",
-                    hidden: true
-                }, {
-                    field: 'fmodel',
-                    title: '焊机型号id',
-                    halign: "center",
-                    align: "left",
-                    hidden: true
-                }, {
-                    field: 'fselect',
-                    title: '焊接模式',
-                    halign: "center",
-                    align: "left",
-                    hidden: true
-                }, {
-                    field: 'fchanel',
-                    title: '通道号',
-                    width: 60,
-                    halign: "center",
-                    align: "center"
-                }, {
-                    field: 'fselectname',
-                    title: '焊接模式',
-                    width: 60,
-                    halign: "center",
-                    align: "center",
-                    hidden: true
-                } , {
-                    field: 'fweld_ele',
-                    title: '焊接电流',
-                    width: 60,
-                    halign: "center",
-                    align: "center"
-                } , {
-                    field: 'fweld_vol',
-                    title: '焊接电压',
-                    width: 60,
-                    halign: "center",
-                    align: "center"
-                }
-                    // , {
-                    // 	field : 'fselectstep',
-                    // 	title : 'Step',
-                    // 	halign : "center",
-                    // 	align : "left",
-                    // 	hidden : true
-                    // }, {
-                    // 	field : 'fselectstepname',
-                    // 	title : 'Step',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fmaterial',
-                    // 	title : '材质',
-                    // 	halign : "center",
-                    // 	align : "left",
-                    // 	hidden : true
-                    // }, {
-                    // 	field : 'materialname',
-                    // 	title : '材质',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fdiameter',
-                    // 	title : '丝径',
-                    // 	halign : "center",
-                    // 	align : "left",
-                    // 	hidden : true
-                    // }, {
-                    // 	field : 'dianame',
-                    // 	title : '丝径',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fgas',
-                    // 	title : '气体',
-                    // 	halign : "center",
-                    // 	align : "left",
-                    // 	hidden : true
-                    // }, {
-                    // 	field : 'gasname',
-                    // 	title : '气体',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fcharacter',
-                    // 	title : '给定电感',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'frequency',
-                    // 	title : '双脉冲频率',
-                    // 	halign : "center",
-                    // 	align : "left",
-                    // 	hidden : true
-                    // }, {
-                    // 	field : 'fadvance',
-                    // 	title : '提前送气时间',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'ftime',
-                    // 	title : '点焊时间',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fini_ele',
-                    // 	title : '初期电流',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }
-                    // , {
-                    // 	field : 'farc_ele',
-                    // 	title : '收弧电流',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fini_vol',
-                    // 	title : '初期电压',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }
-
-                    // , {
-                    // 	field : 'farc_vol',
-                    // 	title : '收弧电压',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'fspeed',
-                    // 	title : '给定速度',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'farc_speed',
-                    // 	title : '初期给定速度',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'farc_tuny_speed',
-                    // 	title : '收弧给定速度',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }
-                    // , {
-                    // 	field : 'fini_tuny_vol',
-                    // 	title : '初期电压微调',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }, {
-                    // 	field : 'farc_tuny_vol',
-                    // 	title : '收弧电压微调',
-                    // 	halign : "center",
-                    // 	align : "left"
-                    // }
-                    // , {
-                    //     field: 'fwpsback',
-                    //     title: '备注',
-                    //     width: 120,
-                    //     halign: "center",
-                    //     align: "center"
-                    // }
-                    , {
-                        field: 'fweld_tuny_ele',
-                        title: '焊接电流微调',
+		    if (row.statusId == 61){
+                var ddv = $(this).datagrid('getRowDetail', index).find('#ddv-' + index);
+                ddv.datagrid({
+                    fitColumns: true,
+                    width: $("#div" + index).width,
+                    height: $("#div" + index).height,
+                    idField: 'id',
+                    pageSize: 30,
+                    pageList: [10, 20, 30, 40, 50],
+                    url: "wps/getMainwpsList?parent=" + row.fid,
+                    singleSelect: true,
+                    rownumbers: true,
+                    showPageList: false,
+                    columns: [[{
+                        field: 'fid',
+                        title: 'FID',
+                        halign: "center",
+                        align: "left",
+                        hidden: true
+                    }, {
+                        field: 'fmodel',
+                        title: '焊机型号id',
+                        halign: "center",
+                        align: "left",
+                        hidden: true
+                    }, {
+                        field: 'fselect',
+                        title: '焊接模式',
+                        halign: "center",
+                        align: "left",
+                        hidden: true
+                    }, {
+                        field: 'fchanel',
+                        title: '通道号',
                         width: 60,
                         halign: "center",
                         align: "center"
                     }, {
-                        field: 'fweld_tuny_vol',
-                        title: '焊接电压微调',
+                        field: 'fselectname',
+                        title: '焊接模式',
                         width: 60,
-                        halign: "center",
-                        align: "center"
-                    }, {
-                        field: 'edit',
-                        title: '编辑',
-                        width: 120,
                         halign: "center",
                         align: "center",
-                        formatter: function (value, indexrow, index) {
-                            var str = "";
-                            str += '<a id="mainwpsedit" class="easyui-linkbutton" href="javascript:editMainWps('+encodeURI(JSON.stringify(indexrow))+',' + encodeURI(JSON.stringify(row)) + ')"/>';
-                            // str += '<a id="mainwpsedit" class="easyui-linkbutton" href="javascript:editMainWps('+encodeURI(JSON.stringify(indexrow))+')"/>';
-                            str += '<a id="mainwpsremove" class="easyui-linkbutton" href="javascript:removeMainWps('+encodeURI(JSON.stringify(indexrow))+')"/>';
-                            return str;
-                        }
+                        hidden: true
+                    } , {
+                        field: 'fweld_ele',
+                        title: '焊接电流',
+                        width: 60,
+                        halign: "center",
+                        align: "center"
+                    } , {
+                        field: 'fweld_vol',
+                        title: '焊接电压',
+                        width: 60,
+                        halign: "center",
+                        align: "center"
                     }
-                ]],
-                pagination: true,
-                onResize: function () {
-                    $('#wpslibTable').datagrid('fixDetailRowHeight', index);
-                },
-                onLoadSuccess: function () {
-                    var wpslibrow = $('#wpslibTable').datagrid("getSelected");
-                    /*if(wpslibrow.model==171||wpslibrow.model==172||wpslibrow.model==173){
-                        $("#ddv-"+index).datagrid('hideColumn', 'ftorch')
-                    }else{
-                        $("#ddv-"+index).datagrid('hideColumn', 'fmode')
-                    }*/
-                    $('#wpslibTable').datagrid("selectRow", index)
-                    setTimeout(function () {
+                        // , {
+                        // 	field : 'fselectstep',
+                        // 	title : 'Step',
+                        // 	halign : "center",
+                        // 	align : "left",
+                        // 	hidden : true
+                        // }, {
+                        // 	field : 'fselectstepname',
+                        // 	title : 'Step',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fmaterial',
+                        // 	title : '材质',
+                        // 	halign : "center",
+                        // 	align : "left",
+                        // 	hidden : true
+                        // }, {
+                        // 	field : 'materialname',
+                        // 	title : '材质',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fdiameter',
+                        // 	title : '丝径',
+                        // 	halign : "center",
+                        // 	align : "left",
+                        // 	hidden : true
+                        // }, {
+                        // 	field : 'dianame',
+                        // 	title : '丝径',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fgas',
+                        // 	title : '气体',
+                        // 	halign : "center",
+                        // 	align : "left",
+                        // 	hidden : true
+                        // }, {
+                        // 	field : 'gasname',
+                        // 	title : '气体',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fcharacter',
+                        // 	title : '给定电感',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'frequency',
+                        // 	title : '双脉冲频率',
+                        // 	halign : "center",
+                        // 	align : "left",
+                        // 	hidden : true
+                        // }, {
+                        // 	field : 'fadvance',
+                        // 	title : '提前送气时间',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'ftime',
+                        // 	title : '点焊时间',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fini_ele',
+                        // 	title : '初期电流',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }
+                        // , {
+                        // 	field : 'farc_ele',
+                        // 	title : '收弧电流',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fini_vol',
+                        // 	title : '初期电压',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }
+
+                        // , {
+                        // 	field : 'farc_vol',
+                        // 	title : '收弧电压',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'fspeed',
+                        // 	title : '给定速度',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'farc_speed',
+                        // 	title : '初期给定速度',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'farc_tuny_speed',
+                        // 	title : '收弧给定速度',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }
+                        // , {
+                        // 	field : 'fini_tuny_vol',
+                        // 	title : '初期电压微调',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }, {
+                        // 	field : 'farc_tuny_vol',
+                        // 	title : '收弧电压微调',
+                        // 	halign : "center",
+                        // 	align : "left"
+                        // }
+                        // , {
+                        //     field: 'fwpsback',
+                        //     title: '备注',
+                        //     width: 120,
+                        //     halign: "center",
+                        //     align: "center"
+                        // }
+                        , {
+                            field: 'fweld_tuny_ele',
+                            title: '焊接电流微调',
+                            width: 60,
+                            halign: "center",
+                            align: "center"
+                        }, {
+                            field: 'fweld_tuny_vol',
+                            title: '焊接电压微调',
+                            width: 60,
+                            halign: "center",
+                            align: "center"
+                        }, {
+                            field: 'edit',
+                            title: '编辑',
+                            width: 120,
+                            halign: "center",
+                            align: "center",
+                            formatter: function (value, indexrow, index) {
+                                var str = "";
+                                str += '<a id="mainwpsedit" class="easyui-linkbutton" href="javascript:editMainWps('+encodeURI(JSON.stringify(indexrow))+',' + encodeURI(JSON.stringify(row)) + ')"/>';
+                                // str += '<a id="mainwpsedit" class="easyui-linkbutton" href="javascript:editMainWps('+encodeURI(JSON.stringify(indexrow))+')"/>';
+                                str += '<a id="mainwpsremove" class="easyui-linkbutton" href="javascript:removeMainWps('+encodeURI(JSON.stringify(indexrow))+')"/>';
+                                return str;
+                            }
+                        }
+                    ]],
+                    pagination: true,
+                    onResize: function () {
                         $('#wpslibTable').datagrid('fixDetailRowHeight', index);
-                        $('#wpslibTable').datagrid('fixRowHeight', index);
-                    }, 0);
-                    $("a[id='mainwpsedit']").linkbutton({text: '修改', plain: true, iconCls: 'icon-update'});
-                    $("a[id='mainwpsremove']").linkbutton({text: '删除', plain: true, iconCls: 'icon-delete'});
-                    $("#div" + index).height($("#div" + index).height() + 20);
-                    $("#ddv-" + index).datagrid('resize', {
-                        height: $("#div" + index).height(),
-                        width: $("#div" + index).width()
-                    });
-                }
-            });
-            $('#wpslibTable').datagrid('fixDetailRowHeight', index);
+                    },
+                    onLoadSuccess: function () {
+                        var wpslibrow = $('#wpslibTable').datagrid("getSelected");
+                        /*if(wpslibrow.model==171||wpslibrow.model==172||wpslibrow.model==173){
+                            $("#ddv-"+index).datagrid('hideColumn', 'ftorch')
+                        }else{
+                            $("#ddv-"+index).datagrid('hideColumn', 'fmode')
+                        }*/
+                        $('#wpslibTable').datagrid("selectRow", index)
+                        setTimeout(function () {
+                            $('#wpslibTable').datagrid('fixDetailRowHeight', index);
+                            $('#wpslibTable').datagrid('fixRowHeight', index);
+                        }, 0);
+                        $("a[id='mainwpsedit']").linkbutton({text: '修改', plain: true, iconCls: 'icon-update'});
+                        $("a[id='mainwpsremove']").linkbutton({text: '删除', plain: true, iconCls: 'icon-delete'});
+                        $("#div" + index).height($("#div" + index).height() + 20);
+                        $("#ddv-" + index).datagrid('resize', {
+                            height: $("#div" + index).height(),
+                            width: $("#div" + index).width()
+                        });
+                    }
+                });
+                $('#wpslibTable').datagrid('fixDetailRowHeight', index);
+            }else {
+		        alert("该工艺库已被停用！");
+		        return ;
+            }
         }
     });
 }

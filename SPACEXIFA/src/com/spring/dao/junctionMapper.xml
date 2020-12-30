@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+
+ -->
+<mapper namespace="com.spring.dao.JunctionMapper">
+
+    <!-- 查询焊缝信息列表   -->
+    <select id="getJunctionList" parameterType="com.spring.model.Junction" resultType="com.spring.model.Junction">
+        SELECT  FID,FJUNCTION,JUNCTION_LENGTH,JUNCTION_FORMAT,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,JUNCTION_NAME,FMAXVOLTAGE,FMINVOLTAGE
+        from TB_JUNCTION
+        WHERE 1 = 1
+        <if test="fjunction != null and fjunction != ''">
+            and FJUNCTION = #{fjunction}
+        </if>
+        <if test="junction_name != null and junction_name != ''">
+            and JUNCTION_NAME = #{junction_name}
+        </if>
+    </select>
+
+<!--新增焊缝-->
+    <insert id="addJunction" parameterType="com.spring.model.Junction" flushCache="true">
+        INSERT INTO TB_JUNCTION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fjunction != null and fjunction != ''">
+                FJUNCTION,
+            </if>
+            <if test="junction_length != null and junction_length != ''">
+                JUNCTION_LENGTH,
+            </if>
+            <if test="junction_format != null and junction_format != ''">
+                JUNCTION_FORMAT,
+            </if>
+            <if test="current_limit != null and current_limit != ''">
+                CURRENT_LIMIT,
+            </if>
+            <if test="current_lower_limit != null and current_lower_limit != ''">
+                CURRENT_LOWER_LIMIT,
+            </if>
+            <if test="junction_name != null and junction_name != ''">
+                JUNCTION_NAME,
+            </if>
+            <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                FMAXVOLTAGE,
+            </if>
+            <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                FMINVOLTAGE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fjunction != null and fjunction != ''">
+                #{fjunction},
+            </if>
+            <if test="junction_length != null and junction_length != ''">
+                #{junction_length},
+            </if>
+            <if test="junction_format != null and junction_format != ''">
+                #{junction_format},
+            </if>
+            <if test="current_limit != null and current_limit != ''">
+                #{current_limit},
+            </if>
+            <if test="current_lower_limit != null and current_lower_limit != ''">
+                #{current_lower_limit},
+            </if>
+            <if test="junction_name != null and junction_name != ''">
+                #{junction_name},
+            </if>
+            <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                #{FMAXVOLTAGE},
+            </if>
+            <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                #{FMINVOLTAGE},
+            </if>
+        </trim>
+    </insert>
+
+<!--    修改焊缝-->
+    <update id="updateJunction" parameterType="com.spring.model.Junction" flushCache="true">
+        UPDATE TB_JUNCTION
+        <if test="fid != null and fid != 0">
+            <set>
+                <if test="fjunction != null and fjunction != ''">
+                    FJUNCTION = #{fjunction},
+                </if>
+                <if test="junction_length != null and junction_length != ''">
+                    JUNCTION_LENGTH = #{junction_length},
+                </if>
+                <if test="junction_format != null and junction_format != ''">
+                    JUNCTION_FORMAT = #{junction_format},
+                </if>
+                <if test="current_limit != null and current_limit != ''">
+                    CURRENT_LIMIT = #{current_limit},
+                </if>
+                <if test="current_lower_limit != null and current_lower_limit != ''">
+                    CURRENT_LOWER_LIMIT = #{current_lower_limit},
+                </if>
+                <if test="junction_name != null and junction_name != ''">
+                    JUNCTION_NAME = #{junction_name},
+                </if>
+                <if test="FMAXVOLTAGE != null and FMAXVOLTAGE != ''">
+                    FMAXVOLTAGE = #{FMAXVOLTAGE},
+                </if>
+                <if test="FMINVOLTAGE != null and FMINVOLTAGE != ''">
+                    FMINVOLTAGE = #{FMINVOLTAGE},
+                </if>
+            </set>
+            WHERE fid = #{fid}
+        </if>
+    </update>
+
+    <delete id="deleteJunction" parameterType="int">
+        <if test="fid != null and fid != ''">
+            DELETE FROM TB_JUNCTION WHERE FID = #{fid}
+        </if>
+    </delete>
+
+    <select id="findJunctiobByName" parameterType="java.lang.String" resultType="com.spring.model.Junction">
+        SELECT FID,JUNCTION_NAME FROM TB_JUNCTION WHERE JUNCTION_NAME = #{name}
+    </select>
+
+    <select id="findJunctionByFname" resultType="com.spring.model.Junction" parameterType="java.lang.String">
+        SELECT j.FID,j.JUNCTION_NAME FROM TB_JUNCTION j
+        INNER JOIN TB_PRODUCTION_CRAFT pc ON j.FID = pc.FJUNCTION
+        WHERE 1 = 1
+        <if test="fname != null and fname != ''">
+            and pc.FNAME = #{fname}
+        </if>
+    </select>
+
+    <!-- <select id="getLiarbryJunctionById" parameterType="int" resultType="com.spring.model.ProductionCraft">
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
+    </select>
+
+    <insert id="addLiarbryJunction" parameterType="com.spring.model.Junction">
+        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="fid">
+            select TB_LIBRARY_JUNCTION_ID.nextval as fid from dual
+        </selectKey>
+        INSERT INTO TB_LIBRARY_JUNCTION("fid","library_id","junction_id") VALUES (#{fid},#{library_id},#{junction_id})
+    </insert>
+
+    <delete id="deleteLiarbryJunctionByIds" parameterType="list">
+        delete from TB_LIBRARY_JUNCTION where "library_id" in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getListByLibraryId" parameterType="int" resultType="com.spring.model.Junction">
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION WHERE "library_id" = #{library_id}
+    </select> -->
+</mapper>

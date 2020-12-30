@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SPACEXIFA.iml" filepath="$PROJECT_DIR$/SPACEXIFA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CIWJN_Service/CIWJN_Service.iml" filepath="$PROJECT_DIR$/CIWJN_Service/CIWJN_Service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OTCcom/OTCcom.iml" filepath="$PROJECT_DIR$/OTCcom/OTCcom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PC/PC.iml" filepath="$PROJECT_DIR$/PC/PC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SPACEXIFA/SPACEXIFA.iml" filepath="$PROJECT_DIR$/SPACEXIFA/SPACEXIFA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/spacexifa-project.iml" filepath="$PROJECT_DIR$/.idea/spacexifa-project.iml" />
     </modules>
   </component>
 </project>

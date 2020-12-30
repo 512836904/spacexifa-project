@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.spring.dao.WpsMapper">
+    <select id="getSxWpsList" resultType="Wps">
+        select s.fid fid,s.fspe_num fwpsnum,fselect,farc,fmaterial,fdiameter,finitial fini,fgas,fcontroller,s.fcharacter
+        fcharacter,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,
+        s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,farc_tuny_vol,fpreset_ele_top,fpreset_vol_top,fpreset_ele_bottom,fpreset_vol_bottom,farc_vol_top,fpreset_ele_warn_top,fpreset_vol_warn_top,fpreset_ele_warn_bottom,fpreset_vol_warn_bottom,fini_ele_warn_top,fini_vol_warn_top,fini_ele_warn_bottom,fini_vol_warn_bottom,farc_ele_warn_top,farc_vol_warn_top,farc_ele_warn_bottom,farc_vol_warn_bottom,farc_delay_time,fwarn_delay_time,fwarn_stop_time,fflow_top,fflow_bottom,fdelay_time,fover_time,ffixed_cycle,
+        d1.fvaluename selectname,d2.fvaluename gasname,d3.fvaluename dianame,d4.fvaluename materialname,d5.fvaluename
+        conname,d6.fvaluename finitial,d7.fvaluename arcname FROM tb_specification s
+        LEFT JOIN tb_dictionary d1 ON s.fselect=d1.fvalue and d1.ftypeid = 10
+        LEFT JOIN tb_dictionary d2 ON s.fgas=d2.fvalue and d2.ftypeid=24
+        LEFT JOIN tb_dictionary d3 ON s.fdiameter=d3.fvalue and d3.ftypeid = 23
+        LEFT JOIN tb_dictionary d4 ON s.fmaterial=d4.fvalue and d4.ftypeid=18
+        LEFT JOIN tb_dictionary d5 ON s.fcontroller=d5.fvalue and d5.ftypeid = 19
+        LEFT JOIN tb_dictionary d6 ON s.finitial=d6.fvalue and d6.ftypeid=20
+        LEFT JOIN tb_dictionary d7 ON s.farc=d7.fvalue and d7.ftypeid=21
+        where 1=1
+        <if test="parent!=null and parent!=''">
+            AND s.fwpslib_id=#{parent}
+        </if>
+        ORDER by s.fspe_num
+    </select>
+
+    <insert id="saveSxWps" parameterType="Wps">
+		INSERT INTO tb_specification (fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode, ftime, fmaterial, fadvance, fhysteresis, fgas, fdiameter, fini_ele, fini_vol, fini_vol1, fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol, farc_vol1, fweld_tuny_ele, fweld_tuny_vol, farc_tuny_ele, farc_tuny_vol,
+		fmachine_id, FCReateDate, FUpdateDate, Fcreater, Fupdater, fwpslib_id, fpreset_vol_top, fpreset_ele_top, fpreset_ele_bottom, fpreset_vol_bottom, farc_vol_top, fpreset_ele_warn_top, fpreset_vol_warn_top, fpreset_ele_warn_bottom, fpreset_vol_warn_bottom, fini_ele_warn_top, fini_vol_warn_top, fini_ele_warn_bottom, fini_vol_warn_bottom, farc_ele_warn_top, farc_vol_warn_top, 
+		farc_ele_warn_bottom, farc_vol_warn_bottom, farc_delay_time, fwarn_delay_time, fwarn_stop_time,fflow_top, fflow_bottom, fdelay_time, fover_time, ffixed_cycle) VALUES 
+		(#{fwpsnum}, #{finitial}, #{fcontroller}, #{fselect}, #{farc}, #{fcharacter}, 0, #{ftime}, #{fmaterial}, #{fadvance}, #{fhysteresis}, #{fgas}, #{fdiameter}, #{fini_ele},#{fini_vol}, #{fini_vol1}, #{fweld_ele}, #{fweld_vol}, #{fweld_vol1}, #{farc_ele}, #{farc_vol}, #{farc_vol1}, #{fweld_tuny_ele}, #{fweld_tuny_vol}, #{farc_tuny_ele}, #{farc_tuny_vol},
+		#{macid}, SYSDATE, SYSDATE, #{fcreater}, #{fupdater}, #{fwpslib_id}, #{fpreset_vol_top}, #{fpreset_ele_top}, #{fpreset_ele_bottom}, #{fpreset_vol_bottom}, #{farc_vol_top}, #{fpreset_ele_warn_top}, #{fpreset_vol_warn_top}, #{fpreset_ele_warn_bottom}, #{fpreset_vol_warn_bottom}, #{fini_ele_warn_top}, #{fini_vol_warn_top}, #{fini_ele_warn_bottom}, #{fini_vol_warn_bottom}, #{farc_ele_warn_top}, #{farc_vol_warn_top}, 
+		#{farc_ele_warn_bottom}, #{farc_vol_warn_bottom}, #{farc_delay_time}, #{fwarn_delay_time}, #{fwarn_stop_time}, #{fflow_top}, #{fflow_bottom}, #{fdelay_time}, #{fover_time}, #{ffixed_cycle})
+	</insert>
+
+    <update id="editSxWps" parameterType="Wps">
+		UPDATE tb_specification SET fspe_num=#{fwpsnum},finitial=#{finitial},fcontroller=#{fcontroller},fselect=#{fselect},farc=#{farc},fcharacter=#{fcharacter},ftime=#{ftime},fmaterial=#{fmaterial},fadvance=#{fadvance},fhysteresis=#{fhysteresis},fgas=#{fgas},fdiameter=#{fdiameter},fini_ele=#{fini_ele},fini_vol=#{fini_vol},fini_vol1=#{fini_vol1},fweld_ele=#{fweld_ele},fweld_vol=#{fweld_vol},
+		fweld_vol1=#{fweld_vol1},farc_ele=#{farc_ele},farc_vol=#{farc_vol},farc_vol1=#{farc_vol1},fweld_tuny_ele=#{fweld_tuny_ele},fweld_tuny_vol=#{fweld_tuny_vol},farc_tuny_ele=#{farc_tuny_ele},farc_tuny_vol=#{farc_tuny_vol},FUpdateDate=SYSDATE,Fupdater=#{fupdater},fpreset_vol_top=#{fpreset_vol_top},fpreset_ele_top=#{fpreset_ele_top},fpreset_ele_bottom=#{fpreset_ele_bottom},
+		fpreset_vol_bottom=#{fpreset_vol_bottom},farc_vol_top=#{farc_vol_top},fpreset_ele_warn_top=#{fpreset_ele_warn_top},fpreset_vol_warn_top=#{fpreset_vol_warn_top},fpreset_ele_warn_bottom=#{fpreset_ele_warn_bottom},fpreset_vol_warn_bottom=#{fpreset_vol_warn_bottom},fini_ele_warn_top=#{fini_ele_warn_top},fini_vol_warn_top=#{fini_vol_warn_top},fini_ele_warn_bottom=#{fini_ele_warn_bottom},
+		fini_vol_warn_bottom=#{fini_vol_warn_bottom},farc_ele_warn_top=#{farc_ele_warn_top},farc_vol_warn_top=#{farc_vol_warn_top},farc_ele_warn_bottom=#{farc_ele_warn_bottom},farc_vol_warn_bottom=#{farc_vol_warn_bottom},farc_delay_time=#{farc_delay_time},fwarn_delay_time=#{fwarn_delay_time},fwarn_stop_time=#{fwarn_stop_time},fflow_top=#{fflow_top},fflow_bottom=#{fflow_bottom},fdelay_time=#{fdelay_time},fover_time=#{fover_time},ffixed_cycle=#{ffixed_cycle} WHERE fid = #{fid}
+	</update>
+
+    <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->
+    <select id="findAll" resultType="Wps">
+        select tb_mainwps.FID fid,tb_mainwps.FWPSNum fwpsnum,tb_mainwps.Fweld_I fweld_i,tb_mainwps.Fweld_V
+        fweld_v,tb_mainwps.Fweld_I_MAX fweld_i_max,tb_mainwps.Fweld_I_MIN fweld_i_min,tb_mainwps.Fweld_V_MAX
+        fweld_v_max,tb_mainwps.Fweld_V_MIN fweld_v_min,tb_mainwps.Fweld_Alter_I fweld_alter_i,tb_mainwps.Fweld_Alter_V
+        fweld_alter_v,tb_mainwps.Fweld_PreChannel fweld_prechannel,tb_mainwps.FCReateDate
+        fcreatedate,tb_mainwps.FUpdateDate fupdatedate,tb_mainwps.Fowner fowner,tb_mainwps.Fback fback,tb_mainwps.Fname
+        fname,tb_mainwps.Fdiameter fdiameter,i.fid insid,i.fname insname from tb_mainwps left join tb_insframework i on
+        tb_mainwps.Fowner=i.fid where 1=1
+        <if test="parent!=null and parent!=''">
+            and tb_insframework.fid = #{parent}
+        </if>
+        <if test="str!=null and str!=''">
+            and ${str}
+        </if>
+        ORDER by tb_mainwps.FID
+    </select>
+
+    <select id="findAllSpe" resultType="Wps">
+		select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc weldername,s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter fname,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol fdiameter FROM tb_specification s 
+		where 1=1 AND s.fmachine_id=#{machine} AND s.fspe_num=#{chanel}
+		ORDER by s.fid
+	</select>
+
+    <select id="AllSpe" resultType="Wps">
+        select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc
+        weldername,s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter
+        fname,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele
+        ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol
+        fdiameter FROM tb_specification s
+        where 1=1 AND s.fmachine_id=#{machine}
+        <if test="chanel!=null and chanel!=''">
+            AND s.fspe_num=#{chanel}
+        </if>
+        ORDER by s.fid
+    </select>
+
+    <select id="findSpe" resultType="Wps">
+        select s.fidfid,s.fspe_numfweld_i_max,s.finitial fweld_i_min,s.fcontroller fweld_alter_i,s.fselect
+        fweld_i,s.farc fweld_v,s.fcharacter fweld_v_max,s.fmode fweld_v_min,s.fmaterial fweld_prechannel,s.fgas
+        fweld_alter_v,s.fdiameter insid,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele
+        ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol
+        fdiameter FROM tb_specification s
+        where 1=1 AND s.fmachine_id=#{machine}
+        <if test="chanel!=null and chanel!=''">
+            AND s.fspe_num=#{chanel}
+        </if>
+        ORDER by s.fid
+    </select>
+
+    <select id="findById" parameterType="BigInteger" resultType="Wps">
+		select tb_mainwps.FID fid,tb_mainwps.FWPSNum fwpsnum,tb_mainwps.Fweld_I fweld_i,tb_mainwps.Fweld_V fweld_v,tb_mainwps.Fweld_I_MAX fweld_i_max,tb_mainwps.Fweld_I_MIN fweld_i_min,tb_mainwps.Fweld_V_MAX fweld_v_max,tb_mainwps.Fweld_V_MIN fweld_v_min,tb_mainwps.Fweld_Alter_I fweld_alter_i,tb_mainwps.Fweld_Alter_V fweld_alter_v,tb_mainwps.Fweld_PreChannel fweld_prechannel,tb_mainwps.FCReateDate fcreatedate,tb_mainwps.FUpdateDate fupdatedate,tb_mainwps.Fowner fowner,tb_mainwps.Fback fback,tb_mainwps.Fname fname,tb_mainwps.Fdiameter fdiameter from tb_mainwps where tb_mainwps.FID=#{fid}
+	</select>
+
+    <select id="findSpeById" parameterType="BigInteger" resultType="Wps">
+		select s.fidfid,s.fspe_numfwpsnum,d1.fvaluename finitial,d2.fvaluename fcontroller,d3.fvaluename insname,d4.fvaluename weldername,s.fcharacter fweld_v_max,d5.fvaluename fmode,d7.fvaluename updatename,d8.fvaluename fback,d9.fvaluename fname,s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_ele fdiameter FROM tb_specification s 
+		INNER JOIN tb_dictionary d1 ON d1.fvalue=s.finitial
+		INNER JOIN tb_dictionary d2 ON d2.fvalue=s.fcontroller
+		INNER JOIN tb_dictionary d3 ON d3.fvalue=s.fselect
+		INNER JOIN tb_dictionary d4 ON d4.fvalue=s.farc
+		INNER JOIN tb_dictionary d5 ON d5.fvalue=s.fmode
+		INNER JOIN tb_dictionary d7 ON d7.fvalue=s.fmaterial
+		INNER JOIN tb_dictionary d8 ON d8.fvalue=s.fgas
+		INNER JOIN tb_dictionary d9 ON d9.fvalue=s.fdiameter
+		WHERE s.fid=#{fid}
+	</select>
+
+    <insert id="save" parameterType="Wps">
+		insert into tb_mainwps(FWPSNum,Fweld_I,Fweld_V,Fweld_I_MAX,Fweld_I_MIN,Fweld_V_MAX,Fweld_V_MIN,Fweld_Alter_I,Fweld_Alter_V,Fweld_PreChannel,FCReateDate,FUpdateDate,Fcreater,Fupdater,Fowner,Fback,Fname,Fdiameter) values(#{fwpsnum},#{fweld_i},#{fweld_v},#{fweld_i_max},#{fweld_i_min},#{fweld_v_max},#{fweld_v_min},#{fweld_alter_i},#{fweld_alter_v},#{fweld_prechannel},#{fcreatedate},#{fupdatedate},#{fcreater},#{fupdater},#{fowner},#{fback},#{fname},#{fdiameter})
+	</insert>
+
+    <update id="update" parameterType="Wps">
+		update tb_mainwps set FWPSNum=#{fwpsnum},Fweld_I=#{fweld_i},Fweld_V=#{fweld_v},Fweld_I_MAX=#{fweld_i_max},Fweld_I_MIN=#{fweld_i_min},Fweld_V_MAX=#{fweld_v_max},Fweld_V_MIN=#{fweld_v_min},Fweld_Alter_I=#{fweld_alter_i},Fweld_Alter_V=#{fweld_alter_v},Fweld_PreChannel=#{fweld_prechannel},FUpdateDate=#{fupdatedate},Fupdater=#{fupdater},Fowner=#{fowner},Fback=#{fback},Fname=#{fname},Fdiameter=#{fdiameter} where FID=#{fid}
+	</update>
+
+    <!-- 新增子工艺规范下发 -->
+    <insert id="saveSpe" parameterType="Wps">
+        <!-- INSERT INTO tb_specification(fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode, ftime, fmaterial, fadvance, fhysteresis, fgas, fdiameter, fini_ele, fini_vol, fini_vol1, fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol, farc_vol1, fweld_tuny_ele, fweld_tuny_vol, farc_tuny_ele, farc_tuny_vol, Fcreater, fwpslib_id, fwater_cooled_torch, fwelding_process, fwarn_ele_up, fwarn_ele_down, fwarn_vol_up, fwarn_vol_down, fmachine_id) VALUES (#{fweld_i_max},#{fweld_i_min},#{fweld_alter_i},#{fweld_i},#{fweld_v},#{fweld_v_max},#{fweld_v_min},#{ftime},#{fweld_prechannel},#{fadvance},#{fhysteresis},#{fweld_alter_v},#{insid},#{fini_ele},#{fini_vol},#{fini_vol1},#{fweld_ele},#{fweld_vol},#{fweld_vol1},#{farc_ele},#{farc_vol},#{farc_vol1},#{fweld_tuny_ele},#{fweld_tuny_vol},#{farc_tuny_ele},#{fdiameter},#{fcreater},#{fid},#{ftorch},#{fprocessid},#{fwarn_ele_up},#{fwarn_ele_down},#{fwarn_vol_up},#{fwarn_vol_down},#{macid}) -->
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_SPECIFICATION_ID.nextval as fid from dual
+        </selectKey>
+        <if test="fwpslib_id != null and fwpslib_id != '' and fwpslib_id != 0">
+            INSERT INTO tb_specification(
+            fid, fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode,ftime, fmaterial, fadvance, fhysteresis,
+            fgas, fdiameter, fini_ele, fini_vol, fini_vol1,fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol,
+            farc_vol1, fweld_tuny_ele, fweld_tuny_vol,farc_tuny_ele, farc_tuny_vol,fmachine_id,ffrequency,fgasflow,fwelding_process,
+            fwater_cooled_torch, fcreater, fupdater,fweldingratio,firsttime,farc_time,Rush,handarc_ele,handarc_time,hand_ele,Base_ele,
+            Base_vol,Base_vol1,fargon,manual_weld,arc_length,pulse,fweldparameters,rise_time,decline_time,thrust_ele,pulse_ratio,point_speed,
+            pulse_ele,ac_frequency,clean_width,ac_dc,pulse_width,ac_ratio,ac_wave,pulse_tuny_ele,special_arcorder,special_arc_initial,special_arctime,
+            click_ele,two_click_ele,repeat_end,guide,slope,specialarc,specialarc_rep,ts_condition,FWPSLIB_ID
+            )
+            VALUES(
+            #{fid},#{fspe_num},#{finitial},#{fcontroller},#{fselect},#{farc},#{fcharacter},#{fmode},#{ftime},#{fmaterial},#{fadvance},
+            #{fhysteresis},#{fgas},#{fdiameter},#{fini_ele},#{fini_vol},#{fini_vol1},#{fweld_ele},#{fweld_vol},#{fweld_vol1},
+            #{farc_ele},#{farc_vol},#{farc_vol1},#{fweld_tuny_ele},#{fweld_tuny_vol},#{farc_tuny_ele},#{farc_tuny_vol},#{fmachine_id},
+            #{ffrequency},#{fgasflow},#{fwelding_process},#{fwater_cooled_torch},#{fcreater},#{fupdater},#{fweldingratio},#{firsttime},#{farc_time},
+            #{Rush},#{handarc_ele},#{handarc_time},#{hand_ele},#{Base_ele},#{Base_vol},#{Base_vol1},#{fargon},#{manual_weld},#{arc_length},
+            #{pulse},#{fweldparameters},#{rise_time},#{decline_time},#{thrust_ele},#{pulse_ratio},#{point_speed},#{pulse_ele},#{ac_frequency},
+            #{clean_width},#{ac_dc},#{pulse_width},#{ac_ratio},#{ac_wave},#{pulse_tuny_ele},#{special_arcorder},#{special_arc_initial},
+            #{special_arctime},#{click_ele},#{two_click_ele},#{repeat_end},#{guide},#{slope},#{specialarc},#{specialarc_rep},#{ts_condition},#{fwpslib_id}
+            )
+        </if>
+    </insert>
+
+    <update id="updateSpe" parameterType="Wps">
+		<!-- UPDATE tb_specification SET fspe_num=#{fweld_i_max},finitial=#{fweld_i_min},fcontroller=#{fweld_alter_i},fselect=#{fweld_i},farc=#{fweld_v},fcharacter=#{fweld_v_max},fmode=#{fweld_v_min},ftime=#{ftime},fmaterial=#{fweld_prechannel},fadvance=#{fadvance},fhysteresis=#{fhysteresis},fgas=#{fweld_alter_v},fdiameter=#{insid},fini_ele=#{fini_ele},fini_vol=#{fini_vol},fini_vol1=#{fini_vol1},fweld_ele=#{fweld_ele},fweld_vol=#{fweld_vol},fweld_vol1=#{fweld_vol1},farc_ele=#{farc_ele},farc_vol=#{farc_vol},farc_vol1=#{farc_vol1},fweld_tuny_ele=#{fweld_tuny_ele},fweld_tuny_vol=#{fweld_tuny_vol},farc_tuny_ele=#{farc_tuny_ele},farc_tuny_vol=#{fdiameter},Fupdater=#{fupdater},fwelding_process=#{fprocessid},fwater_cooled_torch=#{ftorch},fwarn_ele_up=#{fwarn_ele_up},fwarn_ele_down=#{fwarn_ele_down},fwarn_vol_up=#{fwarn_vol_up},fwarn_vol_down=#{fwarn_vol_down} WHERE fid=#{fid} -->
+        <if test="fid != null and fid != '' and fid != 0">
+            UPDATE tb_specification SET
+            fspe_num = #{fspe_num}, finitial = #{finitial}, fcontroller = #{fcontroller}, fselect = #{fselect}, farc = #{farc}, fcharacter = #{fcharacter},
+            ftime = #{ftime}, fmaterial = #{fmaterial}, fadvance = #{fadvance}, fhysteresis = #{fhysteresis}, fgas = #{fgas}, fdiameter = #{fdiameter}, fini_ele = #{fini_ele},
+            fini_vol = #{fini_vol}, fini_vol1 = #{fini_vol1},fweld_ele = #{fweld_ele},fweld_vol = #{fweld_vol}, fweld_vol1 = #{fweld_vol1}, farc_ele = #{farc_ele},
+            farc_vol = #{farc_vol}, farc_vol1 = #{farc_vol1}, fweld_tuny_ele = #{fweld_tuny_ele}, fweld_tuny_vol = #{fweld_tuny_vol}, farc_tuny_ele = #{farc_tuny_ele},
+            farc_tuny_vol = #{farc_tuny_vol},ffrequency = #{ffrequency},fwelding_process = #{fwelding_process},fwater_cooled_torch=#{fwater_cooled_torch}, fupdater=#{fupdater}
+            WHERE FID = #{fid}
+        </if>
+    </update>
+
+    <select id="getUsernameCount" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from tb_mainwps where FWPSNum=#{fwpsnum}
+	</select>
+
+    <select id="findCount" resultType="java.lang.Integer">
+        select count(*) from tb_specification where fmachine_id=#{machine}
+        <if test="chanel!=null and chanel!=''">
+            AND fspe_num=#{chanel}
+        </if>
+    </select>
+
+    <select id="findByUid" parameterType="long" resultType="BigInteger">
+		select users_insframework insid from tb_users where id=#{fid}
+	</select>
+
+    <select id="findIpById" parameterType="BigInteger" resultType="String">
+		select fIP from tb_welding_machine where fid=#{fid}
+	</select>
+    <select id="findStepFile" resultType="Wps">
+        select max(S.fid),S.FCARD_NO,S.FILE_NAME fmode,w.FID from TB_STEP_FILE S
+        LEFT JOIN TB_WELDED_JUNCTION w on w.FWELDED_JUNCTION_NO=s.FCARD_NO
+        where 1=1
+        <if test="condition!=null and condition!=''">
+            and ${condition}
+        </if>
+        GROUP BY S.FCARD_NO,S.FILE_NAME,w.FID
+    </select>
+
+    <select id="getWeldTime" resultType="Wps">
+        select FREALSTARTTIME fstarttime,FREALENDTIME endtime from TB_TASKRESULT t where 1=1
+        <if test="search!=null and search!=''">
+            and ${search}
+        </if>
+    </select>
+    <select id="findHistory" resultType="Wps">
+        select tb_mainwps.FWPSNum fwpsnum,tb_welding_machine.fequipment_no fname,tb_wps_welddevices.Fchannel
+        fweld_prechannel,tb_wps_welddevices.FCReateDate fcreatedate from tb_wps_welddevices left join tb_mainwps on
+        tb_wps_welddevices.FWeldWPSID=tb_mainwps.FID left join tb_welding_machine on
+        tb_wps_welddevices.FWeldDevicesID=tb_welding_machine.fid where 1=1
+        <if test="parent!=null and parent!=''">
+            and tb_insframework.fid = #{parent}
+        </if>
+        ORDER by tb_wps_welddevices.FCReateDate desc
+    </select>
+
+    <insert id="give" parameterType="Wps">
+		insert into tb_wps_welddevices(FWeldWPSID,FWeldDevicesID,Fchannel,FCReateDate,FUpdateDate,Fcreater,Fupdater,Fowner,Fback) values(#{fid},#{macid},#{fweld_prechannel},#{fcreatedate},#{fupdatedate},#{fcreater},#{fupdater},#{insid},#{fback})
+	</insert>
+
+    <delete id="delete" parameterType="BigInteger">
+		delete from tb_mainwps where FID=#{fid}
+	</delete>
+
+    <delete id="deleteHistory" parameterType="BigInteger">
+		delete from tb_wps_welddevices where FWeldWPSID=#{fid}
+	</delete>
+
+    <select id="getWpslibList" resultType="Wps" parameterType="java.lang.String">
+        <!-- SELECT wl.fid,fwps_lib_name fwpsnum,fmachinemodel macid,di.fvaluename fname,fcreatedate fcreatedate,fstatus
+        fstatus,d.fvaluename insname,em.ftype conname
+        FROM tb_wps_library wl
+        LEFT JOIN tb_dictionary d ON wl.fstatus=d.fvalue and d.ftypeid=6
+        LEFT JOIN tb_dictionary di ON wl.fmachinemodel=di.fvalue AND di.ftypeid=17
+        LEFT JOIN tb_equipment_manufacturer em ON wl.fmachinemodel = em.ftype_value
+        where 1=1
+        <if test="search != null and search != ''">
+            AND s.fwps_lib_name=#{search}
+        </if>
+        ORDER by fid -->
+        SELECT wc.FID,wc.FWPS_LIB_NAME fwpsnum,wc.FMACHINEMODEL macid,wc.FCREATEDATE,
+        di.fvaluename fname,d.fvaluename insname,em.ftype conname,wc.FSTATUS
+        FROM TB_WPS_CRAFT wc
+        LEFT JOIN tb_dictionary d ON wc.fstatus=d.fvalue and d.ftypeid=6
+        LEFT JOIN tb_dictionary di ON wc.fmachinemodel=di.fvalue AND di.ftypeid=17
+        LEFT JOIN tb_equipment_manufacturer em ON wc.fmachinemodel = em.ftype_value
+        where 1=1
+        <if test="search != null and search != ''">
+            AND wc.FWPS_LIB_NAME = #{search}
+        </if>
+        ORDER by wc.FID
+    </select>
+
+    <select id="findSpecificationByFid" resultType="Wps" parameterType="java.math.BigInteger">
+        SELECT FID,FSPE_NUM,FWPSLIB_ID FROM tb_specification WHERE FWPSLIB_ID = #{wpslibid}
+        ORDER BY FSPE_NUM ASC
+    </select>
+
+    <select id="gettrackcard" parameterType="BigInteger" resultType="Wps">
+		select j.fid,j.fwelded_junction_no fwelded_junction_no,
+		p.FPREFIX_NUMBER,p.FPRODUCT_NUMBER conname,p.fsuffix_number,
+		w.fproduct_drawing_no fproduct_drawing_no,w.fid,w.fwps_lib_name fprocessname,w.fwps_lib_version fwps_lib_version,
+		e.femployee_name femployee_name,e.femployee_id femployee_id,e.fid,
+		s.fid,s.fstep_name fstep_name,s.fstep_number fstep_number,
+		c.fjunction fjunction,c.fid insid,c.fwelding_area fwelding_area 
+		from tb_welded_junction j 
+		LEFT JOIN TB_PRODUCT_NUMBER p ON j.FID=p.FCARD_ID
+		LEFT JOIN tb_wps_library w ON p.FWPS_LIB_ID = w.fid
+		LEFT JOIN tb_employee e ON w.fid = e.fwps_lib_id
+		LEFT JOIN tb_step s ON e.fid = s.femployee_id
+		LEFT JOIN tb_junction c ON s.fid = c.fstep_id
+		where 1=1
+	</select>
+
+    <insert id="saveWpslib" parameterType="com.spring.model.Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_WPS_CRAFT_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO TB_WPS_CRAFT(fid,fwps_lib_name,fmachinemodel, fcreater, fcreatedate, fstatus) VALUES
+        (#{fid},#{fwpsnum},#{fback},#{fcreater},SYSDATE,#{fstatus})
+    </insert>
+
+    <update id="updateWpslib" parameterType="com.spring.model.Wps">
+        <!-- UPDATE tb_wps_library SET fwps_lib_name=#{fwpsnum},fstatus=#{fstatus} WHERE 1=1 and fid=#{fid} -->
+        <if test="fid != null and fid != ''">
+            UPDATE TB_WPS_CRAFT SET FWPS_LIB_NAME = #{fwpsnum},FSTATUS = #{fstatus} WHERE 1=1 and FID=#{fid}
+        </if>
+    </update>
+
+    <select id="getMainwpsList" resultType="Wps" parameterType="java.math.BigInteger">
+        <!-- select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc weldername,
+            s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter fname,s.ftime,s.fhysteresis,s.fadvance,
+            s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,
+            s.fwarn_ele_up,s.fwarn_ele_down,s.fwarn_vol_up,s.fwarn_vol_down,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol fdiameter,
+            dm.fvaluename materialname,ds.fvaluename selectname,dg.fvaluename gasname,da.fvaluename arcname,dd.fvaluename dianame,
+            s.fwater_cooled_torch ftorch,s.fwelding_process fprocessid,dp.fvaluename fprocessname FROM tb_specification s
+            LEFT JOIN tb_dictionary dm ON s.fmaterial=dm.fvalue and dm.ftypeid=9
+            LEFT JOIN tb_dictionary ds ON s.fselect=ds.fvalue and ds.ftypeid=10
+            LEFT JOIN tb_dictionary da ON s.farc=da.fvalue and da.ftypeid=11
+            LEFT JOIN tb_dictionary dg ON s.fgas=dg.fvalue and dg.ftypeid=12
+            LEFT JOIN tb_dictionary dd ON s.fdiameter=dd.fvalue and dd.ftypeid=13
+            LEFT JOIN tb_dictionary dp ON s.fwelding_process=dp.fvalue AND dp.ftypeid=22
+            where 1=1
+        -->
+        SELECT s.FID fid,s.FSPE_NUM welderid,s.fselect insname,s.fcharacter fweld_v_max,s.fmaterial updatename,s.fgas fback,
+        s.fdiameter fname,s.fweld_ele,s.fweld_vol,s.finitial,s.fcontroller,s.farc,s.fwater_cooled_torch ftorch,
+        s.fini_ele,s.fini_vol,s.farc_ele,s.farc_vol,s.fadvance,s.fweld_tuny_ele,s.fweld_tuny_vol,
+        s.ftime,s.farc_tuny_ele,s.farc_tuny_vol,d1.fvaluename selectname,d2.fvaluename materialname,d3.fvaluename dianame,d4.fvaluename gasname,
+        d5.fvaluename conname,s.fwelding_process,s.fini_vol1,s.fweld_vol1,s.farc_vol1,s.fhysteresis,s.FGASFLOW gasflow,
+        s.fspeed,s.farc_speed,s.farc_tuny_speed,s.fselectstep,s.ffrequency,s.fini_tuny_vol,l.fmachinemodel model,d6.FVALUENAME modelName
+        FROM tb_specification s
+        LEFT JOIN tb_dictionary d1 on s.fselect=d1.fvalue and d1.ftypeid=10
+        LEFT JOIN tb_dictionary d2 on s.fmaterial=d2.fvalue and d2.ftypeid=9
+        LEFT JOIN tb_dictionary d3 on s.fdiameter=d3.fvalue and d3.ftypeid=13
+        LEFT JOIN tb_dictionary d4 on s.fgas=d4.fvalue and d4.ftypeid=12
+        LEFT JOIN tb_dictionary d5 on s.fselectstep=d5.fvalue and d5.ftypeid=10
+        <!-- LEFT JOIN tb_wps_library l on s.fwpslib_id=l.fid -->
+        LEFT JOIN TB_WPS_CRAFT l on s.fwpslib_id=l.fid
+        LEFT JOIN tb_dictionary d6 ON l.fmachinemodel = d6.FVALUE
+        WHERE 1=1
+        <if test="parent!=null and parent!=''">
+            AND s.FWPSLIB_ID = #{parent}
+        </if>
+        ORDER by s.fspe_num
+    </select>
+
+    <select id="getWpslibNameCount" resultType="java.lang.Integer">
+		SELECT COUNT(fid) FROM tb_wps_library WHERE fwps_lib_name=#{wpsName}
+	</select>
+
+    <select id="getWpslibStatus" resultType="Wps">
+		SELECT fvalue insid, fvaluename insname FROM tb_dictionary WHERE fvalue=61 or fvalue=62
+	</select>
+
+    <delete id="deleteWpslib">
+        <!-- DELETE FROM tb_wps_library WHERE fid=#{fid} -->
+        DELETE FROM TB_WPS_CRAFT WHERE fid = #{fid}
+    </delete>
+
+    <delete id="deleteWpsBelongLib">
+		DELETE FROM tb_specification WHERE fwpslib_id = #{fid}
+	</delete>
+
+    <delete id="deleteMainWps">
+		DELETE FROM tb_specification WHERE fid = #{fid}
+	</delete>
+
+    <select id="getCountByWpslibidChanel" resultType="java.lang.Integer">
+		SELECT COUNT(fid) FROM tb_specificationWHERE fspe_num=#{chanel} AND fwpslib_id=#{wpslibid}
+	</select>
+
+    <select id="getWpslibMachineHistoryList" resultType="Wps">
+        SELECT wm.fid,wm.fequipment_no insname,wm.fmodel macid,wl.fwps_lib_name fwpsnum,wmh.fspe_num
+        insid,wmh.fweld_ele,wmh.fweld_vol,wmh.fwarn_ele_up,wmh.fwarn_ele_down,wmh.fwarn_vol_up,wmh.fwarn_vol_down,wmh.fpreset_ele_warn_top,wmh.fpreset_vol_warn_top,wmh.fpreset_ele_warn_bottom,wmh.fpreset_vol_warn_bottom,wmh.fcreate_time
+        updatename FROM tb_wps_machine_history wmh
+        LEFT JOIN tb_welding_machine wm ON wmh.fmachine_id=wm.fid
+        LEFT JOIN tb_wps_library wl ON wmh.fwpslib_id=wl.fid
+        WHERE 1=1
+        <if test="wpslibName!=null and wpslibName!=''">
+            AND wl.fwps_lib_name like ${wpslibName}
+        </if>
+        <if test="machineNum!=null and machineNum!=''">
+            AND wm.fequipment_no like ${machineNum}
+        </if>
+        <if test="dto!=null and dto!=''">
+            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
+                and fcreate_time &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+            </if>
+            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
+                and fcreate_time &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+            </if>
+        </if>
+        ORDER BY wmh.fcreate_time DESC
+    </select>
+
+    <select id="getOtcDetail" resultType="Wps">
+        select s.fidfid,s.fspe_numwelderid,s.finitial finitial,s.fcontroller fcontroller,s.fselect insname,s.farc
+        weldername,s.fcharacter fweld_v_max,s.fmode fmode,s.fmaterial updatename,s.fgas fback,s.fdiameter
+        fname,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele
+        ,s.fini_vol,s.fini_vol1,s.fweld_ele,s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,
+        s.fwarn_ele_up,s.fwarn_ele_down,s.fwarn_vol_up,s.fwarn_vol_down,s.fweld_tuny_vol,s.farc_tuny_ele,s.farc_tuny_vol
+        fdiameter,dm.fvaluename materialname,ds.fvaluename selectname,dg.fvaluename gasname,da.fvaluename
+        arcname,dd.fvaluename dianame,s.fwater_cooled_torch ftorch,s.fwelding_process fprocessid,dp.fvaluename
+        fprocessname FROM tb_wps_machine_history s
+        LEFT JOIN tb_dictionary dm ON s.fmaterial=dm.fvalue and dm.ftypeid=9
+        LEFT JOIN tb_dictionary ds ON s.fselect=ds.fvalue and ds.ftypeid=10
+        LEFT JOIN tb_dictionary da ON s.farc=da.fvalue and da.ftypeid=11
+        LEFT JOIN tb_dictionary dg ON s.fgas=dg.fvalue and dg.ftypeid=12
+        LEFT JOIN tb_dictionary dd ON s.fdiameter=dd.fvalue and dd.ftypeid=13
+        LEFT JOIN tb_dictionary dp ON s.fwelding_process=dp.fvalue AND dp.ftypeid=22
+        where 1=1
+        <if test="machineId!=null and machineId!=''">
+            AND s.fmachine_id=#{machineId}
+        </if>
+        <if test="chanel!=null and chanel!=''">
+            AND s.fspe_num=#{chanel}
+        </if>
+        <if test="time!=null and time!=''">
+            AND s.fcreate_time=#{time}
+        </if>
+    </select>
+
+    <select id="getSxDetail" resultType="Wps">
+        select s.fid fid,s.fspe_num fwpsnum,fselect,farc,fmaterial,fdiameter,finitial fini,fgas,fcontroller,s.fcharacter
+        fcharacter,s.ftime,s.fhysteresis,s.fadvance,s.fini_ele ,s.fini_vol,s.fini_vol1,s.fweld_ele,
+        s.fweld_vol,s.fweld_vol1,s.farc_ele,s.farc_vol,s.farc_vol1,s.fweld_tuny_ele,s.fweld_tuny_vol,s.farc_tuny_ele,farc_tuny_vol,fpreset_ele_top,fpreset_vol_top,fpreset_ele_bottom,fpreset_vol_bottom,farc_vol_top,fpreset_ele_warn_top,fpreset_vol_warn_top,fpreset_ele_warn_bottom,fpreset_vol_warn_bottom,fini_ele_warn_top,fini_vol_warn_top,fini_ele_warn_bottom,fini_vol_warn_bottom,farc_ele_warn_top,farc_vol_warn_top,farc_ele_warn_bottom,farc_vol_warn_bottom,farc_delay_time,fwarn_delay_time,fwarn_stop_time,fflow_top,fflow_bottom,fdelay_time,fover_time,ffixed_cycle,
+        d1.fvaluename selectname,d2.fvaluename gasname,d3.fvaluename dianame,d4.fvaluename materialname,d5.fvaluename
+        conname,d6.fvaluename finitial,d7.fvaluename arcname FROM tb_wps_machine_history s
+        LEFT JOIN tb_dictionary d1 ON s.fselect=d1.fvalue and d1.ftypeid = 10
+        LEFT JOIN tb_dictionary d2 ON s.fgas=d2.fvalue and d2.ftypeid=24
+        LEFT JOIN tb_dictionary d3 ON s.fdiameter=d3.fvalue and d3.ftypeid = 23
+        LEFT JOIN tb_dictionary d4 ON s.fmaterial=d4.fvalue and d4.ftypeid=18
+        LEFT JOIN tb_dictionary d5 ON s.fcontroller=d5.fvalue and d5.ftypeid = 19
+        LEFT JOIN tb_dictionary d6 ON s.finitial=d6.fvalue and d6.ftypeid=20
+        LEFT JOIN tb_dictionary d7 ON s.farc=d7.fvalue and d7.ftypeid=21
+        where 1=1
+        <if test="machineId!=null and machineId!=''">
+            AND s.fmachine_id=#{machineId}
+        </if>
+        <if test="chanel!=null and chanel!=''">
+            AND s.fspe_num=#{chanel}
+        </if>
+        <if test="time!=null and time!=''">
+            AND s.fcreate_time=#{time}
+        </if>
+    </select>
+
+    <insert id="saveSxWpsHistory" parameterType="Wps">
+		INSERT INTO tb_wps_machine_history (fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode, ftime, fmaterial, fadvance, fhysteresis, fgas, fdiameter, fini_ele, fini_vol, fini_vol1, fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol, farc_vol1, fweld_tuny_ele, fweld_tuny_vol, farc_tuny_ele, farc_tuny_vol,
+		fmachine_id, FCReateDate, FUpdateDate, Fcreater, Fupdater, fwpslib_id, fpreset_vol_top, fpreset_ele_top, fpreset_ele_bottom, fpreset_vol_bottom, farc_vol_top, fpreset_ele_warn_top, fpreset_vol_warn_top, fpreset_ele_warn_bottom, fpreset_vol_warn_bottom, fini_ele_warn_top, fini_vol_warn_top, fini_ele_warn_bottom, fini_vol_warn_bottom, farc_ele_warn_top, farc_vol_warn_top, 
+		farc_ele_warn_bottom, farc_vol_warn_bottom, farc_delay_time, fwarn_delay_time, fwarn_stop_time,fflow_top, fflow_bottom, fdelay_time, fover_time, ffixed_cycle, fcreate_time) VALUES 
+		(#{fwpsnum}, #{finitial}, #{fcontroller}, #{fselect}, #{farc}, #{fcharacter}, 0, #{ftime}, #{fmaterial}, #{fadvance}, #{fhysteresis}, #{fgas}, #{fdiameter}, #{fini_ele},#{fini_vol}, #{fini_vol1}, #{fweld_ele}, #{fweld_vol}, #{fweld_vol1}, #{farc_ele}, #{farc_vol}, #{farc_vol1}, #{fweld_tuny_ele}, #{fweld_tuny_vol}, #{farc_tuny_ele}, #{farc_tuny_vol},
+		#{macid}, SYSDATE, SYSDATE, #{fcreater}, #{fupdater}, #{fwpslib_id}, #{fpreset_vol_top}, #{fpreset_ele_top}, #{fpreset_ele_bottom}, #{fpreset_vol_bottom}, #{farc_vol_top}, #{fpreset_ele_warn_top}, #{fpreset_vol_warn_top}, #{fpreset_ele_warn_bottom}, #{fpreset_vol_warn_bottom}, #{fini_ele_warn_top}, #{fini_vol_warn_top}, #{fini_ele_warn_bottom}, #{fini_vol_warn_bottom}, #{farc_ele_warn_top}, #{farc_vol_warn_top}, 
+		#{farc_ele_warn_bottom}, #{farc_vol_warn_bottom}, #{farc_delay_time}, #{fwarn_delay_time}, #{fwarn_stop_time}, #{fflow_top}, #{fflow_bottom}, #{fdelay_time}, #{fover_time}, #{ffixed_cycle}, SYSDATE)
+	</insert>
+
+    <insert id="saveOtcWpsHistory" parameterType="Wps">
+		INSERT INTO tb_wps_machine_history(fspe_num, finitial, fcontroller, fselect, farc, fcharacter, fmode, ftime, fmaterial, fadvance, fhysteresis, fgas, fdiameter, fini_ele, fini_vol, fini_vol1, fweld_ele, fweld_vol, fweld_vol1, farc_ele, farc_vol, farc_vol1, fweld_tuny_ele, fweld_tuny_vol, farc_tuny_ele, farc_tuny_vol, Fcreater, fwpslib_id, fwater_cooled_torch, fwelding_process, fwarn_ele_up, fwarn_ele_down, fwarn_vol_up, fwarn_vol_down, fmachine_id, fcreate_time) VALUES (#{fweld_i_max},#{fweld_i_min},#{fweld_alter_i},#{fweld_i},#{fweld_v},#{fweld_v_max},#{fweld_v_min},#{ftime},#{fweld_prechannel},#{fadvance},#{fhysteresis},#{fweld_alter_v},#{insid},#{fini_ele},#{fini_vol},#{fini_vol1},#{fweld_ele},#{fweld_vol},#{fweld_vol1},#{farc_ele},#{farc_vol},#{farc_vol1},#{fweld_tuny_ele},#{fweld_tuny_vol},#{farc_tuny_ele},#{fdiameter},#{fcreater},#{fid},#{ftorch},#{fprocessid},#{fwarn_ele_up},#{fwarn_ele_down},#{fwarn_vol_up},#{fwarn_vol_down},#{macid},SYSDATE)
+	</insert>
+
+    <select id="getIdByWpslibname" resultType="java.lang.String">
+		SELECT fid FROM tb_wps_library WHERE fwps_lib_name=#{wpslibname}
+	</select>
+
+    <select id="getFnsDetail" resultType="Wps">
+        select s.* FROM tb_specification s
+        where 1=1 AND s.fmachine_id=#{machine}
+        <if test="chanel!=null and chanel!=''">
+            AND s.fspe_num=#{chanel}
+        </if>
+        ORDER by s.fid
+    </select>
+
+    <select id="getFnsJobList" resultType="Wps">
+		select s.fspe_num fwpsnum,s.f024 FROM tb_specification s 
+		where 1=1 AND s.fmachine_id=#{machine}
+		ORDER by s.fspe_num
+	</select>
+
+    <insert id="addJob" parameterType="Wps">
+		INSERT INTO tb_specification(fspe_num, f001, f002, f003, f004, f005, f006, f007, f008, f009, f010, f011, f012, f013, f014, f015, f016, f017, f018, f019, f020, f021, f022, f023, f024,f025,f026,f027,f028,f029,f030,f031,f032,f033,f034,f035,f036,f037,f038,f039,f040,f041,f042,f043,f044,f045,f046,f047,f048,f049,f050, fadvance, fhysteresis, fmachine_id) VALUES (#{fwpsnum},#{f001},#{f002},#{f003},#{f004},#{f005},#{f006},#{f007},#{f008},#{f009},#{f010},#{f011},#{f012},#{f013},#{f014},#{f015},#{f016},#{f017},#{f018},#{f019},#{f020},#{f021},#{f022},#{f023},#{f024},#{f025},#{f026},#{f027},#{f028},#{f029},#{f030},#{f031},#{f032},#{f033},#{f034},#{f035},#{f036},#{f037},#{f038},#{f039},#{f040},#{f041},#{f042},#{f043},#{f044},#{f045},#{f046},#{f047},#{f048},#{f049},#{f050},#{fadvance},#{fhysteresis},#{macid})
+	</insert>
+
+    <update id="updateJob" parameterType="Wps">
+		UPDATE tb_specificationSET fspe_num=#{fwpsnum},f001=#{f001},f002=#{f002},f003=#{f003},f004=#{f004},f005=#{f005},f006=#{f006},f007=#{f007},f008=#{f008},f009=#{f009},f010=#{f010},f011=#{f011},f012=#{f012},f013=#{f013},f014=#{f014},f015=#{f015},f016=#{f016},f017=#{f017},f018=#{f018},f019=#{f019},f020=#{f020},f021=#{f021},f022=#{f022},f023=#{f023},f024=#{f024},f025=#{f025},f026=#{f026},f027=#{f027},f028=#{f028},f029=#{f029},f030=#{f030},f031=#{f031},f032=#{f032},f033=#{f033},f034=#{f034},f035=#{f035},f036=#{f036},f037=#{f037},f038=#{f038},f039=#{f039},f040=#{f040},f041=#{f041},f042=#{f042},f043=#{f043},f044=#{f044},f045=#{f045},f046=#{f046},f047=#{f047},f048=#{f048},f049=#{f049},f050=#{f050},fadvance=#{fadvance},fhysteresis=#{fhysteresis} WHERE fmachine_id=#{macid} AND fspe_num=#{fwpsnum}
+	</update>
+
+    <delete id="deleteJob">
+		delete from tb_specificationwhere fmachine_id=#{machine} AND fspe_num=#{chanel}
+	</delete>
+
+    <select id="getTpsiMaterial" resultType="String">
+		SELECT DISTINCT Material FROM TPSiWHERE 1=1
+	</select>
+
+    <select id="getTpsiGas" resultType="String">
+		SELECT DISTINCT Gas FROM TPSiWHERE 1=1
+	</select>
+
+    <select id="getTpsiWire" resultType="String">
+		SELECT DISTINCT Wire                               [mm]FROM TPSiWHERE 1=1
+	</select>
+
+    <select id="getCountByWpsidAndLayerroad" resultType="java.lang.Integer">
+		SELECT count(fid) FROM tb_specification WHERE fwpslib_id=#{wpsid} and fsolder_layer=#{layer} and fweld_bead=#{road}
+	</select>
+
+    <insert id="addWpsDetail" parameterType="Wps">
+		INSERT INTO tb_specification (fspe_num, fmaterial, fdiameter, fweld_ele, fweld_vol, fweld_tuny_ele, fweld_tuny_vol,
+		 fwpslib_id, fsolder_layer, fweld_bead, fpower_polarity, fweld_speed, fgas_flow ,fweld_method ,fwelding_process) VALUES 
+		(#{fwpsnum}, #{fmaterial}, #{fdiameter}, #{fweld_ele}, #{fweld_vol}, #{fweld_tuny_ele}, #{fweld_tuny_vol}, 
+		#{fwpslib_id}, #{fsolder_layer}, #{fweld_bead}, #{fpower_polarity}, #{fweld_speed}, #{fgas_flow}, #{fweld_method}, #{fprocessid})
+	</insert>
+
+    <update id="updateWpsDetail" parameterType="Wps">
+		update tb_specification set 
+		fspe_num=#{fwpsnum},fmaterial=#{fmaterial},fdiameter=#{fdiameter},fweld_ele=#{fweld_ele},fweld_vol=#{fweld_vol},
+		fweld_tuny_ele=#{fweld_tuny_ele},fweld_tuny_vol=#{fweld_tuny_vol},fpower_polarity=#{fpower_polarity},
+		fweld_speed=#{fweld_speed},fgas_flow=#{fgas_flow},fweld_method=#{fweld_method},fwelding_process=#{fprocessid} 
+		where fwpslib_id=#{fwpslib_id} and fsolder_layer=#{fsolder_layer} and fweld_bead=#{fweld_bead}
+	</update>
+
+    <update id="updateWpsDetailById" parameterType="Wps">
+		update tb_specification set 
+		fspe_num=#{fwpsnum},fmaterial=#{fmaterial},fdiameter=#{fdiameter},fweld_ele=#{fweld_ele},fweld_vol=#{fweld_vol},
+		fweld_tuny_ele=#{fweld_tuny_ele},fweld_tuny_vol=#{fweld_tuny_vol},fpower_polarity=#{fpower_polarity},
+		fweld_speed=#{fweld_speed},fgas_flow=#{fgas_flow},fweld_method=#{fweld_method},fwelding_process=#{fprocessid},fsolder_layer=#{fsolder_layer},fweld_bead=#{fweld_bead} 
+		where fid=#{fid}
+	</update>
+
+    <select id="gettaskview" resultType="Wps">
+        select t.fid fid,t.ftaskid,t.fstep_id,t.fjunction_id,t.fwelderid,t.fmachineid,t.frealstarttime fstarttime,
+        t.frealendtime endtime,t.foperatetype ftorch,j.fwelded_junction_no fproduct_drawing_no,j.ftask_no fwpsnum,
+        j.flag flag,m.FINSFRAMEWORK_ID fitemId,CONCAT(CONCAT(p.FPREFIX_NUMBER,p.FPRODUCT_NUMBER),p.FSUFFIX_NUMBER)
+        FPRODUCT_NUMBER,p.fwps_lib_id,l.fwps_lib_name fprocessname,
+        l.fproduct_drawing_no dianame,l.fproduct_name fproduct_name,l.FPRODUCT_VERSION ,l.fwps_lib_version
+        fwps_lib_version,u.fjunction fjunction,u.FWELDING_AREA,
+        s.fstep_number,s.FSTEP_NAME,s.FSTEP_VERSION,e.FEMPLOYEE_ID,e.FEMPLOYEE_NAME,e.FEMPLOYEE_VERSION,w.fname
+        weldername,m.fequipment_no conname,i.fname fitem,row_number() over(partition by t.ftaskid order by t.fid asc)
+        from tb_taskresult t
+        LEFT JOIN tb_welded_junction j ON t.FCARD_ID = j.fid
+        LEFT JOIN tb_product_number p ON t.ftaskid = p.fid
+        LEFT JOIN tb_wps_library l ON p.fwps_lib_id = l.fid
+        LEFT JOIN tb_junction u ON t.fjunction_id = u.fid
+        LEFT JOIN tb_step s ON t.fstep_id = s.fid
+        LEFT JOIN TB_EMPLOYEE e on s.FEMPLOYEE_ID=e.FID
+        LEFT JOIN tb_welder w ON t.fwelderid = w.fid
+        LEFT JOIN tb_welding_machine m ON t.fmachineid = m.fid
+        LEFT JOIN tb_insframework i ON m.FINSFRAMEWORK_ID = i.fid
+        <if test="search!=null and search!=''">
+            WHERE${search}
+        </if>
+    </select>
+
+    <select id="getunstard" resultType="Wps">
+        select a.fjunction_id,a.fwelder_id,a.fmachine_id,a.falarmtime
+        unstandardtime,a.welding_position_id,a.fstarttime,a.fendtime,a.fproduct_number_id,a.fcard_id,a.fwps_lib_id,
+        a.femployee_id,a.fstep_id,j.fwelded_junction_no fwelded_junction_no,j.ftask_no fwpsnum,p.fprefix_number
+        fprefix_number,p.fsuffix_number,p.fproduct_number fproduct_vnumber,
+        l.fwps_lib_name fprocessname,l.fwps_lib_version fwps_lib_version,l.fproduct_drawing_no
+        fproduct_drawing_no,l.fproduct_name fproduct_name,m.fequipment_no conname,i.fname fitem,
+        u.fjunction fjunction,u.fwelding_area fwelding_area,s.fstep_number fstep_number,s.fstep_name
+        fstep_name,e.femployee_name femployee_name,e.femployee_id femployee_id,w.fname weldername from tb_alarm a
+        LEFT JOIN tb_welded_junction j ON a.fcard_id = j.fid
+        LEFT JOIN tb_product_number p ON a.fproduct_number_id = p.fid
+        LEFT JOIN tb_wps_library l ON a.fwps_lib_id = l.fid
+        LEFT JOIN tb_welding_machine m ON a.fmachine_id = m.fid
+        LEFT JOIN tb_insframework i ON j.fitemId = i.fid
+        LEFT JOIN tb_junction u ON a.fjunction_id = u.fid
+        LEFT JOIN tb_step s ON a.fstep_id = s.fid
+        LEFT JOIN tb_employee e ON a.femployee_id = e.fid
+        LEFT JOIN tb_welder w ON a.fwelder_id = w.fid
+        <if test="search!=null and search!=''">
+            WHERE${search}
+        </if>
+        ORDER BY nlssort(a.fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getAllWpslib" resultType="Wps">
+		SELECT fid insid,fwps_lib_name insname FROM tb_wps_library WHERE 1=1 AND fid not in (
+		SELECT DISTINCT fwpslib_id FROM tb_welded_junction WHERE 1=1 and fwpslib_id is not NULL 
+		)
+	</select>
+
+    <select id="getTaskstatus" resultType="Wps">
+        select count(fid) from TB_TASKRESULT t where 1=1
+        <if test="search1!=null and search1!=''">
+            and {search1}
+        </if>
+    </select>
+
+    <select id="getWpsList" resultType="Wps">
+        <!-- fid,fproduct_drawing_no,fproduct_name,fproduct_version,fwps_lib_name
+        fwpsnum,fwps_lib_version,flag,fstatus,DECODE(fstatus, 2, fback ,NULL) fback -->
+        SELECT TB_WELDED_JUNCTION.FID,WORKTICKET_NUMBER,CRAFT_PARAM,RAW_MATERI,PROCESS,JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,FOPERATETYPE
+        FROM TB_WELDED_JUNCTION
+        LEFT JOIN TB_TASKRESULT ON TB_WELDED_JUNCTION.FID = TB_TASKRESULT.FCARD_ID
+        <if test="search!=null and search!=''">
+            where ${search}
+        </if>
+        ORDER BY TB_WELDED_JUNCTION.FID
+    </select>
+
+    <select id="getLibraryJunction" resultType="Wps" parameterType="java.lang.String">
+        <if test="library_id != null and library_id != ''">
+            SELECT TB_LIBRARY_JUNCTION."fid",TB_LIBRARY_JUNCTION."library_id",TB_LIBRARY_JUNCTION."junction_id",
+            TB_JUNCTION.fjunction,TB_JUNCTION.JUNCTION_NAME
+            from TB_LIBRARY_JUNCTION
+            LEFT JOIN TB_JUNCTION on TB_JUNCTION.FID = TB_LIBRARY_JUNCTION."junction_id"
+            where TB_LIBRARY_JUNCTION."library_id" = #{library_id}
+        </if>
+    </select>
+
+    <select id="getEmployee" resultType="Wps">
+        SELECT fid,femployee_id,femployee_version,femployee_name FROM tb_employee
+        <if test="fid!=null and fid!=''">
+            where fwps_lib_id=#{fid}
+        </if>
+        group by fid,femployee_id,femployee_version,femployee_name ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getStep" resultType="Wps">
+        SELECT fstep_number,fid,fstep_name,fstep_version FROM tb_step
+        <if test="employeeId!=null and employeeId!=''">
+            where femployee_id=#{employeeId}
+        </if>
+        group by fstep_number,fid,fstep_name,fstep_version ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getJunction" resultType="Wps">
+        SELECT fjunction,max(TB_JUNCTION.fid) fid,fwelding_area,max(DECODE(TB_STEP_JUNCTION.FSTEP_ID, #{stepId}, 1 ,0))
+        fstatus FROM tb_junction
+        LEFT JOIN TB_STEP_JUNCTION ON TB_JUNCTION.FID=TB_STEP_JUNCTION.FJUNCTION_ID
+        LEFT JOIN TB_STEP ON TB_STEP_JUNCTION.FSTEP_ID=tb_step.FID
+        <!-- 		<if test="stepId!=null and stepId!=''">
+                    where TB_STEP_JUNCTION.fstep_id=#{stepId}
+                </if> -->
+        group by fjunction,fwelding_area ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getJunctionByStepid" resultType="Wps">
+        SELECT distinct fjunction,max(TB_JUNCTION.fid) fid,fwelding_area,TB_STEP.FSTEP_NUMBER
+        fstep_number,TB_STEP.FSTEP_NAME fstep_name,
+        case when COUNT(distinct TB_TASKRESULT.FJUNCTION_ID)=0 THEN
+        NULL
+        when COUNT(distinct TB_STEP.FID)-COUNT(distinct TB_TASKRESULT.FSTEP_ID)=0 and TB_TASKRESULT.FOPERATETYPE=1 AND
+        TB_TASKRESULT.FTASKID=#{productId} THEN
+        1
+        ELSE
+        0
+        END f001 FROM TB_WPS_LIBRARY
+        LEFT JOIN TB_EMPLOYEE ON TB_EMPLOYEE.FWPS_LIB_ID = TB_WPS_LIBRARY.FID
+        LEFT JOIN TB_STEP ON TB_STEP.FEMPLOYEE_ID=TB_EMPLOYEE.FID
+        LEFT JOIN TB_STEP_JUNCTION ON TB_STEP_JUNCTION.FSTEP_ID=TB_STEP.FID
+        LEFT JOIN TB_JUNCTION ON TB_JUNCTION.FID = TB_STEP_JUNCTION.FJUNCTION_ID
+        LEFT JOIN TB_PRODUCT_NUMBER on TB_WPS_LIBRARY.FID=TB_PRODUCT_NUMBER.FWPS_LIB_ID
+        LEFT JOIN TB_TASKRESULT ON TB_TASKRESULT.FJUNCTION_ID=TB_JUNCTION.FID AND TB_TASKRESULT.FSTEP_ID = TB_STEP.FID
+        AND TB_TASKRESULT.FTASKID=TB_PRODUCT_NUMBER.FID
+        <if test="stepId!=null and stepId!=''">
+            where TB_WPS_LIBRARY.FID=#{stepId}
+        </if>
+        <if test="productId!=null and productId!=''">
+            AND TB_PRODUCT_NUMBER.FID=#{productId} AND fjunction IS NOT NULL
+        </if>
+        group by
+        fjunction,fwelding_area,TB_TASKRESULT.FOPERATETYPE,TB_TASKRESULT.FTASKID,TB_STEP.FSTEP_NUMBER,TB_STEP.FSTEP_NAME
+        ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getJunctionByStepid1" resultType="Wps">
+        SELECT fjunction,max(TB_JUNCTION.fid) fid,fwelding_area
+        FROM tb_junction
+        LEFT JOIN TB_STEP_JUNCTION ON TB_JUNCTION.FID=TB_STEP_JUNCTION.FJUNCTION_ID
+        LEFT JOIN TB_STEP ON TB_STEP_JUNCTION.FSTEP_ID=tb_step.FID
+        <if test="stepId!=null and stepId!=''">
+            where TB_STEP.FID=#{stepId}
+        </if>
+        group by fjunction,fwelding_area ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="getDetail" resultType="Wps">
+        SELECT fid,fquantitative_project,frequired_value,fupper_deviation,flower_deviation,funit_of_measurement FROM
+        tb_specification
+        <if test="stepId!=null and stepId!=''">
+            where fstep_id=#{stepId}
+        </if>
+        ORDER BY nlssort(fid,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <insert id="addWps" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_WPS_LIBRARY_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_wps_library (fid,fproduct_drawing_no,
+        fproduct_name,fproduct_version,fwps_lib_name,fwps_lib_version,flag,fstatus) VALUES
+        (#{fid}, #{fproduct_drawing_no}, #{fproduct_name}, #{fproduct_version}, #{fwpsnum}, #{fwps_lib_version},
+        #{flag},0)
+    </insert>
+
+    <update id="updateWps" parameterType="Wps">
+		update tb_wps_library set 
+		fproduct_drawing_no=#{fproduct_drawing_no},fproduct_name=#{fproduct_name},fproduct_version=#{fproduct_version},
+		fwps_lib_name=#{fwpsnum},fwps_lib_version=#{fwps_lib_version},flag=#{flag} 
+		where fid=#{fid}
+	</update>
+
+    <select id="getWeldwps" resultType="Wps">
+        SELECT fid,fproduct_drawing_no,fproduct_name,fproduct_version,fwps_lib_name
+        fwpsnum,fwps_lib_version,flag,fstatus,DECODE(fstatus, 2, fback ,NULL) fback
+        FROM tb_wps_library
+        <if test="wps_lib_id!=null and wps_lib_id!=''">
+            where fid=#{wps_lib_id}
+        </if>
+    </select>
+
+    <delete id="deleteWps">
+		DELETE FROM tb_wps_library WHERE tb_wps_library.fid=#{fid}
+	</delete>
+
+    <delete id="deleteWpsEmp">
+		DELETE FROM TB_EMPLOYEE WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM tb_wps_library
+		  	WHERE tb_wps_library.FID=TB_EMPLOYEE.fwps_lib_id
+		  	AND tb_wps_library.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteWpsEmpStep">
+		DELETE FROM tb_step WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM tb_wps_library,TB_EMPLOYEE 
+		  	WHERE tb_wps_library.FID=TB_EMPLOYEE.fwps_lib_id
+		  	AND TB_EMPLOYEE.FID=TB_STEP.femployee_id
+		  	AND tb_wps_library.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteWpsEmpStepJun">
+		DELETE FROM tb_junction WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM tb_wps_library,TB_EMPLOYEE,TB_STEP 
+		  	WHERE tb_wps_library.FID=TB_EMPLOYEE.fwps_lib_id 
+		  	AND TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=tb_junction.fstep_id 
+		  	AND tb_wps_library.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteWpsEmpStepSpe">
+		DELETE FROM tb_specification WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM tb_wps_library,TB_EMPLOYEE,TB_STEP 
+		  	WHERE tb_wps_library.FID=TB_EMPLOYEE.fwps_lib_id 
+		  	AND TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=tb_specification.fstep_id 
+		  	AND tb_wps_library.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteWpsEmpSJ">
+		DELETE FROM TB_STEP_JUNCTION WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM tb_wps_library,TB_EMPLOYEE,TB_STEP 
+		  	WHERE tb_wps_library.FID=TB_EMPLOYEE.fwps_lib_id 
+		  	AND TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=TB_STEP_JUNCTION.fstep_id 
+		  	AND tb_wps_library.fid=#{fid}
+		)
+	</delete>
+
+    <insert id="addEmployee" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_EMPLOYEE_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_employee (fid,femployee_id, femployee_version, femployee_name,fwps_lib_id) VALUES
+        (#{fid}, #{femployee_id}, #{femployee_version}, #{femployee_name}, #{fwpslib_id})
+    </insert>
+
+    <update id="updateEmployee" parameterType="Wps">
+		update tb_employee set 
+		femployee_id=#{femployee_id},femployee_version=#{femployee_version},femployee_name=#{femployee_name}
+		where fid=#{fid}
+	</update>
+
+    <delete id="deleteEmployee">
+		DELETE FROM tb_employee WHERE fid=#{fid}
+	</delete>
+
+    <delete id="deleteEmployeeStep">
+		DELETE FROM tb_step WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_EMPLOYEE 
+		  	WHERE TB_EMPLOYEE.FID=TB_STEP.femployee_id
+		  	AND TB_EMPLOYEE.fid=#{fid}
+		) 
+	</delete>
+
+    <delete id="deleteEmployeeStepJun">
+		DELETE FROM tb_junction WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_EMPLOYEE,TB_STEP 
+		  	WHERE TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=tb_junction.fstep_id 
+		  	AND TB_EMPLOYEE.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteEmployeeStepSpe">
+		DELETE FROM tb_specification WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_STEP,TB_EMPLOYEE 
+		  	WHERE TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=tb_specification.fstep_id 
+		  	AND TB_EMPLOYEE.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteEmployeeSJ">
+		DELETE FROM TB_STEP_JUNCTION WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_STEP,TB_EMPLOYEE 
+		  	WHERE TB_EMPLOYEE.FID=TB_STEP.femployee_id 
+		  	AND TB_STEP.FID=TB_STEP_JUNCTION.FSTEP_ID 
+		  	AND TB_EMPLOYEE.fid=#{fid}
+		)
+	</delete>
+
+    <insert id="addStep" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_STEP_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_step (fid,femployee_id, fstep_number, fstep_name, fstep_version) VALUES
+        (#{fid}, #{femployee_id}, #{fstep_number}, #{fstep_name}, #{fstep_version})
+    </insert>
+
+    <update id="updateStep" parameterType="Wps">
+		update tb_step set fstep_number=#{fstep_number},fstep_name=#{fstep_name} where fid=#{fid}
+	</update>
+
+    <delete id="deleteStep">
+		DELETE FROM tb_step s WHERE fid=#{fid}
+	</delete>
+
+    <delete id="deleteStepJun">
+		DELETE FROM tb_junction WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_STEP 
+		  	WHERE TB_STEP.FID=tb_junction.fstep_id 
+		  	AND TB_STEP.fid=#{fid}
+		)
+	</delete>
+
+    <delete id="deleteStepSpe">
+		DELETE FROM tb_specification WHERE EXISTS
+		(
+			SELECT 1
+		  	FROM TB_STEP 
+		  	WHERE TB_STEP.FID=tb_specification.fstep_id 
+		  	AND TB_STEP.fid=#{fid}
+		)
+	</delete>
+
+    <insert id="addJunction" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="AFTER" keyProperty="fid">
+            select TB_JUNCTION_ID.currval as id from dual
+        </selectKey>
+        INSERT INTO tb_junction (fstep_id, fjunction,fwelding_area) VALUES
+        (#{fstep_id}, #{fjunction}, #{fwelding_area})
+    </insert>
+
+    <insert id="addStepJunction">
+		INSERT INTO tb_step_junction (fstep_id, fjunction_id) VALUES 
+		(#{stepId}, #{junctionId})
+	</insert>
+
+    <delete id="deleteStepJunction">
+        DELETE FROM tb_step_junction WHERE fstep_id=#{stepId}
+        <if test="search!=null and search!=''">
+            ${search}
+        </if>
+    </delete>
+
+    <update id="updateJunction" parameterType="Wps">
+		update tb_junction set fjunction=#{fjunction},fwelding_area=#{fwelding_area} where fid=#{fid}
+	</update>
+
+    <delete id="deleteJunction">
+		delete from tb_junction where fid=#{fid}
+	</delete>
+
+    <insert id="addDetail" parameterType="Wps">
+		INSERT INTO tb_specification (fquantitative_project, frequired_value,fupper_deviation,flower_deviation,funit_of_measurement,fstep_id) VALUES 
+		(#{fquantitative_project}, #{frequired_value}, #{fupper_deviation}, #{flower_deviation}, #{funit_of_measurement}, #{fstep_id})
+	</insert>
+
+    <update id="updateDetail" parameterType="Wps">
+		update tb_specification set fquantitative_project=#{fquantitative_project},frequired_value=#{frequired_value},fupper_deviation=#{fupper_deviation},
+		flower_deviation=#{flower_deviation},funit_of_measurement=#{funit_of_measurement} where fid=#{fid}
+	</update>
+
+    <delete id="deleteDetail">
+		delete from tb_specification where fid=#{fid}
+	</delete>
+
+    <select id="getstepall" resultType="Wps">
+		select t.fid,t.fproduct_drawing_no fproduct_drawing_no,t.fproduct_name fproduct_name,t.fproduct_version fproduct_version,t.fwps_lib_name fwpsnum,t.fwps_lib_version fwps_lib_version,
+		t.fstatus fstatus,t.flag flag,e.femployee_id femployee_id,e.femployee_name femployee_name,e.femployee_version femployee_version,e.fid,s.fstep_name fstep_name,s.fstep_number fstep_number,fstep_version, c.fjunction fjunction,
+		c.fwelding_area fwelding_area,p.fquantitative_project fquantitative_project,p.frequired_value frequired_value,p.fupper_deviation fupper_deviation,p.flower_deviation flower_deviation,funit_of_measurement funit_of_measurement,
+		row_number() over(partition by p.fid order by t.fid desc)  
+		from tb_wps_library t
+		LEFT JOIN tb_employee e on t.fid = e.fwps_lib_id
+		LEFT JOIN tb_step s on e.fid = s.femployee_id
+		LEFT JOIN tb_junction c on s.fid = c.fstep_id
+		LEFT JOIN tb_specification p on s.fid = p.fstep_id
+		where 1=1
+	</select>
+
+    <select id="getEmployee1" resultType="Wps">
+        SELECT DISTINCT e.fid,e.femployee_id,femployee_version,femployee_name,e.fwps_lib_id,
+        case
+        when COUNT(distinct t.FTASKID)=0 THEN
+        NULL
+        when COUNT(distinct s.FID)-COUNT(distinct t.FSTEP_ID)=0 and t.FOPERATETYPE=1 and t.FJUNCTION_ID=#{employ_id} and
+        t.FTASKID=#{productId} THEN
+        1
+        ELSE
+        0
+        END f001
+        FROM tb_employee e
+        LEFT JOIN tb_wps_library l ON e.FWPS_LIB_ID=l.fid
+        LEFT JOIN tb_product_number p ON l.fid=p.FWPS_LIB_ID
+        left join TB_STEP s on e.fid=s.FEMPLOYEE_ID
+        LEFT JOIN TB_STEP_JUNCTION sj on s.FID=sj.FSTEP_ID
+        LEFT JOIN TB_TASKRESULT t on e.fid=t.FEMPLOYEE_ID AND s.FID = T.FSTEP_ID
+        <if test="employ_id!=null and employ_id!=''">
+            where sj.FJUNCTION_ID=#{employ_id} and p.fid=#{productId}
+        </if>
+        GROUP BY
+        e.fid,e.femployee_id,femployee_version,femployee_name,e.fwps_lib_id,t.FTASKID,t.FOPERATETYPE,t.FSTEP_ID,t.FEMPLOYEE_ID,s.FID,t.FJUNCTION_ID
+    </select>
+
+    <update id="passReview">
+		update tb_wps_library set fstatus=#{value} where fid=#{fid}
+	</update>
+
+    <update id="turnDown" parameterType="Wps">
+		update tb_wps_library set fstatus=2,fback=#{fback} where fid=#{fid}
+	</update>
+
+    <select id="getWpsCombobox" resultType="Wps">
+		SELECT fid,fwps_lib_name fwpsnum,fwps_lib_version FROM tb_wps_library
+		WHERE fid NOT IN (SELECT DISTINCT fwps_lib_id FROM tb_product_number WHERE fwps_lib_id IS NOT NULL) AND fstatus=1
+	</select>
+
+    <select id="getProcudtCount" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from tb_wps_library where fproduct_drawing_no=#{pdn} and fproduct_version=#{procudt}
+	</select>
+
+    <select id="getWpsversionCount" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from tb_wps_library where fwps_lib_name=#{wln} and fwps_lib_version=#{wpsversion} and fproduct_drawing_no=#{pdn} and fproduct_version=#{pv}
+	</select>
+
+    <insert id="addWps1" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_WPS_LIBRARY_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_wps_library (fid,fproduct_drawing_no,
+        fproduct_name,fproduct_version,fwps_lib_name,fwps_lib_version,flag,fstatus) SELECT
+        #{fid},#{fproduct_drawing_no},#{fproduct_name},#{fproduct_version},#{fwpsnum},#{fwps_lib_version},#{flag},#{fstatus}
+        from DUAL where not exists(select fproduct_drawing_no from tb_wps_library where
+        fproduct_drawing_no=#{fproduct_drawing_no} and fwps_lib_version=#{fwps_lib_version} and fwps_lib_name =
+        #{fwpsnum})
+    </insert>
+
+    <insert id="addStep1" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="macid">
+            select TB_STEP_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_step (fid,femployee_id, fstep_number,fstep_name, fstep_version) SELECT
+        #{macid},#{femployee_id},#{fstep_number},#{fstep_name},#{fstep_version} from DUAL where not exists(select
+        fstep_number from tb_step where femployee_id=#{femployee_id} and fstep_number=#{fstep_number})
+    </insert>
+
+    <insert id="addEmployee1" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="insid">
+            select TB_EMPLOYEE_ID.nextval as id from dual
+        </selectKey>
+        INSERT INTO tb_employee (fid,femployee_id, femployee_version,fwps_lib_id,femployee_name) SELECT
+        #{insid},#{femployee_id}, #{femployee_version}, #{fwpslib_id},#{femployee_name} from DUAL where not
+        exists(select femployee_id from tb_employee where fwps_lib_id=#{fwpslib_id} and femployee_id=#{femployee_id})
+    </insert>
+
+    <insert id="finishWork" parameterType="String">
+		INSERT INTO tb_taskresult (ftaskid,foperatetype,foperatedate) VALUES (#{fid},1,SYSDATE)
+	</insert>
+
+    <select id="getHistoryDatagridList" resultType="Wps">
+        SELECT c.fid f001,MAX(c.fwelded_junction_no) f002,p.fid f003,MAX(p.fprefix_number) f004,
+        MAX(p.fsuffix_number) fsuffix_number,MAX(p.fproduct_number) f005,r.fid f006,MAX(r.fname) fname,
+        m.fid f007,MAX(m.fequipment_no) f008,MAX(m.fmodel) fmode,e.fid f009,MAX(w.fstarttime) fstarttime,MAX(w.fendtime)
+        endtime,
+        MAX(e.femployee_id) femployee_id,s.fid f010,MAX(s.fstep_number) fstep_number,j.fid f011,MAX(j.fjunction)
+        fjunction,
+        MAX(j.fwelding_area) fwelding_area,MAX(m.FGATHER_ID) f012 FROM tb_work w
+        LEFT JOIN tb_welded_junction c ON w.fcard_id=c.fid
+        LEFT JOIN tb_product_number p ON w.fproduct_number_id=p.fid
+        LEFT JOIN tb_employee e ON w.femployee_id=e.fid
+        LEFT JOIN tb_step s ON w.fstep_id=s.fid
+        LEFT JOIN tb_junction j ON w.fjunction_id=j.fid
+        LEFT JOIN tb_welder r ON w.fwelder_id=r.fid
+        LEFT JOIN tb_welding_machine m ON w.fmachine_id=m.fid
+        WHERE m.fequipment_no IS NOT NULL
+        <if test="search!=null and search!=''">
+            ${search}
+        </if>
+        GROUP BY c.fid,p.fid,r.fid,m.fid,e.fid,s.fid,j.fid
+    </select>
+
+    <select id="getEmployeeByJun" resultType="Wps">
+        SELECT tb_employee.fid,tb_employee.femployee_id,tb_employee.femployee_version,tb_employee.femployee_name FROM
+        tb_employee
+        LEFT JOIN TB_STEP ON TB_EMPLOYEE.FID=TB_STEP.FEMPLOYEE_ID
+        LEFT JOIN TB_JUNCTION ON TB_STEP.FID=TB_JUNCTION.FSTEP_ID
+        <if test="search!=null and search!=''">
+            where TB_JUNCTION.FID=#{search}
+        </if>
+        group by tb_employee.fid,tb_employee.femployee_id,tb_employee.femployee_version,tb_employee.femployee_name ORDER
+        by tb_employee.fid
+    </select>
+
+    <select id="getJunctionByWpsid" resultType="Wps">
+        SELECT fjunction,tb_junction.fid,fwelding_area FROM tb_junction
+        LEFT JOIN TB_STEP ON TB_JUNCTION.FSTEP_ID=TB_STEP.FID
+        LEFT JOIN TB_EMPLOYEE ON TB_EMPLOYEE.FID=TB_STEP.FEMPLOYEE_ID
+        LEFT JOIN TB_WPS_LIBRARY ON TB_EMPLOYEE.FWPS_LIB_ID=TB_WPS_LIBRARY.FID
+        <if test="search!=null and search!=''">
+            where TB_WPS_LIBRARY.FID=#{search}
+        </if>
+        group by fjunction,tb_junction.fid,fwelding_area ORDER by fid
+    </select>
+
+    <insert id="addTaskresultRow" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="AFTER" keyProperty="fid">
+            select TB_TASKRESULT_ID.currval as fid from dual
+        </selectKey>
+        INSERT INTO TB_TASKRESULT
+        (FTASKID,FWELDERID,FMACHINEID,FREALSTARTTIME,FOPERATETYPE,FLAG,FCARD_ID,FEMPLOYEE_ID,FSTEP_ID,FJUNCTION_ID)
+        VALUES
+        (#{fproduct_name},#{welderid},#{macid},SYSDATE,0,#{fstatus},#{fwelded_junction_no},#{femployee_id},#{fstep_id},#{fjunction})
+    </insert>
+
+    <update id="updateTaskresult" parameterType="Wps">
+        update TB_TASKRESULT set FOPERATETYPE=1,FREALENDTIME=SYSDATE
+        where FCARD_ID=#{fwelded_junction_no} AND FTASKID=#{fproduct_name} AND FWELDERID=#{welderid}
+        AND FJUNCTION_ID=#{fjunction}
+        <if test="femployee_id!=null and femployee_id!=''">
+            AND FEMPLOYEE_ID=#{femployee_id}
+        </if>
+        <if test="fstep_id!=null and fstep_id!=''">
+            AND FSTEP_ID=#{fstep_id}
+        </if>
+    </update>
+    <select id="getEmployeStep" resultType="Wps">
+        SELECT DISTINCT s.fid,s.FSTEP_NUMBER,s.FSTEP_NAME,s.FSTEP_VERSION,
+        case
+        when COUNT(distinct t.FTASKID)=0 THEN
+        NULL
+        when COUNT(distinct s.FID)-COUNT(distinct t.FSTEP_ID)=0 and t.FOPERATETYPE=1 and t.FTASKID=#{productId} THEN
+        1
+        ELSE
+        0
+        END f001
+        FROM tb_employee e
+        LEFT JOIN tb_wps_library l ON e.FWPS_LIB_ID=l.fid
+        LEFT JOIN tb_product_number p ON l.fid=p.FWPS_LIB_ID
+        LEFT JOIN TB_TASKRESULT t on e.fid=t.FEMPLOYEE_ID
+        left join TB_STEP s on e.fid=s.FEMPLOYEE_ID
+        LEFT join TB_STEP_JUNCTION sj on s.FID=sj.FSTEP_ID
+        <if test="stepId!=null and stepId!=''">
+            where e.FID = #{stepId}
+        </if>
+        <if test="junctionId!=null and junctionId!=''">
+            and sj.FJUNCTION_ID = #{junctionId} and p.FID=#{productId}
+        </if>
+        GROUP BY
+        s.fid,s.FSTEP_NUMBER,s.FSTEP_NAME,s.FSTEP_VERSION,t.FTASKID,t.FOPERATETYPE,t.FSTEP_ID,t.FEMPLOYEE_ID,s.FID
+    </select>
+
+    <select id="getJunctionWeld" resultType="Wps">
+        SELECT J.FID fid,J.FWELDING_AREA fwelding_area FROM TB_JUNCTION J
+        <if test="junctionId!=null and junctionId!=''">
+            where J.fid=#{junctionId}
+        </if>
+    </select>
+
+    <select id="getJunctionStep" resultType="Wps">
+        select distinct p.FID fid,p.FEMPLOYEE_ID femployee_id,p.FSTEP_NAME fstep_name,p.FSTEP_NUMBER
+        fstep_number,p.FSTEP_VERSION fstep_version,E.FWPS_LIB_ID,
+        case
+        when COUNT(distinct p.FID)-COUNT(distinct t.FSTEP_ID)>=0 and t.FOPERATETYPE=0 and t.FTASKID=#{productId} THEN
+        0
+        when COUNT(distinct p.FID)-COUNT(distinct t.FSTEP_ID)=0 and t.FOPERATETYPE=1 and t.FTASKID=#{productId} THEN
+        1
+        ELSE
+        NULL
+        END f001
+        from TB_STEP_JUNCTION s
+        LEFT JOIN TB_STEP p on p.FID = s.FSTEP_ID
+        LEFT JOIN TB_EMPLOYEE E ON E.FID = p.FEMPLOYEE_ID
+        LEFT JOIN TB_TASKRESULT t ON t.FSTEP_ID = P.FID
+        <if test="search1!=null and search1!=''">
+            WHERE ${search1}
+        </if>
+        GROUP BY
+        p.FEMPLOYEE_ID,p.FID,p.FSTEP_NAME,p.FSTEP_NUMBER,p.FSTEP_VERSION,E.FWPS_LIB_ID,t.FTASKID,t.FOPERATETYPE,t.FSTEP_ID,t.FEMPLOYEE_ID,s.FID
+    </select>
+
+    <insert id="overTaskresult" parameterType="Wps">
+		INSERT INTO TB_TASKRESULT (FTASKID,FWELDERID,FMACHINEID,FREALENDTIME,FOPERATETYPE,FLAG,FCARD_ID,FEMPLOYEE_ID,FSTEP_ID,FJUNCTION_ID) 
+		VALUES (#{fproduct_name},#{welderid},#{macid},SYSDATE,1,#{fstatus},#{fwelded_junction_no},#{femployee_id},#{fstep_id},#{fjunction})
+	</insert>
+
+
+    <select id="getTaskParameter" resultType="Wps">
+        SELECT avg(FELECTRICITY) fweld_ele,avg(FVOLTAGE) fweld_vol,avg(FRATEOFFLOW) fadvance,avg(FLON_AIR_FLOW)
+        f002,avg(FHATWIRECURRENT) f003,avg(FLASER_POWER) f004,avg(FWIREFEEDRATE) f005,avg(FWELDINGRATE) f006 from
+        TB_LIVE_DATA l where FELECTRICITY > (select avg(t.FELECTRICITY) from TB_LIVE_DATA t where t.fstatus = 3
+        <if test="search!=null and search!=''">
+            and ${search}
+            )
+        </if>
+        and l.fstatus = 3
+        <if test="search2!=null and search2!=''">
+            and ${search2}
+        </if>
+    </select>
+
+    <insert id="overCard" parameterType="Wps">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_TASKRESULT_ID.nextval as fid from dual
+        </selectKey>
+        INSERT INTO TB_TASKRESULT (FID,FWELDERID,FMACHINEID,FREALENDTIME,FOPERATETYPE,FCARD_ID,FJUNCTION_ID)
+        VALUES (#{fid},#{welderid},#{macid},SYSDATE,1,#{fwelded_junction_no},#{junction_id})
+	</insert>
+    <insert id="addWeldpramatia" parameterType="Wps">
+		INSERT INTO TB_PARAMETER (FSTOP_TIME,FCONTINUOUS_TIME,FWIRE_WEIGHT,FAIR_FLOW_VOLUME,FSPEED,FWELDING_COEFFICIENT,FSTANDBY_POWER,FDAY_SHIFT,FAFTERNOON_SHIFT,FNIGHT_SHIFT) 
+		VALUES (#{endtime},#{fstarttime},#{f002},#{f001},#{welderid},#{macid},#{fproduct_number},#{femployee_id},#{fstep_id},#{fjunction})
+	</insert>
+
+    <!-- 新增电子跟踪卡 -->
+    <insert id="addWpsLibrary" parameterType="Wps" keyColumn="FID" keyProperty="fid" useGeneratedKeys="true">
+        <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
+            select TB_WELDED_JUNCTION_ID.nextval as fid from dual
+        </selectKey>
+        INSERT INTO TB_WELDED_JUNCTION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                FID,
+            <if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+                JOB_NUMBER,
+            </if>
+            <if test="SET_NUMBER != null and SET_NUMBER != ''">
+                SET_NUMBER,
+            </if>
+            <if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+                PART_DRAWING_NUMBER,
+            </if>
+            <if test="PART_NAME != null and PART_NAME != ''">
+                PART_NAME,
+            </if>
+            <if test="workticket_number != null and workticket_number != ''">
+                WORKTICKET_NUMBER,
+            </if>
+            <if test="craft_param != null and craft_param != ''">
+                 CRAFT_PARAM,
+            </if>
+            <if test="raw_materi != null and raw_materi != ''">
+                RAW_MATERI,
+            </if>
+            <if test="process != null and process != ''">
+                PROCESS,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+                #{fid},
+            <if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+                #{JOB_NUMBER},
+            </if>
+            <if test="SET_NUMBER != null and SET_NUMBER != ''">
+                #{SET_NUMBER},
+            </if>
+            <if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+                #{PART_DRAWING_NUMBER},
+            </if>
+            <if test="PART_NAME != null and PART_NAME != ''">
+                #{PART_NAME},
+            </if>
+            <if test="workticket_number != null and workticket_number != ''">
+                #{workticket_number},
+            </if>
+            <if test="craft_param != null and craft_param != ''">
+                #{craft_param},
+            </if>
+            <if test="raw_materi != null and raw_materi != ''">
+                #{raw_materi},
+            </if>
+            <if test="process != null and process != ''">
+                #{process},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateWpsLibrary" parameterType="Wps" flushCache="true">
+        <if test="fid != null and fid != 0">
+            UPDATE TB_WELDED_JUNCTION
+            <set>
+                <if test="JOB_NUMBER != null and JOB_NUMBER != ''">
+                    JOB_NUMBER = #{JOB_NUMBER},
+                </if>
+                <if test="SET_NUMBER != null and SET_NUMBER != ''">
+                    SET_NUMBER = #{SET_NUMBER},
+                </if>
+                <if test="PART_DRAWING_NUMBER != null and PART_DRAWING_NUMBER != ''">
+                    PART_DRAWING_NUMBER = #{PART_DRAWING_NUMBER},
+                </if>
+                <if test="PART_NAME != null and PART_NAME != ''">
+                    PART_NAME = #{PART_NAME},
+                </if>
+                <if test="workticket_number != null and workticket_number != ''">
+                    WORKTICKET_NUMBER = #{workticket_number},
+                </if>
+                <if test="craft_param != null and craft_param != ''">
+                    CRAFT_PARAM = #{craft_param},
+                </if>
+                <if test="raw_materi != null and raw_materi != ''">
+                    RAW_MATERI = #{raw_materi},
+                </if>
+                <if test="process != null and process != ''">
+                    PROCESS = #{process},
+                </if>
+            </set>
+            where FID = #{fid}
+        </if>
+    </update>
+
+    <!--批量删除工艺信息	-->
+    <delete id="deleteWpsByIds" parameterType="list">
+        delete from TB_WELDED_JUNCTION where FID in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询工作号、部套号信息 -->
+    <select id="findJobSetNumber" resultType="Wps">
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_NAME,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60*1000) wirefeedrate,sum(w.fworktime) worktime
+        from TB_WELDED_JUNCTION j
+        LEFT JOIN tb_work w ON j.FID=w.FCARD_ID
+        LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and w.fmachinemodel=m.fmodel
+        where 1 = 1
+        <!-- (w.FSTATUS=3 OR w.FSTATUS=99) -->
+        <if test="dto!=null and dto!=''">
+            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
+                and fstarttime >= TO_DATE(#{dto.dtoTime1}, 'yyyy-MM-dd')
+            </if>
+        </if>
+        GROUP BY j.JOB_NUMBER,J.SET_NUMBER,J.PART_NAME
+        ORDER BY wirefeedrate DESC
+    </select>
+
+    <select id="findWeldedJunctionByNum" parameterType="java.lang.String" resultType="Wps">
+        SELECT * FROM (
+        SELECT FID,WORKTICKET_NUMBER,CRAFT_PARAM,RAW_MATERI,PROCESS,JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME
+        FROM TB_WELDED_JUNCTION WHERE 1 = 1
+        <if test="workticket_num != null and workticket_num !=''">
+            AND WORKTICKET_NUMBER = #{workticket_num}
+        </if>
+        ) WHERE 1 >= ROWNUM
+    </select>
+
+    <select id="findCraftByJunctionId" parameterType="java.math.BigInteger" resultType="Wps">
+        SELECT * FROM (
+        SELECT wj.CRAFT_PARAM FROM TB_PRODUCTION_CRAFT pc
+        INNER JOIN TB_LIBRARY_JUNCTION lj ON lj.PRODUCTION_ID = pc.FID
+        INNER JOIN TB_WELDED_JUNCTION wj ON wj.FID = lj.TRACKINGCARD_ID
+        WHERE 1 = 1
+        <if test="junction_id != 0 and junction_id != null">
+            and pc.FJUNCTION = #{junction_id}
+        </if>
+        ) WHERE 1 >= ROWNUM
+    </select>
+</mapper>

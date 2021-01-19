@@ -8,7 +8,8 @@ function setParam() {
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
     var junctionno = $("#junctionno").val();
-    chartStr += "?dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2 + "&junctionno=" + junctionno;
+    var ftype = $("#ftype").val();
+    chartStr += "?dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2 + "&junctionno=" + junctionno+ "&ftype=" + ftype;
 }
 
 function dgDatagrid() {
@@ -28,7 +29,7 @@ function dgDatagrid() {
                 // 			return (a>b?1:-1);
                 // 		}});
                 //  }
-                var str = ["焊缝编号", "累计焊接时间", "正常段时长", "超规范时长", "规范符合率(%)"];
+                var str = ["焊缝名称", "累计焊接时间", "正常段时长", "超规范时长", "规范符合率(%)"];
                 for (var i = 0; i < str.length; i++) {
                     column.push({
                         field: "t" + i,

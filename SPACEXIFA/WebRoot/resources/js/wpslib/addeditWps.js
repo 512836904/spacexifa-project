@@ -523,7 +523,7 @@ function addWpsTrackCard() {
     });
     $("#addTarckingCard").dialog("open");
     loadProductionTable();
-    loadJunctionTable();
+    // loadJunctionTable();
     $('#productionTable').datagrid({
         onLoadSuccess: function () {
             $('#productionTable').datagrid('clearChecked');
@@ -833,7 +833,7 @@ function editWpsTrackCard() {
         }).dialog("open");
         //加载数据
         loadProductionTable();
-        loadJunctionTable();
+        // loadJunctionTable();
         //生产工艺库加载完成事件
         $('#productionTable').datagrid({
             onLoadSuccess: function () {
@@ -860,12 +860,12 @@ function editWpsTrackCard() {
 function saveWps() {
     var pro_row = $("#productionTable").datagrid("getSelected");    //生产工艺库选中
     $("#productionCraftId").val('');
-    $("#junctionId").val('');
-    var ids = [];
-    var rows = $("#junctionTable").datagrid('getSelected');   //焊缝信息选中
-    if (rows) {
-        $("#junctionId").val(rows.fid);
-    }
+    // $("#junctionId").val('');
+    // var ids = [];
+    // var rows = $("#junctionTable").datagrid('getSelected');   //焊缝信息选中
+    // if (rows) {
+    //     $("#junctionId").val(rows.fid);
+    // }
     if (pro_row) {
         $("#productionCraftId").val(pro_row.FID);
     }

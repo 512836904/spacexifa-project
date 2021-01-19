@@ -36,7 +36,7 @@ function dgDatagrid() {
         dataType : "json", //返回数据形式为json
         success : function(result) {
             if (result) {
-                workary = result.ary;
+                workary = result.arys;
                 var str = ["焊工编号","焊工名称", "焊接任务数", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
                 for (var i = 0; i < str.length; i++) {
                     column.push({
@@ -210,6 +210,7 @@ function serach() {
     chartStr = "";
     setTimeout(function () {
         dgDatagrid();
+        setWorkCharts();
     }, 500);
 }
 

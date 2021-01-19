@@ -129,7 +129,7 @@
 				align : "left",
 				formatter:function(value,row,index){
 				var str = "";
-				str += '<a id="wj" class="easyui-linkbutton" href="weldedjunction/getWeldJun?fid='+row.welderno+'"/>';
+				str += '<a id="wj" class="easyui-linkbutton" href="weldedjunction/getWeldJun?fid='+row.id+'"/>';
 				return str;
 				}}] ],
 			toolbar : '#welderTable_btn',

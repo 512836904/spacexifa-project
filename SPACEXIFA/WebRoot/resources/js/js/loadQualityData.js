@@ -6,6 +6,13 @@ $(function (){
         loadSupergageCumulativeNumber(0,0);
         loadSupergage(0);
     }, 2000);
+    //创建定时器每10分钟刷新页面
+    setInterval(function(){
+        loadWorkAreas(0,0);
+        loadJobSetNormRate(0);
+        loadSupergageCumulativeNumber(0,0);
+        loadSupergage(0);
+    }, 600000);
 });
 
 //进入全屏

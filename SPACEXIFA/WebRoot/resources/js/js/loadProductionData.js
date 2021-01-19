@@ -9,6 +9,16 @@ $(function (){
         loadWorkRadios(0,0);
         loadJobSetNumber(0);
     }, 2000);
+    //创建定时器每10分钟刷新页面
+    setInterval(function(){
+        loadLeft1(0);
+        loadWorkRankData(0);
+        loadWorkGas(0,0);
+        loadWorkWelders(0,0);
+        loadWorkMaterals(0,0);
+        loadWorkRadios(0,0);
+        loadJobSetNumber(0);
+    }, 600000);
 });
 
 //当前时间
@@ -53,7 +63,6 @@ function loadLeft1(day){
                     data.push(result.ary[i].name);
                 }
                 option.yAxis[0].data = data;
-                option.yAxis[0].axisLabel.formatter.length = data.length;
                 option.yAxis[1].data = dataList;
                 option.series[0].data = dataList;
                 Left1.setOption(option);
@@ -63,7 +72,6 @@ function loadLeft1(day){
 }
 
 function loadWorkRankData(day){
-    Left2index = 0;
     if (day != null) {nowDatetime = day};
     //异步加载焊工工作时间排行
     var dataList = [];
@@ -85,9 +93,8 @@ function loadWorkRankData(day){
                     data.push(result.rows[i].name);
                 }
                 option.yAxis[0].data = data;
-                option.yAxis[0].axisLabel.formatter.length = data.length;
                 option.yAxis[1].data = dataList;
-                option.series[1].data = dataList;
+                option.series[0].data = dataList;
                 Left2.setOption(option);
             }
         }

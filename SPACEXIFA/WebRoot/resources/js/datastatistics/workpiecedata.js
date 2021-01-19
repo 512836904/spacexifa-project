@@ -7,32 +7,43 @@ $(function () {
 })
 
 var chartStr = "";
+var searchStr = "";
 var workary = [];
 function setParam() {
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
-    var junctionno = $("#junctionno").val();
-    chartStr += "?dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2 + "&junctionno=" + junctionno;
+    var junctionname = $("#junctionname").val();
+    var ftype = $("#ftype").val();
+    if(junctionname != ""){
+        if(searchStr == ""){
+            searchStr += " junction_name LIKE "+"'%" + junctionname + "%'";
+        }else{
+            searchStr += " AND junction_name LIKE "+"'%" + junctionname + "%'";
+        }
+    }
+    chartStr += "&dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2+"&ftype=" + ftype;
 }
+
 
 function dgDatagrid() {
     setParam();
+    var url1 = encodeURI("datastatistics/getWorkpieceData?search="+searchStr+"&chartStr="+chartStr);
     var column = new Array();
     $.ajax({
         type: "post",
         async: false,
-        url: "datastatistics/getWorkpieceData" + chartStr,
+        url: url1,
         data: {},
         dataType: "json", //返回数据形式为json
         success: function (result) {
             if (result) {
-                workary = result.ary;
-                var str = ["焊缝编号", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
+                workary = result.arys;
+                var str = ["焊缝名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
                 for (var i = 0; i < str.length; i++) {
                     column.push({
                         field: "t" + i,
                         title: str[i],
-                        width: 100,
+                        width: 200,
                         halign: "center",
                         align: "left",
                         sortable: true,
@@ -45,7 +56,7 @@ function dgDatagrid() {
                     fitColumns: true,
                     height: 600,
                     width: 1050,
-                    url: "datastatistics/getWorkpieceData" + chartStr,
+                    url: url1,
                     pageSize: 10,
                     pageList: [10, 20, 30, 40, 50],
                     singleSelect: true,
@@ -229,6 +240,14 @@ function workgas() {
                 }
             }
         ],
+        dataZoom: [
+            {
+                id: 'dataZoomX',
+                type: 'slider',
+                xAxisIndex: [0],
+                filterMode: 'filter'
+            }
+        ],
         series: [{
             name: "工作时间",
             type: "bar",
@@ -297,11 +316,46 @@ function setWorkCharts(){
     var teamgas = echarts.init(document.querySelector("#workgas"));
     var option = teamgas.getOption();
     option.xAxis[0].data = ins;
+    // option.xAxis[0].axisLabel.formatter =
+    //     function(value) {
+    //         return value.split("").join("\n");
+    //     }
+    // option = newline(option, 6, 'xAxis')
+
     option.xAxis[0].axisLabel.formatter =
-        function(value) {
-            return value.split("").join("\n");
+        function (value) {
+            var newParamsName = "";
+            var paramsNameNumber = value.length;
+            var provideNumber = 20;
+            var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+            if (paramsNameNumber > provideNumber) {
+                for (var p = 0; p < rowNumber; p++) {
+                    var tempStr = "";
+                    var start = p * provideNumber;
+                    var end = start + provideNumber;
+                    if (p == rowNumber - 1) {
+                        tempStr = value.substring(start, paramsNameNumber);
+                    } else {
+                        tempStr = value.substring(start, end) + "\n";
+                    }
+                    newParamsName += tempStr;
+                }
+            } else {
+                newParamsName = value;
+            }
+            return newParamsName
         }
     option.series[0].data = data1;
+    if(data1.length>0){
+        option.yAxis[0].max=Math.ceil(Math.max(...data1));
+        option.yAxis[0].min=0;
+        option.yAxis[0].interval=Math.ceil(Math.max(...data1)/5);
+    }
     option.series[1].data = data2;
+    if(data2.length>0){
+        option.yAxis[1].max=Math.ceil(Math.max(...data2));
+        option.yAxis[1].min=0;
+        option.yAxis[1].interval=Math.ceil(Math.max(...data2)/5);
+    }
     teamgas.setOption(option);
 }

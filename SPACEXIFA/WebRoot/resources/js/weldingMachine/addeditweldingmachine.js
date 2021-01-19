@@ -331,7 +331,7 @@ function searchMachineModel() {
     $.ajax({
         type: "post",
         async: false,
-        url: "weldingMachine/getModelAll?str=",
+        url: "weldingMachine/getModelAll",
         data: {},
         dataType: "json", //返回数据形式为json
         success: function (result) {

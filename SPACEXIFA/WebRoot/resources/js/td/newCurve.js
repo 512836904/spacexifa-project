@@ -141,7 +141,7 @@ function getMachine(insfid) {
                         '</div>' +
                         '<div style="float:left;width:60%;height:100%;">' +
                         '<ul><li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">设备编号：<span id="m1' + machine[i].fid + '">' + machine[i].fequipment_no + '</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">任务编号：<span id="m2' + machine[i].fid + '">--</span></li>' +
+                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">采集编号：<span id="m2' + machine[i].fid + '">--</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">操作人员：<span id="m3' + machine[i].fid + '">--</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电流：<span id="m4' + machine[i].fid + '">--A</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电压：<span id="m5' + machine[i].fid + '">--V</span></li>' +
@@ -256,7 +256,7 @@ function iview() {
     if (flag == 0) {
         if (machine != null) {
             document.getElementById("load").style.display = "block";
-            var sh = '<div id="show" style="align="center""><img src="resources/images/load.gif"/>正在加载，请稍等...</div>';
+            var sh = '<div id="show" align="center" style="text-align: center;"><img src="resources/images/load.gif"/>正在加载，请稍等...</div>';
             $("#bodydiv").append(sh);
             document.getElementById("show").style.display = "block";
         }
@@ -308,12 +308,13 @@ function iview() {
                     var imgnum = machine[f].model;
                     $("#m3" + machine[f].fid).html("--");
                     $("#m2" + machine[f].fid).html("--");
-                    // for (var k = 0; k < welderName.length; k++) {
-                    //     if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i))) {    //焊工号
-                    //         $("#m3" + machine[f].fid).html(welderName[k].fwelder_no);
-                    //     }
-                    // }
-                    $("#m3" + machine[f].fid).html(redata.substring(0 + i, 4 + i));
+                    for (var k = 0; k < welderName.length; k++) {
+                        if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i))) {    //焊工号
+                            $("#m3" + machine[f].fid).html(welderName[k].fname);
+                            //alert(welderName[k].fname);
+                        }
+                    }
+                    //$("#m3" + machine[f].fid).html(redata.substring(0 + i, 4 + i));
                     // for (var t = 0; t < taskNum.length; t++) {
                     //     if (taskNum[t].id == parseInt(redata.substring(12 + i, 16 + i), 10)) {  //焊口号
                     //         $("#m2" + machine[f].fid).html(taskNum[t].weldedJunctionno);

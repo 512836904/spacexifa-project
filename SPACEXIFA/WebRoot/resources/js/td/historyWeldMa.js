@@ -28,7 +28,7 @@ function Junction() {
         idField: 'id',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
-        url: "weldedjunction/getWeldingJun" + chartStr + "&wjno=" + $("#wjno").val() + "&welderid=" + $("#welderid").val(),
+        url: "weldedjunction/getWeldingJun" + chartStr + "&wjno=" + $("#wjno").val() + "&machineid=" + $("#machineid").val(),
         singleSelect: true,
         rownumbers: true,
         showPageList: false,
@@ -78,6 +78,12 @@ function Junction() {
             width: 90,
             halign: "center",
             align: "left"
+        }, {
+            field: 'welder_no',
+            title: '焊工姓名',
+            width: 90,
+            halign: "center",
+            align: "left"
         }, /*{
 			field : 'maxElectricity',
 			title : '电流上限',
@@ -102,25 +108,26 @@ function Junction() {
 			width : 90,
 			halign : "center",
 			align : "left"
-		},*/ {
-            field: 'machine_num',
-            title: '焊机编号',
-            width: 150,
-            halign: "center",
-            align: "left"
-        }, {
-            field: 'firsttime',
-            title: '开始时间',
-            width: 150,
-            halign: "center",
-            align: "left"
-        }, {
-            field: 'lasttime',
-            title: '终止时间',
-            width: 150,
-            halign: "center",
-            align: "left"
-        },
+		}, {
+			field : 'machine_num',
+			title : '焊机编号',
+			width : 150,
+			halign : "center",
+			align : "left"
+		},*/
+            {
+                field: 'firsttime',
+                title: '开始时间',
+                width: 150,
+                halign: "center",
+                align: "left"
+            }, {
+                field: 'lasttime',
+                title: '终止时间',
+                width: 150,
+                halign: "center",
+                align: "left"
+            },
             // {
             // 	field : 'worktime',
             // 	title : '焊接时间(h)',
@@ -165,70 +172,7 @@ function Junction() {
                 return color;
             }
         },
-//         onClickRow: function(index,row){
-//         	$("#swdetailtable").datagrid( {
-// //        		fitColumns : true,
-//         		height : $("swdetail").height(),
-//         		width : $("swdetail").width(),
-//         		idField : 'id',
-//         		pageSize : 10,
-//         		pageList : [ 10, 20, 30, 40, 50 ],
-//         		url : "weldedjunction/getSwDetail?taskno="+encodeURIComponent(row.weldedJunctionno)+"&dtoTime1="+$("#dtoTime1").datetimebox('getValue')+"&dtoTime2="+$("#dtoTime2").datetimebox('getValue'),
-//         		singleSelect : true,
-//         		rownumbers : true,
-//         		showPageList : false,
-//         		columns : [ [  {
-//         		    field:'ck',
-//         			checkbox:true
-//         		}, {
-//         			field : 'fsolder_layer',
-//         			title : '层号',
-//         			width : 100,
-//         			halign : "center",
-//         			align : "left"
-//         		}, {
-//         			field : 'fweld_bead',
-//         			title : '道号',
-//         			width : 100,
-//         			halign : "center",
-//         			align : "left"
-//         		}, {
-//         			field : 'edit',
-//         			title : '',
-//         			width : 200,
-//         			halign : "center",
-//         			align : "left",
-//         			formatter:function(value,row,index){
-//         			var str = "";
-//         			str += '<a id="look" class="easyui-linkbutton" href="javascript:loadChart('+row.fsolder_layer+','+row.fweld_bead+')"/>';
-//         			str += '<a id="export" class="easyui-linkbutton" href="javascript:exportExcel('+row.fsolder_layer+','+row.fweld_bead+')"/>';
-//         			return str;
-//         			}
-//         		}] ],
-//         		pagination : true,
-//         		rowStyler: function(index,row){
-//                     if ((index % 2)!=0){
-//                     	//处理行代背景色后无法选中
-//                     	var color=new Object();
-//                         return color;
-//                     }
-//                 },
-//                 onLoadSuccess:function(data){
-//         	        $("a[id='look']").linkbutton({text:'查看',plain:true,iconCls:'icon-search'});
-//         	        $("a[id='export']").linkbutton({text:'导出excel',plain:true,iconCls:'icon-export'});
-//         	   }
-//         	});
-//         	$('#taskno').val(row.weldedJunctionno);
-//         	$('#machid').val(row.machid);
-//     		$('#swdetail').window( {
-//     			title : "层道详情",
-//     			modal : true
-//     		});
-//         	$('#swdetail').window('open');
-// //        	loadChart(row);
-//         },
         onSelect: function (index, row) {
-            //var search = "&junction_id="+row.junction_id+"&machid="+row.machid+"&task_id="+row.task_id+"&welderid="+row.welderid;
             document.getElementById("load").style.display = "block";
             var sh = '<div id="show" style="width:150px;" align="center"><img src="resources/images/load1.gif"/>数据加载中，请稍候...</div>';
             $("#bodys").append(sh);
@@ -308,45 +252,11 @@ function Junction() {
                         vol.push(result[i]._source.fvoltage);
                         time1[i] = utc2beijing(result[i]._source.fweldtime);
                     }
-                    console.log(ele.length);
+                    // console.log(ele.length);
                     eleChart();
                     volChart();
                     document.getElementById("show").style.display = "none";
                     document.getElementById("load").style.display = "none";
-                    //alert(json.hits.hits);
-                    // if (result) {
-                    // 	var eleVolRange = result.value;
-                    // 	if(eleVolRange!=""){
-                    // 		eleUpLine = eleVolRange.split(",")[1];
-                    // 		eleDownLine = eleVolRange.split(",")[2];
-                    // 		volUpLine = eleVolRange.split(",")[3];
-                    // 		volDownLine = eleVolRange.split(",")[4];
-                    // 	}
-                    // 	var date = eval(result.rows);
-                    // 	if(date.length==0){
-                    // 		document.getElementById("load").style.display ='none';
-                    // 		document.getElementById("show").style.display ='none';
-                    // 		alert("该时间内未查询到相关数据")
-                    // 		eleUpLine = 0;
-                    // 		eleDownLine = 0;
-                    // 		volUpLine = 0;
-                    // 		volDownLine = 0;
-                    // 	}else{
-                    // 		for(var i=0;i<date.length;i++){
-                    // 			ele.push(date[i].ele);
-                    // 			vol.push(date[i].vol);
-                    // 			time1[i] = date[i].time;
-                    // 		}
-                    // 		eleChart();
-                    // 		volChart();
-                    // 		document.getElementById("load").style.display ='none';
-                    // 		document.getElementById("show").style.display ='none';
-                    // 		eleUpLine = 0;
-                    // 		eleDownLine = 0;
-                    // 		volUpLine = 0;
-                    // 		volDownLine = 0;
-                    // 	}
-                    // }
                 },
                 error: function (xhr, message, error) {
                     console.error("Error while loading data from ElaStricSerach", message);
@@ -354,7 +264,7 @@ function Junction() {
                     alert('error');
                 }
             });
-            //$('#swdetailtable').datagrid('clearSelections');
+            // $('#swdetailtable').datagrid('clearSelections');
             // $('#swdetail').window('close');
         }
     });

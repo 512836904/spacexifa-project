@@ -35,7 +35,7 @@ function dgDatagrid(){
 		dataType: "json", //返回数据形式为json
 		success: function (result) {
 			if (result) {
-				workary = result.ary;
+				workary = result.arys;
 				var str = ["所属班组","设备编号", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)","气体消耗(L)"];
 				for (var i = 0; i < str.length; i++) {
 					column.push({
@@ -209,6 +209,7 @@ function serach(){
 	chartStr = "";
 	setTimeout(function(){
 		dgDatagrid();
+		setWorkCharts();
 	},500);
 }
 
@@ -430,6 +431,16 @@ function setWorkCharts() {
 			return value.split("").join("\n");
 		}
 	option.series[0].data = data1;
+	if(data1.length>0){
+		option.yAxis[0].max=Math.ceil(Math.max(...data1));
+		option.yAxis[0].min=0;
+		option.yAxis[0].interval=Math.ceil(Math.max(...data1)/5);
+	}
 	option.series[1].data = data2;
+	if(data2.length>0){
+		option.yAxis[1].max=Math.ceil(Math.max(...data2));
+		option.yAxis[1].min=0;
+		option.yAxis[1].interval=Math.ceil(Math.max(...data2)/5);
+	}
 	teamgas.setOption(option);
 }

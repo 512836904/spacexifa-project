@@ -1,34 +1,110 @@
+var ipurl = "";
+var xAxisData = new Array(), yAxisData = new Array(), fieldArr = new Array(), divArr = new Array();
 var eleUpLine = 0, eleDownLine = 0, volUpLine = 0, volDownLine = 0;
-
 $(function () {
-    Junction();
+    historyDatagrid();
     $("#little").hide();
     $("#body1").height($("#elebody").height() - 30);
+    $.ajax({
+        type: "post",
+        async: true,
+        url: "hierarchy/getUserInsframework",
+        data: {},
+        dataType: "json",
+        success: function (result) {
+            ipurl = result.ipurl;
+        },
+        error: function (errorMsg) {
+            alert("数据请求失败，请联系系统管理员!");
+        }
+    })
+    $('#ftype').combobox('clear');
+    $('#ftype').combobox('loadData', [{
+        "text": "正常",
+        "value": "1"
+    }, {
+        "text": "返修",
+        "value": "2"
+    },]);
 })
-
-function setParam() {
-    chartStr = "";
-    var parent = $("#parent").val();
-    var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
-    var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
-    chartStr = "?parent=" + parent + "&dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2;
-}
-
 var time1 = new Array();
 var vol = new Array();
 var ele = new Array();
 var query = {};
+var searchStr = "";
 
-function Junction() {
+function setParam() {
+    var job_number_search = $("#job_number_search").textbox('getValue');
+    var set_number_search = $("#set_number_search").textbox('getValue');
+    var part_drawing_search = $("#part_drawing_search").textbox('getValue');
+    var part_name_search = $("#part_name_search").textbox('getValue');
+    var fjunction_id = $("#fjunction_id").textbox('getValue');
+    var ftype = $("#ftype").combobox('getValue');
+    var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
+    var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
+    if (job_number_search != "") {
+        if (searchStr == "") {
+            searchStr += " u.JOB_NUMBER LIKE " + "'%" + job_number_search + "%'";
+        } else {
+            searchStr += " AND u.JOB_NUMBER LIKE " + "'%" + job_number_search + "%'";
+        }
+    }
+    if (set_number_search != "") {
+        if (searchStr == "") {
+            searchStr += " u.SET_NUMBER LIKE " + "'%" + set_number_search + "%'";
+        } else {
+            searchStr += " AND u.SET_NUMBER LIKE " + "'%" + set_number_search + "%'";
+        }
+    }
+
+    if (part_drawing_search != "") {
+        if (searchStr == "") {
+            searchStr += " u.PART_DRAWING_NUMBER LIKE " + "'%" + part_drawing_search + "%'";
+        } else {
+            searchStr += " AND u.PART_DRAWING_NUMBER LIKE " + "'%" + part_drawing_search + "%'";
+        }
+    }
+    if (part_name_search != "") {
+        if (searchStr == "") {
+            searchStr += " u.PART_NAME LIKE " + "'%" + part_name_search + "%'";
+        } else {
+            searchStr += " AND u.PART_NAME LIKE " + "'%" + part_name_search + "%'";
+        }
+    }
+    if (fjunction_id != "") {
+        if (searchStr == "") {
+            searchStr += " J.JUNCTION_NAME LIKE " + "'%" + fjunction_id + "%'";
+        } else {
+            searchStr += " AND J.JUNCTION_NAME LIKE " + "'%" + fjunction_id + "%'";
+        }
+    }
+    if (dtoTime1 != "") {
+        if (searchStr == "") {
+            searchStr += " t.FREALSTARTTIME >= " + "to_date('" + dtoTime1 + "', 'yyyy-mm-dd hh24:mi:ss')";
+        } else {
+            searchStr += " AND t.FREALSTARTTIME >= " + "to_date('" + dtoTime1 + "', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
+    if (dtoTime2 != "") {
+        if (searchStr == "") {
+            searchStr += " t.FREALENDTIME <= " + "to_date('" + dtoTime2 + "', 'yyyy-mm-dd hh24:mi:ss')";
+        } else {
+            searchStr += " AND t.FREALENDTIME <= " + "to_date('" + dtoTime2 + "', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
+}
+
+function historyDatagrid() {
+    searchStr = "";
     setParam();
     $("#dg").datagrid({
         fitColumns: true,
-        height: $("body").height() / 2,
-        width: $("body").width(),
-        idField: 'id',
+        height: $("#tableDiv").height(),
+        width: $("#tableDiv").width(),
+        idField: 'fid',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
-        url: "weldedjunction/getWeldingJun" + chartStr + "&wjno=" + $("#wjno").val() + "&welderid=" + $("#welderid").val(),
+        url: "datastatistics/getJunctionHistoryList?searchStr=" + searchStr,
         singleSelect: true,
         rownumbers: true,
         showPageList: false,
@@ -47,79 +123,61 @@ function Junction() {
             title: '任务编号',
             width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'job_number',
             title: '工作号',
             width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'set_number',
             title: '部套号',
             width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'part_number',
             title: '零件图号',
             width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'part_name',
             title: '零件名',
             width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'junction_name',
             title: '焊缝名称',
+            width: 190,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'welder_no',
+            title: '焊工姓名',
             width: 90,
             halign: "center",
-            align: "left"
-        }, /*{
-			field : 'maxElectricity',
-			title : '电流上限',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'minElectricity',
-			title : '电流下限',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'maxValtage',
-			title : '电压上限',
-			width : 90,
-			halign : "center",
-			align : "left"
-		}, {
-			field : 'minValtage',
-			title : '电压下限',
-			width : 90,
-			halign : "center",
-			align : "left"
-		},*/ {
+            align: "center"
+        }, {
             field: 'machine_num',
             title: '焊机编号',
-            width: 150,
+            width: 90,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'firsttime',
             title: '开始时间',
             width: 150,
             halign: "center",
-            align: "left"
+            align: "center"
         }, {
             field: 'lasttime',
             title: '终止时间',
             width: 150,
             halign: "center",
-            align: "left"
+            align: "center"
         },
             // {
             // 	field : 'worktime',
@@ -156,7 +214,7 @@ function Junction() {
                 halign: "center",
                 align: "left",
                 hidden: true
-            },]],
+            }]],
         pagination: true,
         rowStyler: function (index, row) {
             if ((index % 2) != 0) {
@@ -165,73 +223,11 @@ function Junction() {
                 return color;
             }
         },
-//         onClickRow: function(index,row){
-//         	$("#swdetailtable").datagrid( {
-// //        		fitColumns : true,
-//         		height : $("swdetail").height(),
-//         		width : $("swdetail").width(),
-//         		idField : 'id',
-//         		pageSize : 10,
-//         		pageList : [ 10, 20, 30, 40, 50 ],
-//         		url : "weldedjunction/getSwDetail?taskno="+encodeURIComponent(row.weldedJunctionno)+"&dtoTime1="+$("#dtoTime1").datetimebox('getValue')+"&dtoTime2="+$("#dtoTime2").datetimebox('getValue'),
-//         		singleSelect : true,
-//         		rownumbers : true,
-//         		showPageList : false,
-//         		columns : [ [  {
-//         		    field:'ck',
-//         			checkbox:true
-//         		}, {
-//         			field : 'fsolder_layer',
-//         			title : '层号',
-//         			width : 100,
-//         			halign : "center",
-//         			align : "left"
-//         		}, {
-//         			field : 'fweld_bead',
-//         			title : '道号',
-//         			width : 100,
-//         			halign : "center",
-//         			align : "left"
-//         		}, {
-//         			field : 'edit',
-//         			title : '',
-//         			width : 200,
-//         			halign : "center",
-//         			align : "left",
-//         			formatter:function(value,row,index){
-//         			var str = "";
-//         			str += '<a id="look" class="easyui-linkbutton" href="javascript:loadChart('+row.fsolder_layer+','+row.fweld_bead+')"/>';
-//         			str += '<a id="export" class="easyui-linkbutton" href="javascript:exportExcel('+row.fsolder_layer+','+row.fweld_bead+')"/>';
-//         			return str;
-//         			}
-//         		}] ],
-//         		pagination : true,
-//         		rowStyler: function(index,row){
-//                     if ((index % 2)!=0){
-//                     	//处理行代背景色后无法选中
-//                     	var color=new Object();
-//                         return color;
-//                     }
-//                 },
-//                 onLoadSuccess:function(data){
-//         	        $("a[id='look']").linkbutton({text:'查看',plain:true,iconCls:'icon-search'});
-//         	        $("a[id='export']").linkbutton({text:'导出excel',plain:true,iconCls:'icon-export'});
-//         	   }
-//         	});
-//         	$('#taskno').val(row.weldedJunctionno);
-//         	$('#machid').val(row.machid);
-//     		$('#swdetail').window( {
-//     			title : "层道详情",
-//     			modal : true
-//     		});
-//         	$('#swdetail').window('open');
-// //        	loadChart(row);
-//         },
         onSelect: function (index, row) {
             //var search = "&junction_id="+row.junction_id+"&machid="+row.machid+"&task_id="+row.task_id+"&welderid="+row.welderid;
             document.getElementById("load").style.display = "block";
             var sh = '<div id="show" style="width:150px;" align="center"><img src="resources/images/load1.gif"/>数据加载中，请稍候...</div>';
-            $("#bodys").append(sh);
+            $("#body").append(sh);
             document.getElementById("show").style.display = "block";
             chartStr = "";
             setParam();
@@ -302,7 +298,6 @@ function Junction() {
                 success: function (json, statusText, xhr) {
                     //$("#table").bootstrabool('load',json.hits.hits);
                     var result = json.hits.hits;
-
                     for (var i in result) {
                         ele.push(result[i]._source.felectricity);
                         vol.push(result[i]._source.fvoltage);
@@ -381,64 +376,14 @@ function utc2beijing(utc_datetime) {
     return beijing_datetime; // 2017-03-31 16:02:06
 }
 
-// function loadChart(fsolder_layer,fweld_bead){
-// 	time1 = new Array();
-// 	vol = new Array();
-// 	ele = new Array();
-// 	document.getElementById("load").style.display="block";
-// 	var sh = '<div id="show" style="width:150px;" align="center"><img src="resources/images/load1.gif"/>数据加载中，请稍候...</div>';
-// 	$("#bodys").append(sh);
-// 	document.getElementById("show").style.display="block";
-// 	chartStr = "";
-// 	setParam();
-// 	$.ajax({
-// 		   type: "post",
-// 		   url: "rep/historyCurve"+chartStr+"&fid="+encodeURIComponent($('#taskno').val())+"&mach="+$('#machid').val()+"&welderid="+$("#welderid").val()+"&fweld_bead="+fweld_bead+"&fsolder_layer="+fsolder_layer,
-// 		   dataType: "json",
-// 		   data: {},
-// 		   success: function (result) {
-// 		      if (result) {
-// 		    	  var eleVolRange = result.value;
-// 		    	  if(eleVolRange!=""){
-// 		    		  eleUpLine = eleVolRange.split(",")[1];
-// 		    		  eleDownLine = eleVolRange.split(",")[2];
-// 		    		  volUpLine = eleVolRange.split(",")[3];
-// 		    		  volDownLine = eleVolRange.split(",")[4];
-// 		    	  }
-// 		    	  var date = eval(result.rows);
-// 		    	  if(date.length==0){
-// 		    		  document.getElementById("load").style.display ='none';
-// 		    		  document.getElementById("show").style.display ='none';
-// 		    		  alert("该时间内未查询到相关数据")
-// 		    		  eleUpLine = 0;
-// 		    		  eleDownLine = 0;
-// 		    		  volUpLine = 0;
-// 		    		  volDownLine = 0;
-// 		    	  }else{
-// 			    	  for(var i=0;i<date.length;i++){
-// 			    		  ele.push(date[i].ele);
-// 			    		  vol.push(date[i].vol);
-// 			    		  time1[i] = date[i].time;
-// 			    	  }
-// 			    	  eleChart();
-// 			    	  volChart();
-// 		    		  document.getElementById("load").style.display ='none';
-// 		    		  document.getElementById("show").style.display ='none';
-// 		    		  eleUpLine = 0;
-// 		    		  eleDownLine = 0;
-// 		    		  volUpLine = 0;
-// 		    		  volDownLine = 0;
-// 		    	  }
-// 		      }
-// 		   },
-// 		   error: function () {
-// 		      alert('error');
-// 		   }
-// 		});
-// 	$('#swdetailtable').datagrid('clearSelections');
-// 	$('#swdetail').window('close');
-// }
-
+function searchHistory() {
+    searchStr = "";
+    setParam();
+    $('#dg').datagrid("options").url = "datastatistics/getJunctionHistoryList";
+    $('#dg').datagrid('load', {
+        "searchStr": searchStr
+    });
+}
 
 function eleChart() {
     var myChart = echarts.init(document.getElementById('body1'));
@@ -616,10 +561,6 @@ function volChart() {
     myChart.setOption(option);
 }
 
-function serachCompanyOverproof() {
-    Junction();
-}
-
 function fullScreen() {
     var row = $("#dg").datagrid('getSelected');
     if (row == null) {
@@ -692,4 +633,96 @@ function domresize() {
     }
     echarts.init(document.getElementById('body1')).resize();
     echarts.init(document.getElementById('body2')).resize();
+}
+
+function loadxmlDoc(file) {
+    try {
+        //IE
+        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+    } catch (e) {
+        //Firefox, Mozilla, Opera, etc
+        xmlDoc = document.implementation.createDocument("", "", null);
+    }
+
+    try {
+        xmlDoc.async = false;
+        xmlDoc.load(file); //chrome没有load方法
+    } catch (e) {
+        //针对Chrome,不过只能通过http访问,通过file协议访问会报错
+        var xmlhttp = new window.XMLHttpRequest();
+        xmlhttp.open("GET", file, false);
+        xmlhttp.send(null);
+        xmlDoc = xmlhttp.responseXML.documentElement;
+    }
+    return xmlDoc;
+}
+
+function curve(value) {
+    eval("myChart" + value.div + "=" + "echarts.init(document.getElementById('" + value.div + "'))");
+    var option = {
+        backgroundColor: '#fff',
+//        title : {
+//            text : value.name
+//        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                mark: {
+                    show: false
+                },
+                dataView: {
+                    show: false,
+                    readOnly: false
+                },
+                restore: {
+                    show: false
+                },
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [
+            {
+                type: 'slider',
+                show: true,
+                xAxisIndex: [0]
+            },
+            {
+                type: 'inside',
+                xAxisIndex: [0]
+            }
+        ],
+        grid: {
+            left: '8%',//组件距离容器左边的距离
+            right: '5%',
+            top: "5%",
+            bottom: 60
+        },
+        xAxis: [{
+            type: 'category',
+            data: []
+        }],
+        yAxis: [{
+            type: 'value',
+            max: parseFloat(value.max),
+            min: parseFloat(value.min)
+        }],
+        series: [{
+            symbolSize: 5,//气泡大小
+            name: value.name,
+            type: 'line',//折线图
+            data: [],
+            itemStyle: {
+                normal: {
+                    color: "#A020F0",
+                    lineStyle: {
+                        color: "#A020F0"
+                    }
+                }
+            }
+        }]
+    };
+    eval("myChart" + value.div).setOption(option);
 }

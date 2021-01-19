@@ -121,7 +121,7 @@ function dgDatagrid(){
 			align : "left",
 			formatter:function(value,row,index){
 			var str = "";
-			str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getWeldJun?machine='+encodeURI(row.equipmentNo)+'"/>';
+			str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getWeldmachine?fid='+row.id+'"/>';
 			return str;
 			}
 		}] ],

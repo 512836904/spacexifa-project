@@ -1,12 +1,62 @@
+var websocketURL;
+var redata;
+var allWorkNumer;
+var allWelderInfo;
+
 $(function () {
+    //焊接工艺规范符合率初始化
     Coincidence();
     //延迟2秒初始化数据
-    setTimeout(function(){
+    setTimeout(function () {
         loadAddSupergage(0);
         loadJobNumberInfo(0);
         loadJobSetNormRate(0);
     }, 2000);
+    //创建定时器每10分钟刷新页面
+    setInterval(function(){
+        loadAddSupergage(0);
+        loadJobNumberInfo(0);
+        loadJobSetNormRate(0);
+    }, 600000);
+    loadUrl();
+    mqttTest();
 });
+
+function loadUrl() {
+    //加载mqIP地址及端口
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "td/AllTdbf",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                websocketURL = result.web_socket;
+            }
+        },
+        error: function (errorMsg) {
+            console.log("数据加载异常！" + errorMsg);
+        }
+    });
+    //加载所有工作号及焊工信息
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "frontEnd/findWorkWelderInfo",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                allWorkNumer = result.allWorkNumer;
+                allWelderInfo = result.allWelderInfo;
+            }
+        },
+        error: function (errorMsg) {
+            console.log("数据加载异常！" + errorMsg);
+        }
+    });
+}
 
 //时间
 function getCurrentDate(format) {
@@ -82,6 +132,7 @@ function one_2(data) {
 }
 
 function Coincidence() {
+    //焊接工艺规范符合率初始化
     var charts1 = echarts.init(document.querySelector("#Coincidence_rate"));
     var option = {
         tooltip: {
@@ -159,7 +210,7 @@ function Coincidence() {
 
 //进入全屏
 function requestFullScreen() {
-    var de =  document.documentElement;
+    var de = document.documentElement;
     if (de.requestFullscreen) {
         de.requestFullscreen();
     } else if (de.mozRequestFullScreen) {
@@ -169,11 +220,13 @@ function requestFullScreen() {
     }
     //隐藏全屏按钮
     var quanping = document.getElementById("quanping");
-    quanping.style.display="none";
+    quanping.style.display = "none";
 }
 
-function loadJobSetNormRate(day){
-    if (day != null) {nowDatetime = day};
+function loadJobSetNormRate(day) {
+    if (day != null) {
+        nowDatetime = day
+    }
     //异步加载工作号/布套号焊接工艺规范符合率
     var data = [];
     var dataList = [];
@@ -188,7 +241,7 @@ function loadJobSetNormRate(day){
         success: function (result) {
             if (result) {
                 for (var i in result.ary) {
-                    var name = result.ary[i].job_number +" "+ result.ary[i].set_number +" "+result.ary[i].part_name;
+                    var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
                     data.push(name);
                     dataList.push(result.ary[i].normRate);
                 }
@@ -202,4 +255,119 @@ function loadJobSetNormRate(day){
     });
 }
 
+var client, clientId;
 
+function mqttTest() {
+    var ipHost = websocketURL.split(":")[0];
+    var ipPort = websocketURL.split(":")[1];
+    clientId = Math.random().toString().substr(3, 8) + Date.now().toString(36);
+    client = new Paho.MQTT.Client(ipHost, parseInt(ipPort), clientId);
+    var options = {
+        timeout: 5,
+        keepAliveInterval: 60,
+        cleanSession: false,
+        useSSL: false,
+        onSuccess: onConnect,
+        onFailure: function (e) {
+            console.log("mq连接失败：" + e.errorCode);
+        },
+        reconnect: true
+    }
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    client.connect(options);
+}
+
+//连接
+function onConnect() {
+    console.log("onConnect worknumber");
+    //订阅实时数据主题
+    client.subscribe("weldmesrealdata", {
+        qos: 0,
+        onSuccess: function (e) {
+            console.log("订阅成功");
+            appTableArray = [];
+            appvue.$delete(appvue.tableData);
+            Object.assign(appvue.$data,appvue.$options.data());
+        },
+        onFailure: function (e) {
+            console.log("订阅失败：" + e.errorCode);
+        }
+    });
+}
+
+//断线重连
+function onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
+    }
+}
+
+//客户端收到消息
+function onMessageArrived(message) {
+    redata = message.payloadString;
+    if (redata.length === 405 || redata.length % 135 === 0) {
+        var JOB_NUMBER = "";
+        var SET_NUMBER = "";
+        var PART_NAME = "";
+        var junction_name = "";
+        var name = "";
+        var iname = "";
+        for (var i = 0; i < redata.length; i += 135) {
+            var welderid = redata.substring(i, 4 + i).toString(); //焊工id
+            var cardid = redata.substring(99 + i, 103 + i).toString(); //电子跟踪卡id
+            var ele = redata.substring(38 + i, 42 + i).toString(); //电流
+            var vol = redata.substring(42 + i, 46 + i).toString(); //电压
+            //工作号信息
+            for (var m in allWorkNumer) {
+                if (parseInt(cardid) === allWorkNumer[m].fid) {
+                    JOB_NUMBER = allWorkNumer[m].JOB_NUMBER;//工作号
+                    SET_NUMBER = allWorkNumer[m].SET_NUMBER;//部套号
+                    PART_NAME = allWorkNumer[m].PART_NAME;//零件名
+                    junction_name = allWorkNumer[m].junction_name;//焊缝名称
+                }
+            }
+            //焊工及班组信息
+            for (var n in allWelderInfo) {
+                if (parseInt(welderid) === allWelderInfo[n].id) {
+                    name = allWelderInfo[n].name;  //焊工姓名
+                    iname = allWelderInfo[n].iname;  //班组
+                }
+            }
+            var addOrremove = false;
+            var appindex = 0;
+            if (JOB_NUMBER !== '' && name !== ''){
+                if (appTableArray.length > 0) {
+                    for (var index in appTableArray) {
+                        if (appTableArray[index].gzh != JOB_NUMBER || appTableArray[index].bth != SET_NUMBER || appTableArray[index].ljm != PART_NAME ||
+                            appTableArray[index].junctionName != junction_name || appTableArray[index].welder != name || appTableArray[index].banzu != iname) {
+                            addOrremove = true;
+                        }
+                        appindex = index;
+                    }
+                } else {
+                    addOrremove = true;
+                }
+            }
+            //如果不重复则可以增加新数据
+            if (addOrremove) {
+                let feild = {};
+                feild["gzh"] = JOB_NUMBER;
+                feild["bth"] = SET_NUMBER;
+                feild["ljm"] = PART_NAME;
+                feild["junctionName"] = junction_name;
+                feild["banzu"] = iname;
+                feild["welder"] = name;
+                feild["electricity"] = parseInt(ele);
+                feild["voltage"] = parseInt(vol);
+                appTableArray.push(feild);
+            } else {
+                if (JOB_NUMBER !== '' && name !== ''){
+                    appTableArray[appindex].electricity = parseInt(ele);
+                    appTableArray[appindex].voltage = parseInt(vol);
+                }
+            }
+        }
+        appvue.tableData = appTableArray;
+    }
+}

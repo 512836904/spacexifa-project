@@ -41,7 +41,7 @@ public class OracleDBConnection {
      * @throws SQLException
      */
     public synchronized static Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return getDataSource().getConnection();
     }
 
     /**

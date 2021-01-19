@@ -90,4 +90,9 @@ public class TdServiceImpl implements TdService {
 		// TODO Auto-generated method stub
 		return mapper.getBootTime(time,machineId);
 	}
+
+	@Override
+	public Td countWelderStatusNum() {
+		return mapper.countWelderStatusNum();
+	}
 }

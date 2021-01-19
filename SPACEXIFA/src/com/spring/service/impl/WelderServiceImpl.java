@@ -44,5 +44,8 @@ public class WelderServiceImpl implements WelderService {
 	public int getWeldernoCount(String wno) {
 		return wm.getWeldernoCount(wno);
 	}
-
+	@Override
+	public List<Welder> findAllWelderInfo() {
+		return wm.findAllWelderInfo();
+	}
 }

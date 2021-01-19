@@ -173,33 +173,75 @@
         AND tb_live_data.fstatus = '3' ORDER BY FWELDTIME DESC
     </select>
 
-    <select id="getJMByWelder" resultMap="wmMap" parameterType="com.spring.dto.WeldDto">
-        select COUNT(l.fid) counts,m.fequipment_no,m.fid
-        machid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,
-        l.fmax_voltage fmax_valtage,l.fmin_voltage fmin_valtage FROM tb_live_data l
-        <!--INNER join tb_welded_junction j on l.fjunction_id = j.fid
-        INNER JOIN tb_welding_machine m on m.fid=l.fmachine_id -->
-        LEFT JOIN tb_welded_junction j ON l.fjunction_id = j.fid
-        LEFT JOIN tb_welding_machine m ON m.fid=l.fmachine_id
-        WHERE 1=1
-        <if test="welderid!=null and welderid!=''">
-            and l.fwelder_no=#{welderid}
+    <select id="getJunctionHistory" resultMap="wjMap" parameterType="java.lang.String">
+        select t.FMACHINEID machid,t.FCARD_ID insfid,t.FREALSTARTTIME fstart_time,t.FREALENDTIME fend_time,t.FREPAIRTYPE flag,w.FEQUIPMENT_NO fequipment_no,
+        J.JUNCTION_NAME fwelded_junction_no,j.fid funit,u.WORKTICKET_NUMBER ftask_no,u.JOB_NUMBER fserial_no,u.SET_NUMBER fpipeline_no,
+        u.PART_DRAWING_NUMBER froom_no,u.PART_NAME farea,p.FNAME iname,p.fid iid from TB_TASKRESULT t
+        LEFT JOIN TB_WELDING_MACHINE w on t.FMACHINEID = w.fid
+        LEFT JOIN TB_WELDED_JUNCTION u on t.FCARD_ID = u.fid
+        LEFT JOIN TB_WELDER p on t.FWELDERID = p.fid
+        LEFT JOIN TB_LIBRARY_JUNCTION l on t.FCARD_ID = l.TRACKINGCARD_ID
+        LEFT JOIN TB_PRODUCTION_CRAFT d on l.PRODUCTION_ID = d.fid
+        LEFT JOIN TB_JUNCTION J on d.FJUNCTION = J.fid
+        where t.FOPERATETYPE = 2
+        <if test="search!=null and search!=''">
+            and ${search}
         </if>
+        GROUP BY t.FMACHINEID,t.FCARD_ID,t.FREALSTARTTIME,t.FREALENDTIME,t.FREPAIRTYPE,w.FEQUIPMENT_NO,J.JUNCTION_NAME,j.fid,u.WORKTICKET_NUMBER,u.JOB_NUMBER,u.SET_NUMBER,u.PART_DRAWING_NUMBER,u.PART_NAME,p.FNAME,p.fid
+    </select>
+
+    <select id="getJMByWelder" resultMap="wjMap">
+<!--        select COUNT(l.fid) counts,m.fequipment_no,m.fid-->
+<!--        machid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,-->
+<!--        l.fmax_voltage fmax_valtage,l.fmin_voltage fmin_valtage FROM tb_live_data l-->
+<!--        &lt;!&ndash;INNER join tb_welded_junction j on l.fjunction_id = j.fid-->
+<!--        INNER JOIN tb_welding_machine m on m.fid=l.fmachine_id &ndash;&gt;-->
+<!--        LEFT JOIN tb_welded_junction j ON l.fjunction_id = j.fid-->
+<!--        LEFT JOIN tb_welding_machine m ON m.fid=l.fmachine_id-->
+<!--        WHERE 1=1-->
+<!--        <if test="welderid!=null and welderid!=''">-->
+<!--            and l.fwelder_no=#{welderid}-->
+<!--        </if>-->
+<!--        <if test="dto!=null and dto!=''">-->
+<!--            <if test="dto.search!=null and dto.search!=''">-->
+<!--                and l.fjunction_no = #{dto.search}-->
+<!--            </if>-->
+<!--            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">-->
+<!--                and (fweldtime between to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')-->
+<!--            </if>-->
+<!--            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">-->
+<!--                and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss'))-->
+<!--            </if>-->
+<!--        </if>-->
+<!--        and (l.fstatus='3' or l.fstatus='5' or l.fstatus='7' or l.fstatus='99')-->
+<!--        &lt;!&ndash;group by m.fequipment_no,fwelded_junction_no&ndash;&gt;-->
+<!--        group by-->
+<!--        m.fequipment_no,m.fid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,l.fmax_voltage,l.fmin_voltage-->
+        select t.FMACHINEID machid,t.FCARD_ID insfid,t.FREALSTARTTIME fstart_time,t.FREALENDTIME fend_time,w.FEQUIPMENT_NO fequipment_no,
+        J.JUNCTION_NAME fwelded_junction_no,j.fid funit,u.WORKTICKET_NUMBER ftask_no,u.JOB_NUMBER fserial_no,u.SET_NUMBER fpipeline_no,
+        u.PART_DRAWING_NUMBER froom_no,u.PART_NAME farea,p.FNAME iname,p.fid iid from TB_TASKRESULT t
+        LEFT JOIN TB_WELDING_MACHINE w on t.FMACHINEID = w.fid
+        LEFT JOIN TB_WELDED_JUNCTION u on t.FCARD_ID = u.fid
+        LEFT JOIN TB_WELDER p on t.FWELDERID = p.fid
+        LEFT JOIN TB_LIBRARY_JUNCTION l on t.FCARD_ID = l.TRACKINGCARD_ID
+        LEFT JOIN TB_PRODUCTION_CRAFT d on l.PRODUCTION_ID = d.fid
+        LEFT JOIN TB_JUNCTION J on d.FJUNCTION = J.fid
+        where t.FOPERATETYPE = 2
         <if test="dto!=null and dto!=''">
-            <if test="dto.search!=null and dto.search!=''">
-                and l.fjunction_no = #{dto.search}
+            <if test="dto.welderno!=null and dto.welderno!=''">
+                and t.fwelderid=#{dto.welderno}
+            </if>
+            <if test="dto.machineid!=null and dto.machineid!=''">
+                and t.fmachineid=#{dto.machineid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-                and (fweldtime between to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+                and t.frealstarttime &gt;=to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
             <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-                and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss'))
+                and t.frealendtime &lt;=to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
         </if>
-        and (l.fstatus='3' or l.fstatus='5' or l.fstatus='7' or l.fstatus='99')
-        <!--group by m.fequipment_no,fwelded_junction_no-->
-        group by
-        m.fequipment_no,m.fid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,l.fmax_voltage,l.fmin_voltage
+        GROUP BY t.FMACHINEID,t.FCARD_ID,t.FREALSTARTTIME,t.FREALENDTIME,w.FEQUIPMENT_NO,J.JUNCTION_NAME,j.fid,u.WORKTICKET_NUMBER,u.JOB_NUMBER,u.SET_NUMBER,u.PART_DRAWING_NUMBER,u.PART_NAME,p.FNAME,p.fid
     </select>
 
     <select id="getWeldedJunctionById" resultMap="wjMap" parameterType="java.lang.String">

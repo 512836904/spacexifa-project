@@ -2,6 +2,7 @@ package com;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,6 +13,8 @@ public class Mysql {
     public ArrayList<String> listarray2;
     public ArrayList<String> listarray3;
     public DB_Connectionmysql db;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat sdftime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Mysql() {
         db = new DB_Connectionmysql();
@@ -32,6 +35,7 @@ public class Mysql {
                     liveData.setFmachinemodel(Integer.valueOf(str.substring(12, 14), 16).toString());//焊机型号
                     liveData.setFgather_no(Integer.valueOf(str.substring(16, 20), 16).toString());//采集编号
                     liveData.setFwelder_no(Integer.valueOf(str.substring(40, 44), 16).toString());//焊工号
+                    String nowdatetime = sdf.format(System.currentTimeMillis());//当前系统时间
                     for (int a = 0; a < 367; a += 182) {
                         String year = Integer.valueOf(str.subSequence(44 + a, 46 + a).toString(), 16).toString();   //年份
                         String month = Integer.valueOf(str.subSequence(46 + a, 48 + a).toString(), 16).toString();
@@ -42,7 +46,12 @@ public class Mysql {
                         String strdate = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
                         time = DateTools.parse("yy-MM-dd HH:mm:ss", strdate);
                         timesql = new Timestamp(time.getTime());
-                        liveData.setFweldtime(timesql.toString());//焊机工作时间
+                        //焊机日期与系统日期不一致，修改为系统时间
+                        if (!nowdatetime.equals(timesql.toString().substring(0,10))){
+                            liveData.setFweldtime(sdftime.format(System.currentTimeMillis()));//焊机工作时间
+                        }else {
+                            liveData.setFweldtime(timesql.toString());//焊机工作时间
+                        }
                         liveData.setFelectricity(new BigDecimal(Long.parseLong(str.substring(56 + a, 60 + a), 16)));//焊接电流
                         liveData.setFvoltage(new BigDecimal(Long.parseLong(str.substring(60 + a, 64 + a), 16)));//焊接电压
                         liveData.setFwirefeedrate(new BigDecimal(Long.parseLong(str.substring(64 + a, 68 + a), 16)));//送丝速度
@@ -76,6 +85,79 @@ public class Mysql {
                         liveData.setFscan_amplitude(Integer.valueOf(str.substring(180 + a, 184 + a), 16).toString());
                         liveData.setFswing_speed(Integer.valueOf(str.substring(184 + a, 188 + a), 16).toString());
                         db.DB_Connectionmysqlrun(liveData,listarray1,listarray2,listarray3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void Mysqlbaseoutline(String str,Server server) {
+        Date time;
+        Timestamp timesql = null;
+        if (str.length() == 596) {
+            try {
+                //西安数据验证
+                String check1 = str.substring(0, 2);
+                String check11 = str.substring(594, 596);
+                if (check1.equals("7E") && check11.equals("7D")) {
+                    TbLiveData liveData = new TbLiveData();
+                    liveData.setFitemid(new BigDecimal(Long.parseLong(str.substring(592, 594))));//组织id
+                    liveData.setFmachinemodel(Integer.valueOf(str.substring(12, 14), 16).toString());//焊机型号
+                    liveData.setFgather_no(Integer.valueOf(str.substring(16, 20), 16).toString());//采集编号
+                    liveData.setFwelder_no(Integer.valueOf(str.substring(40, 44), 16).toString());//焊工号
+                    String nowdatetime = sdf.format(System.currentTimeMillis());//当前系统时间
+                    for (int a = 0; a < 367; a += 182) {
+                        String year = Integer.valueOf(str.subSequence(44 + a, 46 + a).toString(), 16).toString();   //年份
+                        String month = Integer.valueOf(str.subSequence(46 + a, 48 + a).toString(), 16).toString();
+                        String day = Integer.valueOf(str.subSequence(48 + a, 50 + a).toString(), 16).toString();
+                        String hour = Integer.valueOf(str.subSequence(50 + a, 52 + a).toString(), 16).toString();
+                        String minute = Integer.valueOf(str.subSequence(52 + a, 54 + a).toString(), 16).toString();
+                        String second = Integer.valueOf(str.subSequence(54 + a, 56 + a).toString(), 16).toString();
+                        String strdate = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+                        time = DateTools.parse("yy-MM-dd HH:mm:ss", strdate);
+                        timesql = new Timestamp(time.getTime());
+                        //liveData.setFweldtime(timesql.toString());//焊机工作时间
+                        //焊机日期与系统日期不一致，修改为系统时间
+                        if (!nowdatetime.equals(timesql.toString().substring(0,10))){
+                            liveData.setFweldtime(sdftime.format(System.currentTimeMillis()));//焊机工作时间
+                        }else {
+                            liveData.setFweldtime(timesql.toString());//焊机工作时间
+                        }
+                        liveData.setFelectricity(new BigDecimal(Long.parseLong(str.substring(56 + a, 60 + a), 16)));//焊接电流
+                        liveData.setFvoltage(new BigDecimal(Long.parseLong(str.substring(60 + a, 64 + a), 16)));//焊接电压
+                        liveData.setFwirefeedrate(new BigDecimal(Long.parseLong(str.substring(64 + a, 68 + a), 16)));//送丝速度
+                        liveData.setFjunction_no(str.substring(76 + a, 84 + a));    //焊口号
+                        liveData.setFstatus(Long.parseLong(str.substring(84 + a, 86 + a), 16));
+                        liveData.setFwirediameter(new BigDecimal(Long.parseLong(str.substring(86 + a, 88 + a), 16)));
+                        liveData.setFmaterialgas( new BigDecimal(Long.parseLong(str.substring(88 + a, 90 + a), 16)));
+                        liveData.setFmax_electricity(new BigDecimal(Long.parseLong(str.substring(90 + a, 94 + a), 16)));
+                        liveData.setFmin_electricity(new BigDecimal(Long.parseLong(str.substring(94 + a, 98 + a), 16)));
+                        liveData.setFmax_voltage(new BigDecimal(Long.parseLong(str.substring(98 + a, 102 + a), 16)));
+                        liveData.setFmin_voltage(new BigDecimal(Long.parseLong(str.substring(102 + a, 106 + a), 16)));
+                        liveData.setFchannel(new BigDecimal(Long.parseLong(str.substring(106 + a, 108 + a), 16)));
+                        liveData.setFrateofflow(new BigDecimal(Long.parseLong(str.substring(108 + a, 112 + a), 16)));
+                        //西安新增
+                        liveData.setFlon_air_flow(new BigDecimal(Long.parseLong(str.substring(116 + a, 120 + a), 16)));//离子气流量
+                        liveData.setFhatwirecurrent(new BigDecimal(Long.parseLong(str.substring(120 + a, 124 + a), 16)));//
+                        liveData.setFpreheating_temperature(Integer.valueOf(str.substring(124 + a, 128 + a), 16).toString());
+                        liveData.setFswing(Integer.valueOf(str.substring(128 + a, 132 + a), 16).toString());
+                        liveData.setFvibrafrequency(new BigDecimal(Long.parseLong(str.substring(132 + a, 136 + a), 16)));
+                        liveData.setFlaser_power(Integer.valueOf(str.substring(136 + a, 140 + a), 16).toString());
+                        liveData.setFdefocus_amount(Integer.valueOf(str.substring(140 + a, 144 + a), 16).toString());
+                        liveData.setFdefocus_quantity(Integer.valueOf(str.substring(144 + a, 148 + a), 16).toString());
+                        liveData.setFpeak_electricity(new BigDecimal(Long.parseLong(str.substring(148 + a, 152 + a), 16)));
+                        liveData.setFbase_electricity(new BigDecimal(Long.parseLong(str.substring(152 + a, 156 + a), 16)));
+                        liveData.setFpeak_time(Integer.valueOf(str.substring(156 + a, 160 + a), 16).toString());
+                        liveData.setFbase_time(Integer.valueOf(str.substring(160 + a, 164 + a), 16).toString());
+                        liveData.setFaccelerat_voltage(new BigDecimal(Long.parseLong(str.substring(164 + a, 168 + a), 16)));
+                        liveData.setFfocus_current(new BigDecimal(Long.parseLong(str.substring(168 + a, 172 + a), 16)));
+                        liveData.setFelectron_beam(new BigDecimal(Long.parseLong(str.substring(172 + a, 176 + a), 16)));
+                        liveData.setFscan_frequency(Integer.valueOf(str.substring(176 + a, 180 + a), 16).toString());
+                        liveData.setFscan_amplitude(Integer.valueOf(str.substring(180 + a, 184 + a), 16).toString());
+                        liveData.setFswing_speed(Integer.valueOf(str.substring(184 + a, 188 + a), 16).toString());
+                        db.DB_Connectionmysqloutline(server,liveData,listarray1,listarray2,listarray3);
                     }
                 }
             } catch (Exception e) {

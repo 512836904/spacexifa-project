@@ -80,6 +80,28 @@ public class TdController {
     }
 
     /**
+     * 跳转质量管理界面
+     * @param request
+     * @return
+     */
+    @RequestMapping("/openQuality")
+    public String openQuality(HttpServletRequest request) {
+        lm.getUserId(request);
+        return "screen/quality";
+    }
+
+    /**
+     * 跳转质量管理界面
+     * @param request
+     * @return
+     */
+    @RequestMapping("/openWorkNumber")
+    public String openWorkNumber(HttpServletRequest request) {
+        lm.getUserId(request);
+        return "screen/worknumber";
+    }
+
+    /**
      * 任务访问实时
      *
      * @param request
@@ -750,17 +772,19 @@ public class TdController {
     @RequestMapping("/allWeldname")
     @ResponseBody
     public String allWeldname(HttpServletRequest request) {
-
-        List<Td> fwn = tdService.allWeldname();
         JSONObject obj = new JSONObject();
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         try {
+            Td welderStatusNum = tdService.countWelderStatusNum();
+            List<Td> fwn = tdService.allWeldname();
             for (Td td : fwn) {
+                json.put("fid", td.getId());
                 json.put("fname", td.getFname());
                 json.put("fwelder_no", td.getFwelder_no());
                 ary.add(json);
             }
+            obj.put("welderStatusNum", welderStatusNum);
         } catch (Exception e) {
             e.getMessage();
         }

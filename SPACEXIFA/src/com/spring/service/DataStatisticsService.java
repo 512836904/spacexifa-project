@@ -78,7 +78,17 @@ public interface DataStatisticsService {
 	BigInteger getStaringUpTime(BigInteger itemid,WeldDto dto);
 	BigInteger getStaringUpTimeByJunction(BigInteger itemid,WeldDto dto);
 	BigInteger getStaringUpTimeByWelder(BigInteger itemid,WeldDto dto);
-	
+
+	/**
+	 * 获取工件焊接时长
+	 * @param dto 扩展参数类
+	 * @return
+	 */
+	BigInteger getWorkingJunction(WeldDto dto);
+	DataStatistics getEleVolByJunction(WeldDto dto);
+	BigInteger getStandJunction(WeldDto dto);
+
+
 	/**
 	 * 获取待机总时长
 	 * @param itemid  项目部id
@@ -465,4 +475,10 @@ public interface DataStatisticsService {
 	List<DataStatistics> findSupergageCumulativeNumber(String startTime,int itemType);
 
 	List<DataStatistics> findJobSetNormRate(String startTime);
+
+	/**
+	 * 根据组织机构分别统计焊工数量
+	 * @return
+	 */
+	List<DataStatistics> countWelderNumByIid();
 }

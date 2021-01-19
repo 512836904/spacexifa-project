@@ -108,8 +108,10 @@ public class MainFrame {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("获取PC地址异常");
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("获取PC地址异常");
         }
 
         if (fitemid.length() != 2) {
@@ -128,7 +130,7 @@ public class MainFrame {
         //webservice配置
         iutil = new IsnullUtil();
         dcf = JaxWsDynamicClientFactory.newInstance();
-        client = dcf.createClient("http://" + ip + ":8080/CIWJN_Service/cIWJNWebService?wsdl");
+        client = dcf.createClient("http://" + ip + ":9090/CIWJN_Service/cIWJNWebService?wsdl");
         //client = dcf.createClient("http://" + "119.3.100.103" + ":9090/CIWJN_Service/cIWJNWebService?wsdl");
         iutil.Authority(client);
 
@@ -233,11 +235,15 @@ public class MainFrame {
                             } catch (Exception e) {
                                 listarraybuf.add(socketfail);
                                 ifdo = true;
+                                e.printStackTrace();
+                                System.out.println("listarraybuf:"+e.getMessage());
                             }
 
                         } catch (Exception e) {
                             //client.mainFrame.DateView("数据接收错误" + "\r\n");
                             //webiter = socketlist.entrySet().iterator();
+                            e.printStackTrace();
+                            System.out.println("Exception:"+e.getMessage());
                         }
                     }
 
@@ -474,6 +480,7 @@ public class MainFrame {
                 clientconnect.run();
             } catch (Exception ex) {
                 ex.printStackTrace();
+                System.out.println("socket连接服务器异常");
             }
         }
     };

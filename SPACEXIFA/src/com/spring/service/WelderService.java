@@ -10,7 +10,7 @@ public interface WelderService {
 	/**
 	 * 获取所有焊工信息
 	 * @param page
-	 * @param we
+	 * @param
 	 * @return
 	 */
 	List<Welder> getWelderAll(Page page, String str);
@@ -39,4 +39,9 @@ public interface WelderService {
 	 * @return
 	 */
 	int getWeldernoCount(String wno);
+
+	/**
+	 * 查询所有焊工及对应班组信息
+	 */
+	List<Welder> findAllWelderInfo();
 }

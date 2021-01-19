@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="CIWJN_Service">
-    <output-path>$PROJECT_DIR$/../out</output-path>
+  <artifact type="exploded-war" name="CIWJN_Service:war exploded">
+    <output-path>$PROJECT_DIR$/../out/artifacts/CIWJN_Service_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -104,8 +104,8 @@
           <element id="library" level="module" name="netty-all-5.0.0.Alpha2-sources(2).jar" module-name="CIWJN_Service" />
           <element id="library" level="module" name="netty-all-5.0.0.Alpha2(2).jar" module-name="CIWJN_Service" />
           <element id="library" level="module" name="jaxen-1.1.6.jar" module-name="CIWJN_Service" />
-          <element id="library" level="application" name="lib" />
           <element id="library" level="project" name="lib" />
+          <element id="library" level="application" name="lib" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="CIWJN_Service/web/Web" />

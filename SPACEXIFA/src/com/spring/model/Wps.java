@@ -282,6 +282,16 @@ public class Wps {
 	private Double wirefeedrate;
 	private Double worktime;
 
+	/**
+	 * 手持终端任务表实体类
+	 * @return
+	 */
+	private BigInteger FMACHINEID;	//焊机id
+	private BigInteger FCARD_ID;	//跟踪卡id
+	private String FREALSTARTTIME;	//开始时间
+	private String FREALENDTIME;	//结束时间
+	private int FREPAIRTYPE;		//返修状态（0否，1是）
+
 	public Double getWirefeedrate() {
 		return wirefeedrate;
 	}
@@ -1900,5 +1910,45 @@ public class Wps {
 	}
 	public void setFstep_version(String fstep_version) {
 		this.fstep_version = fstep_version;
+	}
+
+	public BigInteger getFMACHINEID() {
+		return FMACHINEID;
+	}
+
+	public void setFMACHINEID(BigInteger FMACHINEID) {
+		this.FMACHINEID = FMACHINEID;
+	}
+
+	public BigInteger getFCARD_ID() {
+		return FCARD_ID;
+	}
+
+	public void setFCARD_ID(BigInteger FCARD_ID) {
+		this.FCARD_ID = FCARD_ID;
+	}
+
+	public String getFREALSTARTTIME() {
+		return FREALSTARTTIME;
+	}
+
+	public void setFREALSTARTTIME(String FREALSTARTTIME) {
+		this.FREALSTARTTIME = FREALSTARTTIME;
+	}
+
+	public String getFREALENDTIME() {
+		return FREALENDTIME;
+	}
+
+	public void setFREALENDTIME(String FREALENDTIME) {
+		this.FREALENDTIME = FREALENDTIME;
+	}
+
+	public int getFREPAIRTYPE() {
+		return FREPAIRTYPE;
+	}
+
+	public void setFREPAIRTYPE(int FREPAIRTYPE) {
+		this.FREPAIRTYPE = FREPAIRTYPE;
 	}
 }

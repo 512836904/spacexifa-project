@@ -4,112 +4,56 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DB_Connectioncode {
-    public String datasend = "";
 
     public ArrayList<String> listarray1 = new ArrayList<String>();
     public ArrayList<String> listarray2 = new ArrayList<String>();
     public ArrayList<String> listarray3 = new ArrayList<String>();
     public ArrayList<String> listarray4 = new ArrayList<String>();
 
-    public String getId() {
-        return datasend;
-    }
-
-    public void setId(String datasend) {
-        this.datasend = datasend;
-    }
-
-    public Server server;
-
+    //    public Server server;
     public String inSql = "";
+//    public String connet;
 
-    private String code;
+    public DB_Connectioncode() {
 
-    private String select;
-
-    private Statement stmt;
-
-    public String connet;
-
-    private Connection conn;
-
-    public DB_Connectioncode(java.sql.Statement stmt, Connection conn, String connet) {
-
-        this.stmt = stmt;
-        this.conn = conn;
-        this.connet = connet;
+        Connection conn = null;
+        Statement stmt = null;
 
         //查焊工
-        inSql = "SELECT FID,FOWNER,FWELDER_NO FROM TB_WELDER";
+        inSql = "SELECT FID,FWELDER_NO,FOWNER FROM TB_WELDER";
 
         try {
-
-            try {
-                if (stmt == null || stmt.isClosed() || !conn.isValid(1)) {
-                    try {
-                        Class.forName("oracle.jdbc.OracleDriver");
-                        conn = DriverManager.getConnection(connet, Server.oracleUser, Server.oraclePassword);
-                        stmt = conn.createStatement();
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("Broken driver");
-                        e.printStackTrace();
-                        return;
-                    } catch (SQLException e) {
-                        System.out.println("Broken conn");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            if (conn == null || conn.isClosed()) {
+                conn = OracleDBConnection.getConnection();
             }
-
+            if (stmt == null || stmt.isClosed()) {
+                stmt = conn.createStatement();
+            }
             ResultSet rs = stmt.executeQuery(inSql);
-
             while (rs.next()) {
                 String welderid = rs.getString("FID");
                 String fwelder_no = rs.getString("FWELDER_NO");
-                String Fowner = rs.getString("FOWNER");
+                String fowner = rs.getString("FOWNER");
                 listarray1.add(welderid);
                 listarray1.add(fwelder_no);
-                listarray1.add(Fowner);
+                listarray1.add(fowner);
             }
-
-        } catch (SQLException e) {
-            System.out.println("Broken insert 查焊工"+e);
+        } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("查询焊工信息异常：" + e.getMessage());
+        } finally {
+            OracleDBConnection.close(conn, stmt, null);
         }
-
-
         //查焊机和采集模块的关联信息
-//        inSql = "select tb_gather.fid,tb_welding_machine.fequipment_no,tb_gather.fgather_no,tb_welding_machine.finsframework_id from tb_gather left join tb_welding_machine on tb_gather.FMACHINE_ID=tb_welding_machine.fid ";
         inSql = "SELECT wm.FID fmachineId,g.FID,wm.FEQUIPMENT_NO,g.FGATHER_NO,wm.FINSFRAMEWORK_ID FROM tb_welding_machine wm LEFT JOIN TB_GATHER g ON wm.FGATHER_ID = g.FID";
-
         try {
-
-            try {
-                if (stmt == null || stmt.isClosed() || !conn.isValid(1)) {
-                    try {
-                        Class.forName("oracle.jdbc.OracleDriver");
-                        conn = DriverManager.getConnection(connet, Server.oracleUser, Server.oraclePassword);
-                        stmt = conn.createStatement();
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("Broken driver");
-                        e.printStackTrace();
-                        return;
-                    } catch (SQLException e) {
-                        System.out.println("Broken conn");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
+            if (conn == null || conn.isClosed()) {
+                conn = OracleDBConnection.getConnection();
             }
-
+            if (stmt == null || stmt.isClosed()) {
+                stmt = conn.createStatement();
+            }
             ResultSet rs = stmt.executeQuery(inSql);
-
             while (rs.next()) {
                 String fid = rs.getString("fmachineId");//焊机id
                 String fequipment_no = rs.getString("fequipment_no");//焊机固号
@@ -120,41 +64,22 @@ public class DB_Connectioncode {
                 listarray2.add((fgather_no));
                 listarray2.add(fitemId);
             }
-
-        } catch (SQLException e) {
-            System.out.println("Broken insert 查焊机");
+        } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("查询焊机和采集模块信息异常：" + e.getMessage());
+        } finally {
+            OracleDBConnection.close(conn, stmt, null);
         }
-
-
         //查询焊缝的电流电压最大最小值
-        //inSql = "select fid,fitemId,fwelded_junction_no,fmax_electricity, fmin_electricity, fmax_valtage, fmin_valtage from tb_welded_junction ";
         inSql = "SELECT FID,FJUNCTION,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,FMAXVOLTAGE,FMINVOLTAGE FROM TB_JUNCTION";
-
         try {
-
-            try {
-                if (stmt == null || stmt.isClosed() || !conn.isValid(1)) {
-                    try {
-                        Class.forName("oracle.jdbc.OracleDriver");
-                        conn = DriverManager.getConnection(connet, Server.oracleUser, Server.oraclePassword);
-                        stmt = conn.createStatement();
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("Broken driver");
-                        e.printStackTrace();
-                        return;
-                    } catch (SQLException e) {
-                        System.out.println("Broken conn");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
+            if (conn == null || conn.isClosed()) {
+                conn = OracleDBConnection.getConnection();
             }
-
+            if (stmt == null || stmt.isClosed()) {
+                stmt = conn.createStatement();
+            }
             ResultSet rs = stmt.executeQuery(inSql);
-
             while (rs.next()) {
                 String weldjunctionid = rs.getString("FID");
                 int fmax_electricity1 = rs.getInt("CURRENT_LIMIT");
@@ -190,7 +115,6 @@ public class DB_Connectioncode {
                     }
                 }
                 String weldjunction = rs.getString("FJUNCTION");
-
                 listarray3.add(weldjunction);//焊缝编号
                 listarray3.add(fmax_electricity);//最大电流
                 listarray3.add(fmin_electricity);
@@ -198,75 +122,30 @@ public class DB_Connectioncode {
                 listarray3.add(fmin_valtage);
                 listarray3.add(weldjunctionid);//焊缝id
                 listarray3.add("0");//组织机构id
-
             }
-
-        } catch (SQLException e) {
-
-            System.out.println("Broken insert 查最大最小电流");
-
+        } catch (Exception e) {
             e.printStackTrace();
-
+            System.out.println("查询焊缝信息异常：" + e.getMessage());
+        } finally {
+            OracleDBConnection.close(conn, stmt, null);
         }
-
-        //Webservice调用返回焊机实时电流电压
-
+        //查询参数表
+        inSql = "SELECT fair_flow_volume from tb_parameter";
         try {
-            try {
-                if (stmt == null || stmt.isClosed() || !conn.isValid(1)) {
-                    try {
-                        Class.forName("oracle.jdbc.OracleDriver");
-                        conn = DriverManager.getConnection(connet, Server.oracleUser, Server.oraclePassword);
-                        stmt = conn.createStatement();
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("Broken driver");
-                        e.printStackTrace();
-                        return;
-                    } catch (SQLException e) {
-                        System.out.println("Broken conn");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
+            if (conn == null || conn.isClosed()) {
+                conn = OracleDBConnection.getConnection();
             }
-
-            inSql = "SELECT fair_flow_volume from tb_parameter";
-
-            try {
-                if (stmt == null || stmt.isClosed() || !conn.isValid(1)) {
-                    try {
-                        Class.forName("oracle.jdbc.OracleDriver");
-                        conn = DriverManager.getConnection(connet, Server.oracleUser, Server.oraclePassword);
-                        stmt = conn.createStatement();
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("Broken driver");
-                        e.printStackTrace();
-                        return;
-                    } catch (SQLException e) {
-                        System.out.println("Broken conn");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            if (stmt == null || stmt.isClosed()) {
+                stmt = conn.createStatement();
             }
-
             ResultSet rs1 = stmt.executeQuery(inSql);
             String airflow = "";
             while (rs1.next()) {
                 airflow = rs1.getString("fair_flow_volume");
             }
-
-            //查询采集id和焊机固号
-            //inSql = "select tb_gather.fid,tb_welding_machine.fequipment_no from tb_gather left join tb_welding_machine on tb_gather.FMACHINE_ID=tb_welding_machine.fid";
+            //查询焊机信息
             inSql = "SELECT g.FID,wm.FEQUIPMENT_NO FROM TB_WELDING_MACHINE wm LEFT JOIN TB_GATHER g ON wm.FGATHER_ID = g.FID";
-
             ResultSet rs = stmt.executeQuery(inSql);
-
             while (rs.next()) {
                 String fid = rs.getString("fid");
                 String fequipment_no = rs.getString("fequipment_no");
@@ -294,11 +173,12 @@ public class DB_Connectioncode {
                 listarray4.add("0");
                 listarray4.add(airflow);
             }
-        } catch (SQLException e) {
-            System.out.println("Broken insert"+e);
+        } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("查询焊机信息异常：" + e.getMessage());
+        } finally {
+            OracleDBConnection.close(conn, stmt, null);
         }
-        return;
     }
 
     public ArrayList<String> getId1() {

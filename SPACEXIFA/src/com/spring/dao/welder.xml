@@ -8,6 +8,7 @@
         <result property="welderno" column="fwelder_no"></result>  
         <result property="name" column="fname"></result>
         <result property="iname" column="iname"></result>
+        <result property="FSTATUS" column="FSTATUS"></result>
 	</resultMap>
 	
 	<select id="getWelderAll" resultMap="dMap" parameterType="java.lang.String">
@@ -36,4 +37,10 @@
 	<delete id="removeWelder" parameterType="java.math.BigInteger">
 		DELETE FROM tb_welder WHERE fid=#{id}
 	</delete>
+
+	<!-- 查询所有焊工及班组信息，不分页 -->
+	<select id="findAllWelderInfo" resultMap="dMap">
+		SELECT w.FID,w.FNAME,i.FNAME iname FROM TB_WELDER w
+		INNER JOIN TB_INSFRAMEWORK i ON w.FOWNER = i.FID
+	</select>
 </mapper>

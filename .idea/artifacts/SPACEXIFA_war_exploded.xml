@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="SPACEXIFA">
-    <output-path>$PROJECT_DIR$/../out</output-path>
+  <artifact type="exploded-war" name="SPACEXIFA:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/SPACEXIFA_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">

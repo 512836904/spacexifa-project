@@ -30,4 +30,6 @@ public interface TdService {
 	 */
 	Td getLiveTime(String time,String totime,BigInteger machineid);
 	String getBootTime(String time,BigInteger machineId);
+
+	Td countWelderStatusNum();
 }

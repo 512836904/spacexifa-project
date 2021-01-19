@@ -86,6 +86,20 @@ public class WeldedJunctionControll {
         return "td/HistoryCurve";
     }
 
+    /**
+     * 焊机历史曲线页面
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getWeldmachine")
+    public String getWeldmachine(HttpServletRequest request) {
+        if (request.getParameter("fid") != null && request.getParameter("fid") != "") {
+            request.setAttribute("machineid", request.getParameter("fid"));
+        }
+        return "td/HistoryWeldMa";
+    }
+
     @RequestMapping("/goShowMoreJunction")
     public String goShowMoreJunction(HttpServletRequest request, @RequestParam String id) {
         try {
@@ -374,7 +388,8 @@ public class WeldedJunctionControll {
         String time2 = request.getParameter("dtoTime2");
         String parentId = request.getParameter("parent");
         String wjno = request.getParameter("wjno");
-        String welderid = request.getParameter("welderid");//焊工编号
+        String welderid = request.getParameter("welderid");//焊工id
+        String machineid = request.getParameter("machineid");//焊机id
         WeldDto dto = new WeldDto();
         if (!iutil.isNull(parentId)) {
             //数据权限处理
@@ -389,6 +404,12 @@ public class WeldedJunctionControll {
             }
         }
         BigInteger parent = null;
+        if (iutil.isNull(machineid)) {
+            dto.setMachineid(new BigInteger(machineid));
+        }
+        if (iutil.isNull(welderid)) {
+            dto.setWelderno(welderid);
+        }
         if (iutil.isNull(time1)) {
             dto.setDtoTime1(time1);
         }
@@ -418,18 +439,22 @@ public class WeldedJunctionControll {
         JSONObject obj = new JSONObject();
         try {
             for (WeldedJunction w : list) {
-                json.put("firsttime", wjm.getFirsttime(dto, w.getMachid(), welderid, w.getWeldedJunctionno()));
-                json.put("lasttime", wjm.getLasttime(dto, w.getMachid(), welderid, w.getWeldedJunctionno()));
-                json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
-                json.put("id", w.getId());
+                json.put("firsttime",w.getStartTime());
+                json.put("lasttime", w.getEndTime());
+                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                json.put("welderid", w.getIid());
+                json.put("welder_no", w.getIname());
                 json.put("machid", w.getMachid());
                 json.put("machine_num", w.getMachine_num());
-                json.put("weldedJunctionno", w.getWeldedJunctionno());
-                json.put("dyne", w.getDyne());
-                json.put("maxElectricity", w.getMaxElectricity());
-                json.put("minElectricity", w.getMinElectricity());
-                json.put("maxValtage", w.getMaxValtage());
-                json.put("minValtage", w.getMinValtage());
+                json.put("taskno", w.getFtask_no());//任务编号（工票号）
+                json.put("task_id", w.getInsfid());
+                json.put("junction_name", w.getWeldedJunctionno());
+                json.put("junction_id", w.getUnit());
+                json.put("job_number", w.getSerialNo());//工作号
+                json.put("set_number", w.getPipelineNo());//部套号
+                json.put("part_number", w.getRoomNo());//零件图号
+                json.put("part_name", w.getArea());//零件名
+                //json.put("worktime", getTimeStrBySecond(w.getCounts()));//焊接时长
                 ary.add(json);
             }
         } catch (Exception e) {
@@ -439,6 +464,29 @@ public class WeldedJunctionControll {
         obj.put("total", total);
         obj.put("rows", ary);
         return obj.toString();
+    }
+
+    public String getTimeStrBySecond(BigInteger timeParam) {
+        if (timeParam == null) {
+            return "00:00:00";
+        }
+        BigInteger[] str = timeParam.divideAndRemainder(new BigInteger("60"));//divideAndRemainder返回数组。第一个是商第二个时取模
+        BigInteger second = str[1];
+        BigInteger minuteTemp = timeParam.divide(new BigInteger("60"));//subtract：BigInteger相减，multiply：BigInteger相乘，divide : BigInteger相除
+        if (minuteTemp.compareTo(new BigInteger("0")) > 0) {//compareTo：比较BigInteger类型的大小，大则返回1，小则返回-1 ，等于则返回0
+            BigInteger[] minstr = minuteTemp.divideAndRemainder(new BigInteger("60"));
+            BigInteger minute = minstr[1];
+            BigInteger hour = minuteTemp.divide(new BigInteger("60"));
+            if (hour.compareTo(new BigInteger("0")) > 0) {
+                return (hour.compareTo(new BigInteger("9")) > 0 ? (hour + "") : ("0" + hour)) + ":" + (minute.compareTo(new BigInteger("9")) > 0 ? (minute + "") : ("0" + minute))
+                        + ":" + (second.compareTo(new BigInteger("9")) > 0 ? (second + "") : ("0" + second));
+            } else {
+                return "00:" + (minute.compareTo(new BigInteger("9")) > 0 ? (minute + "") : ("0" + minute)) + ":"
+                        + (second.compareTo(new BigInteger("9")) > 0 ? (second + "") : ("0" + second));
+            }
+        } else {
+            return "00:00:" + (second.compareTo(new BigInteger("9")) > 0 ? (second + "") : ("0" + second));
+        }
     }
 
     @RequestMapping("/getSwDetail")

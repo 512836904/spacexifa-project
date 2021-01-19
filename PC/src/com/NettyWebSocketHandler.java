@@ -78,7 +78,7 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<Object> {
 	 * 澶勭悊HTTP璇锋眰
 	 * 
 	 * @param ctx
-	 * @param msg
+	 * @param
 	 */
 	/*private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         // 濡傛灉瑙ｇ爜澶辫触,杩斿洖寮傚父
@@ -203,7 +203,7 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<Object> {
 		   try {
 	            JSONObject taskstr = JSONObject.parseObject(str);
 	            
-	            if(taskstr.getString("type").equals("starttask") || taskstr.getString("type").equals("nexttask")){
+	            if("starttask".equals(taskstr.getString("type"))){
 		            if(taskarray.isEmpty()){
 		            	taskarray.add(taskstr.getString("machine"));
 		            	taskarray.add(taskstr.getString("welderid"));
@@ -235,7 +235,7 @@ public class NettyWebSocketHandler extends SimpleChannelInboundHandler<Object> {
 			            	taskarray.add(taskstr.getString("weldlineid"));
 		            	}
 		            }
-	            }else if(taskstr.getString("type").equals("overtask")){
+	            }else if("overtask".equals(taskstr.getString("type"))){
 	            	if(!taskarray.isEmpty() && taskarray.contains(taskstr.getString("machine"))){
 	            		int index = taskarray.indexOf(taskstr.getString("machine"));
 	            		taskarray.remove(index);

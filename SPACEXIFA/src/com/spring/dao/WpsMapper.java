@@ -139,4 +139,9 @@ public interface WpsMapper {
 	List<Wps> findJobSetNumber(@Param("dto") WeldDto dto);
 	Wps findWeldedJunctionByNum(@Param("workticket_num") String workticket_num);
 	Wps findCraftByJunctionId(@Param("junction_id") BigInteger junction_id);
+
+	Wps findTaskResultById(@Param("machineId") BigInteger machineId,@Param("cardId") BigInteger cardId);
+	int updateTaskResultById(Wps wps);
+	int updateStatusByFids(@Param("list")List<String> list,@Param("type") int type);
+	List<Wps> findAllWorkNumer();
 }

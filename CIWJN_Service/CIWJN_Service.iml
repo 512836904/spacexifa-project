@@ -115,6 +115,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/WebRoot" relative="/" />
         </webroots>
+        <sourceRoots />
       </configuration>
     </facet>
   </component>
@@ -1008,6 +1009,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="lib" level="application" />
   </component>
 </module>

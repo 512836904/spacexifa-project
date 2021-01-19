@@ -31,6 +31,7 @@ public class ProductionCraft {
 
     private BigInteger FJUNCTION;               //焊缝id
     private String WIRE_DIAMETER;               //焊丝直径
+    private int FREPAIRTYPE;               //返修状态（0否，1是）
 
     public BigInteger getFID() {
         return FID;
@@ -206,5 +207,13 @@ public class ProductionCraft {
 
     public void setWIRE_DIAMETER(String WIRE_DIAMETER) {
         this.WIRE_DIAMETER = WIRE_DIAMETER;
+    }
+
+    public int getFREPAIRTYPE() {
+        return FREPAIRTYPE;
+    }
+
+    public void setFREPAIRTYPE(int FREPAIRTYPE) {
+        this.FREPAIRTYPE = FREPAIRTYPE;
     }
 }

@@ -37,25 +37,25 @@
 <div class="functiondiv">
     <div>
         <div style="float: left;">
-            <label>设备名称：</label>
+            <lable>设备名称：</lable>
             <input class="easyui-textbox" name="sequipmentNo" id="sequipmentNo"/>
         </div>
         <div style="float: left;">
-            <label>设备类型：</label>
+            <lable>设备类型：</lable>
             <select class="easyui-combobox" name="stypeId" id="stId" data-options="editable:false">
             </select>
         </div>
         <div style="float: left;">
-            <label>出厂时间：</label>
+            <lable>出厂时间：</lable>
             <input class="easyui-datetimebox" style="width:150px;" name="sjoinTime" id="sjoinTime">
         </div>
         <div style="float: left;">
-            <label>所属项目：</label>
+            <lable>所属项目：</lable>
             <select class="easyui-combobox" name="siId" id="siId" data-options="editable:false">
             </select>
         </div>
         <div style="float: left;">
-            <label>生成厂商：</label>
+            <lable>生成厂商：</lable>
             <select class="easyui-combobox" name="smanuno" id="smanuno" data-options="editable:false">
             </select>
         </div>
@@ -67,7 +67,7 @@
     </div>
     <div>
         <div style="float: left;">
-            <label>设备型号：</label>
+            <lable>设备型号：</lable>
             <input class="easyui-textbox" name="sposition" id="sposition"/>
         </div>
         <div style="float: left;">
@@ -79,15 +79,15 @@
             <select class="easyui-combobox" name="smodel" id="smodel" data-options="editable:false">
             </select>
         </div>
-        <div style="float: left;">
-            <label>是否联网：</label>
-            <input type="radio" class="radioStyle" id="sisnetworkingId" name="sisnetworkingId" value="0"/>是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" class="radioStyle" id="sisnetworkingId" name="sisnetworkingId" value="1"/>否&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-        <div style="float: left;">
-            <label>状态：</label>
-            <span id="sradios"></span>
-        </div>
+<%--        <div style="float: left;">--%>
+<%--            <lable>是否联网：</lable>--%>
+<%--            <input type="radio" class="radioStyle" id="sisnetworkingId" name="sisnetworkingId" value="0"/>是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--            <input type="radio" class="radioStyle" id="sisnetworkingId" name="sisnetworkingId" value="1"/>否&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--        </div>--%>
+<%--        <div style="float: left;">--%>
+<%--            <lable>状态：</lable>--%>
+<%--            <span id="sradios"></span>--%>
+<%--        </div>--%>
         <div style="float: left;">
             <a href="javascript:searchData();" class="easyui-linkbutton" iconCls="icon-select">查找</a>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
@@ -107,21 +107,21 @@
     <table id="weldingmachineTable" style="table-layout: fixed; width:100%;"></table>
 
     <!-- 自定义多条件查询 -->
-    <div id="searchdiv" class="easyui-dialog" style="width:800px; height:400px;" closed="true" buttons="#searchButton"
-         title="自定义条件查询">
-        <div id="div0">
-            <select class="fields" id="fields"></select>
-            <select class="condition" id="condition"></select>
-            <input class="content" id="content"/>
-            <select class="joint" id="joint"></select>
-            <a href="javascript:newSearchWeldingMachine();" class="easyui-linkbutton" iconCls="icon-add"></a>
-            <a href="javascript:removeSerach();" class="easyui-linkbutton" iconCls="icon-remove"></a>
-        </div>
-    </div>
-    <div id="searchButton">
-        <a href="javascript:searchWeldingmachine();" class="easyui-linkbutton" iconCls="icon-ok">查询</a>
-        <a href="javascript:close();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
-    </div>
+<%--    <div id="searchdiv" class="easyui-dialog" style="width:800px; height:400px;" closed="true" buttons="#searchButton"--%>
+<%--         title="自定义条件查询">--%>
+<%--        <div id="div0">--%>
+<%--            <select class="fields" id="fields"></select>--%>
+<%--            <select class="condition" id="condition"></select>--%>
+<%--            <input class="content" id="content"/>--%>
+<%--            <select class="joint" id="joint"></select>--%>
+<%--            <a href="javascript:newSearchWeldingMachine();" class="easyui-linkbutton" iconCls="icon-add"></a>--%>
+<%--            <a href="javascript:removeSerach();" class="easyui-linkbutton" iconCls="icon-remove"></a>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--    <div id="searchButton">--%>
+<%--        <a href="javascript:searchWeldingmachine();" class="easyui-linkbutton" iconCls="icon-ok">查询</a>--%>
+<%--        <a href="javascript:close();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>--%>
+<%--    </div>--%>
     <!-- 添加修改 -->
     <div id="dlg" class="easyui-dialog" style="width: 400px; height: 530px; padding:10px 20px" closed="true"
          buttons="#dlg-buttons">
@@ -163,7 +163,7 @@
                 <input class="easyui-textbox" name="position" id="position"/>
             </div>
             <div class="fitem">
-                <label>手持终端IP地址:</label>
+                <lable>手持终端IP地址:</lable>
                 <input class="easyui-textbox" name="ip" id="ipname"/>
             </div>
             <div class="fitem">
@@ -222,8 +222,8 @@
                 <input class="easyui-textbox" name="position" readonly="readonly"/>
             </div>
             <div class="fitem">
-                <label>手持终端IP地址:</label>
-                <input class="easyui-textbox" name="ip" id="ip"/>
+                <lable>手持终端IP地址:</lable>
+                <input class="easyui-textbox" name="ip" id="ip" readonly="readonly"/>
             </div>
             <div class="fitem">
                 <lable>型号</lable>

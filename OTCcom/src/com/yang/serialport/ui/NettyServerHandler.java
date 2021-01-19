@@ -49,19 +49,15 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             workThread = new Thread(ws);
             workThread.setDaemon(true);
             workThread.start();
-
-            //ReferenceCountUtil.release(msg);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            System.out.println("OTC-Netty-远程关闭一个连接:" + e.getMessage());
+        } finally {
+            //内存释放
             ReferenceCountUtil.release(req);
             ReferenceCountUtil.release(buf);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("OTC channel:" + e);
-        } finally {
-            //ReferenceCountUtil.release(msg);
-            //ReferenceCountUtil.release(req);
         }
     }
-
 
     public class Workspace implements Runnable {
 
@@ -81,9 +77,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                  * 56：索取返回
                  * 12：下发返回
                  */
-//				System.out.println("req.length:"+req.length);   //144
                 synchronized (this) {
-                    if (req.length == 297 || req.length == 144 || req.length == 56 || req.length == 12 || req.length == 11) {
+                    if (req.length == 144 || req.length == 56 || req.length == 12 || req.length == 11) {
                         for (int i = 0; i < req.length; i++) {
                             //判断为数字还是字母，若为字母+256取正数
                             if (req[i] < 0) {
@@ -104,9 +99,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 str += r;
                             }
                         }
-                    } else {
-                        str = new String(req);
                     }
+//                    else {
+//                        str = new String(req);
+//                    }
 
                     if (str.length() >= 6) {
                         //基本版
@@ -127,8 +123,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                             String footerData = str.substring(284, 286);                //尾部数据
 
                             str = headData + oneData + towData + threeData + footerData + fitemid + "7D";
-
-                            //	str = str.substring(0,286) + fitemid + "7D";
 
                             try {
                                 chcli.writeAndFlush(str).sync();
@@ -186,6 +180,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                             }
                             str = "";
                         } else {
+                            /**
+                             * 索取返回，下发返回，控制命令返回
+                             */
                             try {
                                 chcli.writeAndFlush(str).sync();
                             } catch (Exception ex) {

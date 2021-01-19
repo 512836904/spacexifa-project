@@ -3,12 +3,10 @@ package com.spring.controller;
 import com.github.pagehelper.PageInfo;
 import com.spring.dto.WeldDto;
 import com.spring.model.DataStatistics;
+import com.spring.model.Welder;
 import com.spring.model.Wps;
 import com.spring.page.Page;
-import com.spring.service.DataStatisticsService;
-import com.spring.service.InsframeworkService;
-import com.spring.service.LiveDataService;
-import com.spring.service.WpsService;
+import com.spring.service.*;
 import com.spring.util.IsnullUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,7 +33,6 @@ public class FrontEndController {
     private int pageIndex = 1;
     private int pageSize = 10;
     private int total = 0;
-    IsnullUtil iutil = new IsnullUtil();
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
@@ -43,12 +40,9 @@ public class FrontEndController {
     @Autowired
     private DataStatisticsService dss;
     @Autowired
-    private LiveDataService ls;
-    @Autowired
-    private InsframeworkService im;
-    @Autowired
     private WpsService wpsService;
-
+    @Autowired
+    private WelderService welderService;
 
     /**
      * 焊工工作时间排行
@@ -170,15 +164,28 @@ public class FrontEndController {
                 itemtype = 23;  //班组
             }
             List<DataStatistics> list = dss.findAverageWorkingTime(startTime,itemtype);
+            //统计组织机构焊工的数量
+            List<DataStatistics> dataStatistics = dss.countWelderNumByIid();
+            int weldernum = 0; //焊工数量
             if (null != list && list.size() > 0) {
                 for (DataStatistics data : list) {
                     json.put("id", data.getId());       //组织机构id
                     json.put("name", data.getName());   //组织机构名称
-//                    json.put("hour", data.getHour());   //总时长（h）
-//                    json.put("num", data.getNum());     //总人数
+                    if (null != dataStatistics && dataStatistics.size() > 0){
+                        for (DataStatistics da : dataStatistics){
+                            if (da.getId().equals(data.getId())){
+                                if (data.getType() == 22){
+                                    weldernum = da.getNum();
+                                }
+                                if (data.getType() == 23){
+                                    weldernum = da.getTotal();
+                                }
+                            }
+                        }
+                    }
                     BigDecimal bd = null;
-                    if (data.getNum() != 0 && data.getHour() != null && data.getHour() != 0) {
-                        bd = new BigDecimal(data.getHour() / data.getNum());
+                    if (weldernum != 0 && data.getHour() != null && data.getHour() != 0) {
+                        bd = new BigDecimal(data.getHour() / weldernum);
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
                         json.put("rate", bd);     //人均时间
                     } else {
@@ -301,11 +308,11 @@ public class FrontEndController {
             }
             //表头
 //            String[] str = {"所属班组", "设备总数", "开机设备数", "实焊设备数", "设备利用率(%)", "焊接焊缝数", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(G)", "电能消耗(KWH)", "气体消耗(L)"};
-            String[] str = {"所属班组", "电能消耗(KWH)", "气体消耗(L)"};
-            for (int i = 0; i < str.length; i++) {
-                title.put("title", str[i]);
-                titleary.add(title);
-            }
+//            String[] str = {"所属班组", "电能消耗(KWH)", "气体消耗(L)"};
+//            for (int i = 0; i < str.length; i++) {
+//                title.put("title", str[i]);
+//                titleary.add(title);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -352,11 +359,11 @@ public class FrontEndController {
                 ary.add(json);
             }
             //表头
-            String[] str = {"所属班组", "焊丝消耗(G)"};
-            for (int i = 0; i < str.length; i++) {
-                title.put("title", str[i]);
-                titleary.add(title);
-            }
+//            String[] str = {"所属班组", "焊丝消耗(G)"};
+//            for (int i = 0; i < str.length; i++) {
+//                title.put("title", str[i]);
+//                titleary.add(title);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -411,11 +418,11 @@ public class FrontEndController {
                 ary.add(json);
             }
             //表头
-            String[] str = {"所属班组", "设备利用率(%)"};
-            for (int i = 0; i < str.length; i++) {
-                title.put("title", str[i]);
-                titleary.add(title);
-            }
+//            String[] str = {"所属班组", "设备利用率(%)"};
+//            for (int i = 0; i < str.length; i++) {
+//                title.put("title", str[i]);
+//                titleary.add(title);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -557,9 +564,9 @@ public class FrontEndController {
                     json.put("name", li.getName());     //焊工姓名
                     json.put("insname", li.getInsname()); //组织机构名称：工区
                     json.put("starttime", li.getStarttime().split(" ")[0]);    //时间
-                    json.put("job_number", "0001");    //工作号
-                    json.put("set_number", "0001");    //布套号
-                    json.put("part_name", "基础法兰");    //零件名称
+                    json.put("job_number", li.getJOB_NUMBER());    //工作号
+                    json.put("set_number", li.getSET_NUMBER());    //布套号
+                    json.put("part_name", li.getPART_NAME());    //零件名称
                     ary.add(json);
                 }
             }else {
@@ -690,4 +697,24 @@ public class FrontEndController {
         return obj.toString();
     }
 
+    /**
+     * 工作号实时信息展示
+     * 查询所有工作号和焊工班组信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/findWorkWelderInfo")
+    @ResponseBody
+    public String findWorkWelderInfo(HttpServletRequest request) {
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        //所有需要展示的工作号信息
+        List<Wps> allWorkNumer = wpsService.findAllWorkNumer();
+        //查询所有焊工及对应班组信息
+        List<Welder> allWelderInfo = welderService.findAllWelderInfo();
+        JSONObject obj = new JSONObject();
+        obj.put("allWorkNumer", allWorkNumer);
+        obj.put("allWelderInfo", allWelderInfo);
+        return obj.toString();
+    }
 }

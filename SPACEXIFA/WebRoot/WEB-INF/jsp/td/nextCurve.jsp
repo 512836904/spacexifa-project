@@ -61,7 +61,7 @@
 					<li style="width:100%;height:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
 						设备类型：<span id="l2"></span></li>
 					<li style="width:100%;height:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
-						任务编号：<span id="l3"></span></li>
+						采集编号：<span id="l3"></span></li>
 					<li style="width:100%;height:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
 						操作人员：<span id="l4"></span></li>
 					<li style="width:100%;height:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">

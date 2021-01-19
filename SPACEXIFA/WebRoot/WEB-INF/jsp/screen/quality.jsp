@@ -1,11 +1,23 @@
-<!DOCTYPE html>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE  HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
 
 <head>
+    <base href="<%=basePath%>">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+
     <title>质量管理展示</title>
-    <link rel="stylesheet" href="resources/css/css/indexq.css" />
 	<script type="text/javascript" src="resources/js/js/jquery.js"></script>
 	<script type="text/javascript" src="resources/js/js/jquery.min.js"></script>
 	<script type="text/javascript" src="resources/js/js/echarts.js"></script>
@@ -15,6 +27,7 @@
 	<script type="text/javascript" src="resources/js/js/vues.js"></script>
 	<!-- import JavaScript -->
 	<script type="text/javascript" src="resources/js/js/indexs.js"></script>
+    <link rel="stylesheet" href="resources/css/css/indexq.css" />
 
 </head>
 
@@ -59,12 +72,16 @@
                     <h2 class="h2-mid"><span>班组焊接工艺规范符合率 ( % )</span></h2>
                 </div>
 				<div id="one_day" class="pane501" style="float:left">
-					<img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one(1);">当日情况</span></h2>
+                    <a onclick="javascript:one(1);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当日情况</span></h2>
+                    </a>
                 </div>
 				<div  id="one_day1" class="pane501" style="float:left;display:none;">
-					<img id="u3913_img" class="img " src="resources/images/images/c09_u3493.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one(0);">当月情况</span></h2>
+                    <a onclick="javascript:one(0);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c09_u3493.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当月情况</span></h2>
+                    </a>
                 </div>
                 <div class="panel02">
                     <div class="chart1" id="pchart1">
@@ -86,17 +103,21 @@
                     <h2 class="h2-mid"><span>超规范信息表</span></h2>
                 </div>
 				<div id="one_day2" class="pane501" style="float:left">
-					<img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_1(1);">当日情况</span></h2>
+                    <a onclick="javascript:one_1(1);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当日情况</span></h2>
+                    </a>
                 </div>
 				<div  id="one_day3" class="pane501" style="float:left;display:none;">
-					<img id="u3913_img" class="img " src="resources/images/images/c09_u3493.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_1(0);">当月情况</span></h2>
+                    <a onclick="javascript:one_1(0);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c09_u3493.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当月情况</span></h2>
+                    </a>
                 </div>
                 <div class="panel02">
                     <div class="chart" id="Left3">
                         <div id="app">
-                            <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '38px'}"
+                            <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '34px'}"
                                       height="350" border style="width: 100%;overflow: auto;">
 
                                 <el-table-column prop="work_area" label="工区"></el-table-column>
@@ -108,7 +129,7 @@
                                 <el-table-column prop="bth" label="部套号"></el-table-column>
 
                                 <el-table-column prop="ljm" label="零件名"></el-table-column>
-
+								
 								<el-table-column prop="time" label="时间"></el-table-column>
 
                             </el-table>
@@ -126,12 +147,16 @@
                     <h2 class="h2-mid"><span>工作号/部套号焊接工艺规范符合率 ( % )</span></h2>
                 </div>
 				<div id="one_day4" class="pane501" style="float:left">
-					<img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_2(1);">当日情况</span></h2>
+                    <a onclick="javascript:one_2(1);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当日情况</span></h2>
+                    </a>
                 </div>
 				<div  id="one_day5" class="pane501" style="float:left;display:none;">
-					<img id="u3913_img" class="img" src="resources/images/images/c09_u3493.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_2(0);">当月情况</span></h2>
+                    <a onclick="javascript:one_2(0);">
+                        <img id="u3913_img" class="img" src="resources/images/images/c09_u3493.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当月情况</span></h2>
+                    </a>
                 </div>
                 <div class="panel03">
                     <div class="chart4" id="Right1" style="height:98%;width:98%;overflow:auto;"> </div>
@@ -146,12 +171,16 @@
                     <h2 class="h2-mid"><span>班组超规范累计次数（次）</span></h2>
                 </div>
 				<div id="one_day6" class="pane501" style="float:left">
-					<img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_3(1);">当日情况</span></h2>
+                    <a onclick="javascript:one_3(1);">
+                        <img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当日情况</span></h2>
+                    </a>
                 </div>
 				<div  id="one_day7" class="pane501" style="float:left;display:none;">
-					<img id="u3913_img" class="img" src="resources/images/images/c09_u3493.png"/>
-                    <h2 id="u3912" class="h2-mid" ><span onclick="javascript:one_3(0);">当月情况</span></h2>
+                    <a onclick="javascript:one_3(0);">
+                        <img id="u3913_img" class="img" src="resources/images/images/c09_u3493.png"/>
+                        <h2 id="u3912" class="h2-mid" ><span>当月情况</span></h2>
+                    </a>
                 </div>
                 <div class="panel02">
 					<div class="chart1" id="schart1">
@@ -171,8 +200,10 @@
     </section>
 
 </body>
+
 <script src="resources/js/js/quality.js"></script>
 <script src="resources/js/js/loadQualityData.js"></script>
+
 <script>
     var startTime = 0;
     var appvue;
@@ -196,6 +227,20 @@
                     time: '2020-11-11'
                 }, {
 					work_area: '二工区',
+                    person: '张三',
+					gzh: '0',
+					bth: '11',
+                    ljm: '基础法兰',
+                    time: '2020-11-11'
+                }, {
+                    work_area: '二工区',
+                    person: '张三',
+					gzh: '0',
+					bth: '11',
+                    ljm: '基础法兰',
+                    time: '2020-11-11'
+                }, {
+                    work_area: '二工区',
                     person: '张三',
 					gzh: '0',
 					bth: '11',
@@ -270,7 +315,6 @@
     }
 </script>
 <style>
-
     /* Element 样式覆盖 */
 
     .el-table {

@@ -708,4 +708,32 @@ public class WpsServiceImpl implements WpsService{
 	public Wps findCraftByJunctionId(BigInteger junction_id) {
 		return mapper.findCraftByJunctionId(junction_id);
 	}
+
+	@Override
+	public Wps findTaskResultById(BigInteger machineId, BigInteger cardId) {
+		return mapper.findTaskResultById(machineId,cardId);
+	}
+
+	@Override
+	public int updateTaskResultById(Wps wps) {
+		return mapper.updateTaskResultById(wps);
+	}
+
+	@Override
+	public int updateStatusByFids(List<String> list, String type) {
+		int i = 0;
+		if (null != list && list.size() > 0 && null != type){
+			if ("show".equals(type)){
+				i = mapper.updateStatusByFids(list,1);
+			}else if ("cancel".equals(type)){
+				i = mapper.updateStatusByFids(list,0);
+			}
+		}
+		return i;
+	}
+
+	@Override
+	public List<Wps> findAllWorkNumer() {
+		return mapper.findAllWorkNumer();
+	}
 }

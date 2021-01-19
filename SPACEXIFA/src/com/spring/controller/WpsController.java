@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -161,9 +162,9 @@ public class WpsController {
                 json.put("raw_materi", wps.getRaw_materi());   //原料
                 json.put("process", wps.getProcess());              //工序
                 json.put("FOPERATETYPE", wps.getFOPERATETYPE());   //任务完成状态
-
+                json.put("status", wps.getFstatus());   //工作号是否展示
                 //焊缝id
-                List<BigInteger> junctionIds = new ArrayList<>();
+//                List<BigInteger> junctionIds = new ArrayList<>();
                 //生产工艺id
                 List<BigInteger> craftIds = new ArrayList<>();
                 //根据电子跟踪卡id查询生产工艺库和焊缝信息
@@ -192,6 +193,33 @@ public class WpsController {
         }
         obj.put("total", total);
         obj.put("rows", ary);
+        return obj.toString();
+    }
+    /**
+     * 大屏工作号展示管理
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping("/jobNumberShowOrCancel")
+    @ResponseBody
+    public String jobNumberShowOrCancel(HttpServletRequest request) {
+        JSONObject obj = new JSONObject();
+        String jobIds = request.getParameter("jobIds");
+        String type = request.getParameter("type");
+        try {
+            List<String> list = Arrays.asList(jobIds.split(","));
+            int i = wpsService.updateStatusByFids(list, type);
+            if (i != 0){
+                obj.put("success", true);
+            }else {
+                obj.put("success", false);
+            }
+        } catch (Exception e) {
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+            e.printStackTrace();
+        }
         return obj.toString();
     }
 

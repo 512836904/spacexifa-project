@@ -682,4 +682,30 @@ public interface WpsService {
 	 * @return
 	 */
 	Wps findCraftByJunctionId(BigInteger junction_id);
+
+	/**
+	 * 根据焊机id，跟踪卡id查询任务最新信息
+	 * @param machineId
+	 * @param cardId
+	 * @return
+	 */
+	Wps findTaskResultById(BigInteger machineId,BigInteger cardId);
+
+	/**
+	 * 手持终端任务完成
+	 * @param wps
+	 * @return
+	 */
+	int updateTaskResultById(Wps wps);
+
+	/**
+	 * 批量修改工作号展示状态
+	 */
+	int updateStatusByFids(List<String> list,String type);
+
+	/**
+	 * 查询所有工作号信息
+	 * @return
+	 */
+	List<Wps> findAllWorkNumer();
 }

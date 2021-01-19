@@ -10,7 +10,7 @@
 
 	<sql id="production_craft">
 		FID,FNAME,PREHEAT,INTERLAMINATION,WELDING_MATERIAL,ELECTRICITY_FLOOR,ELECTRICITY_UPPER,VOLTAGE_FLOOR,VOLTAGE_UPPER,
-		SOLDER_SPEED_FLOOR,SOLDER_SPEED_UPPER,WIDE_SWING,RESTS,DATA_SOURCES,CREATOR,CREATE_TIME,MENDER,UPDATE_TIME
+		SOLDER_SPEED_FLOOR,SOLDER_SPEED_UPPER,WIDE_SWING,RESTS,DATA_SOURCES,CREATOR,CREATE_TIME,MENDER,UPDATE_TIME,FJUNCTION,WIRE_DIAMETER,FREPAIRTYPE
 	</sql>
 
 	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
@@ -75,6 +75,15 @@
 				<if test="CREATE_TIME != null and CREATE_TIME != ''">
 					CREATE_TIME,
 				</if>
+				<if test="FJUNCTION != null and FJUNCTION != 0">
+					FJUNCTION,
+				</if>
+				<if test="WIRE_DIAMETER != null and WIRE_DIAMETER != ''">
+					WIRE_DIAMETER,
+				</if>
+				<if test="FREPAIRTYPE != 0">
+					FREPAIRTYPE,
+				</if>
 			</trim>
 			<trim prefix="VALUES(" suffix=")" suffixOverrides=",">
 					#{FID},
@@ -121,7 +130,16 @@
 					#{CREATOR},
 				</if>
 				<if test="CREATE_TIME != null and CREATE_TIME != ''">
-					#{CREATE_TIME},
+					to_date(#{CREATE_TIME}, 'yyyy-mm-dd hh24:mi:ss'),
+				</if>
+				<if test="FJUNCTION != null and FJUNCTION != 0">
+					#{FJUNCTION},
+				</if>
+				<if test="WIRE_DIAMETER != null and WIRE_DIAMETER != ''">
+					#{WIRE_DIAMETER},
+				</if>
+				<if test="FREPAIRTYPE != 0">
+					#{FREPAIRTYPE},
 				</if>
 			</trim>
 		</if>
@@ -185,24 +203,23 @@
 	</delete>
 
 	<select id="getLiarbryJunctionById" parameterType="com.spring.model.ProductionCraft" resultType="com.spring.model.ProductionCraft">
-        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION
-        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID} AND JUNCTION_ID = #{JUNCTION_ID}
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID FROM TB_LIBRARY_JUNCTION
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
     </select>
 
 	<insert id="addLiarbryJunction" parameterType="com.spring.model.ProductionCraft" flushCache="true">
 		<selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="FID">
 			select TB_LIBRARY_JUNCTION_ID.nextval as FID from dual
 		</selectKey>
-		<if test="FID != null and FID != '' and FID != 0">
-			INSERT INTO TB_LIBRARY_JUNCTION(FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID) VALUES (#{FID},#{TRACKINGCARD_ID},#{PRODUCTION_ID},#{JUNCTION_ID})
+		<if test="FID != null and FID != 0">
+			INSERT INTO TB_LIBRARY_JUNCTION(FID,TRACKINGCARD_ID,PRODUCTION_ID) VALUES (#{FID},#{TRACKINGCARD_ID},#{PRODUCTION_ID})
 		</if>
 	</insert>
 
 	<select id="getLibraryJunction" parameterType="java.math.BigInteger" resultType="com.spring.model.ProductionCraft">
- 		SELECT lj.FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID,pc.FNAME,j.FJUNCTION,j.JUNCTION_NAME
+ 		SELECT lj.FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID,pc.FNAME
  		FROM TB_LIBRARY_JUNCTION lj
  		LEFT JOIN TB_PRODUCTION_CRAFT pc ON lj.PRODUCTION_ID = pc.FID
- 		LEFT JOIN TB_JUNCTION j ON lj.JUNCTION_ID = j.FID
         WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID}
 	</select>
 

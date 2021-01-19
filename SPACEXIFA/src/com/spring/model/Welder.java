@@ -12,7 +12,8 @@ public class Welder {
 	private String welderno;
 	private String name;
 	private String iname;
-	
+	private String FSTATUS; //焊工状态：0离线（默认）
+
 	public String getIname() {
 		return iname;
 	}
@@ -37,5 +38,12 @@ public class Welder {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public String getFSTATUS() {
+		return FSTATUS;
+	}
+
+	public void setFSTATUS(String FSTATUS) {
+		this.FSTATUS = FSTATUS;
+	}
 }

@@ -90,7 +90,7 @@
 	</select>
 	
 	<select id="allWeldname" resultType="Td">
-		select fid fname,fwelder_no fwelder_no from tb_welder
+		select fid id,fname,fwelder_no from tb_welder
 	</select>
 	
 	<select id="getLiveTime" resultType="Td">
@@ -112,5 +112,12 @@
 			And FWeldTime &gt;= #{time} 
 		</if>
 		ORDER BY FWeldTime ASC LIMIT 0,1
+	</select>
+
+	<select id="countWelderStatusNum" resultType="Td">
+		SELECT
+			SUM(CASE WHEN FSTATUS = 270 THEN 1 ELSE 0 END) AS evection,
+			SUM(CASE WHEN FSTATUS = 271 THEN 1 ELSE 0 END) AS vacate
+		FROM TB_WELDER
 	</select>
 </mapper>

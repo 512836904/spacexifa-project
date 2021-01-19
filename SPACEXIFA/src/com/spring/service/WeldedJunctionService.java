@@ -37,7 +37,17 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	List<WeldedJunction> getJunctionByWelder(Page page, String welder,WeldDto dto);
-	
+
+	/**
+	 * 焊缝对应的焊机任务信息
+	 * @param page 分页
+	 * @param dto
+	 * @param str
+	 * @param welderid 焊机编号
+	 * @return
+	 */
+	List<WeldedJunction> getJunctionHistory(Page page,String search);
+
 	/**
 	 * 判断任务编号是否存在
 	 * @param wjno 悍缝编号

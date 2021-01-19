@@ -69,9 +69,11 @@ public class Clientconnect
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+          System.out.println("otc FileNotFoundException");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+            System.out.println("otc IOException");
 		}
       
       bootstrap.group(eventLoop);  

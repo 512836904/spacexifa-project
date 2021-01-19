@@ -51,4 +51,5 @@ public interface PersonService {
 	 * @return
 	 */
 	String getInsidByFid(BigInteger fid);
+
 }

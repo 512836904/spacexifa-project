@@ -25,7 +25,8 @@ public class Person {
 	private String valuenamex;
 	private String qualiname;
 	private String levename;
-	
+	private int FSTATUS; //焊工状态：0离线（默认）
+
 	public Person(){
 		super();
 	}
@@ -160,27 +161,12 @@ public class Person {
 	public void setValuenamex(String valuenamex){
 		this.valuenamex = valuenamex;
 	}
-	public Person(BigInteger id,String welderno,String name,String cellphone,int leveid,String cardnum,int quali,Date createdate,Date updatedate,BigInteger creater,BigInteger updater,BigInteger owner,BigInteger insid,String back,int val,int type,String valuename,String insname,String valuenamex) {
-		super();
-		this.id = id;
-		this.welderno = welderno;
-		this.name = name;
-		this.cellphone = cellphone;
-		this.leveid = leveid;
-		this.cardnum = cardnum;
-		this.quali = quali;
-		this.createdate = createdate;
-		this.updatedate = updatedate;
-		this.creater = creater;
-		this.updater = updater;
-		this.owner = owner;
-		this.back = back;
-		this.val = val;
-		this.type = type;
-		this.valuename = valuename;
-		this.insname = insname;
-		this.insid = insid;
-		this.valuenamex = valuenamex;
+
+	public int getFSTATUS() {
+		return FSTATUS;
 	}
 
+	public void setFSTATUS(int FSTATUS) {
+		this.FSTATUS = FSTATUS;
+	}
 }

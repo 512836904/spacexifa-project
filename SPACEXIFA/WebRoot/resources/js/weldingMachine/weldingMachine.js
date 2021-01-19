@@ -300,14 +300,14 @@ function searchData(){
 	var sposition = $("#sposition").textbox('getValue');
 	var sip = $("#sip").textbox('getValue');
 	var smodel = $("#smodel").combobox("getValue");
-	var sid = "";
-	if($("input[name='statusId']:checked").val()){
-		sid = $("input[name='statusId']:checked").val();
-	}
-	var isnetworking = "";
-	if($("input[name='sisnetworkingId']:checked").val()){
-		isnetworking = $("input[name='sisnetworkingId']:checked").val();
-	}
+	// var sid = "";
+	// if($("input[name='statusId']:checked").val()){
+	// 	sid = $("input[name='statusId']:checked").val();
+	// }
+	// var isnetworking = "";
+	// if($("input[name='sisnetworkingId']:checked").val()){
+	// 	isnetworking = $("input[name='sisnetworkingId']:checked").val();
+	// }
 	if(sequipmentNo != ""){
 		if(search == ""){
 			search += " fequipment_no LIKE "+"'%" + sequipmentNo + "%'";
@@ -371,20 +371,20 @@ function searchData(){
 			search += " AND dict.fvalue LIKE "+"'%" + smodel + "%'";
 		}
 	}
-	if(sid != ""){
-		if(search == ""){
-			search += " d.fvalue LIKE "+"'%" + sid + "%'";
-		}else{
-			search += " AND d.fvalue LIKE "+"'%" + sid + "%'";
-		}
-	}
-	if(isnetworking != ""){
-		if(search == ""){
-			search += " fisnetworking LIKE "+"'%" + isnetworking + "%'";
-		}else{
-			search += " AND fisnetworking LIKE "+"'%" + isnetworking + "%'";
-		}
-	}
+	// if(sid != ""){
+	// 	if(search == ""){
+	// 		search += " d.fvalue LIKE "+"'%" + sid + "%'";
+	// 	}else{
+	// 		search += " AND d.fvalue LIKE "+"'%" + sid + "%'";
+	// 	}
+	// }
+	// if(isnetworking != ""){
+	// 	if(search == ""){
+	// 		search += " fisnetworking LIKE "+"'%" + isnetworking + "%'";
+	// 	}else{
+	// 		search += " AND fisnetworking LIKE "+"'%" + isnetworking + "%'";
+	// 	}
+	// }
 	$('#weldingmachineTable').datagrid('load', {
 		"searchStr" : search
 	});

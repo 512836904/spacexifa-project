@@ -74,6 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div  style="float: left;">
 				<a href="javascript:searchData();" class="easyui-linkbutton" iconCls="icon-select">查找</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-setwps">白名单下发</a>&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 		</div>
 	</div>
@@ -89,20 +90,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 	    <table id="welderTable" style="table-layout: fixed; width:100%;"></table>
 		<!-- 自定义多条件查询 -->
-	    <div id="searchdiv" class="easyui-dialog" style="width:800px; height:400px;" closed="true" buttons="#searchButton" title="自定义条件查询">
-	    	<div id="div0">
-		    	<select class="fields" id="fields"></select>
-		    	<select class="condition" id="condition"></select>
-		    	<input class="content" id="content"/>
-		    	<select class="joint" id="joint"></select>
-		    	<a href="javascript:newSearchWelder();" class="easyui-linkbutton" iconCls="icon-add"></a>
-		    	<a href="javascript:removeSerach();" class="easyui-linkbutton" iconCls="icon-remove"></a>
-	    	</div>
-	    </div>
-	    <div id="searchButton">
-			<a href="javascript:searchWelder();" class="easyui-linkbutton" iconCls="icon-ok">查询</a>
-			<a href="javascript:close();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
-		</div>
+<%--	    <div id="searchdiv" class="easyui-dialog" style="width:800px; height:400px;" closed="true" buttons="#searchButton" title="自定义条件查询">--%>
+<%--	    	<div id="div0">--%>
+<%--		    	<select class="fields" id="fields"></select>--%>
+<%--		    	<select class="condition" id="condition"></select>--%>
+<%--		    	<input class="content" id="content"/>--%>
+<%--		    	<select class="joint" id="joint"></select>--%>
+<%--		    	<a href="javascript:newSearchWelder();" class="easyui-linkbutton" iconCls="icon-add"></a>--%>
+<%--		    	<a href="javascript:removeSerach();" class="easyui-linkbutton" iconCls="icon-remove"></a>--%>
+<%--	    	</div>--%>
+<%--	    </div>--%>
+<%--	    <div id="searchButton">--%>
+<%--			<a href="javascript:searchWelder();" class="easyui-linkbutton" iconCls="icon-ok">查询</a>--%>
+<%--			<a href="javascript:close();" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>--%>
+<%--		</div>--%>
 	    <!-- 添加修改 -->
 		<div id="dlg" class="easyui-dialog" style="width: 400px; height: 500px; padding:10px 20px" closed="true" buttons="#dlg-buttons">
 			<form id="fm" class="easyui-form" method="post" data-options="novalidate:true"><br/>
@@ -117,11 +118,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            </div>
 	            <div class="fitem">
 	            	<lable><span class="required"></span>手机</lable>
-	                <input name="cellphone" type="easyui-textbox" class="easyui-textbox">
+	                <input name="cellphone" type="text" class="easyui-textbox">
 	            </div>
 	            <div class="fitem">
-	            	<lable><span class="required">*</span>卡号</lable>
-	                <input name="cardnum" class="easyui-textbox" data-options="required:true">
+	            	<lable><span class="required"></span>卡号</lable>
+	                <input name="cardnum" class="easyui-textbox">
 	            </div>
 	            <div class="fitem">
 					<lable><span class="required">*</span>级别</lable>
@@ -134,6 +135,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            <div class="fitem">
 					<lable><span class="required">*</span>部门</lable>
 					<select class="easyui-combobox" name="owner" id="owner" data-options="required:true,editable:false"></select>
+	        	</div>
+				<div class="fitem">
+					<lable><span class="required">*</span>状态</lable>
+					<select class="easyui-combobox" name="fstatus" id="fstatus" data-options="required:true,editable:false"></select>
 	        	</div>
 				<div class="fitem">
 	            	<lable>备注</lable>

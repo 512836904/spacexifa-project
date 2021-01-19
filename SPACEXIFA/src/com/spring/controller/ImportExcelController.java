@@ -246,13 +246,13 @@ public class ImportExcelController {
 			File file  = new File(path);
 			file.delete();
 			for(Person w:we){
-				if(w.getWelderno().length()>8){
-					w.setWelderno(w.getWelderno().substring(0, 8));
-				}else if(w.getWelderno().length()<8){
-					for(int i=w.getWelderno().length();i<8;i++){
-						w.setWelderno("0"+w.getWelderno());
-					}
-				}
+//				if(w.getWelderno().length()>8){
+//					w.setWelderno(w.getWelderno().substring(0, 8));
+//				}else if(w.getWelderno().length()<8){
+//					for(int i=w.getWelderno().length();i<8;i++){
+//						w.setWelderno("0"+w.getWelderno());
+//					}
+//				}
 				w.setLeveid(dm.getvaluebyname(8,w.getLevename()));
 				w.setQuali(dm.getvaluebyname(7, w.getQualiname()));
 				w.setOwner(wmm.getInsframeworkByName(w.getInsname()));

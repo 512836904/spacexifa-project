@@ -248,6 +248,22 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
+	public BigInteger getWorkingJunction(WeldDto dto) {
+		return ds.getWorkingJunction(dto);
+	}
+
+
+	@Override
+	public DataStatistics getEleVolByJunction(WeldDto dto) {
+		return ds.getEleVolByJunction(dto);
+	}
+
+	@Override
+	public BigInteger getStandJunction(WeldDto dto) {
+		return ds.getStandJunction(dto);
+	}
+
+	@Override
 	public BigInteger getStaringUpTimeByWelder(BigInteger itemid, WeldDto dto) {
 		return ds.getStaringUpTimeByWelder(itemid, dto); 
 	}
@@ -421,5 +437,10 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	@Override
 	public List<DataStatistics> findJobSetNormRate(String startTime) {
 		return ds.findJobSetNormRate(startTime);
+	}
+
+	@Override
+	public List<DataStatistics> countWelderNumByIid() {
+		return ds.countWelderNumByIid();
 	}
 }

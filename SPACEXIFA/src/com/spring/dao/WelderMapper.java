@@ -21,4 +21,6 @@ public interface WelderMapper extends Mapper<Welder> {
 	int getWeldernoCount(@Param("wno")String wno);
 	
 	List<Welder> getFreeWelder();
+
+	List<Welder> findAllWelderInfo();
 }

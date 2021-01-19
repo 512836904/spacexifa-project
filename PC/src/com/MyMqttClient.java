@@ -233,14 +233,13 @@ public class MyMqttClient {
         if (str.charAt(0) == '{') {
             try {
                 JSONObject taskstr = JSONObject.parseObject(str);
-
-                if (taskstr.getString("type").equals("starttask") || taskstr.getString("type").equals("nexttask")) {
+                if ("starttask".equals(taskstr.getString("type"))){
                     if (taskarray.isEmpty()) {
                         taskarray.add(taskstr.getString("machine"));  //设备号
                         taskarray.add(taskstr.getString("welderid")); //焊工id
                         taskarray.add(taskstr.getString("cardid"));   //电子跟踪卡id
                         taskarray.add(taskstr.getString("wpsid"));    //工艺id
-                        taskarray.add(taskstr.getString("productid")); //产品号id
+                        taskarray.add(taskstr.getString("productid")); //产品号id(返修状态)
                         taskarray.add(taskstr.getString("workprocedureid")); //工序号id
                         taskarray.add(taskstr.getString("workstepid")); //工步号id
                         taskarray.add(taskstr.getString("weldlineid")); //焊缝号id
@@ -266,10 +265,9 @@ public class MyMqttClient {
                             taskarray.add(taskstr.getString("weldlineid"));
                         }
                     }
-
                     this.server.NS.mysql.db.taskarray = taskarray;
                     this.server.NS.websocket.taskarray = taskarray;
-                } else if (taskstr.getString("type").equals("overtask")) {
+                } else if ("overtask".equals(taskstr.getString("type"))) {
                     if (!taskarray.isEmpty() && taskarray.contains(taskstr.getString("machine"))) {
                         int index = taskarray.indexOf(taskstr.getString("machine"));
                         taskarray.remove(index);

@@ -41,8 +41,13 @@
     </div>
     <div id="dg_btn">
         <div style="margin-bottom: 5px;">
-            任务编号：
-            <input class="easyui-textbox" name="junctionno" id="junctionno"/>
+            焊缝名称：
+            <input class="easyui-textbox" name="junctionname" id="junctionname"/>
+            正常/返修：
+            <select class="easyui-combobox" name="ftype" id="ftype" data-options="editable:false">
+                <option value="0">正常</option>
+                <option value="1">返修</option>
+            </select>
             时间：
             <input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">--
             <input class="easyui-datetimebox" name="dtoTime2" id="dtoTime2">

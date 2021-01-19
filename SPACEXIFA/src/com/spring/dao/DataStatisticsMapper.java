@@ -37,6 +37,12 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	BigInteger getStandytimeByWelder(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 
 	BigInteger getStandytimeByJunction(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
+
+	BigInteger getWorkingJunction(@Param("dto") WeldDto dto);
+
+	BigInteger getStandJunction(@Param("dto") WeldDto dto);
+
+	DataStatistics getEleVolByJunction(@Param("dto") WeldDto dto);
 	
 	DataStatistics getWorkTimeAndEleVol(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 	
@@ -115,4 +121,6 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> findSupergageCumulativeNumber(@Param("startTime")String startTime,@Param("itemType")int itemType);
 
 	List<DataStatistics> findJobSetNormRate(@Param("startTime")String startTime);
+
+	List<DataStatistics> countWelderNumByIid();
 }

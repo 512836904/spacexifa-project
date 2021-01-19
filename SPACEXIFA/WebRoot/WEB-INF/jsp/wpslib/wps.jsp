@@ -76,6 +76,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<div>
 					<a href="javascript:searchWps();" class="easyui-linkbutton" iconCls="icon-select">查找</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="javascript:allshow();" class="easyui-linkbutton" iconCls="icon-redo">工作号一键展示</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="javascript:allcancel();" class="easyui-linkbutton" iconCls="icon-undo">工作号一键取消展示</a>&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			</div>
 		</div>
@@ -177,18 +179,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input class="easyui-textbox" name="PART_DRAWING_NUMBER" id="PART_DRAWING_NUMBER"  data-options="required:true"/>
 						<lable><span class="required">*</span>零件名：</lable>
 						<input class="easyui-textbox" name="PART_NAME" id="PART_NAME"  data-options="required:true"/>
-						<lable><span class="required">*</span>原料：</lable>
-						<input class="easyui-textbox" name="raw_materi" id="raw_materi"  data-options="required:true"/>
-					</div>
-					<div class="fitem">
 						<lable><span class="required">*</span>工艺参数：</lable>
 						<input class="easyui-textbox" name="craft_param" id="craft_param"  data-options="required:true"/>
+
+					</div>
+<%--					<div class="fitem">--%>
+<%--						<lable><span class="required">*</span>原料：</lable>--%>
+<%--						<input class="easyui-textbox" name="raw_materi" id="raw_materi"  data-options="required:true"/>--%>
 <%--						<lable><span class="required">*</span>工序：</lable>--%>
 <%--						<input class="easyui-textbox" name="process" id="process"  data-options="required:true"/>--%>
 <%--						<lable><a href="javascript:junctionButton();" class="easyui-linkbutton">焊缝查找带回</a></lable>--%>
 <%--						<input class="easyui-textbox" id="junctionName" name="junctionName" readonly data-options="required:true"/>--%>
 <%--						<input type="hidden" id="junctionId" name="junctionId">--%>
-					</div>
+<%--					</div>--%>
 				</div>
 			</form>
 			<table id="productionTable" style="table-layout: fixed; width:100%;height: 450px"></table>

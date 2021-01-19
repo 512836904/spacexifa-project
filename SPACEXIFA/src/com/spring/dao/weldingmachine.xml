@@ -20,6 +20,7 @@
         <result property="updater" column="fupdater"/>
         <result property="mvalueid" column="mid"></result>
         <result property="mvaluename" column="mname"></result>
+        <result property="fgather_no" column="fgather_no"></result>
         <association property="insframeworkId" column="finsframework_id" javaType="com.spring.model.Insframework">
             <id property="id" column="iid"></id>
             <result property="name" column="iname"></result>
@@ -223,14 +224,13 @@
 	</select>
 
     <select id="findMachineByFip" parameterType="java.lang.String" resultMap="wmMap">
-        SELECT * FROM(
-        SELECT wm.FID,wm.FIP,wm.FEQUIPMENT_NO,g.FGATHER_NO
-        FROM TB_WELDING_MACHINE wm LEFT JOIN TB_GATHER g ON wm.FGATHER_ID = g.FID
-        WHERE 1 = 1
         <if test="ip != null and ip != ''">
-            AND wm.FIP = #{ip}
+            SELECT * FROM (
+                SELECT wm.FID,wm.FIP,wm.FEQUIPMENT_NO,g.FGATHER_NO
+                FROM TB_WELDING_MACHINE wm LEFT JOIN TB_GATHER g ON wm.FGATHER_ID = g.FID
+                WHERE wm.FIP = #{ip}
+            ) WHERE 1 >= ROWNUM
         </if>
-        ) WHERE 1 >= ROWNUM
     </select>
 
     <select id="findMachineByGatherNo" resultMap="wmMap" parameterType="java.lang.String">

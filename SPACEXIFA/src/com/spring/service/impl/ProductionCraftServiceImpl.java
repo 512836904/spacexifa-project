@@ -41,19 +41,18 @@ public class ProductionCraftServiceImpl implements ProductionCraftService {
     public int addLiarbryJunction(BigInteger TRACKINGCARD_ID, BigInteger PRODUCTION_ID) {
         int i = 0;
         ProductionCraft craft = new ProductionCraft();
+        List<ProductionCraft> junctionList = null;
         if (null != PRODUCTION_ID && TRACKINGCARD_ID != null){
             craft.setTRACKINGCARD_ID(TRACKINGCARD_ID);//电子跟踪卡id
             craft.setPRODUCTION_ID(PRODUCTION_ID);//生产工艺id
             //根据电子跟踪卡id、生产工艺id、焊缝id查询关联表
-            List<ProductionCraft> junctionList = mapper.getLiarbryJunctionById(craft);
-            if (null != junctionList && junctionList.size() != 0){
+            junctionList = mapper.getLiarbryJunctionById(craft);
+            if (null != junctionList && junctionList.size() > 0){
                 //已经存在关联记录，不再增加
+                i = 1;
             }else {
                 //关联记录不存在，则新增
-                int i1 = mapper.addLiarbryJunction(craft);
-                if (i1 != 0){
-                    i = i1;
-                }
+                i = mapper.addLiarbryJunction(craft);
             }
         }
         return i;

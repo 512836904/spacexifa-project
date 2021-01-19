@@ -24,4 +24,6 @@ public interface TdMapper {
 	List<Td> getAllPositions(@Param("parent")BigInteger parent);
 	Td getLiveTime(@Param("time")String time,@Param("totime")String totime,@Param("machineid")BigInteger machineid);
 	String getBootTime(@Param("time")String time,@Param("machineId")BigInteger machineId);
+
+	Td countWelderStatusNum();
 }

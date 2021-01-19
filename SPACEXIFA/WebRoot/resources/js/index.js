@@ -2,11 +2,9 @@ $(function(){
 //	getHiddenMenu();
 	checkBrowser();
 	getUserInsframework();
-	addWelcom("项目展板","index.html");
+	addWelcom("焊接信息化管理平台","index.html");
 	addWelcom("生产管理展板","production.html");
-	addWelcom("质量管理展板","quality.html");
-	addWelcom("工作号管理展板","worknumber.html");
-	$("#tabs").tabs('select','项目展板');
+	$("#tabs").tabs('select','焊接信息化管理平台');
 	// addWelcom("欢迎使用","first.jsp");
 	tabsIncident();
 	$("#persondiv").hide();
@@ -39,6 +37,7 @@ function getUserInsframework(){
 			for(var r=0;r<result.ary.length;r++){
 				resourceary.push(result.ary[r].resource);
 			}
+			// anaylsis(result.ipurl);
 			anaylsis(result.ipurl);
 		},
 		error : function(errorMsg){
@@ -70,6 +69,9 @@ function loadxmlDoc(file) {
 		xmlDoc.load(file); //chrome没有load方法
 	} catch (e) {
 		//针对Chrome,不过只能通过http访问,通过file协议访问会报错
+		// if (file.indexOf("10.110.11.3") !== -1){
+		// 	file = "http://10.110.11.3:9090/ConfigFile/SPACEXIFA.xml";
+		// }
 		var xmlhttp = new window.XMLHttpRequest();
 		xmlhttp.open("GET", file, false);
 		xmlhttp.send(null);

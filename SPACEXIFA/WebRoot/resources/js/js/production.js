@@ -1,6 +1,8 @@
 var machine = new Array(), off = new Array(), on = new Array(), warn = new Array(), stand = new Array(),
     cleardata = new Array(), welderNum = new Array();
 var websocketURL;
+var onLineWelder = new Array();//在线焊工
+var welderStatusNum;
 $(function () {
     workgas();
     workwelder();
@@ -15,7 +17,6 @@ $(function () {
     // 1. 实例化对象
     var myChart = echarts.init(document.querySelector("#Left1"));
     // 2. 指定配置和数据
-    var index = 0;
     var option = {
         grid: {
             left: '1%',
@@ -24,7 +25,6 @@ $(function () {
             top: '16%',
             containLabel: true
         },
-
         tooltip: {
             trigger: "axis",
             formatter: '{b} : {c}',
@@ -120,12 +120,11 @@ $(function () {
                     }
                 },
                 formatter: function (params) {
-                    if (index === 7) {
-                        index = 0;
-                    }
-                    index+=1;
+                    var welderArray = myChart.getOption().yAxis[0].data;
+                    var number = $.inArray(params, welderArray);
+                    number += 1;
                     return [
-                        '{num|' + index + '}' + params
+                        '{num|' + number + '}' + params
                     ].join('\n')
                 }
             }
@@ -140,16 +139,17 @@ $(function () {
                     color: '#00f2f1',
                     // fontSize: '12'
                 },
-                // formatter: function(value) {
-                //     if (value >= 10000) {
-                //         return (value / 10000).toLocaleString() + '万';
-                //     } else {
-                //         return value.toLocaleString();
-                //     }
-                // },
+                formatter: function(value) {
+                    // if (value >= 10000) {
+                    //     return (value / 10000).toLocaleString() + '万';
+                    // } else {
+                    //     return value.toLocaleString();
+                    // }
+                    return Number(value).toFixed(3);
+                }
             },
             data: [20, 16, 14, 11, 9, 7, 3],
-        },],
+        }],
         series: [{
             name: '金额',
             type: 'bar',
@@ -499,8 +499,8 @@ function teamgas() {
             name: "电能消耗(KWH)",
             nameLocation: 'end', // 坐标轴名称显示位置
             min: 0,
-            max: 100,
-            interval: 20,
+            //: 100,
+            //interval: 20,
 
             nameTextStyle: {
                 // left: '2%',
@@ -529,8 +529,8 @@ function teamgas() {
                 type: "value",
                 name: "气体消耗(L)",
                 min: 0,
-                max: 2000,
-                interval: 400,
+                //max: 2000,
+                //interval: 400,
                 nameTextStyle: {
                     color: 'rgb(92, 183, 215)',
                 },
@@ -669,8 +669,8 @@ function workgas() {
             type: "value",
             //scale:true,
             min: 0,
-            max: 100,
-            interval: 20,
+            //max: 100,
+            //interval: 20,
             name: "电能消耗(KWH)",
             nameLocation: 'end', // 坐标轴名称显示位置
             nameTextStyle: {
@@ -700,8 +700,8 @@ function workgas() {
                 type: "value",
                 //scale:true,
                 min: 0,
-                max: 2000,
-                interval: 400,
+                //max: 2000,
+                //interval: 400,
                 name: "气体消耗(L)",
                 nameTextStyle: {
                     color: 'rgb(92, 183, 215)',
@@ -788,7 +788,6 @@ function workwelder() {
     // 2. 指定配置和数据
     const data = [13, 16, 13, 11, 10, 8.5];
     const sideData = data.map(item => item + 0.53);
-
     var option = {
         tooltip: {
             trigger: 'axis',
@@ -826,7 +825,7 @@ function workwelder() {
             type: 'value',
             min: 0,
             // max: 18,
-            interval: 2,
+            //interval: 2,
             //坐标轴
             axisLine: {
                 show: false
@@ -863,46 +862,7 @@ function workwelder() {
             },
             data: data,
             barGap: 0
-        }
-        // , {
-        //     type: 'bar',
-        //     barWidth: 6,  // 柱子侧边的宽度
-        //     itemStyle: {
-        //         normal: {
-        //             color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-        //                 offset: 0,
-        //                 color: "rgb(77, 90, 0)" // 0% 处的颜色
-        //             }, {
-        //                 offset: 0.6,
-        //                 color: "rgb(153, 178, 0)" // 60% 处的颜色
-        //             }, {
-        //                 offset: 1,
-        //                 color: "rgb(217, 252, 1)" // 100% 处的颜色
-        //             }], false)
-        //         }
-        //     },
-        //     barGap: 0,
-        //     data: sideData
-        // }, {
-        //     name: 'b',
-        //     tooltip: {
-        //         show: false
-        //     },
-        //     type: 'pictorialBar',
-        //     itemStyle: {
-        //         borderWidth: 0.9,
-        //         borderColor: 'rgb(137, 153, 37)',
-        //         color: 'rgb(212, 247, 1)',
-        //     },
-        //     symbol: 'path://M 0,0 l 120,0 l -30,60 l -120,0 z',
-        //     symbolSize: ['25', '10'],
-        //     symbolOffset: ['0', '-10'],
-        //     symbolRotate: -3,
-        //     symbolPosition: 'end',
-        //     data: data,
-        //     z: 3
-        // }
-        ]
+        }]
     };
     // 3. 把配置给实例对象
     myChart.setOption(option);
@@ -957,7 +917,7 @@ function teamwelder() {
             type: 'value',
             min: 0,
             // max: 18,
-            interval: 2,
+            //interval: 2,
             //坐标轴
             axisLine: {
                 show: false
@@ -1101,7 +1061,7 @@ function teammateral() {
             // name: "焊材消耗",
             type: 'value',
             min: 0,
-            interval: 200,
+            //interval: 200,
             nameTextStyle: {
                 color: 'rgb(92, 183, 215)',
             },
@@ -1207,7 +1167,7 @@ function workmateral() {
             // name: "焊材消耗",
             type: 'value',
             min: 0,
-            interval: 200,
+            //interval: 200,
             nameTextStyle: {
                 color: 'rgb(92, 183, 215)',
             },
@@ -1260,7 +1220,6 @@ function workmateral() {
     // 1. 实例化对象
     var myChart = echarts.init(document.querySelector("#Left2"));
     // 2. 指定配置和数据
-    var index = 0;
     var colorList = ['#f36c6c', '#e6cf4e', '#20d180', '#0093ff'];
     var dataList = [20, 16, 14, 11, 9, 7, 3];
     var option = {
@@ -1271,7 +1230,6 @@ function workmateral() {
             top: '16%',
             containLabel: true
         },
-
         tooltip: {
             trigger: "axis",
             formatter: '{b} : {c}',
@@ -1351,7 +1309,6 @@ function workmateral() {
                 }
             },
             data: ['张三', '张飞', '李伟', '张天', '宋龙', '胖虎', '刘伟'],
-
             axisLabel: {
                 margin: 100,
                 padding: [0, 0, 0, 0],
@@ -1368,12 +1325,11 @@ function workmateral() {
                     }
                 },
                 formatter: function (params) {
-                    if (index == 7) {
-                        index = 0;
-                    }
-                    index++;
+                    var welderArray = myChart.getOption().yAxis[0].data;
+                    var number = $.inArray(params, welderArray);
+                    number += 1;
                     return [
-                        '{num|' + index + '}' + params
+                        '{num|' + number + '}' + params
                     ].join('\n')
 
                 }
@@ -1389,16 +1345,17 @@ function workmateral() {
                     color: '#00f2f1',
                     // fontSize: '12'
                 },
-                // formatter: function(value) {
-                //     if (value >= 10000) {
-                //         return (value / 10000).toLocaleString() + '万';
-                //     } else {
-                //         return value.toLocaleString();
-                //     }
-                // },
+                formatter: function(value) {
+                    // if (value >= 10000) {
+                    //     return (value / 10000).toLocaleString() + '万';
+                    // } else {
+                    //     return value.toLocaleString();
+                    // }
+                    return Number(value).toFixed(3);
+                }
             },
             data: dataList,
-        },],
+        }],
         series: [{
             name: '金额',
             type: 'bar',
@@ -1463,19 +1420,19 @@ function workmateral() {
                 textAlign: 'center',
                 textStyle: {
                     fontWeight: 'normal',
-                    fontSize: '14',
+                    fontSize: '16',
                     color: '#fff',
                     textAlign: 'center',
                 },
             }, {
                 text: '焊工状态',
-                left: '70%',
+                left: '73%',
                 top: '15%',
                 textAlign: 'center',
                 textStyle: {
                     color: '#fff',
                     fontWeight: 'normal',
-                    fontSize: '14',
+                    fontSize: '16',
                     textAlign: 'center',
                 },
             }],
@@ -1570,11 +1527,11 @@ function workmateral() {
             zlevel: 10,
             itemStyle: {
                 normal: {
-                    // borderColor: '#373454',
-                    // borderWidth: '5',
+                    borderColor: '#373454',
+                    borderWidth: '1',
                 },
             },
-            color: ["#E6AF08", "#e8501b", "#0e6de9", "#00af6d"],
+            color: ["#00af6d", "#e8501b", "#E6AF08", "#0e6de9"],
             label: {
                 normal: {
                     show: true,
@@ -1582,7 +1539,7 @@ function workmateral() {
                         return params.value + '\n' + params.name
                     },
                     textStyle: {
-                        // fontSize: 28,
+                        fontSize: 17,
                     },
                     position: 'outside'
                 },
@@ -1613,7 +1570,7 @@ function workmateral() {
             {
                 type: 'pie',
                 radius: ["12%", "13%"],
-                center: ['70%', '65%'],
+                center: ['73%', '65%'],
                 hoverAnimation: false,
                 labelLine: {
                     normal: {
@@ -1637,7 +1594,7 @@ function workmateral() {
             }, {
                 type: 'pie',
                 radius: ["0%", "9%"],
-                center: ['70%', '65%'],
+                center: ['73%', '65%'],
                 hoverAnimation: false,
                 labelLine: {
                     normal: {
@@ -1661,7 +1618,7 @@ function workmateral() {
             }, {
                 type: 'pie',
                 radius: ["53%", "54%"],
-                center: ['70%', '65%'],
+                center: ['73%', '65%'],
                 hoverAnimation: false,
                 labelLine: {
                     normal: {
@@ -1687,7 +1644,7 @@ function workmateral() {
                 stack: '焊工状态',
                 type: 'pie',
                 radius: ['15%', '39%'],
-                center: ['70%', '65%'],
+                center: ['73%', '65%'],
                 // roseType: 'radius',
                 zlevel: 10,
                 label: {
@@ -1697,7 +1654,7 @@ function workmateral() {
                             return params.value + '\n' + params.name
                         },
                         textStyle: {
-                            // fontSize: 28,
+                            fontSize: 17,
                         },
                         position: 'outside'
                     },
@@ -1718,12 +1675,20 @@ function workmateral() {
                         show: false
                     }
                 },
-                color: ['#FDC008', '#0F77FF'],
+                itemStyle: {
+                    normal: {
+                        borderColor: '#373454',
+                        borderWidth: '1',
+                    }
+                },
+                color: ["#ff2a5c", "#00af6d", "#0F77FF", "#FDC008"],
                 data: [
                     {value: 5, name: '离线'},
-                    {value: 20, name: '在线'}
+                    {value: 5, name: '在线'},
+                    {value: 5, name: '公出'},
+                    {value: 20, name: '请假'}
                 ]
-            },
+            }
         ]
     }
 
@@ -2031,6 +1996,7 @@ function backstageLoadData() {
         success: function (result) {
             if (result) {
                 welderNum = eval(result.rows);
+                welderStatusNum = eval(result.welderStatusNum);
             }
         },
         error: function (errorMsg) {
@@ -2087,7 +2053,6 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
 //	console.log("onMessageArrived:"+message.payloadString);
     var redata = message.payloadString;
-    var onLineWelder = new Array();//在线焊工
     if (redata.length === 405 || redata.length % 135 === 0) {
         for (var i = 0; i < redata.length; i += 135) {
             for (var f = 0; f < machine.length; f++) {
@@ -2160,33 +2125,35 @@ function onMessageArrived(message) {
                 }
             }
             //焊工状态处理
-            for (var y = 0; y < welderNum.length; y++) {
-                if (redata.substring(0 + i, 4 + i) != "0000") {  //焊工号判断
-                    var fwelder_no = parseInt(welderNum[y].fwelder_no, 10);//焊工编号
-                    var welder_no = parseInt(redata.substring(0 + i, 4 + i), 10);
-                    if (fwelder_no == welder_no) {
-                        var num;
-                        num = $.inArray(parseInt(welder_no, onLineWelder));
-                        if (num != (-1)) {
-                            onLineWelder.push(welder_no);
-                        }
+            for (var index in welderNum) {
+                var welderid = redata.substring(i, 4 + i); //焊工id
+                if (parseInt(welderid) === welderNum[index].fid) {
+                    var num = $.inArray(parseInt(welderid,10), onLineWelder);
+                    //查找在线焊工数组，没有（-1）则增加
+                    if (num == (-1)) {
+                        onLineWelder.push(parseInt(welderid,10));
                     }
                 }
             }
         }
     }
-    var lixian = welderNum.length - onLineWelder.length;
+    var noOnLine = welderNum.length - onLineWelder.length; //非在线人数
+    var evection = welderStatusNum.evection;    //公出
+    var vacate = welderStatusNum.vacate;    //请假
+    var lixian = noOnLine - evection - vacate;
     var machineStatus = echarts.init(document.querySelector("#Middle1"));
     var option = machineStatus.getOption();
     option.series[3].data = [
         {value: on.length, name: '工作', id: 0},
-        {value: stand.length, name: '待机', id: 1},
-        {value: warn.length, name: '故障', id: 2},
-        {value: off.length, name: '关机', id: 3}
+        {value: warn.length, name: '故障', id: 1},
+        {value: off.length, name: '关机', id: 2},
+        {value: stand.length, name: '待机', id: 3}
     ];
     option.series[7].data = [
-        {value: onLineWelder.length, name: '在线', id: 0},
-        {value: lixian, name: '离线', id: 1}
+        {value: lixian, name: '离线', id: 0},
+        {value: onLineWelder.length, name: '在线', id: 1},
+        {value: evection, name: '公出', id: 2},
+        {value: vacate, name: '请假',id: 3}
     ];
     machineStatus.setOption(option);
 }

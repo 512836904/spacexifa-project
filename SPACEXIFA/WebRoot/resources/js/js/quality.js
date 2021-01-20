@@ -584,7 +584,7 @@ function workstanders() {
             // name: "焊材消耗",
             type: 'value',
             min: 0,
-            interval: 200,
+            //interval: 200,
             nameTextStyle: {
                 color: 'rgb(92, 183, 215)',
             },
@@ -617,9 +617,7 @@ function workstanders() {
                         color: '#ffc11f'
                     }], false),
                     barBorderRadius: [2, 2, 0, 0] //（顺时针左上，右上，右下，左下）
-
                 }
-
             },
             data: [600, 843, 700, 854, 500]
         }]
@@ -685,7 +683,7 @@ function teamstanders() {
             // name: "焊材消耗",
             type: 'value',
             min: 0,
-            interval: 200,
+            //interval: 200,
             nameTextStyle: {
                 color: 'rgb(92, 183, 215)',
             },

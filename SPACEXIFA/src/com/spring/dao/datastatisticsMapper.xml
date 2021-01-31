@@ -708,8 +708,8 @@
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -727,8 +727,8 @@
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -746,8 +746,8 @@
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -798,8 +798,8 @@
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -874,17 +874,18 @@
 
     <!-- 焊接时长及平均电流电压 -->
     <select id="getWorkTimeAndEleVolByWelder" resultMap="dataMap">
-        SELECT sum(electricity) electricity,sum(voltage) voltage,sum(worktime) worktime,sum(time) time from (
-        select avg(felectricity) electricity,avg(fvoltage) voltage,sum(fworktime) worktime,0 time from tb_work w
+        SELECT sum(electricity) electricity,sum(voltage) voltage,sum(worktime) worktime,sum(wirefeedrate) wirefeedrate,sum(time) time from (
+        select avg(felectricity) electricity,avg(fvoltage) voltage,sum(fworktime) worktime,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate,0 time from tb_work w
         INNER JOIN tb_insframework i on i.fid = w.fwelder_itemid left JOIN tb_insframework ins on ins.fid = i.fparent
         left JOIN tb_insframework insf on insf.fid = ins.fparent
+        LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and w.fmachinemodel=m.fmodel
         where 1=1
         <if test="itemid!=null and itemid!=''">
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -894,16 +895,17 @@
             </if>
         </if>
         union all
-        select 0 electricity,0 voltage,0 worktime,sum(falarmtime) time from tb_alarm w
+        select 0 electricity,0 voltage,0 worktime,sum((w.falarmtime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate,sum(falarmtime) time from tb_alarm w
         INNER JOIN tb_insframework i on i.fid = w.fwelder_itemid left JOIN tb_insframework ins on ins.fid = i.fparent
         left JOIN tb_insframework insf on insf.fid = ins.fparent
+        LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and w.fmachinemodel=m.fmodel
         where 1=1 and fstatus=99
         <if test="itemid!=null and itemid!=''">
             and (i.fid=#{itemid} or ins.fid=#{itemid} or insf.fid=#{itemid} or insf.fparent=#{itemid})
         </if>
         <if test="dto!=null and dto!=''">
-            <if test="dto.welderno!=null and dto.welderno!=''">
-                and fwelder_no = #{dto.welderno}
+            <if test="dto.personid!=null and dto.personid!=''">
+                and fwelder_id = #{dto.personid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
@@ -971,7 +973,7 @@
 
     <!--查询所有焊工编号，姓名 -->
     <select id="getAllWelder" resultMap="dataMap">
-        SELECT w.fwelder_no serialnumber,w.fname,i.fname insname FROM tb_welder w
+        SELECT w.fid fid,w.fwelder_no serialnumber,w.fname,i.fname insname FROM tb_welder w
         inner join tb_insframework i on w.Fowner=i.fid
         left JOIN tb_insframework ins on ins.fid = i.fparent
         left JOIN tb_insframework insf on insf.fid = ins.fparent
@@ -1164,7 +1166,7 @@
             </if>
         </if>
         GROUP BY j.fid, j.fequipment_no,i.fname
-        )temp group by fid,fequipment_no,fname,insid order by fid
+        )temp group by fid,fequipment_no,fname order by fid
     </select>
 
     <!-- 查询焊机超规范焊接时长 -->
@@ -1266,7 +1268,7 @@
         </if>
         GROUP BY j.fid,j.fwelder_no,j.fname
         )temp
-        group by fid,insname,fname,insid order by fid
+        group by fid,insname,fname order by fid
     </select>
 
     <!-- 查询焊工超规范焊接时长 -->
@@ -1329,51 +1331,54 @@
     <!-- 查询工件正常焊接时长 -->
     <select id="getWeldPieceInCount" resultMap="dataMap">
         select junction_name insname,sum(insid) insid,sum(hour) worktime from(
-        select j.fid,j.JUNCTION_NAME, 0 insid, 0 hour from tb_junction j
-        WHERE 1=1
-        <if test="junctionno!=null and junctionno!=''">
-            and j.JUNCTION_NAME like #{junctionno}
-        </if>
-        union all
-        SELECT j.fid, j.JUNCTION_NAME,SUM(a.fworktime) insid, 0 hour
-        FROM tb_junction j
-        INNER JOIN tb_work a ON j.fid=a.fjunction_id
-        WHERE 1=1
-        <if test="dto!=null and dto!=''">
-            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-                and a.fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+            select j.fid,j.JUNCTION_NAME, 0 insid, 0 hour from tb_junction j
+            WHERE 1=1
+            <if test="junctionno!=null and junctionno!=''">
+                and j.JUNCTION_NAME like #{junctionno}
             </if>
-            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-                and a.fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+            union all
+            SELECT j.fid, j.JUNCTION_NAME,SUM(a.fworktime) insid, 0 hour
+            FROM tb_junction j
+            INNER JOIN tb_work a ON j.fid=a.fjunction_id
+            WHERE 1=1
+            <if test="dto!=null and dto!=''">
+                <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
+                    and a.fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+                <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
+                    and a.fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+                <if test="dto.bloc!=null and dto.bloc!=''">
+                    and a.FPRODUCT_NUMBER_ID = #{dto.bloc}
+                </if>
             </if>
-            <if test="dto.bloc!=null and dto.bloc!=''">
-                and a.FPRODUCT_NUMBER_ID = #{dto.bloc}
+            <if test="junctionno!=null and junctionno!=''">
+                and j.JUNCTION_NAME like #{junctionno}
             </if>
-        </if>
-        <if test="junctionno!=null and junctionno!=''">
-            and j.JUNCTION_NAME like #{junctionno}
-        </if>
-        GROUP BY j.fid, j.JUNCTION_NAME
-        UNION ALL
-        SELECT j.fid, j.JUNCTION_NAME, 0 insid,SUM(a.fworktime) hour
-        FROM tb_junction j
-        INNER JOIN tb_work a ON j.fid=a.fjunction_id
-        WHERE 1=1 and a.fstatus=99
-        <if test="dto!=null and dto!=''">
-            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
-                and a.fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+            GROUP BY j.fid, j.JUNCTION_NAME
+            UNION ALL
+            SELECT j.fid, j.JUNCTION_NAME, 0 insid,SUM(a.fworktime) hour
+            FROM tb_junction j
+            INNER JOIN tb_work a ON j.fid=a.fjunction_id
+            LEFT JOIN tb_production_craft p on j.fid = p.fjunction
+            LEFT JOIN tb_library_junction l on p.fid = l.production_id
+            LEFT JOIN tb_welded_junction e on l.trackingcard_id = e.fid
+            WHERE a.fstatus=99
+            <if test="dto!=null and dto!=''">
+                <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
+                    and a.fstarttime &gt;= to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+                <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
+                    and a.fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+                <if test="dto.bloc!=null and dto.bloc!=''">
+                    and a.FPRODUCT_NUMBER_ID = #{dto.bloc}
+                </if>
             </if>
-            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">
-                and a.fendtime &lt;= to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss')
+            <if test="junctionno!=null and junctionno!=''">
+                and j.JUNCTION_NAME like #{junctionno}
             </if>
-            <if test="dto.bloc!=null and dto.bloc!=''">
-                and a.FPRODUCT_NUMBER_ID = #{dto.bloc}
-            </if>
-        </if>
-        <if test="junctionno!=null and junctionno!=''">
-            and j.JUNCTION_NAME like #{junctionno}
-        </if>
-        GROUP BY j.fid, j.JUNCTION_NAME
+            GROUP BY j.fid, j.JUNCTION_NAME
         )temp group by fid,JUNCTION_NAME,insid order by fid
     </select>
 
@@ -1495,33 +1500,39 @@
         </if>
     </select>
 
-    <!-- 	焊工工作排行榜 -->
+    <!-- 焊工工作排行榜(焊接时长) -->
     <select id="getWorkRank" resultMap="dataMap" useCache="true">
-        <!--		select sum(fworktime) /60/60 hour,w.fname,w.fwelder_no welderno,i.fname insname FROM  tb_work l-->
-        <!--		left JOIN  tb_welder w on w.fid = l.fwelder_id -->
-        <!--		INNER join tb_insframework i on i.fid = l.fwelder_itemid INNER join tb_insframework ins on ins.fid = i.fparent -->
-        <!--		where fstarttime >= to_date(#{time}, 'yyyy-mm-dd')-->
-        <!--		&lt;!&ndash; and fendtime &lt; date_sub(date_sub(#{time},interval -1 day),interval 0 minute) &ndash;&gt;-->
-        <!--		and to_date(#{time}, 'yyyy-mm-dd') - 1 > fendtime-->
-        <!--		<if test="parent!=null and parent!=''">-->
-        <!--			AND ins.fid=#{parent}-->
-        <!--		</if>-->
-        <!--		AND 10 >= rownum-->
-        <!--		group by w.fname,w.fwelder_no,i.fname ORDER by hour desc-->
-        <!--LIMIT 10 -->
         SELECT * FROM (
-        SELECT l.fwelder_id,w.FNAME,w.FWELDER_NO welderno,i.fname insname,SUM(fworktime)/3600 hour FROM tb_work l
-        INNER JOIN tb_welder w ON l.FWELDER_ID = w.fid
-        LEFT JOIN tb_insframework i on i.fid = w.FOWNER
-        WHERE 1 = 1
-        <if test="time != null and time != ''">
-            and l.fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
-        </if>
-        <if test="parent != null and parent != ''">
-            AND i.FPARENT = #{parent}
-        </if>
-        GROUP BY l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname
-        ORDER BY hour DESC
+            SELECT l.fwelder_id,w.FNAME,w.FWELDER_NO welderno,i.fname insname,SUM(fworktime)/3600 hour FROM tb_work l
+            INNER JOIN tb_welder w ON l.FWELDER_ID = w.fid
+            LEFT JOIN tb_insframework i on i.fid = w.FOWNER
+            WHERE 1 = 1
+            <if test="time != null and time != ''">
+                and l.fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
+            </if>
+            <if test="parent != null and parent != ''">
+                AND i.FPARENT = #{parent}
+            </if>
+            GROUP BY l.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname
+            ORDER BY hour DESC
+        ) WHERE 7 >= ROWNUM
+    </select>
+
+    <!-- 焊工工作排行榜(待机时长) -->
+    <select id="getStandbyRank" resultMap="dataMap" useCache="true">
+        SELECT * FROM (
+            SELECT s.fwelder_id,w.FNAME,w.FWELDER_NO welderno,i.fname insname,SUM(s.FSTANDBYTIME)/3600 hour FROM TB_STANDBY s
+            INNER JOIN tb_welder w ON s.FWELDER_ID = w.fid
+            LEFT JOIN tb_insframework i on i.fid = w.FOWNER
+            WHERE 1 = 1
+            <if test="time != null and time != ''">
+                and s.fstarttime >= to_date(#{time}, 'yyyy-mm-dd')
+            </if>
+            <if test="parent != null and parent != ''">
+                AND i.FPARENT = #{parent}
+            </if>
+            GROUP BY s.fwelder_id,w.FNAME,w.FWELDER_NO,i.fname
+            ORDER BY hour DESC
         ) WHERE 7 >= ROWNUM
     </select>
 
@@ -1633,7 +1644,7 @@
             SELECT i.fid,i.fname,sum(t.wirefeedrate) wirefeedrate FROM tb_insframework i
             INNER JOIN(
             SELECT i.fid,i.fname,sum(w.fworktime)
-            worktime,i.FPARENT,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/600) wirefeedrate FROM tb_insframework i
+            worktime,i.FPARENT,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate FROM tb_insframework i
             LEFT JOIN tb_work w ON w.fmachine_itemid=i.fid
             LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and
             w.fmachinemodel=m.fmodel
@@ -1647,7 +1658,7 @@
         </if>
         <if test="itemType == 23">
             SELECT i.fid,i.fname,sum(w.fworktime)
-            worktime,i.FPARENT,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/600) wirefeedrate FROM tb_insframework i
+            worktime,i.FPARENT,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate FROM tb_insframework i
             LEFT JOIN tb_work w ON w.fmachine_itemid=i.fid
             LEFT JOIN tb_material_coefficient m on w.fmaterialgas = m.fmaterial and w.fwirediameter = m.fdiameter and
             w.fmachinemodel=m.fmodel
@@ -1659,7 +1670,7 @@
         </if>
     </select>
 
-    <!-- 组织机构分组，查询人均工作时间 -->
+    <!-- 组织机构分组，查询人均工作时间（焊接工作时间） -->
     <select id="findAverageWorkingTime" resultMap="dataMap">
         <if test="itemType == 22">
             SELECT i.fid,i.fname,i.FTYPE type,sum(t.wkhour) hour,sum(t.num) num FROM tb_insframework i
@@ -1682,6 +1693,36 @@
             LEFT JOIN tb_work wk ON wk.FWELDER_ITEMID=i.fid
             <if test="startTime != null and startTime != ''">
                 AND wk.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+            </if>
+            LEFT JOIN TB_WELDER wr ON i.fid = wr.FOWNER
+            WHERE i.FTYPE = 23
+            GROUP BY i.fid,i.fname,i.FTYPE,i.FPARENT ORDER BY FID
+        </if>
+    </select>
+
+    <!-- 组织机构分组，查询人均工作时间（待机工作时间） -->
+    <select id="findStandbyWorkingTime" resultMap="dataMap">
+        <if test="itemType == 22">
+            SELECT i.fid,i.fname,i.FTYPE type,sum(t.wkhour) hour,sum(t.num) num FROM tb_insframework i
+            INNER JOIN(
+            SELECT i.fid,i.fname,sum(sdb.FSTANDBYTIME)/3600 wkhour,i.FPARENT,COUNT(DISTINCT wr.FOWNER) num
+            FROM tb_insframework i
+            LEFT JOIN TB_STANDBY sdb ON sdb.FWELDER_ITEMID=i.fid
+            <if test="startTime != null and startTime != ''">
+                AND sdb.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
+            </if>
+            LEFT JOIN TB_WELDER wr ON i.fid = wr.FOWNER
+            WHERE i.FTYPE = 23
+            GROUP BY i.fid,i.fname,i.FPARENT ORDER BY FID
+            )t ON t.FPARENT = i.fid
+            WHERE i.FTYPE = 22 GROUP BY i.fid,i.fname,i.FTYPE ORDER BY FID
+        </if>
+        <if test="itemType == 23">
+            SELECT i.fid,i.fname,i.FTYPE type,i.FPARENT,sum(sdb.FSTANDBYTIME)/3600 hour,COUNT(DISTINCT wr.FOWNER) num
+            FROM tb_insframework i
+            LEFT JOIN TB_STANDBY sdb ON sdb.FWELDER_ITEMID=i.fid
+            <if test="startTime != null and startTime != ''">
+                AND sdb.FSTARTTIME >= TO_DATE(#{startTime}, 'yyyy-mm-dd')
             </if>
             LEFT JOIN TB_WELDER wr ON i.fid = wr.FOWNER
             WHERE i.FTYPE = 23
@@ -1982,7 +2023,7 @@
         insid from (
         select max(i.fname) name,max(w.fweld_no) machineno,sum((w.fworktime*w.fwirefeedrate*DECODE(m.fcoefficient, NULL,
         0 ,m.fcoefficient))/60) weldwire,
-        sum((w.fworktime*20)/60) gas,sum(fworktime)/COUNT(DISTINCT w.FGATHER_NO) id,0 insid from tb_work w
+        sum((w.fworktime)/60) gas,sum(fworktime)/COUNT(DISTINCT w.FGATHER_NO) id,0 insid from tb_work w
         INNER JOIN tb_insframework i on i.fid = w.fmachine_itemid
         left JOIN tb_insframework ins on ins.fid = i.fparent
         left JOIN tb_insframework insf on insf.fid = ins.fparent

@@ -60,7 +60,8 @@ function showDiv12() {
         success: function (result) {
             if (result) {
                 //127.0.0.1:8083
-                websocketURL = eval(result.web_socket);
+                websocketURL = result.web_socket;
+                console.log("websocketURL:"+websocketURL);
             }
         },
         error: function (errorMsg) {

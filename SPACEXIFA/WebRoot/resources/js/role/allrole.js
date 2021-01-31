@@ -24,19 +24,19 @@ $(function(){
 		}, {
 			field : 'roleName',
 			title : '角色名',
-			width : 250,
+			width : 400,
 			halign : "center",
 			align : "left"
 		}, {
 			field : 'roleDesc',
 			title : '描述',
-			width : 250,
+			width : 500,
 			halign : "center",
 			align : "left"
 		}, {
 			field : 'status',
 			title : '状态',
-			width : 100,
+			width : 300,
 			halign : "center",
 			align : "left"
         }, {

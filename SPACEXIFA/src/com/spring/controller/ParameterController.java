@@ -46,6 +46,7 @@ public class ParameterController {
 				json.put("fds", pmt.getFds());
 				json.put("fas", pmt.getFas());
 				json.put("fns", pmt.getFns());
+				json.put("numversion", pmt.getNumversion());
 				ary.add(json);
 			}
 			obj.put("success",true);
@@ -64,19 +65,19 @@ public class ParameterController {
 			String xxx = request.getParameter("id");
 			para.setId(new BigInteger(request.getParameter("id")));
 			para.setFcn(request.getParameter("companyName"));
-			para.setFvv(Integer.parseInt(request.getParameter("check")));
-			para.setFst(request.getParameter("hour1")+":"+request.getParameter("minute1")+":"+request.getParameter("second1"));
-			para.setFsft(request.getParameter("hour2")+":"+request.getParameter("minute2")+":"+request.getParameter("second2"));
-			para.setFct(request.getParameter("hour3")+":"+request.getParameter("minute3")+":"+request.getParameter("second3"));
-			para.setFolt(new BigInteger(request.getParameter("times")));
-			para.setFww(request.getParameter("one")+","+request.getParameter("two")+","+request.getParameter("six")+","+request.getParameter("eight"));
+//			para.setFvv(Integer.parseInt(request.getParameter("check")));
+//			para.setFst(request.getParameter("hour1")+":"+request.getParameter("minute1")+":"+request.getParameter("second1"));
+//			para.setFsft(request.getParameter("hour2")+":"+request.getParameter("minute2")+":"+request.getParameter("second2"));
+//			para.setFct(request.getParameter("hour3")+":"+request.getParameter("minute3")+":"+request.getParameter("second3"));
+//			para.setFolt(new BigInteger(request.getParameter("times")));
+//			para.setFww(request.getParameter("one")+","+request.getParameter("two")+","+request.getParameter("six")+","+request.getParameter("eight"));
 			para.setFafv(request.getParameter("airflow"));
-			para.setFspeed(request.getParameter("speed"));
-			para.setFwc(request.getParameter("weld"));
-			para.setFsp(request.getParameter("wait"));
-			para.setFds(request.getParameter("day"));
-			para.setFas(request.getParameter("after"));
-			para.setFns(request.getParameter("night"));
+//			para.setFspeed(request.getParameter("speed"));
+//			para.setFwc(request.getParameter("weld"));
+//			para.setFsp(request.getParameter("wait"));
+//			para.setFds(request.getParameter("day"));
+//			para.setFas(request.getParameter("after"));
+//			para.setFns(request.getParameter("night"));
 			parameterService.UpdateParameter(para);
 			obj.put("success",true);
 		}catch(Exception e){

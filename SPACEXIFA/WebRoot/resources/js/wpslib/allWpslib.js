@@ -101,7 +101,7 @@ function wpslibDatagrid() {
             align: "left",
             formatter: function (value, row, index) {
                 var str = "";
-                str += '<a id="wpslibgive" class="easyui-linkbutton" href="javascript:selectMainWps('+encodeURI(JSON.stringify(row))+')"/>';
+                str += '<a id="wpslibgive" class="easyui-linkbutton" href="javascript:craftNormWpsIssue('+encodeURI(JSON.stringify(row))+')"/>';
                 str += '<a id="wpslibadd" class="easyui-linkbutton" href="javascript:addMainWps('+encodeURI(JSON.stringify(row))+')"/>';
                 str += '<a id="wpslibedit" class="easyui-linkbutton" href="javascript:editWpslib()"/>';
                 str += '<a id="wpslibremove" class="easyui-linkbutton" href="javascript:openRemoveWpslib()"/>';
@@ -117,8 +117,8 @@ function wpslibDatagrid() {
             }
         },
         onLoadSuccess: function (data) {
-            $("a[id='wpslibgive']").linkbutton({text: '工艺库下发', plain: true, iconCls: 'icon-setwps'});
-            $("a[id='wpslibadd']").linkbutton({text: '新增工艺', plain: true, iconCls: 'icon-newadd'});
+            $("a[id='wpslibgive']").linkbutton({text: '工艺规范下发', plain: true, iconCls: 'icon-setwps'});
+            $("a[id='wpslibadd']").linkbutton({text: '新增工艺规范', plain: true, iconCls: 'icon-newadd'});
             $("a[id='wpslibedit']").linkbutton({text: '修改', plain: true, iconCls: 'icon-update'});
             $("a[id='wpslibremove']").linkbutton({text: '删除', plain: true, iconCls: 'icon-delete'});
         },

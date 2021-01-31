@@ -30,14 +30,14 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * 手持终端所有相关接口
+ */
 
 @Controller
 @RequestMapping(value = "/terminal", produces = {"text/json;charset=UTF-8"})
 public class TerminalController {
 
-    /**
-     * MES系统地址及账号、密码
-     */
     private static final String mesurl = "jdbc:oracle:thin:@192.168.11.60:1521/MESDB";
     private static final String mesuser = "X5USER";
     private static final String mespassword = "X5_USER_1234";
@@ -164,7 +164,8 @@ public class TerminalController {
         Statement stmt = null;
         ResultSet rs = null;
         if (worksheetcode != null && !"".equals(worksheetcode)) {
-            sql = "SELECT mesworkno,comcode,partnumber,materialname FROM userredf.mes_workticket_v WHERE worksheetcode = " + worksheetcode;
+            sql = "SELECT mesworkno,comcode,partnumber,materialname FROM userredf.mes_workticket_v " +
+                    "WHERE worksheetcode = '" + worksheetcode + "' or batchnum = '" + worksheetcode + "'";
             try {
                 Class.forName("oracle.jdbc.OracleDriver");
                 if (conn == null || conn.isClosed()) {
@@ -179,6 +180,7 @@ public class TerminalController {
                     comcode = rs.getString("comcode");
                     partnumber = rs.getString("partnumber");
                     materialname = rs.getString("materialname");
+                    break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -340,6 +342,7 @@ public class TerminalController {
                 junction.setFMINVOLTAGE(minvoltage);
                 junction.setJunction_name(junctionName);
                 junctiob_id = junctionService.addJunction(junction);
+                System.out.println("新增焊缝id：--------------------------" + junctiob_id);
             }
         }
         //2.根据焊缝id查询生产工艺表，有：根据id更新数据，没有：新增工艺返回id
@@ -435,12 +438,14 @@ public class TerminalController {
                 Wps taskResultById = wpsService.findTaskResultById(machineByGatherNo.getId(), welded_jun_id);
                 if (null != taskResultById) {
                     if (taskResultById.getFOPERATETYPE() == 0 || taskResultById.getFOPERATETYPE() == 2) {
-                        task_id = BigInteger.valueOf(wpsService.overCard(wps));
+                        wpsService.overCard(wps);
+                        task_id = wps.getFid();
                     } else {
                         task_id = taskResultById.getFid();
                     }
                 } else {
-                    task_id = BigInteger.valueOf(wpsService.overCard(wps));
+                    wpsService.overCard(wps);
+                    task_id = wps.getFid();
                 }
             }
         }
@@ -452,7 +457,7 @@ public class TerminalController {
         object.put("junctiob_id", junctiob_id);//焊缝id
         object.put("produ_id", produ_id);//生产工艺id
         object.put("welded_jun_id", welded_jun_id);//电子跟踪卡id
-        object.put("task_id", task_id);//任务执行id
+        object.put("task_id", (task_id != null ? task_id : BigInteger.ZERO));//任务执行id
         object.put("machinemodel", machinemodel);//焊机型号
         object.put("flag", flag);//保存结果
         String respondata = JSON.toJSONString(object);

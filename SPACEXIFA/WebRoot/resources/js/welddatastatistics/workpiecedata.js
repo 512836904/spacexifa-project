@@ -8,7 +8,8 @@ function setParam() {
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
     var junctionno = $("#junctionno").val();
-    var ftype = $("#ftype").val();
+    //var ftype = $("#ftype").val();
+    var ftype = $("#ftype").combobox('getValue');
     chartStr += "?dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2 + "&junctionno=" + junctionno+ "&ftype=" + ftype;
 }
 

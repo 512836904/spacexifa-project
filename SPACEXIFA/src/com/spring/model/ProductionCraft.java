@@ -33,6 +33,8 @@ public class ProductionCraft {
     private String WIRE_DIAMETER;               //焊丝直径
     private int FREPAIRTYPE;               //返修状态（0否，1是）
 
+    private String JUNCTION_NAME;       //焊缝名称
+
     public BigInteger getFID() {
         return FID;
     }
@@ -215,5 +217,13 @@ public class ProductionCraft {
 
     public void setFREPAIRTYPE(int FREPAIRTYPE) {
         this.FREPAIRTYPE = FREPAIRTYPE;
+    }
+
+    public String getJUNCTION_NAME() {
+        return JUNCTION_NAME;
+    }
+
+    public void setJUNCTION_NAME(String JUNCTION_NAME) {
+        this.JUNCTION_NAME = JUNCTION_NAME;
     }
 }

@@ -78,6 +78,13 @@ function setParam() {
             searchStr += " AND J.JUNCTION_NAME LIKE " + "'%" + fjunction_id + "%'";
         }
     }
+    if (ftype != "") {
+        if (searchStr == "") {
+            searchStr += " t.FREPAIRTYPE  =" + ftype + "";
+        } else {
+            searchStr += " AND t.FREPAIRTYPE ="+ ftype + "";
+        }
+    }
     if (dtoTime1 != "") {
         if (searchStr == "") {
             searchStr += " t.FREALSTARTTIME >= " + "to_date('" + dtoTime1 + "', 'yyyy-mm-dd hh24:mi:ss')";
@@ -286,7 +293,7 @@ function historyDatagrid() {
                 ]
             }
             $.ajax({
-                url: 'http://localhost:9200/tb_live_data/_search?pretty=true',
+                url: 'http://192.168.11.3:9200/tb_live_data/_search?pretty=true',
                 type: 'post',
                 //url: "rep/historyCurve"+chartStr+"&fid="+encodeURIComponent($('#taskno').val())+"&mach="+$('#machid').val()+"&welderid="+$("#welderid").val()+"&fweld_bead="+fweld_bead+"&fsolder_layer="+fsolder_layer,
                 contentType: 'application/json',

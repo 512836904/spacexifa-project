@@ -23,8 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * UI接口
- * author:zhushanlong
+ * 所有大屏展示相关接口
  */
 @Controller
 @RequestMapping(value = "/frontEnd", produces = {"text/json;charset=UTF-8"})
@@ -58,13 +57,21 @@ public class FrontEndController {
         try {
             String time1 = "";
             time1 = request.getParameter("startTime");
+            String standbyTime = request.getParameter("standbyTime");
 
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
-            }else {
+            } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
-            List<DataStatistics> list = dss.getWorkRank(page, parent, time1);
+            List<DataStatistics> list = null;
+            if (null != standbyTime && !"".equals(standbyTime) && "1".equals(standbyTime)){
+                //查询待机时长
+                list = dss.getStandbyRank(page, parent, time1);
+            }else {
+                //查询焊接时长
+                list = dss.getWorkRank(page, parent, time1);
+            }
             if (null != list && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {
                     json.put("rownum", i + 1);
@@ -109,9 +116,9 @@ public class FrontEndController {
         } else {
             startTime = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
         }
-        if ("0".equals(organization)){
+        if ("0".equals(organization)) {
             itemtype = 22;
-        }else {
+        } else {
             itemtype = 23;  //班组
         }
         try {
@@ -122,7 +129,7 @@ public class FrontEndController {
                     json.put("itemname", data.getName());
                     //规范符合率 = 焊接时长 / （焊接时长+超规范时长）
                     if (data.getWkhour() != 0 || data.getWnhour() != 0) {
-                        json.put("hour", data.getWkhour()/(data.getWkhour()+data.getWnhour())*100);
+                        json.put("hour", data.getWkhour() / (data.getWkhour() + data.getWnhour()) * 100);
                     } else {
                         json.put("hour", 0);
                     }
@@ -151,6 +158,7 @@ public class FrontEndController {
         JSONArray ary = new JSONArray();
         String startTime = request.getParameter("startTime");
         String organization = request.getParameter("organization");
+        String standbyTime = request.getParameter("standbyTime");
         int itemtype = 22;
         try {
             if (null == startTime || "".equals(startTime) || "0".equals(startTime)) {
@@ -158,12 +166,18 @@ public class FrontEndController {
             } else {
                 startTime = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
-            if ("0".equals(organization)){
+            if ("0".equals(organization)) {
                 itemtype = 22;
-            }else {
+            } else {
                 itemtype = 23;  //班组
             }
-            List<DataStatistics> list = dss.findAverageWorkingTime(startTime,itemtype);
+            List<DataStatistics> list = null;
+            if (null != standbyTime && !"".equals(standbyTime) && "1".equals(standbyTime)){
+                //如果为1，则查询待机焊工的人均工作时长
+                list = dss.findStandbyWorkingTime(startTime, itemtype);
+            } else {
+                list = dss.findAverageWorkingTime(startTime, itemtype);
+            }
             //统计组织机构焊工的数量
             List<DataStatistics> dataStatistics = dss.countWelderNumByIid();
             int weldernum = 0; //焊工数量
@@ -171,14 +185,14 @@ public class FrontEndController {
                 for (DataStatistics data : list) {
                     json.put("id", data.getId());       //组织机构id
                     json.put("name", data.getName());   //组织机构名称
-                    if (null != dataStatistics && dataStatistics.size() > 0){
-                        for (DataStatistics da : dataStatistics){
-                            if (da.getId().equals(data.getId())){
-                                if (data.getType() == 22){
-                                    weldernum = da.getNum();
+                    if (null != dataStatistics && dataStatistics.size() > 0) {
+                        for (DataStatistics da : dataStatistics) {
+                            if (da.getId().equals(data.getId())) {
+                                if (data.getType() == 22) {
+                                    weldernum = da.getNum(); //工区：焊工数量
                                 }
-                                if (data.getType() == 23){
-                                    weldernum = da.getTotal();
+                                if (data.getType() == 23) {
+                                    weldernum = da.getTotal();  //班组：焊工数量
                                 }
                             }
                         }
@@ -201,7 +215,7 @@ public class FrontEndController {
                 json.put("rate", 0);
                 ary.add(json);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         JSONObject obj = new JSONObject();
@@ -229,13 +243,13 @@ public class FrontEndController {
         try {
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
-            }else {
+            } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
             dto.setDtoTime1(time1);
-            if ("0".equals(organization)){
+            if ("0".equals(organization)) {
                 itemtype = 22;
-            }else {
+            } else {
                 itemtype = 23;  //班组
             }
             List<DataStatistics> list = dss.getItemMachineByItemType(dto, itemtype); //根据组织机构统计焊机总数
@@ -245,11 +259,11 @@ public class FrontEndController {
             }
             for (DataStatistics i : list) {
                 json.put("t0", i.getName());//所属班组
-                BigInteger standytime = null ;
+                BigInteger standytime = null;
                 BigInteger weldtime = null;
                 //DataStatistics junction = dss.getWorkJunctionNum(i.getId(), dto);//获取工作(焊接)的焊口数
                 DataStatistics parameter = dss.getParameter();//获取参数
-                double standytimes = 0, worktimes = 0, electricpower = 0, avgVol=0, avgEle =0;
+                double standytimes = 0, worktimes = 0, electricpower = 0, avgVol = 0, avgEle = 0;
                 standytime = i.getStandbytime();//获取待机总时长
                 weldtime = i.getWorktime();//获取焊接时长，平均电流电压(根据时间和组织id查询)
                 avgVol = i.getVoltage();
@@ -259,7 +273,7 @@ public class FrontEndController {
                     if (weldtime != null) {
                         worktimes = weldtime.doubleValue() / 60 / 60;
                         electricpower = (double) Math.round((worktimes * (avgEle * 1.25 * avgVol) / 1000 + standytimes * 1.25 * parameter.getStandbypower() / 1000) * 100) / 100;//电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
-                    }else {
+                    } else {
                         electricpower = (double) Math.round((standytimes * 1.25 * parameter.getStandbypower() / 1000) * 100) / 100;//电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
                     }
                 }
@@ -298,7 +312,7 @@ public class FrontEndController {
                     }
                 } else {
                     //json.put("t3", 0);//实焊设备数
-                   // json.put("t6", "00:00:00");//焊接时间
+                    // json.put("t6", "00:00:00");//焊接时间
                     //json.put("t4", 0);//设备利用率
                     //json.put("t8", 0);//焊接效率
                     //json.put("t9", 0);//焊丝消耗
@@ -322,6 +336,7 @@ public class FrontEndController {
 
     /**
      * 工区焊丝消耗量
+     *
      * @param request
      * @return
      */
@@ -342,17 +357,17 @@ public class FrontEndController {
         try {
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
-            }else {
+            } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
-            if ("0".equals(organization)){
+            if ("0".equals(organization)) {
                 itemtype = 22;
-            }else {
+            } else {
                 itemtype = 23;  //班组
             }
-           // dto.setDtoTime1(time1);
+            // dto.setDtoTime1(time1);
             List<DataStatistics> list = dss.getWireMatral(time1, itemtype);
-           // List<DataStatistics> list = dss.getItemMachineByItemType(page, itemtype); //根据组织机构统计焊机总
+            // List<DataStatistics> list = dss.getItemMachineByItemType(page, itemtype); //根据组织机构统计焊机总
             for (DataStatistics i : list) {
                 json.put("t0", i.getName());//所属班组
                 json.put("t9", i.getWirefeedrate());//所有车间
@@ -373,6 +388,7 @@ public class FrontEndController {
 
     /**
      * 设备利用率
+     *
      * @param request
      * @return
      */
@@ -389,16 +405,16 @@ public class FrontEndController {
         JSONObject title = new JSONObject();
         WeldDto dto = new WeldDto();
         JSONArray titleary = new JSONArray();
-        double total=0.0, num=0.0, hour=0.0;
+        double total = 0.0, num = 0.0, hour = 0.0;
         try {
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
-            }else {
+            } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
-            if ("0".equals(organization)){
+            if ("0".equals(organization)) {
                 itemtype = 22;
-            }else {
+            } else {
                 itemtype = 23;  //班组
             }
             dto.setDtoTime1(time1);
@@ -455,6 +471,7 @@ public class FrontEndController {
 
     /**
      * 查询工作号、部套号信息
+     *
      * @param request
      * @return
      */
@@ -469,7 +486,7 @@ public class FrontEndController {
         try {
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
-            }else {
+            } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
             dto.setDtoTime1(time1);
@@ -507,6 +524,7 @@ public class FrontEndController {
 
     /**
      * 查询焊工焊材消耗量排行
+     *
      * @param request
      * @return
      */
@@ -523,14 +541,14 @@ public class FrontEndController {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
             List<DataStatistics> list = dss.findWelderMaterialConsume(time1);
-            if (null != list && list.size() > 0){
-                for (DataStatistics li : list){
+            if (null != list && list.size() > 0) {
+                for (DataStatistics li : list) {
                     json.put("name", li.getName());//焊工姓名
                     json.put("wirefeedrate", li.getWirefeedrate());//焊材消耗量：g
                     ary.add(json);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("name", "");
             json.put("wirefeedrate", "");
@@ -543,6 +561,7 @@ public class FrontEndController {
 
     /**
      * 查询超规范信息
+     *
      * @param request
      * @return
      */
@@ -559,8 +578,8 @@ public class FrontEndController {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
             List<DataStatistics> list = dss.findSupergageInfo(time1);
-            if (null != list && list.size() > 0){
-                for (DataStatistics li : list){
+            if (null != list && list.size() > 0) {
+                for (DataStatistics li : list) {
                     json.put("name", li.getName());     //焊工姓名
                     json.put("insname", li.getInsname()); //组织机构名称：工区
                     json.put("starttime", li.getStarttime().split(" ")[0]);    //时间
@@ -569,7 +588,7 @@ public class FrontEndController {
                     json.put("part_name", li.getPART_NAME());    //零件名称
                     ary.add(json);
                 }
-            }else {
+            } else {
                 json.put("name", "");     //焊工姓名
                 json.put("insname", ""); //组织机构名称：工区
                 json.put("starttime", "");    //时间
@@ -578,7 +597,7 @@ public class FrontEndController {
                 json.put("part_name", "");    //零件名称
                 ary.add(json);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("name", "");     //焊工姓名
             json.put("insname", ""); //组织机构名称：工区
@@ -595,6 +614,7 @@ public class FrontEndController {
 
     /**
      * 查询超规范累计次数
+     *
      * @param request
      * @return
      */
@@ -612,24 +632,24 @@ public class FrontEndController {
             } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
-            if ("0".equals(organization)){
+            if ("0".equals(organization)) {
                 itemtype = 22;
-            }else {
+            } else {
                 itemtype = 23;  //班组
             }
             List<DataStatistics> list = dss.findSupergageCumulativeNumber(time1, itemtype);
-            if (null != list && list.size() > 0){
-                for (DataStatistics li : list){
+            if (null != list && list.size() > 0) {
+                for (DataStatistics li : list) {
                     json.put("name", li.getName());//工区名称
                     json.put("num", li.getNum());//次数
                     ary.add(json);
                 }
-            }else {
+            } else {
                 json.put("name", "");//工区名称
                 json.put("num", "0");//次数
                 ary.add(json);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("name", "");//工区名称
             json.put("num", "0");//次数
@@ -642,6 +662,7 @@ public class FrontEndController {
 
     /**
      * 查询工作号/布套号焊接工艺规范符合率
+     *
      * @param request
      * @return
      */
@@ -658,23 +679,23 @@ public class FrontEndController {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
             }
             List<DataStatistics> list = dss.findJobSetNormRate(time1);
-            if (null != list && list.size() >0){
-                for (DataStatistics li : list){
+            if (null != list && list.size() > 0) {
+                for (DataStatistics li : list) {
                     json.put("job_number", li.getJOB_NUMBER()); //工作号
                     json.put("set_number", li.getSET_NUMBER()); //布套号
                     json.put("part_name", li.getPART_NAME());   //零件名
                     BigDecimal bd = null;
                     //规范符合率 = 焊接时长 / （焊接时长 + 超规范时长）*100
-                    if (li.getWkhour() !=0 || li.getWnhour() != 0){
-                        bd = new BigDecimal((li.getWkhour() / (li.getWkhour()+li.getWnhour()))*100);
+                    if (li.getWkhour() != 0 || li.getWnhour() != 0) {
+                        bd = new BigDecimal((li.getWkhour() / (li.getWkhour() + li.getWnhour())) * 100);
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
                         json.put("normRate", bd);
-                    }else {
+                    } else {
                         json.put("normRate", 0);
                     }
                     ary.add(json);
                 }
-            }else {
+            } else {
                 json.put("job_number", ""); //工作号
                 json.put("set_number", ""); //布套号
                 json.put("part_name", "");   //零件名
@@ -683,7 +704,7 @@ public class FrontEndController {
                 ary.add(json);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("job_number", ""); //工作号
             json.put("set_number", ""); //布套号
@@ -700,6 +721,7 @@ public class FrontEndController {
     /**
      * 工作号实时信息展示
      * 查询所有工作号和焊工班组信息
+     *
      * @param request
      * @return
      */

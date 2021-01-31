@@ -44,7 +44,7 @@
             焊缝名称：
             <input class="easyui-textbox" name="junctionname" id="junctionname"/>
             正常/返修：
-            <select class="easyui-combobox" name="ftype" id="ftype" data-options="editable:false">
+            <select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">
                 <option value="0">正常</option>
                 <option value="1">返修</option>
             </select>

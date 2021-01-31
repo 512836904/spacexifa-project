@@ -9,6 +9,7 @@ $(function () {
             $('#quali').combobox('clear');
             $('#owner').combobox('clear');
             $('#fstatus').combobox('clear');
+            $('#DIMISSIONSTATUS').combobox('clear');
             $("#fm").form("disableValidation");
         }
     })
@@ -142,6 +143,15 @@ function loadWelderStatus(){
             alert('error');
         }
     });
+    //焊工离职状态
+    $("#DIMISSIONSTATUS").combobox({
+        valueField: 'id',
+        textField: 'text',
+        multiple: false,  //多选
+        editable: false,  //是否可编辑
+        panelHeight: 'auto',
+        data: [{id: 0, text: '已离职'}, {id: 1, text: '在职'}]//设置默认值
+    });
 }
 
 var url = "";
@@ -182,7 +192,7 @@ function save() {
     var welderno = $("#welderno").val();
     var len = welderno.length;
     if (len > 9) {
-        alert("焊工编号超出指定的8位长度!!!");
+        alert("焊工编号超出指定的9位长度!!!");
         return;
     }
     if (welderno == "000000000") {
@@ -222,7 +232,7 @@ function save() {
             } else {
                 $('#fm').submit();
             }
-
+            numversion();
         },
         error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");

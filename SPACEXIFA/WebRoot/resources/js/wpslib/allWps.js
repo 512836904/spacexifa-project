@@ -73,15 +73,7 @@ function wpslibDatagrid() {
             width: 150,
             halign: "center",
             align: "center"
-        }
-            // , {
-            //     field: 'junctionName',
-            //     title: '焊缝信息',
-            //     width: 150,
-            //     halign: "center",
-            //     align: "center"
-            // }
-            , {
+        }, {
                 field: 'craft_param',
                 title: '工艺参数',
                 width: 300,

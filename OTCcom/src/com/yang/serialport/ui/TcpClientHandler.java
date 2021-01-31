@@ -40,6 +40,12 @@ public class TcpClientHandler extends ChannelHandlerAdapter {
 		this.clientconnectTest = clientconnectTest;
 	}
 
+	/**
+	 * 接收PC下发的数据
+	 * @param ctx
+	 * @param msg
+	 * @throws Exception
+	 */
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		 String str = (String) msg;
 		 
@@ -177,8 +183,10 @@ public class TcpClientHandler extends ChannelHandlerAdapter {
 				        byteBuf.writeBytes(data);
 				        
 				        try{
-				        	
-				        	socketcon.writeAndFlush(byteBuf).sync();
+
+							if (socketcon.isOpen() && socketcon.isActive() && socketcon.isWritable()) {
+								socketcon.writeAndFlush(byteBuf);
+							}
 			             	
 				        }catch (Exception e) {
 				        	listarraybuf.add(socketfail);

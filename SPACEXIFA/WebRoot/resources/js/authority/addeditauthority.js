@@ -90,6 +90,8 @@ function saveAuthority(){
 }
 
 function editAuthorith(){
+	alert("权限信息不允许修改！");
+	return false;
 	flag = 2;
 	$('#fm').form('clear');
 	var row = $('#dg').datagrid('getSelected');

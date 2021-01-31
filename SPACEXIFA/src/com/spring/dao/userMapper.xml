@@ -9,7 +9,8 @@
 <mapper namespace="com.spring.dao.UserMapper">
 
 	<insert id="save" parameterType="User">
-		insert into tb_users(users_name,users_password,users_login_name,users_phone,users_email,users_position,users_insframework,status) values(#{userName},#{userPassword},#{userLoginName},#{userPhone},#{userEmail},#{userPosition},#{userInsframework},#{status})
+		insert into tb_users(users_name,users_password,users_login_name,users_phone,users_email,users_position,users_insframework,status,ISSUEWPS,RECEIVEALARM)
+		values(#{userName},#{userPassword},#{userLoginName},#{userPhone},#{userEmail},#{userPosition},#{userInsframework},#{status},#{ISSUEWPS},#{RECEIVEALARM})
 <!-- 		insert into tb_users_roles(users_name,roles_name) values(#{userName},#{roleName}) -->
 	</insert>
 	
@@ -19,7 +20,9 @@
 	</insert>
 	
 	<update id="update" parameterType="User">
-		update tb_users set users_name=#{userName},users_password=#{userPassword},users_login_name=#{userLoginName},users_phone=#{userPhone},users_email=#{userEmail},users_position=#{userPosition},users_insframework=#{userInsframework},status=#{status} where id=#{id}
+		update tb_users
+		set users_name=#{userName},users_password=#{userPassword},users_login_name=#{userLoginName},users_phone=#{userPhone},users_email=#{userEmail},
+		    users_position=#{userPosition},users_insframework=#{userInsframework},status=#{status},ISSUEWPS=#{ISSUEWPS},RECEIVEALARM=#{RECEIVEALARM} where id=#{id}
 <!-- 		update tb_users_roles set roles_name=#{roleName} where id=#{id} -->
 	</update>
 	
@@ -37,7 +40,10 @@
 	
 	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
 	<select id="findById" parameterType="int" resultType="User">
-		select tb_users.id id,tb_users.users_name userName,tb_users.users_password userPassword,tb_users.users_login_name userLoginName,tb_users.users_phone userPhone,tb_users.users_email userEmail,tb_users.users_insframework userInsframework,tb_users.users_position userPosition,tb_users.status status,tb_insframework.fid insid,tb_insframework.fname insname ,d.fvaluename statusname from tb_users left join tb_insframework on tb_users.users_insframework=tb_insframework.fid
+		select tb_users.id id,tb_users.users_name userName,tb_users.users_password userPassword,tb_users.users_login_name userLoginName,tb_users.users_phone userPhone,
+		       tb_users.users_email userEmail,tb_users.users_insframework userInsframework,tb_users.users_position userPosition,tb_users.status status,
+		       tb_insframework.fid insid,tb_insframework.fname insname,d.fvaluename statusname,tb_users.ISSUEWPS,tb_users.RECEIVEALARM
+		from tb_users left join tb_insframework on tb_users.users_insframework=tb_insframework.fid
 		INNER JOIN tb_dictionary d on d.fvalue = tb_users.status where d.ftypeid=6 and tb_users.id=#{id}
 	</select>
 	
@@ -50,7 +56,11 @@
 	</select>
 	
 	<select id="findAll" resultType="User">
-		select tb_users.id id,tb_users.users_name userName,users_password userPassword,tb_users.users_login_name userLoginName,tb_users.users_phone userPhone,tb_users.users_email userEmail,tb_users.users_insframework userInsframework,tb_users.users_position userPosition,tb_users.status status,tb_insframework.fid insid,tb_insframework.fname insname,d.fvaluename statusname from tb_users 
+		select tb_users.id id,tb_users.users_name userName,users_password userPassword,tb_users.users_login_name userLoginName,
+		       tb_users.users_phone userPhone,tb_users.users_email userEmail,tb_users.users_insframework userInsframework,
+		       tb_users.users_position userPosition,tb_users.status status,tb_insframework.fid insid,tb_insframework.fname insname,d.fvaluename statusname,
+			   tb_users.ISSUEWPS,tb_users.RECEIVEALARM
+		from tb_users
 		INNER JOIN tb_dictionary d on d.fvalue = tb_users.status
 		left join tb_insframework on tb_users.users_insframework=tb_insframework.fid  where d.ftypeid=6
 		<if test="parent!=null and parent!=''">

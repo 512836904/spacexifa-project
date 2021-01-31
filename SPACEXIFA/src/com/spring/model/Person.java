@@ -26,6 +26,7 @@ public class Person {
 	private String qualiname;
 	private String levename;
 	private int FSTATUS; //焊工状态：0离线（默认）
+	private int DIMISSIONSTATUS; //焊工离职状态：0已离职，1在职（默认）
 
 	public Person(){
 		super();
@@ -168,5 +169,13 @@ public class Person {
 
 	public void setFSTATUS(int FSTATUS) {
 		this.FSTATUS = FSTATUS;
+	}
+
+	public int getDIMISSIONSTATUS() {
+		return DIMISSIONSTATUS;
+	}
+
+	public void setDIMISSIONSTATUS(int DIMISSIONSTATUS) {
+		this.DIMISSIONSTATUS = DIMISSIONSTATUS;
 	}
 }

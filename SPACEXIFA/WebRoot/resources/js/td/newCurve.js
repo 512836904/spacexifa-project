@@ -141,7 +141,7 @@ function getMachine(insfid) {
                         '</div>' +
                         '<div style="float:left;width:60%;height:100%;">' +
                         '<ul><li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">设备编号：<span id="m1' + machine[i].fid + '">' + machine[i].fequipment_no + '</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">采集编号：<span id="m2' + machine[i].fid + '">--</span></li>' +
+                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">任务状态：<span id="m2' + machine[i].fid + '">--</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">操作人员：<span id="m3' + machine[i].fid + '">--</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电流：<span id="m4' + machine[i].fid + '">--A</span></li>' +
                         '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电压：<span id="m5' + machine[i].fid + '">--V</span></li>' +
@@ -320,7 +320,7 @@ function iview() {
                     //         $("#m2" + machine[f].fid).html(taskNum[t].weldedJunctionno);
                     //     }
                     // }
-                    $("#m2" + machine[f].fid).html(redata.substring(12 + i, 20 + i));
+                    //$("#m2" + machine[f].fid).html(redata.substring(8 + i, 12 + i));
                     if (parseInt(redata.substring(32 + i, 36 + i), 10) == 128) {//焊机型号
                         var liveele = parseInt((parseInt(redata.substring(38 + i, 42 + i), 10)));//实际电流
                     } else {
@@ -331,7 +331,15 @@ function iview() {
                     var minele = parseInt(redata.substring(79 + i, 83 + i), 10);
                     var maxvol = parseInt(redata.substring(83 + i, 87 + i), 10);
                     var minvol = parseInt(redata.substring(87 + i, 91 + i), 10);
+                    var card = parseInt(redata.substring(99 + i, 103 + i), 10);
                     var mstatus = redata.substring(36 + i, 38 + i);
+                    if(mstatus == 3 || mstatus == 3 || mstatus == 5 || mstatus == 7){
+                        if(card == "0"){
+                            $("#m2" + machine[f].fid).html("任务未绑定");
+                        }else{
+                            $("#m2" + machine[f].fid).html("任务已下发");
+                        }
+                    }
                     var livestatus, livestatusid, liveimg;
                     switch (mstatus) {
                         case "00":

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -145,12 +146,12 @@ public class WeldingMachineController {
         pageIndex = Integer.parseInt(request.getParameter("page"));
         pageSize = Integer.parseInt(request.getParameter("rows"));
         String searchStr = request.getParameter("searchStr");
-        String parentId = request.getParameter("parent");
+        String parentId = request.getParameter("parent");//班组
         String machineStatus = request.getParameter("machineStatus");
         BigInteger parent = null;
-        if (iutil.isNull(parentId)) {
-            parent = new BigInteger(parentId);
-        }
+//        if (iutil.isNull(parentId)) {
+//            parent = new BigInteger(parentId); //组织机构id集合（13,14,15）
+//        }
         String search = "";
         if (null != searchStr && !"".equals(searchStr)){
             if (null != machineStatus && !"".equals(machineStatus)){
@@ -171,8 +172,9 @@ public class WeldingMachineController {
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         JSONObject obj = new JSONObject();
+
         try {
-            List<WeldingMachine> list = wmm.getWeldingMachineAll(page, parent, search);
+            List<WeldingMachine> list = wmm.getWeldingMachineAll(page, parentId, search);
             if (list != null) {
                 PageInfo<WeldingMachine> pageinfo = new PageInfo<WeldingMachine>(list);
                 total = pageinfo.getTotal();
@@ -286,12 +288,13 @@ public class WeldingMachineController {
      */
     @RequestMapping("/getInsframeworkAll")
     @ResponseBody
-    public String getInsframeworkAll() {
+    public String getInsframeworkAll(HttpServletRequest request) {
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         JSONObject obj = new JSONObject();
+        String search = request.getParameter("search");
         try {
-            List<Insframework> list = im.getOperateArea(null, 23);
+            List<Insframework> list = im.getOperateArea(search, 23);
             for (Insframework i : list) {
                 json.put("id", i.getId());
                 json.put("name", i.getName());
@@ -403,6 +406,30 @@ public class WeldingMachineController {
             for (Dictionarys d : dictionary) {
                 json.put("id", d.getValue());
                 json.put("name", d.getValueName());
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        obj.put("ary", ary);
+        return obj.toString();
+    }
+
+    /**
+     * 获取工区组织
+     * @return
+     */
+    @RequestMapping("/getAllWorkArea")
+    @ResponseBody
+    public String getAllWorkArea() {
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            List<Insframework> list = im.getOperateArea(null, 22);
+            for (Insframework i : list) {
+                json.put("id", i.getId());
+                json.put("name", i.getName());
                 ary.add(json);
             }
         } catch (Exception e) {

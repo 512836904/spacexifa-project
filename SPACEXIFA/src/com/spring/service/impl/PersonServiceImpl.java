@@ -80,7 +80,12 @@ public class PersonServiceImpl implements PersonService{
 	public List<Person> getWeldername(BigInteger insid) {
 		return mapper.getWeldername(insid);
 	}
-	
+
+	@Override
+	public List<Person> findAllWelders() {
+		return mapper.findAllWelders();
+	}
+
 	@Override
 	public Person getIdByWelderno(String welderno) {
 		return mapper.getIdByWelderno(welderno);

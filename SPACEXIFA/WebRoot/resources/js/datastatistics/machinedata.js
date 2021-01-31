@@ -54,7 +54,7 @@ function dgDatagrid(){
 					fitColumns : true,
 					height : 600,
 					width : 1050,
-					url : "/",
+					url: "datastatistics/getMachineData" + chartStr,
 					pageSize : 10,
 					pageList : [ 10, 20, 30, 40, 50 ],
 					singleSelect : true,

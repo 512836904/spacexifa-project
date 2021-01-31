@@ -83,12 +83,14 @@ public class Websocket {
                     try {
                         String ins = "0000";//焊机组织id
                         String welderid = "0";
-                        String junctionNo = Integer.valueOf(str.substring(76 + a, 84 + a), 16).toString();//焊口号(焊缝编号)
+                        String junctionNo = Long.valueOf(str.substring(76 + a, 84 + a), 16).toString();//焊口号(焊缝编号)
                         if (junctionNo.length() < 8) {
                             int lenth = 8 - junctionNo.length();
                             for (int i = 0; i < lenth; i++) {
                                 junctionNo = "0" + junctionNo;
                             }
+                        } else {
+                            junctionNo = "00000001";
                         }
                         String electricity = Integer.valueOf(str.substring(56 + a, 60 + a), 16).toString();//实际电流
                         if (electricity.length() < 4) {
@@ -187,7 +189,7 @@ public class Websocket {
                         }
                         //焊工信息
                         for (int i = 0; i < listarray1.size(); i += 3) {
-                            if (String.valueOf(("0090"+welderno)).equals(listarray1.get(i + 1))) {
+                            if (String.valueOf(("0090" + welderno)).equals(listarray1.get(i + 1))) {
                                 welderno = listarray1.get(i + 1);//焊工编号
                                 welderid = listarray1.get(i);//焊工id
                                 break;
@@ -305,7 +307,6 @@ public class Websocket {
                         String strstrsend = welderid + weldid + gatherno + junctionNo + gasflow + ins + itemins + weldmodel + status + electricity +
                                 voltage + setelectricity + setvoltage + timesql + maxelectricity + minelectricity + maxvoltage + minvoltage + channel + speed + cardid +
                                 wpsid + productid + workprocedureid + workstepid + weld_speed + lon_air_flow + hatwire_current + laser_power;
-
                         //焊工id、焊机id、采集编号、焊口号(8位)、保护气流量、焊机组织id、组织id（配置文件）、焊机型号（值）、报警信息、焊接电流、焊接电压、给定电流、给定电压、
                         //焊机工作时间、最大电流、最小电流、最大电压、最小电压、通道号、送丝速度、电子跟踪卡id（工作号id/工票id）、
                         //工艺id、产品号id、工步号id、焊缝号id、焊机速度、离子气流量、热丝电流、激光功率
@@ -314,6 +315,8 @@ public class Websocket {
                         //0000000000670000000100000000001700000000000000019001902021-01-12 16:57:32.0024001400240014000000000000000000000000000000000000000000000
                     } catch (Exception e) {
                         e.printStackTrace();
+                        System.out.println("采集编号：" + str.substring(16, 20));
+                        String junctionNo = Integer.valueOf(str.substring(76 + a, 84 + a), 16).toString();
                         System.out.println("字节码解析异常：" + e);
                     }
                 }

@@ -31,6 +31,11 @@ public class User{
 	private String insname;
 	Collection<GrantedAuthority> auths;
 	private String statusname;
+	private int ISSUEWPS;		//是否具有下发权限
+	private int RECEIVEALARM;	//是否具有接受报警权限
+
+
+
 	public User(){
 		super();
 	}
@@ -57,6 +62,22 @@ public class User{
 
 	public void setStatusname(String statusname) {
 		this.statusname = statusname;
+	}
+
+	public int getISSUEWPS() {
+		return ISSUEWPS;
+	}
+
+	public void setISSUEWPS(int ISSUEWPS) {
+		this.ISSUEWPS = ISSUEWPS;
+	}
+
+	public int getRECEIVEALARM() {
+		return RECEIVEALARM;
+	}
+
+	public void setRECEIVEALARM(int RECEIVEALARM) {
+		this.RECEIVEALARM = RECEIVEALARM;
 	}
 
 	public int getId() {

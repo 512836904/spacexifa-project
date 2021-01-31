@@ -16,24 +16,24 @@ import java.util.List;
 @Service
 @Transactional
 public class WeldingMachineServiceImpl implements WeldingMachineService {
-	
+
 	@Autowired
 	private WeldingMachineMapper wmm;
 
 	@Autowired
 	private InsframeworkMapper im;
-	
+
 	@Override
-	public List<WeldingMachine> getWeldingMachineAll(Page page,BigInteger parent,String str) {
+	public List<WeldingMachine> getWeldingMachineAll(Page page,String parent,String str) {
 		PageHelper.startPage(page.getPageIndex(),page.getPageSize());
 		return wmm.getWeldingMachineAll(parent,str);
 	}
-	
+
 	@Override
 	public List<WeldingMachine> findAllweldmachine() {
 		return wmm.findAllweldmachine();
 	}
-	
+
 	@Override
 	public List<WeldingMachine> AllMachine(Page page,BigInteger parent) {
 		PageHelper.startPage(page.getPageIndex(),page.getPageSize());
@@ -104,7 +104,7 @@ public class WeldingMachineServiceImpl implements WeldingMachineService {
 	public List<WeldingMachine> getMachines(BigInteger insid) {
 		return wmm.getMachines(insid);
 	}
-	
+
 	@Override
 	public List<WeldingMachine> getMachineByIns(BigInteger id) {
 		// TODO Auto-generated method stub
@@ -125,7 +125,7 @@ public class WeldingMachineServiceImpl implements WeldingMachineService {
 	public void deletefactory(BigInteger statusId) {
 		wmm.deletefactory(statusId);
 	}
-	
+
 	@Override
 	public List<WeldingMachine> getMachineModel() {
 		// TODO Auto-generated method stub

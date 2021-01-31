@@ -2,6 +2,7 @@ $(function () {
     junctionDatagrid();
 });
 var vlogoflag = "";
+
 function junctionDatagrid() {
     $("#productionTable").datagrid({
         height: $("#body").height(),
@@ -29,10 +30,16 @@ function junctionDatagrid() {
             align: "center"
         }, {
             field: 'FJUNCTION',
-            title: '焊缝名称',
-            width: 250,
+            title: '焊缝id',
             halign: "center",
-            align: "center"
+            align: "center",
+            hidden: true
+        }, {
+            field: 'JUNCTION_NAME',
+            title: '焊缝名称',
+            halign: "center",
+            width: 250,
+            align: "left"
         }, {
             field: 'PREHEAT',
             title: '预热℃',
@@ -113,9 +120,9 @@ function junctionDatagrid() {
             align: "center",
             formatter: function (value, row, index) {
                 var str = "";
-                if (value == 1){
+                if (value == 1) {
                     str += "系统录入";
-                }else if (value == 2){
+                } else if (value == 2) {
                     str += "终端扫码录入";
                 }
                 return str;
@@ -255,7 +262,7 @@ function deleteProduction(fid) {
 //查询
 function searchProduction() {
     var name_search = $('#name_search').textbox("getValue");          //焊缝编号
-    var query = {name_search:name_search}; //把查询条件拼接成JSON
+    var query = {name_search: name_search}; //把查询条件拼接成JSON
     $("#productionTable").datagrid('options').queryParams = query; //把查询条件赋值给datagrid内部变量
     $('#productionTable').datagrid('reload');
 }

@@ -478,13 +478,13 @@ public class WeldingTaskController {
 		pageSize = Integer.parseInt(request.getParameter("rows"));
 		String searchStr = request.getParameter("searchStr");
 		String parentId = request.getParameter("parent");
-		BigInteger parent = null;
-		if(iutil.isNull(parentId)){
-			parent = new BigInteger(parentId);
-		}
+//		BigInteger parent = null;
+//		if(iutil.isNull(parentId)){
+//			parent = new BigInteger(parentId);
+//		}
 		request.getSession().setAttribute("searchStr", searchStr);
 		page = new Page(pageIndex,pageSize,total);
-		List<WeldingMachine> list = wmm.getWeldingMachineAll(page,parent,searchStr);
+		List<WeldingMachine> list = wmm.getWeldingMachineAll(page,parentId,searchStr);
 		long total = 0;
 		
 		if(list != null){
@@ -1356,7 +1356,7 @@ public class WeldingTaskController {
 	 * @author Bruce
 	 * @date 2020年2月26日下午2:59:33
 	 * @param request
-	 * @param wps
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/passReview")
@@ -1382,7 +1382,7 @@ public class WeldingTaskController {
 	 * @author Chen
 	 * @date 2020年3月2日下午2:59:25
 	 * @param request
-	 * @param wps
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/turnDown")

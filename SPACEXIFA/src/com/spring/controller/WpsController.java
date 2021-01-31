@@ -163,9 +163,6 @@ public class WpsController {
                 json.put("process", wps.getProcess());              //工序
                 json.put("FOPERATETYPE", wps.getFOPERATETYPE());   //任务完成状态
                 json.put("status", wps.getFstatus());   //工作号是否展示
-                //焊缝id
-//                List<BigInteger> junctionIds = new ArrayList<>();
-                //生产工艺id
                 List<BigInteger> craftIds = new ArrayList<>();
                 //根据电子跟踪卡id查询生产工艺库和焊缝信息
                 List<ProductionCraft> productionCrafts = productionCraftService.getLibraryJunction(wps.getFid());
@@ -173,18 +170,13 @@ public class WpsController {
                     for (ProductionCraft craft : productionCrafts) {
                         if (0 == productionCrafts.indexOf(craft)) {
                             PRODUCTION_CRAFT = craft.getFNAME();     //工艺名称
-                            //JUNCTION = craft.getFJUNCTION()+"("+craft.getJUNCTION_NAME()+")"; //焊缝信息
                         } else {
                             PRODUCTION_CRAFT = PRODUCTION_CRAFT + "、" + craft.getFNAME();
-                            //JUNCTION = JUNCTION + "、" + craft.getFJUNCTION()+"("+craft.getJUNCTION_NAME()+")";
                         }
-//                        junctionIds.add(craft.getJUNCTION_ID());
                         craftIds.add(craft.getPRODUCTION_ID());
                     }
                 }
                 json.put("PRODUCTION_CRAFT", PRODUCTION_CRAFT);
-//                json.put("junctionName", JUNCTION);
-//                json.put("junctionId", junctionIds);
                 json.put("productionCraftId", craftIds);
                 ary.add(json);
             }

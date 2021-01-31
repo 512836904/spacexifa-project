@@ -331,9 +331,9 @@ function searchData(){
 	}
 	if(siId != ""){
 		if(search == ""){
-			search += " i.fid LIKE "+"'%" + siId + "%'";
+			search += " i.fid = "+ siId;
 		}else{
-			search += " AND i.fid LIKE "+"'%" + siId + "%'";
+			search += " AND i.fid = "+ siId;
 		}
 	}
 	if(smanuno != ""){
@@ -345,9 +345,9 @@ function searchData(){
 	}
 	if(sgid != ""){
 		if(search == ""){
-			search += " g.fid LIKE "+"'%" + sgid + "%'";
+			search += " g.fid = "+ sgid;
 		}else{
-			search += " AND g.fid LIKE "+"'%" + sgid + "%'";
+			search += " AND g.fid = " + sgid;
 		}
 	}
 	if(sposition != ""){

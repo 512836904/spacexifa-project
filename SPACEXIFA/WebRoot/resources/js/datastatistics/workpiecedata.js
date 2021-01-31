@@ -13,7 +13,8 @@ function setParam() {
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
     var junctionname = $("#junctionname").val();
-    var ftype = $("#ftype").val();
+    var ftype = $("#ftype").combobox('getValue');
+   // var ftype = $("#ftype").val();
     if(junctionname != ""){
         if(searchStr == ""){
             searchStr += " junction_name LIKE "+"'%" + junctionname + "%'";

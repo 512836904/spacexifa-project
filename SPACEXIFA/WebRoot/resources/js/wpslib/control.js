@@ -1,24 +1,24 @@
 /**
  *
  */
-var WebSocket_Url;
+// var WebSocket_Url;
 $(function () {
-    $.ajax({
-        type: "post",
-        async: false,
-        url: "td/AllTdbf",
-        data: {},
-        dataType: "json", //返回数据形式为json
-        success: function (result) {
-            if (result) {
-                WebSocket_Url = eval(result.web_socket);
-            }
-        },
-        error: function (errorMsg) {
-            alert("数据请求失败，请联系系统管理员!");
-        }
-    });
-})
+    // $.ajax({
+    //     type: "post",
+    //     async: false,
+    //     url: "td/AllTdbf",
+    //     data: {},
+    //     dataType: "json", //返回数据形式为json
+    //     success: function (result) {
+    //         if (result) {
+    //             WebSocket_Url = result.web_socket;
+    //         }
+    //     },
+    //     error: function (errorMsg) {
+    //         alert("数据请求失败，请联系系统管理员!");
+    //     }
+    // });
+});
 
 //控制命令下发（字节码拼接）
 function controlfun() {

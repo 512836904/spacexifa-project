@@ -1,10 +1,22 @@
-<!DOCTYPE html>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE  HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
 
 <head>
+    <base href="<%=basePath%>">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>项目展板</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+    <title>焊接管理展板</title>
     <link rel="stylesheet" href="resources/css/css/indexz.css"/>
     <link rel="stylesheet" href="resources/css/css/element-ui.css">
     <script type="text/javascript" src="resources/js/js/jquery.js"></script>
@@ -26,11 +38,10 @@
 <body>
 <!-- 头部的盒子 -->
 <header>
-    <h1><span>焊接信息化管理平台</span></h1>
+    <h1><span>焊接管理界面</span></h1>
     <div class="leftCompany"></div>
     <div class="rightTime"></div>
-    <div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 40%;" class="img"
-                                               src="resources/images/images/logo.png"/></div>
+    <div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 40%;" class="img" src="resources/images/images/logo.png"/></div>
     <div class="exchange" id="quanping">
         <button style="background-color: #022986;width: 170%;height: 150%;" onclick="javascript:requestFullScreen()">
             <span style="color: #ffffff;">全屏</span></button>
@@ -171,8 +182,8 @@
             </div>
         </div>
         <div class="panel" style="height: 6.05rem;">
-            <!-- 查询待机工作时长 -->
-            <input type="hidden" id="standbyTime" readonly="readonly" value="1">
+            <!-- 0：查询焊工焊接工作时长 -->
+            <input type="hidden" id="standbyTime" readonly="readonly" value="0">
             <div class="panel01" style="float:left" id="allworkwelder">
                 <h2 class="h2-mid"><span>工区焊工人均工作时间 ( h )</span></h2>
             </div>

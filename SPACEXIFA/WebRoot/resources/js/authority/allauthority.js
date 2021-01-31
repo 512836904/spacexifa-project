@@ -88,6 +88,8 @@ $(function(){
 
 var url = "";
 function removeAuthority(){
+	alert("权限信息不允许删除！");
+	return false;
 	$('#rfm').form('clear');
 	var row = $('#dg').datagrid('getSelected');
 	if (row) {

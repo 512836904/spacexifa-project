@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface WeldingMachineMapper extends Mapper<WeldingMachine>{
-	List<WeldingMachine> getWeldingMachineAll(@Param("parent") BigInteger parent,@Param("str") String str);
+	List<WeldingMachine> getWeldingMachineAll(@Param("parent") String parent,@Param("str") String str);
 	
 	List<WeldingMachine> AllMachine(@Param("wid")BigInteger wid);
 	

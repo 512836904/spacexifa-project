@@ -290,7 +290,7 @@ function Junction() {
                 ]
             }
             $.ajax({
-                url: 'http://localhost:9200/tb_live_data/_search?pretty=true',
+                url: 'http://192.168.11.3:9200/tb_live_data/_search?pretty=true',
                 type: 'post',
                 //url: "rep/historyCurve"+chartStr+"&fid="+encodeURIComponent($('#taskno').val())+"&mach="+$('#machid').val()+"&welderid="+$("#welderid").val()+"&fweld_bead="+fweld_bead+"&fsolder_layer="+fsolder_layer,
                 contentType: 'application/json',

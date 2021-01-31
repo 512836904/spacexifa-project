@@ -44,7 +44,14 @@ public interface PersonService {
 	 * @return
 	 */
 	List<Person> getWeldername(BigInteger insid);
-	
+
+	/**
+	 * 查询所有焊工信息，
+	 * 过滤所有的离职焊工
+	 * @return
+	 */
+	List<Person> findAllWelders();
+
 	/**
 	 * 根据焊工ID获取组织机构
 	 * @param fid

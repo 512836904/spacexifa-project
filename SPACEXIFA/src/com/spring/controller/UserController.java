@@ -125,6 +125,8 @@ public class UserController {
                 json.put("status", user.getStatusname());
                 json.put("statusid", user.getStatus());
                 json.put("userPassword", user.getUserPassword());
+                json.put("ISSUEWPS", user.getISSUEWPS());
+                json.put("RECEIVEALARM", user.getRECEIVEALARM());
                 ary.add(json);
             }
         } catch (Exception e) {
@@ -168,6 +170,8 @@ public class UserController {
             user.setUserPassword(fs);
             user.setUserInsframework(Long.parseLong(request.getParameter("userInsframework")));
             user.setStatus(Integer.parseInt(request.getParameter("status")));
+            user.setISSUEWPS(Integer.parseInt(request.getParameter("ISSUEWPS")));
+            user.setRECEIVEALARM(Integer.parseInt(request.getParameter("RECEIVEALARM")));
             userService.save(user);
             String str = request.getParameter("rid");
             if (null != str && !"".equals(str)) {
@@ -218,6 +222,8 @@ public class UserController {
             user.setUserPosition(request.getParameter("userPosition"));
             user.setUserInsframework(Long.parseLong(request.getParameter("userInsframework")));
             user.setStatus(Integer.parseInt(request.getParameter("status")));
+            user.setISSUEWPS(Integer.parseInt(request.getParameter("ISSUEWPS")));
+            user.setRECEIVEALARM(Integer.parseInt(request.getParameter("RECEIVEALARM")));
             String str = request.getParameter("rid");
             Integer uid = Integer.parseInt(request.getParameter("uid"));
             user.setId(uid);
@@ -451,6 +457,40 @@ public class UserController {
             e.getMessage();
         }
         obj.put("rows", ary);
+        return obj.toString();
+    }
+
+    /**
+     * 获取登录用户的下发权限和获取报警信息权限
+     *
+     * @return
+     */
+    @RequestMapping("/getUserPermission")
+    @ResponseBody
+    public String getUserPermission() {
+        JSONObject obj = new JSONObject();
+        boolean flag = false;
+        int issuewps = 0;   //默认没有下发权限
+        int receivealarm = 0;       //默认没有接受报警权限
+        try {
+            //获取用户id
+            Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            MyUser myuser = (MyUser) object;
+            if (null != myuser) {
+                System.out.println("登录用户id：" + myuser.getId() + "---" + myuser.getPassword());
+                User user = userService.findById(Integer.valueOf(String.valueOf(myuser.getId())));
+                if (null != user) {
+                    issuewps = user.getISSUEWPS();
+                    receivealarm = user.getRECEIVEALARM();
+                    flag = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        obj.put("flag", flag);
+        obj.put("issuewps", issuewps);
+        obj.put("receivealarm", receivealarm);
         return obj.toString();
     }
 }

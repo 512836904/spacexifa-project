@@ -865,5 +865,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="module" module-name="PC" />
   </component>
 </module>

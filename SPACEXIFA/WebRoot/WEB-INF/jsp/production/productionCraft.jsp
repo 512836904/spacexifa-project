@@ -7,7 +7,7 @@
 <html>
 <head>
     <base href="<%=basePath%>">
-    <title>生产工艺库管理</title>
+    <title>生产工艺管理</title>
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
@@ -54,7 +54,8 @@
             </div>
             <div class="fitem">
                 <lable><span class="required">*</span>焊缝名称：</lable>
-                <input name="FJUNCTION" id="FJUNCTION" class="easyui-textbox" data-options="required:true">
+                <input name="FJUNCTION" id="FJUNCTION" type="hidden">
+                <input name="JUNCTION_NAME" id="JUNCTION_NAME" title="焊缝名不可编辑" readonly="readonly" class="easyui-textbox">
             </div>
             <div class="fitem">
                 <lable><span class="required">*</span>预热：</lable>

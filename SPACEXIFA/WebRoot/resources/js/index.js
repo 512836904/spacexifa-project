@@ -82,6 +82,8 @@ function loadxmlDoc(file) {
 
 var resourceary = [];
 function anaylsis(ipurl){
+	//http://localhost:8080/
+	//ipurl = "http://10.110.11.3:9090/";
 	var object = loadxmlDoc(ipurl+"ConfigFile/SPACEXIFA.xml");
 	var menuinfo = object.getElementsByTagName("Menuinfo");
 	try{

@@ -319,13 +319,22 @@ public interface DataStatisticsService {
 	List<DataStatistics> getWeldWorkpieceOutCountData(WeldDto dto, String junctionno);
 	
 	/**
-	 * 焊工工作量排行
+	 * 焊工工作量排行（焊接时长）
 	 * @param parent 事业部id
 	 * @param time 时间
 	 * @return
 	 */
 	List<DataStatistics> getWorkRank(Page page,BigInteger parent,String time);
-	
+
+	/**
+	 * 焊工工作时长排行（待机时长）
+	 * @param page
+	 * @param parent
+	 * @param time
+	 * @return
+	 */
+	List<DataStatistics> getStandbyRank(Page page,BigInteger parent,String time);
+
 	/**
 	 * 获取用户当前组织机构下的焊丝消耗量和气体消耗量
 	 * @param userInsframework
@@ -451,9 +460,14 @@ public interface DataStatisticsService {
 	List<DataStatistics> getMachineData(Page page, BigInteger insid, WeldDto dto);
 
 	/**
-	 * 查询人均工作时长
+	 * 查询人均工作时长(焊接时长)
 	 */
 	List<DataStatistics> findAverageWorkingTime(String time,int itemType);
+
+	/**
+	 * 查询人均工作时长(待机时长)
+	 */
+	List<DataStatistics> findStandbyWorkingTime(String time,int itemType);
 
 	/**
 	 * 根据组织机构分组统计焊接规范符合率

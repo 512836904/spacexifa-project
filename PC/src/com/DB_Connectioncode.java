@@ -71,7 +71,7 @@ public class DB_Connectioncode {
             OracleDBConnection.close(conn, stmt, null);
         }
         //查询焊缝的电流电压最大最小值
-        inSql = "SELECT FID,FJUNCTION,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,FMAXVOLTAGE,FMINVOLTAGE FROM TB_JUNCTION";
+        inSql = "SELECT FID,JUNCTION_NAME,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,FMAXVOLTAGE,FMINVOLTAGE FROM TB_JUNCTION";
         try {
             if (conn == null || conn.isClosed()) {
                 conn = OracleDBConnection.getConnection();
@@ -114,8 +114,8 @@ public class DB_Connectioncode {
                         fmin_valtage = "0" + fmin_valtage;
                     }
                 }
-                String weldjunction = rs.getString("FJUNCTION");
-                listarray3.add(weldjunction);//焊缝编号
+                String weldjunction = rs.getString("JUNCTION_NAME");
+                listarray3.add(weldjunction);//焊缝名称
                 listarray3.add(fmax_electricity);//最大电流
                 listarray3.add(fmin_electricity);
                 listarray3.add(fmax_valtage);//最大电压

@@ -86,9 +86,9 @@ function editWpslib() {
         $('#wltfm').form('load', row);
         $('#validwl').val(row.wpslibName);
         var statusId = document.getElementsByName("statusId");
-        if (row.statusId == 61){
+        if (row.statusId == 61) {
             statusId[0].checked = 'checked';
-        }else {
+        } else {
             statusId[1].checked = 'checked';
         }
         // $('#model').combobox('disable', true);//禁用单选按钮
@@ -150,7 +150,7 @@ function statusRadio() {
             if (result) {
                 var str = "";
                 for (var i = 0; i < result.ary.length; i++) {
-                    str += "<input type='radio' class='radioStyle' name='statusId' id=\"" +"sId"+ result.ary[i].id + "\" value=\"" + result.ary[i].id + "\" />"
+                    str += "<input type='radio' class='radioStyle' name='statusId' id=\"" + "sId" + result.ary[i].id + "\" value=\"" + result.ary[i].id + "\" />"
                         + result.ary[i].name;
                 }
                 $("#radios").html(str);
@@ -169,7 +169,7 @@ var mflag = 1;
 
 //新增工艺
 function addMainWps(row) {
-    if (row.statusId == 61){
+    if (row.statusId == 61) {
         mflag = 1;
         var height = 600;
         //var src = 'wps/goWB_P500L';
@@ -196,7 +196,7 @@ function addMainWps(row) {
         // console.log(arr2);
         //求两个对象数组的差集
         let diff = [...arr1];
-        for (let i = 0, len = arr1.length; i < len; i++ ) {
+        for (let i = 0, len = arr1.length; i < len; i++) {
             let flag = false
             for (let j = 0, length = arr2.length; j < length; j++) {
                 if (arr1[i].value === arr2[j].id) {
@@ -246,15 +246,9 @@ function addMainWps(row) {
                         // $("#wpsCraft").dialog('destroy');
                         $("#wpsCraft").dialog('close');
                     }
-                }],
-            onClose: function () {
-                // $(this).dialog('destroy');
-                $("#wpsCraft").dialog('close');
-            },
-            onLoad: function () {
-            }
+                }]
         });
-    }else {
+    } else {
         alert("该工艺库已被停用！");
     }
 }
@@ -295,29 +289,23 @@ function editMainWps(indexrow, row) {
                     // $("#wpsCraft").dialog('destroy');
                     $("#wpsCraft").dialog('close');
                 }
-            }],
-        onClose: function () {
-            // $(this).dialog('destroy');
-            $(this).dialog('close');
-        },
-        onLoad: function () {
-        }
+            }]
     });
 }
 
 function saveMainWps(modelname) {
     //参数检测
-    if (modelname == 'CPVE500'){
+    if (modelname == 'CPVE500') {
         if (CPVEWCHECK() == false) {
             return;
         }
-    }else if (modelname == 'WB-P500L'){
+    } else if (modelname == 'WB-P500L') {
         if (WBLCHECK() == false) {
             return;
         }
-    }else if (modelname == 'DP500/CPVM500'){
+    } else if (modelname == 'DP500/CPVM500') {
 
-    }else {
+    } else {
         return;
     }
     var wpsLibRow = $('#wpslibTable').datagrid('getSelected');
@@ -335,55 +323,55 @@ function saveMainWps(modelname) {
         return;
     }
     $('#fmwpsCraft').form('submit', {
-    	url : 'wps/apSpe',
-    	onSubmit : function() {
-    		return $(this).form('enableValidation').form('validate');
-    	},
-    	success : function(result) {
-    		if(result){
-    			var result = eval('(' + result + ')');
-    			if (!result.success) {
-    				$.messager.show({
-    					title : 'Error',
-    					msg : result.errorMsg
-    				});
-    				oldchanel = 0;
-    			} else {
-    				$.messager.alert("提示", messager);
-    				$('#wpsCraft').dialog('close');
-    				$('#ddv-'+index).datagrid('reload');
-    				oldchanel = 0;
-    			}
-    		}
-    	},
-        error : function(errorMsg) {
+        url: 'wps/apSpe',
+        onSubmit: function () {
+            return $(this).form('enableValidation').form('validate');
+        },
+        success: function (result) {
+            if (result) {
+                var result = eval('(' + result + ')');
+                if (!result.success) {
+                    $.messager.show({
+                        title: 'Error',
+                        msg: result.errorMsg
+                    });
+                    oldchanel = 0;
+                } else {
+                    $.messager.alert("提示", messager);
+                    $('#wpsCraft').dialog('close');
+                    $('#ddv-' + index).datagrid('reload');
+                    oldchanel = 0;
+                }
+            }
+        },
+        error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
 }
 
 //根据工艺库id查询对应的通道号规范（一个焊机型号只能有一个通道号）
-function findSpecificationByFid(wpslibid){
+function findSpecificationByFid(wpslibid) {
     var array = [];
     $.ajax({
-        type : "post",
-        async : false,
-        url : "wps/findSpecificationByFid?",
-        data : {
+        type: "post",
+        async: false,
+        url: "wps/findSpecificationByFid?",
+        data: {
             'wpslibid': wpslibid
         },
-        dataType : "json", //返回数据形式为json
-        success : function(result) {
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
             var data = result.ary;
-            if (data.length > 0){
-                for (var index in data){
+            if (data.length > 0) {
+                for (var index in data) {
                     let modelItem = {};
                     modelItem["id"] = data[index].fspe_num.toString();
                     array[index] = modelItem;
                 }
             }
         },
-        error : function(errorMsg) {
+        error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
@@ -469,10 +457,10 @@ function wpsLibRule(modelname) {
         //     str += '<option value="' + i + '">通道号' + i + '</option>';
         // }
         var fchanels = [];
-        for (var i = 0; i < 100; i++){
+        for (var i = 0; i < 100; i++) {
             let fchanel = {};
-            fchanel["value"] = ""+(i+1);
-            fchanel["text"] = "通道号"+(i+1);
+            fchanel["value"] = "" + (i + 1);
+            fchanel["text"] = "通道号" + (i + 1);
             fchanels[i] = fchanel;
         }
         $('#fchanel').combobox('loadData', fchanels);

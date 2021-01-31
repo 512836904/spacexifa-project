@@ -151,7 +151,7 @@ public class DB_Connectionmysql {
         String weldnum = "0000";
         String ins = "0";
         String welderitemid = "0";
-        int cardid = 0;
+        BigDecimal cardid = BigDecimal.ZERO;
         int wpsid = 0;
         int productid = 0;
         int workprocedureid = 0;
@@ -197,17 +197,23 @@ public class DB_Connectionmysql {
                             break;
                         }
                     }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
+                        }
+                    }
                     //判断手持终端是否下发了任务信息
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
-                            //welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));//生产工艺id
+                            productid = Integer.parseInt(taskarray.get(index + 4));//产品号id(返修状态)
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));//焊缝号id
+                            //System.out.println("存实时表：" + gathernum + ",工作号id：" + cardid);
                         }
                     }
                     liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
@@ -216,7 +222,7 @@ public class DB_Connectionmysql {
                     liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
                     liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
@@ -276,16 +282,22 @@ public class DB_Connectionmysql {
                             break;
                         }
                     }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
+                        }
+                    }
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
                             //welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.valueOf(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
                     liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
@@ -294,7 +306,7 @@ public class DB_Connectionmysql {
                     liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
                     liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
@@ -354,16 +366,22 @@ public class DB_Connectionmysql {
                             break;
                         }
                     }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
+                        }
+                    }
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
                             //welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
                     liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
@@ -372,7 +390,7 @@ public class DB_Connectionmysql {
                     liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
                     liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
@@ -432,16 +450,22 @@ public class DB_Connectionmysql {
                             break;
                         }
                     }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
+                        }
+                    }
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
                             //welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.valueOf(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
                     liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
@@ -450,7 +474,7 @@ public class DB_Connectionmysql {
                     liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
                     liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
@@ -482,7 +506,7 @@ public class DB_Connectionmysql {
 
     public void DB_Connectionmysqloutline(Server server, TbLiveData liveData, ArrayList<String> listarray1, ArrayList<String> listarray2, ArrayList<String> listarray3) {
 
-        long weldid = 0;
+        String weldid = "0";
         Date date;
         String nowTime;
         Timestamp goodsC_date;          //上传时间
@@ -490,15 +514,15 @@ public class DB_Connectionmysql {
         String junctionnum = "0000";    //焊口编号
         String gathernum = "0000";
         String weldnum = "0000";
-        int ins = 0;
-        int cardid = 0;
+        String ins = "0";
+        String welderitemid = "0";
+        BigDecimal cardid = BigDecimal.ZERO;
         int wpsid = 0;
         int productid = 0;
         int workprocedureid = 0;
         int employee_id = 0;
         int junction_id = 0;
-        int welderid = 0;
-        int welderins = 0;  //焊工归属
+        String welderid = "0";
         int junctionid = 0;
 
         synchronized (this) {
@@ -518,51 +542,56 @@ public class DB_Connectionmysql {
                     liveData.setFmin_voltage(BigDecimal.valueOf((Double.parseDouble(liveData.getFmin_voltage().toString())) / 10));//最小电压
                     liveData.setFwirefeedrate(BigDecimal.valueOf((Double.parseDouble(liveData.getFwirefeedrate().toString())) / 10));//送丝速度
                     liveData.setFrateofflow(BigDecimal.valueOf((Double.parseDouble(liveData.getFrateofflow().toString())) / 10));//气体流量
-                    for (int a = 0; a < listarray2.size(); a += 4) {
-                        //采集模块编号判断
-                        //System.out.println("数据库"+Integer.valueOf(listarray2.get(a + 2)));
-                        //System.out.println("实时"+liveData.getFgather_no());
-                        if (liveData.getFgather_no().equals((listarray2.get(a + 2)))) {
-                            weldid = Long.parseLong(listarray2.get(a));//焊机id
-                            gathernum = listarray2.get(a + 2);//采集编号
-                            weldnum = listarray2.get(a + 1);//焊机固号
-                            ins = Integer.valueOf(listarray2.get(a + 3));//组织id
+                    //焊工信息
+                    for (int i = 0; i < listarray1.size(); i += 3) {
+                        if (("0090" + liveData.getFwelder_no()).equals(listarray1.get(i + 1))) {
+                            weldernum = listarray1.get(i + 1);//焊工编号
+                            welderid = listarray1.get(i);//焊工id
+                            welderitemid = listarray1.get(i + 2);//焊工组织id
                             break;
                         }
                     }
-                    for (int a = 0; a < listarray1.size(); a += 3) {
-                        if (liveData.getFwelder_no().equals(listarray1.get(a + 1))) {
-                            weldernum = listarray1.get(a + 1);
-                            welderid = Integer.valueOf(listarray1.get(a));
-                            welderins = Integer.valueOf(listarray1.get(a + 2));
+                    //焊机信息
+                    for (int i = 0; i < listarray2.size(); i += 4) {
+                        //采集模块编号判断
+                        if (liveData.getFgather_no().equals(listarray2.get(i + 2))) {
+                            weldid = listarray2.get(i);//焊机id
+                            weldnum = listarray2.get(i + 1);//焊机固号
+                            gathernum = listarray2.get(i + 2);//采集编号
+                            ins = listarray2.get(i + 3);//焊机组织id
                             break;
+                        }
+                    }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
                         }
                     }
                     //判断手持终端是否下发了任务信息
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
-                            welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
-                    liveData.setFmachine_id(BigDecimal.valueOf(weldid));
+                    liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
                     liveData.setFweld_no(weldnum);
-                    liveData.setFwelder_id(BigDecimal.valueOf(welderid));
-                    liveData.setFmachine_itemid(BigDecimal.valueOf(ins));
+                    liveData.setFwelder_id(BigDecimal.valueOf(Long.parseLong(welderid)));
+                    liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
+                    liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFwelder_itemid(BigDecimal.valueOf(welderins));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
                     liveData.setFemployee_id(BigDecimal.valueOf(employee_id));//工序id
-                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));//焊缝id
+                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));
                     if (server.outlinestatus.equals("A")) {
                         if (countoutlineA1 == 1) {
                             inSqloutlineA1 = inSqloutlineA + sqlJoint(liveData);
@@ -620,51 +649,56 @@ public class DB_Connectionmysql {
                     liveData.setFmin_voltage(BigDecimal.valueOf((Double.parseDouble(liveData.getFmin_voltage().toString())) / 10));//最小电压
                     liveData.setFwirefeedrate(BigDecimal.valueOf((Double.parseDouble(liveData.getFwirefeedrate().toString())) / 10));//送丝速度
                     liveData.setFrateofflow(BigDecimal.valueOf((Double.parseDouble(liveData.getFrateofflow().toString())) / 10));//气体流量
-                    for (int a = 0; a < listarray2.size(); a += 4) {
-                        //采集模块编号判断
-                        //System.out.println("数据库"+Integer.valueOf(listarray2.get(a + 2)));
-                        //System.out.println("实时"+liveData.getFgather_no());
-                        if (liveData.getFgather_no().equals((listarray2.get(a + 2)))) {
-                            weldid = Long.parseLong(listarray2.get(a));//焊机id
-                            gathernum = listarray2.get(a + 2);//采集编号
-                            weldnum = listarray2.get(a + 1);//焊机固号
-                            ins = Integer.valueOf(listarray2.get(a + 3));//组织id
+                    //焊工信息
+                    for (int i = 0; i < listarray1.size(); i += 3) {
+                        if (("0090" + liveData.getFwelder_no()).equals(listarray1.get(i + 1))) {
+                            weldernum = listarray1.get(i + 1);//焊工编号
+                            welderid = listarray1.get(i);//焊工id
+                            welderitemid = listarray1.get(i + 2);//焊工组织id
                             break;
                         }
                     }
-                    for (int a = 0; a < listarray1.size(); a += 3) {
-                        if (liveData.getFwelder_no().equals(listarray1.get(a + 1))) {
-                            weldernum = listarray1.get(a + 1);
-                            welderid = Integer.valueOf(listarray1.get(a));
-                            welderins = Integer.valueOf(listarray1.get(a + 2));
+                    //焊机信息
+                    for (int i = 0; i < listarray2.size(); i += 4) {
+                        //采集模块编号判断
+                        if (liveData.getFgather_no().equals(listarray2.get(i + 2))) {
+                            weldid = listarray2.get(i);//焊机id
+                            weldnum = listarray2.get(i + 1);//焊机固号
+                            gathernum = listarray2.get(i + 2);//采集编号
+                            ins = listarray2.get(i + 3);//焊机组织id
                             break;
+                        }
+                    }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
                         }
                     }
                     //判断手持终端是否下发了任务信息
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
-                            welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
-                    liveData.setFmachine_id(BigDecimal.valueOf(weldid));
+                    liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
                     liveData.setFweld_no(weldnum);
-                    liveData.setFwelder_id(BigDecimal.valueOf(welderid));
-                    liveData.setFmachine_itemid(BigDecimal.valueOf(ins));
+                    liveData.setFwelder_id(BigDecimal.valueOf(Long.parseLong(welderid)));
+                    liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
+                    liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFwelder_itemid(BigDecimal.valueOf(welderins));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
                     liveData.setFemployee_id(BigDecimal.valueOf(employee_id));//工序id
-                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));//焊缝id
+                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));
                     if (server.outlinestatus.equals("A")) {
                         if (countoutlineA2 == 1) {
                             inSqloutlineA2 = inSqloutlineA + sqlJoint(liveData);
@@ -722,51 +756,56 @@ public class DB_Connectionmysql {
                     liveData.setFmin_voltage(BigDecimal.valueOf((Double.parseDouble(liveData.getFmin_voltage().toString())) / 10));//最小电压
                     liveData.setFwirefeedrate(BigDecimal.valueOf((Double.parseDouble(liveData.getFwirefeedrate().toString())) / 10));//送丝速度
                     liveData.setFrateofflow(BigDecimal.valueOf((Double.parseDouble(liveData.getFrateofflow().toString())) / 10));//气体流量
-                    for (int a = 0; a < listarray2.size(); a += 4) {
-                        //采集模块编号判断
-                        //System.out.println("数据库"+Integer.valueOf(listarray2.get(a + 2)));
-                        //System.out.println("实时"+liveData.getFgather_no());
-                        if (liveData.getFgather_no().equals((listarray2.get(a + 2)))) {
-                            weldid = Long.parseLong(listarray2.get(a));//焊机id
-                            gathernum = listarray2.get(a + 2);//采集编号
-                            weldnum = listarray2.get(a + 1);//焊机固号
-                            ins = Integer.valueOf(listarray2.get(a + 3));//组织id
+                    //焊工信息
+                    for (int i = 0; i < listarray1.size(); i += 3) {
+                        if (("0090" + liveData.getFwelder_no()).equals(listarray1.get(i + 1))) {
+                            weldernum = listarray1.get(i + 1);//焊工编号
+                            welderid = listarray1.get(i);//焊工id
+                            welderitemid = listarray1.get(i + 2);//焊工组织id
                             break;
                         }
                     }
-                    for (int a = 0; a < listarray1.size(); a += 3) {
-                        if (liveData.getFwelder_no().equals(listarray1.get(a + 1))) {
-                            weldernum = listarray1.get(a + 1);
-                            welderid = Integer.valueOf(listarray1.get(a));
-                            welderins = Integer.valueOf(listarray1.get(a + 2));
+                    //焊机信息
+                    for (int i = 0; i < listarray2.size(); i += 4) {
+                        //采集模块编号判断
+                        if (liveData.getFgather_no().equals(listarray2.get(i + 2))) {
+                            weldid = listarray2.get(i);//焊机id
+                            weldnum = listarray2.get(i + 1);//焊机固号
+                            gathernum = listarray2.get(i + 2);//采集编号
+                            ins = listarray2.get(i + 3);//焊机组织id
                             break;
+                        }
+                    }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
                         }
                     }
                     //判断手持终端是否下发了任务信息
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
-                            welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
-                    liveData.setFmachine_id(BigDecimal.valueOf(weldid));
+                    liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
                     liveData.setFweld_no(weldnum);
-                    liveData.setFwelder_id(BigDecimal.valueOf(welderid));
-                    liveData.setFmachine_itemid(BigDecimal.valueOf(ins));
+                    liveData.setFwelder_id(BigDecimal.valueOf(Long.parseLong(welderid)));
+                    liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
+                    liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFwelder_itemid(BigDecimal.valueOf(welderins));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
                     liveData.setFemployee_id(BigDecimal.valueOf(employee_id));//工序id
-                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));//焊缝id
+                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));
                     if (server.outlinestatus.equals("A")) {
                         if (countoutlineA3 == 1) {
                             inSqloutlineA3 = inSqloutlineA + sqlJoint(liveData);
@@ -823,51 +862,56 @@ public class DB_Connectionmysql {
                     liveData.setFmin_voltage(BigDecimal.valueOf((Double.parseDouble(liveData.getFmin_voltage().toString())) / 10));//最小电压
                     liveData.setFwirefeedrate(BigDecimal.valueOf((Double.parseDouble(liveData.getFwirefeedrate().toString())) / 10));//送丝速度
                     liveData.setFrateofflow(BigDecimal.valueOf((Double.parseDouble(liveData.getFrateofflow().toString())) / 10));//气体流量
-                    for (int a = 0; a < listarray2.size(); a += 4) {
-                        //采集模块编号判断
-                        //System.out.println("数据库"+Integer.valueOf(listarray2.get(a + 2)));
-                        //System.out.println("实时"+liveData.getFgather_no());
-                        if (liveData.getFgather_no().equals((listarray2.get(a + 2)))) {
-                            weldid = Long.parseLong(listarray2.get(a));//焊机id
-                            gathernum = listarray2.get(a + 2);//采集编号
-                            weldnum = listarray2.get(a + 1);//焊机固号
-                            ins = Integer.valueOf(listarray2.get(a + 3));//组织id
+                    //焊工信息
+                    for (int i = 0; i < listarray1.size(); i += 3) {
+                        if (("0090" + liveData.getFwelder_no()).equals(listarray1.get(i + 1))) {
+                            weldernum = listarray1.get(i + 1);//焊工编号
+                            welderid = listarray1.get(i);//焊工id
+                            welderitemid = listarray1.get(i + 2);//焊工组织id
                             break;
                         }
                     }
-                    for (int a = 0; a < listarray1.size(); a += 3) {
-                        if (liveData.getFwelder_no().equals(listarray1.get(a + 1))) {
-                            weldernum = listarray1.get(a + 1);
-                            welderid = Integer.valueOf(listarray1.get(a));
-                            welderins = Integer.valueOf(listarray1.get(a + 2));
+                    //焊机信息
+                    for (int i = 0; i < listarray2.size(); i += 4) {
+                        //采集模块编号判断
+                        if (liveData.getFgather_no().equals(listarray2.get(i + 2))) {
+                            weldid = listarray2.get(i);//焊机id
+                            weldnum = listarray2.get(i + 1);//焊机固号
+                            gathernum = listarray2.get(i + 2);//采集编号
+                            ins = listarray2.get(i + 3);//焊机组织id
                             break;
+                        }
+                    }
+                    if (gathernum.length() < 4) {
+                        int len = 4 - gathernum.length();
+                        for (int i = 0; i < len; i++) {
+                            gathernum = "0" + gathernum;
                         }
                     }
                     //判断手持终端是否下发了任务信息
                     if (!taskarray.isEmpty()) {
                         if (taskarray.contains("m-" + gathernum)) {
                             int index = taskarray.indexOf("m-" + gathernum);
-                            welderid = Integer.valueOf(taskarray.get(index + 1));
-                            cardid = Integer.parseInt(taskarray.get(index + 2));
-                            wpsid = Integer.valueOf(taskarray.get(index + 3));
-                            productid = Integer.valueOf(taskarray.get(index + 4));
-                            employee_id = Integer.valueOf(taskarray.get(index + 5));
-                            workprocedureid = Integer.valueOf(taskarray.get(index + 6));
-                            junction_id = Integer.valueOf(taskarray.get(index + 7));
+                            cardid = BigDecimal.valueOf(Long.parseLong(taskarray.get(index + 2)));//工作号id
+                            wpsid = Integer.parseInt(taskarray.get(index + 3));
+                            productid = Integer.parseInt(taskarray.get(index + 4));
+                            employee_id = Integer.parseInt(taskarray.get(index + 5));
+                            workprocedureid = Integer.parseInt(taskarray.get(index + 6));
+                            junction_id = Integer.parseInt(taskarray.get(index + 7));
                         }
                     }
-                    liveData.setFmachine_id(BigDecimal.valueOf(weldid));
+                    liveData.setFmachine_id(BigDecimal.valueOf(Long.parseLong(weldid)));
                     liveData.setFweld_no(weldnum);
-                    liveData.setFwelder_id(BigDecimal.valueOf(welderid));
-                    liveData.setFmachine_itemid(BigDecimal.valueOf(ins));
+                    liveData.setFwelder_id(BigDecimal.valueOf(Long.parseLong(welderid)));
+                    liveData.setFwelder_itemid(BigDecimal.valueOf(Long.parseLong(welderitemid)));
+                    liveData.setFmachine_itemid(BigDecimal.valueOf(Long.parseLong(ins)));
                     liveData.setFjunction_itemid(BigDecimal.valueOf(0));
-                    liveData.setFwelder_itemid(BigDecimal.valueOf(welderins));
-                    liveData.setFcard_id(BigDecimal.valueOf(cardid));//电子跟踪卡
+                    liveData.setFcard_id(cardid);//电子跟踪卡
                     liveData.setFstep_id(BigDecimal.valueOf(workprocedureid));//工步id
                     liveData.setFproduct_number_id(BigDecimal.valueOf(productid));//产品id
                     liveData.setFwps_lib_id(BigDecimal.valueOf(wpsid));//工艺规程id
                     liveData.setFemployee_id(BigDecimal.valueOf(employee_id));//工序id
-                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));//焊缝id
+                    liveData.setFjunction_id(BigDecimal.valueOf(junction_id));
                     if (server.outlinestatus.equals("A")) {
                         if (countoutlineA4 == 1) {
                             inSqloutlineA4 = inSqloutlineA + sqlJoint(liveData);

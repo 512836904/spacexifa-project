@@ -35,7 +35,8 @@ function loadWorkRankData(day){
         async: true,
         url: "frontEnd/getWorkRank",
         data: {
-            startTime: nowDatetime
+            startTime: nowDatetime,
+            standbyTime: $("#standbyTime").val()
         },
         dataType: "json", //返回数据形式为json
         success: function (result) {
@@ -175,7 +176,8 @@ function loadWorkWelders(day,organization){
         url: "frontEnd/findAverageWorkingTime",
         data: {
             startTime: nowDatetime,
-            organization: nowOrganization
+            organization: nowOrganization,
+            standbyTime: $("#standbyTime").val()
         },
         dataType: "json", //返回数据形式为json
         success: function (result) {

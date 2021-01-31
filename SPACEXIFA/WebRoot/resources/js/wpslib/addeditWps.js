@@ -516,10 +516,7 @@ function addWpsTrackCard() {
             handler: function () {
                 $("#addTarckingCard").dialog('close');
             }
-        }],
-        onClose: function () {
-            $("#addTarckingCard").dialog('close');
-        }
+        }]
     });
     $("#addTarckingCard").dialog("open");
     loadProductionTable();
@@ -824,12 +821,7 @@ function editWpsTrackCard() {
                 handler: function () {
                     $("#addTarckingCard").dialog('close');
                 }
-            }],
-            onClose: function () {
-                $("#addTarckingCard").dialog('close');
-            },
-            onLoad: function () {
-            }
+            }]
         }).dialog("open");
         //加载数据
         loadProductionTable();

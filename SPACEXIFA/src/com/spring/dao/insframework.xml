@@ -142,20 +142,14 @@
 	</select>
 	
 	<select id="getInsIdByParent" resultMap="insMap">
-		<!-- SELECT i.fid,i.fname FROM tb_insframework i INNER JOIN tb_insframework ins on ins.fid = i.fparent
-		INNER join tb_insframework insf on insf.fid = ins.fparent
-		where (i.fid = #{parent} or ins.fid = #{parent} or insf.fid = #{parent})
-		<if test="type>0">
-			and i.ftype&lt;#{type}
-		</if> -->
 		SELECT i.fid,i.fname
 		FROM tb_insframework i
 		WHERE 1 = 1
 		<if test="type > 0">
-			#{type} > i.ftype
+			AND #{type} > i.ftype
 		</if>
 		<if test="parent!=null and parent!=''">
-		START WITH i.fid = #{parent}
+			START WITH i.fid = #{parent}
 		</if>
 		CONNECT BY PRIOR i.fid = i.fparent
 		ORDER BY i.FID ASC

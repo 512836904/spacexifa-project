@@ -94,7 +94,7 @@ public class OracleDBConnection {
 
             while (resultSet.next()){
                 String fname = resultSet.getString("FNAME");
-                System.out.println(fname);
+                System.out.println("FNAME:"+fname);
             }
             System.out.println("OK！");
         } catch (SQLException e) {

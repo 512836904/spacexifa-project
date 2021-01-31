@@ -145,6 +145,8 @@
             </div>
 			
             <div class="panel" style="height: 6.05rem;">
+                <!-- 查询待机工作时长 -->
+                <input type="hidden" id="standbyTime" readonly="readonly" value="1">
                 <div class="panel01" style="float:left" id="allworkwelder">
                     <h2 class="h2-mid"><span>工区焊工人均工作时间 ( h )</span></h2>
                 </div>
@@ -266,10 +268,10 @@
                     </a>
                 </div>
                 <div class="panel02" style="overflow: auto;">
-                    <div class="chart" id="Right3">
+                    <div class="chart" id="Right3" style="width: 100%;">
                         <div id="app">
                             <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '28px'}"
-                                      height="300" border style="width: 100%;overflow: auto;font-size: 15px">
+                                      height="300" border style="width: 100%;overflow: auto;font-size: 13px;">
 
                                 <el-table-column prop="gzh" label="工作号"></el-table-column>
 
@@ -388,7 +390,7 @@
                         feild["bth"] = data[index].SET_NUMBER;
                         feild["ljm"] = data[index].PART_NAME;
                         feild["gzzsc"] = data[index].worktime;
-                        feild["zhcxh"] = data[index].wirefeedrate;
+                        feild["zhcxh"] = Number(data[index].wirefeedrate).toFixed(2);
                         tablearray.push(feild);
                     }
                     appvue.$delete(appvue.tableData);

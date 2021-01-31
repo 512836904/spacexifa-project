@@ -53,6 +53,7 @@ public class TdController {
         String websocket = request.getSession().getServletContext().getInitParameter("websocket");
 //		request.setAttribute("web_socket", websocket);
         StringBuffer requestURL = request.getRequestURL();
+        System.out.println("requestURL:======================="+requestURL);
         if (String.valueOf(requestURL).contains("10.110.11.3")){
             websocket = "10.110.11.3:8083";
         }
@@ -80,6 +81,17 @@ public class TdController {
     }
 
     /**
+     * 跳转焊接管理界面
+     * @param request
+     * @return
+     */
+    @RequestMapping("/openWeldModule")
+    public String openWeldModule(HttpServletRequest request) {
+        lm.getUserId(request);
+        return "screen/weldmodule";
+    }
+
+    /**
      * 跳转质量管理界面
      * @param request
      * @return
@@ -91,7 +103,7 @@ public class TdController {
     }
 
     /**
-     * 跳转质量管理界面
+     * 跳转项目管理界面
      * @param request
      * @return
      */

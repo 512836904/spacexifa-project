@@ -109,7 +109,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 		
 		<!-- 添加修改 -->
-		<div id="dlg" class="easyui-dialog" style="width: 700px; height: 70%; padding:10px 20px" closed="true" buttons="#dlg-buttons">
+		<div id="dlg" class="easyui-dialog" style="width: 800px; height: 80%; padding:10px 20px" closed="true" buttons="#dlg-buttons">
 			<form id="fm" class="easyui-form" method="post" data-options="novalidate:true"><br/>
 				<div class="fitem" style="padding-right:100px;">
 	            	<lable style="width: 200px;"><span class="required">*</span>用户名</lable>
@@ -136,6 +136,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        		<lable style="width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态</lable>&nbsp;&nbsp;
 	   				<span id="radios"></span>
 	        	</div>
+				<div class="fitem">
+					<lable>是否拥有下发权限：</lable>
+					<select class="easyui-combobox" name="ISSUEWPS" id="ISSUEWPS"></select>
+					<lable>是否拥有接受报警权限：</lable>
+					<select class="easyui-combobox" name="RECEIVEALARM" id="RECEIVEALARM"></select>
+				</div>
 		        <div align="center">
 		        	<table id="tt" name="tt" title="角色列表" checkbox="true" style="table-layout:fixed"></table>
 		        </div>

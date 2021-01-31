@@ -23,4 +23,6 @@ public interface PersonMapper {
 	List<Person> getFreeWelder(@Param("str")String str);
 	List<Person> getWeldername(@Param("insid")BigInteger insid);
 	String getInsidByFid(BigInteger fid);
+
+	List<Person> findAllWelders();
 }

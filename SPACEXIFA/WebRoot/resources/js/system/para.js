@@ -17,6 +17,7 @@
 		    	for(var i=0;i<res.length;i++){
 		    		$("#id").textbox("setValue", res[i].id);
 		    		$("#companyName").textbox("setValue", res[i].fcn);
+					$("#numVersion").textbox("setValue", res[i].numversion);
 	    			if(res[i].fvv=="0"){
 	    				$("#term1").attr("checked",true);
 	    				}else{
@@ -63,9 +64,10 @@
 	
 	function savePara(){
         var id = document.getElementById("id").value;
-        var check=$("input[type='checkbox']:checked").val(); 
+        //var check=$("input[type='checkbox']:checked").val();
         var url;
-        url = "pmt/editParameter?check="+check+"&id="+id;
+        //url = "pmt/editParameter?check="+check+"&id="+id;
+		url = "pmt/editParameter?id="+id;
             $('#fm').form('submit',{
                 url: url,
                 onSubmit: function(){

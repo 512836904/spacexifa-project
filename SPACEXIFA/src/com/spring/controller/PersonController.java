@@ -6,9 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
-import com.spring.model.Dictionarys;
-import com.spring.service.DictionaryService;
-import com.spring.service.InsframeworkService;
+import com.spring.model.*;
+import com.spring.service.*;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
-import com.spring.model.MyUser;
-import com.spring.model.Person;
-import com.spring.model.WeldingMachine;
 import com.spring.page.Page;
-import com.spring.service.PersonService;
-import com.spring.service.WeldingMachineService;
 import com.spring.util.IsnullUtil;
 
 import net.sf.json.JSONObject;
@@ -46,6 +40,8 @@ public class PersonController {
     @Autowired
     private WeldingMachineService machineService;
 
+    @Autowired
+    private ParameterService parameterService;
     IsnullUtil iutil = new IsnullUtil();
 
     /**
@@ -113,6 +109,7 @@ public class PersonController {
                 json.put("quali", welder.getQuali());
                 json.put("owner", welder.getInsid());
                 json.put("fstatus", welder.getFSTATUS());
+                json.put("DIMISSIONSTATUS", welder.getDIMISSIONSTATUS());
                 String statusName = "离线";
                 if (null != list && list.size() > 0){
                     for (Dictionarys li : list){
@@ -204,6 +201,9 @@ public class PersonController {
                 .getPrincipal();
         String creat = String.valueOf(myuser.getId());
         JSONObject obj = new JSONObject();
+        BigInteger num = null;
+        List<Parameter> parameter = parameterService.getParameter(); //获取参数
+        num = parameter.get(0).getNumversion().add(new BigInteger("1"));
         try {
             welder.setQuali(Integer.parseInt(request.getParameter("qua")));
             welder.setLeveid(Integer.parseInt(request.getParameter("leve")));
@@ -214,12 +214,15 @@ public class PersonController {
             welder.setCardnum(request.getParameter("cardnum"));
             welder.setBack(request.getParameter("back"));
             String fstatus = request.getParameter("fstatus");
+            String DIMISSIONSTATUS = request.getParameter("DIMISSIONSTATUS");
             welder.setFSTATUS((fstatus != null && !"".equals(fstatus)) ? Integer.parseInt(fstatus) : 0);
+            welder.setDIMISSIONSTATUS((DIMISSIONSTATUS != null && !"".equals(DIMISSIONSTATUS)) ? Integer.parseInt(DIMISSIONSTATUS) : 0);
             welder.setCreater(new BigInteger(creat));
             welder.setUpdater(new BigInteger(creat));
 //			welder.setCreatedate(sdf.parse(sdf.format((new Date()).getTime())));
 //			welder.setUpdatedate(sdf.parse(sdf.format((new Date()).getTime())));
             welderService.save(welder);
+            parameterService.UpdateNumVersion(num);
             obj.put("success", true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -250,6 +253,9 @@ public class PersonController {
         String creat = String.valueOf(myuser.getId());
 //		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject obj = new JSONObject();
+        BigInteger num = null;
+        List<Parameter> parameter = parameterService.getParameter(); //获取参数
+        num = parameter.get(0).getNumversion().add(new BigInteger("1"));
         try {
             welder.setId(new BigInteger(request.getParameter("FID")));
             welder.setQuali(Integer.parseInt(request.getParameter("qua")));
@@ -262,10 +268,13 @@ public class PersonController {
             welder.setBack(request.getParameter("back"));
             welder.setUpdater(new BigInteger(creat));
             String fstatus = request.getParameter("fstatus");
+            String DIMISSIONSTATUS = request.getParameter("DIMISSIONSTATUS");
+            welder.setDIMISSIONSTATUS((DIMISSIONSTATUS != null && !"".equals(DIMISSIONSTATUS)) ? Integer.parseInt(DIMISSIONSTATUS) : 0);
             welder.setFSTATUS((fstatus != null && !"".equals(fstatus)) ? Integer.parseInt(fstatus) : 0);
 //			welder.setUpdatedate(sdf.parse(sdf.format((new Date()).getTime())));
 //			welder.setCreatedate(sdf.parse(request.getParameter("createdate")));
             welderService.update(welder);
+            parameterService.UpdateNumVersion(num);
             obj.put("success", true);
         } catch (Exception e) {
             obj.put("success", false);
@@ -288,10 +297,13 @@ public class PersonController {
     @RequestMapping("/destroyWelder")
     @ResponseBody
     public String destroyWelder(@RequestParam BigInteger fid) {
-
         JSONObject obj = new JSONObject();
+        BigInteger num = null;
+        List<Parameter> parameter = parameterService.getParameter(); //获取参数
+        num = parameter.get(0).getNumversion().add(new BigInteger("1"));
         try {
             welderService.delete(fid);
+            parameterService.UpdateNumVersion(num);
             obj.put("success", true);
         } catch (Exception e) {
             obj.put("success", false);
@@ -356,7 +368,7 @@ public class PersonController {
         JSONObject obj = new JSONObject();
         String str = request.getParameter("str");
         BigInteger insid = null;
-        if (!"".equals(str) && str != null) {
+        if (null != str && !"".equals(str)){
             insid = new BigInteger(str);
         }
         try {
@@ -368,6 +380,35 @@ public class PersonController {
             }
         } catch (Exception e) {
             e.getMessage();
+        }
+        obj.put("ary", ary);
+        return obj.toString();
+    }
+
+    /**
+     * 查询所有焊工信息（过滤掉所有离职的焊工）
+     * @param
+     * @return
+     */
+    @RequestMapping("/findAllWelders")
+    @ResponseBody
+    public String findAllWelders() {
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        BigInteger insid = null;
+        try {
+            List<Person> welderlist = welderService.findAllWelders();
+            if (null != welderlist && welderlist.size() > 0){
+                for (Person welder : welderlist) {
+                    json.put("id", welder.getId());
+                    json.put("name", welder.getName());
+                    json.put("welderno", welder.getWelderno());
+                    ary.add(json);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         obj.put("ary", ary);
         return obj.toString();

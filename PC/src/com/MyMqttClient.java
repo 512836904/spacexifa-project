@@ -1,11 +1,13 @@
 package com;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.xml.xsom.impl.scd.SCDImpl;
 import io.netty.channel.socket.SocketChannel;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +24,7 @@ public class MyMqttClient {
     //新加
     public ArrayList<String> taskarray = new ArrayList<String>();   //存取手持终端下发的任务信息
     public Server server;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /*
      * static { init("MQTT_FX_Client"); }
@@ -112,7 +115,6 @@ public class MyMqttClient {
         } else {
             System.out.println("mqttClientΪ is null");
         }
-        System.out.println(mqttClient.isConnected());
     }
 
     //	�ر�����
@@ -233,7 +235,7 @@ public class MyMqttClient {
         if (str.charAt(0) == '{') {
             try {
                 JSONObject taskstr = JSONObject.parseObject(str);
-                if ("starttask".equals(taskstr.getString("type"))){
+                if ("starttask".equals(taskstr.getString("type"))) {
                     if (taskarray.isEmpty()) {
                         taskarray.add(taskstr.getString("machine"));  //设备号
                         taskarray.add(taskstr.getString("welderid")); //焊工id
@@ -265,6 +267,7 @@ public class MyMqttClient {
                             taskarray.add(taskstr.getString("weldlineid"));
                         }
                     }
+                    System.out.println("手持终端下发了任务：" + taskstr.getString("machine") + ",时间：" + sdf.format(System.currentTimeMillis()));
                     this.server.NS.mysql.db.taskarray = taskarray;
                     this.server.NS.websocket.taskarray = taskarray;
                 } else if ("overtask".equals(taskstr.getString("type"))) {
@@ -278,8 +281,8 @@ public class MyMqttClient {
                         taskarray.remove(index);
                         taskarray.remove(index);
                         taskarray.remove(index);
+                        System.out.println("手持终端结束了任务：" + taskstr.getString("machine") + ",时间：" + sdf.format(System.currentTimeMillis()));
                     }
-
                     this.server.NS.mysql.db.taskarray = taskarray;
                     this.server.NS.websocket.taskarray = taskarray;
                 }

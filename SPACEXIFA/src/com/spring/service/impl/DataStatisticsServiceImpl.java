@@ -228,6 +228,11 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
+	public List<DataStatistics> getStandbyRank(Page page, BigInteger parent, String time) {
+		return ds.getStandbyRank(parent, time);
+	}
+
+	@Override
 	public DataStatistics getWorkMachineCount(BigInteger itemid, String time) {
 		return ds.getWorkMachineCount(itemid, time);
 	}
@@ -407,6 +412,11 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	@Override
 	public List<DataStatistics> findAverageWorkingTime(String startTime,int itemType) {
 		return ds.findAverageWorkingTime(startTime,itemType);
+	}
+
+	@Override
+	public List<DataStatistics> findStandbyWorkingTime(String time, int itemType) {
+		return ds.findStandbyWorkingTime(time,itemType);
 	}
 
 	@Override

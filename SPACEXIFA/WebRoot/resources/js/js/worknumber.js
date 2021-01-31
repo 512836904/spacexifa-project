@@ -325,6 +325,7 @@ function onMessageArrived(message) {
                     SET_NUMBER = allWorkNumer[m].SET_NUMBER;//部套号
                     PART_NAME = allWorkNumer[m].PART_NAME;//零件名
                     junction_name = allWorkNumer[m].junction_name;//焊缝名称
+                    break;
                 }
             }
             //焊工及班组信息
@@ -332,6 +333,7 @@ function onMessageArrived(message) {
                 if (parseInt(welderid) === allWelderInfo[n].id) {
                     name = allWelderInfo[n].name;  //焊工姓名
                     iname = allWelderInfo[n].iname;  //班组
+                    break;
                 }
             }
             var addOrremove = false;
@@ -339,11 +341,21 @@ function onMessageArrived(message) {
             if (JOB_NUMBER !== '' && name !== ''){
                 if (appTableArray.length > 0) {
                     for (var index in appTableArray) {
-                        if (appTableArray[index].gzh != JOB_NUMBER || appTableArray[index].bth != SET_NUMBER || appTableArray[index].ljm != PART_NAME ||
-                            appTableArray[index].junctionName != junction_name || appTableArray[index].welder != name || appTableArray[index].banzu != iname) {
-                            addOrremove = true;
-                        }
+                        // if (appTableArray[index].gzh !== JOB_NUMBER || appTableArray[index].bth != SET_NUMBER || appTableArray[index].ljm != PART_NAME ||
+                        //     appTableArray[index].junctionName != junction_name || appTableArray[index].welder != name || appTableArray[index].banzu != iname) {
+                        //     addOrremove = true;
+                        // }
+                        var gzh_num = appTableArray.map(a => a.gzh).indexOf(JOB_NUMBER);
+                        var bth_num = appTableArray.map(a => a.bth).indexOf(SET_NUMBER);
+                        var ljm_num = appTableArray.map(a => a.ljm).indexOf(PART_NAME);
+                        var junctionName_num = appTableArray.map(a => a.junctionName).indexOf(junction_name);
+                        var welder_num = appTableArray.map(a => a.welder).indexOf(name);
+                        var banzu_num = appTableArray.map(a => a.banzu).indexOf(iname);
                         appindex = index;
+                        if (gzh_num === -1 || bth_num === -1 || ljm_num === -1 || junctionName_num === -1 || welder_num === -1 || banzu_num === -1) {
+                            addOrremove = true;
+                            break;
+                        }
                     }
                 } else {
                     addOrremove = true;

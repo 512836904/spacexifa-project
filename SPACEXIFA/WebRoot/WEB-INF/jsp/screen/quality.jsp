@@ -115,7 +115,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </a>
                 </div>
                 <div class="panel02">
-                    <div class="chart" id="Left3">
+                    <div class="chart" id="Left3" style="width: 100%;">
                         <div id="app">
                             <el-table :fit="true" :data="tableData" :cell-style="{padding: '0', height: '34px'}"
                                       height="350" border style="width: 100%;overflow: auto;">
@@ -281,7 +281,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             $("#quanping").show();
         }
     }
-    var tablearray = [];
+
     //查询超规范信息
     function loadSupergage(day){
         startTime = day;
@@ -295,16 +295,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             dataType: "json", //返回数据形式为json
             success: function (result) {
                 if (result) {
+                    var tablearray = [];
                     var data = result.ary;
                     for (var index in data) {
-                        let feild = {};
-                        feild["work_area"] = data[index].insname;
-                        feild["person"] = data[index].name;
-                        feild["gzh"] = data[index].job_number;
-                        feild["bth"] = data[index].set_number;
-                        feild["ljm"] = data[index].part_name;
-                        feild["time"] = data[index].starttime;
-                        tablearray.push(feild);
+                        //查询对象数组是否存在某个值，存在则返回下标，不存在返回-1
+                        var gzh_num = tablearray.map(a => a.gzh).indexOf(data[index].job_number);
+                        var bth_num = tablearray.map(a => a.bth).indexOf(data[index].set_number);
+                        var ljm_num = tablearray.map(a => a.ljm).indexOf(data[index].part_name);
+                        var work_area_num = tablearray.map(a => a.work_area).indexOf(data[index].insname);
+                        var person_num = tablearray.map(a => a.person).indexOf(data[index].name);
+                        var time_num = tablearray.map(a => a.time).indexOf(data[index].starttime);
+                        if (gzh_num == -1 || bth_num == -1 || ljm_num == -1 || work_area_num == -1 || person_num == -1 || time_num == -1) {
+                            let feild = {};
+                            feild["gzh"] = data[index].job_number;
+                            feild["bth"] = data[index].set_number;
+                            feild["ljm"] = data[index].part_name;
+                            feild["work_area"] = data[index].insname;
+                            feild["person"] = data[index].name;
+                            feild["time"] = data[index].starttime;
+                            tablearray.push(feild);
+                        }
                     }
                     appvue.$delete(appvue.tableData);
                     Object.assign(appvue.$data,appvue.$options.data());

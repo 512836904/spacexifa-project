@@ -3,6 +3,7 @@ $(function () {
 });
 var vlogoflag = "";
 var dialogDivWidth = "800";
+
 function junctionDatagrid() {
     // var singleSelect = true;
     // if (null == document.getElementById("dialogDiv")){
@@ -35,25 +36,10 @@ function junctionDatagrid() {
             align: "left",
             hidden: true
         }, {
-            field: 'fjunction',
-            title: '焊缝编号',
-            // width: (dialogDivWidth*0.2),
-            width: 120,
-            halign: "center",
-            align: "center",
-            sortable: true
-        }, {
-            field: 'junction_length',
-            title: '长度',
+            field: 'junction_name',
+            title: '焊缝名称',
             // width: (dialogDivWidth*0.3),
-            width: 60,
-            halign: "center",
-            align: "center"
-        }, {
-            field: 'junction_format',
-            title: '规格',
-            // width: (dialogDivWidth*0.3),
-            width: 60,
+            width: 200,
             halign: "center",
             align: "center"
         }, {
@@ -84,18 +70,33 @@ function junctionDatagrid() {
             width: 80,
             halign: "center",
             align: "center"
+        },{
+            field: 'fjunction',
+            title: '焊缝编号',
+            // width: (dialogDivWidth*0.2),
+            width: 80,
+            halign: "center",
+            align: "center",
+            sortable: true
         }, {
-            field: 'junction_name',
-            title: '焊缝名称',
+            field: 'junction_length',
+            title: '长度',
             // width: (dialogDivWidth*0.3),
-            width: 100,
+            width: 60,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'junction_format',
+            title: '规格',
+            // width: (dialogDivWidth*0.3),
+            width: 60,
             halign: "center",
             align: "center"
         }, {
             field: 'edit',
             title: '操作',
             // width: (dialogDivWidth*0.3),
-            width: 200,
+            width: 150,
             halign: "center",
             align: "left",
             formatter: function (value, row, index) {
@@ -217,8 +218,8 @@ function deleteJunction(fid) {
                                 msg: result.msg
                             });
                         } else {
-                            $.messager.alert("提示", "删除成功！");
                             $('#junctionTable').datagrid('reload');
+                            $.messager.alert("提示", "删除成功！");
                         }
                     }
                 },
@@ -235,7 +236,7 @@ function searchJunction() {
     var junctionSearchs = $('#junction_search').textbox("getValue");          //焊缝编号
     var junction_name_searchs = $('#junction_name_search').textbox("getValue");    //焊缝名称
 
-    var query = {junctionSearch:junctionSearchs,junction_name_search:junction_name_searchs}; //把查询条件拼接成JSON
+    var query = {junctionSearch: junctionSearchs, junction_name_search: junction_name_searchs}; //把查询条件拼接成JSON
 
     $("#junctionTable").datagrid('options').queryParams = query; //把查询条件赋值给datagrid内部变量
     $('#junctionTable').datagrid('reload');

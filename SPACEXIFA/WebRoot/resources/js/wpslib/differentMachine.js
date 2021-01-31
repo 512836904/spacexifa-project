@@ -99,7 +99,7 @@ function putMQmessage(selectMainWpsRows, selectMachine, sochet_send_data, giveAr
             console.log("主题订阅成功");
         },
         onFailure: function (e) {
-            console.log("主题订阅失败:"+e.errorCode);
+            console.log("主题订阅失败:" + e.errorCode);
         }
     });
     //客户端收到消息时执行的方法
@@ -140,7 +140,7 @@ function putMQmessage(selectMainWpsRows, selectMachine, sochet_send_data, giveAr
                             console.log("取消订阅成功");
                         },
                         onFailure: function (e) {
-                            console.log("取消订阅失败："+e.errorCode);
+                            console.log("取消订阅失败：" + e.errorCode);
                         }
                     })
                     window.clearTimeout(oneMinuteTimer);
@@ -210,7 +210,7 @@ function putMQmessage(selectMainWpsRows, selectMachine, sochet_send_data, giveAr
                             console.log("取消订阅成功");
                         },
                         onFailure: function (e) {
-                            console.log("取消订阅失败:"+e.errorCode);
+                            console.log("取消订阅失败:" + e.errorCode);
                         }
                     });
                     window.clearTimeout(oneMinuteTimer);

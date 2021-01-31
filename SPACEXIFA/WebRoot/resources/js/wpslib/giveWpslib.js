@@ -1,10 +1,10 @@
 /**
- *
+ *  焊机工艺库管理
  */
 var websocketUrl;
 var selectflag;
-var wpslibindex;
 var wpslibId;
+var client, clientId;
 $(function () {
     $.ajax({
         type: "post",
@@ -14,7 +14,7 @@ $(function () {
         dataType: "json", //返回数据形式为json
         success: function (result) {
             if (result) {
-                websocketUrl = eval(result.web_socket);
+                websocketUrl = result.web_socket;
             }
         },
         error: function (errorMsg) {
@@ -22,123 +22,141 @@ $(function () {
         }
     });
     dataInitialize();
+    mqttConnect();
 });
 
-//选择工艺(工艺库下发)
-function selectMainWps(wpsLibRow) {
-    if (wpsLibRow.statusId == 61){
-        wpslibId = wpsLibRow.fid;
-        // if(model == 149){
-        // 	flag = 1;
-        // 	$('#sxSelectdlg').window( {
-        // 		title : "选择工艺",
-        // 		modal : true
-        // 	});
-        // 	$('#sxSelectdlg').window('open');
-        // 	showSelectSxWps(value);
-        // 	return;
-        // }
-        $('#smwfm').form('clear');
-        $('#smwdlg').window({
-            title: "选择工艺",
-            modal: true
-        });
-        $("#mainWpsTable").datagrid({
-            height: $("#smwdlg").height(),
-            width: $("#smwdlg").width(),
-            idField: 'fid',
-            pageSize: 10,
-            pageList: [10, 20, 30, 40, 50],
-            url: "wps/getMainwpsList?parent=" + wpsLibRow.fid,
-            singleSelect: false,
-            rownumbers: true,
-            showPageList: false,
-            columns: [[{
-                field: 'ck',
-                checkbox: true
-            }, {
-                field: 'fid',
-                title: 'FID',
-                halign: "center",
-                align: "left",
-                hidden: true
-            }, {
-                field: 'fmodel',
-                title: '焊机型号id',
-                halign: "center",
-                align: "left",
-                hidden: true
-            }, {
-                field: 'fselect',
-                title: '焊接模式',
-                halign: "center",
-                align: "left",
-                hidden: true
-            }, {
-                field: 'fchanel',
-                title: '通道号',
-                width: 100,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'fselectname',
-                title: '焊接模式',
-                width: 100,
-                halign: "center",
-                align: "center",
-                hidden: true
-            }, {
-                field: 'fweld_ele',
-                title: '焊接电流',
-                width: 100,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'fweld_vol',
-                title: '焊接电压',
-                width: 100,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'fweld_tuny_ele',
-                title: '焊接电流微调',
-                width: 100,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'fweld_tuny_vol',
-                title: '焊接电压微调',
-                width: 100,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'edit',
-                title: '操作',
-                width: 130,
-                halign: "center",
-                align: "center",
-                formatter: function (value, row, index) {
-                    var str = "";
-                    str += '<a id="wpsLibDetail" class="easyui-linkbutton" href="javascript:wpsLibDetail(' + encodeURI(JSON.stringify(row)) + ')"/>';
-                    return str;
+//选择工艺(工艺规范下发)
+function craftNormWpsIssue(wpsLibRow) {
+    var issuewps = false;
+    $.ajax({
+        url: 'user/getUserPermission',
+        type: 'post',
+        async: false,
+        data: {},
+        dataType: 'json',
+        success: function (result) {
+            if (result && result.flag) {
+                if (result.issuewps === 1) {
+                    issuewps = true;
+                } else {
+                    alert("您的账号不具有下发权限！");
+                    return false;
                 }
+            } else {
+                alert("后台查询用户权限异常，请稍后再试！");
+                return false;
             }
-            ]],
-            pagination: true,
-            rowStyler: function (index, row) {
-                if ((index % 2) != 0) {
-                    //处理行代背景色后无法选中
-                    var color = new Object();
-//	                color.class="rowColor";
-                    return color;
+        },
+        error: function (e) {
+            alert("查询登录用户下发权限异常，请稍后再试！");
+            return false;
+        }
+    });
+    if (issuewps){
+        if (wpsLibRow.statusId === 61) {
+            wpslibId = wpsLibRow.fid;
+            $('#smwfm').form('clear');
+            $('#smwdlg').window({
+                title: "选择工艺",
+                modal: true
+            });
+            $("#mainWpsTable").datagrid({
+                height: $("#smwdlg").height(),
+                width: $("#smwdlg").width(),
+                idField: 'fid',
+                pageSize: 10,
+                pageList: [10, 20, 30, 40, 50],
+                url: "wps/getMainwpsList?parent=" + wpsLibRow.fid,
+                singleSelect: false,
+                rownumbers: true,
+                showPageList: false,
+                columns: [[{
+                    field: 'ck',
+                    checkbox: true
+                }, {
+                    field: 'fid',
+                    title: 'FID',
+                    halign: "center",
+                    align: "left",
+                    hidden: true
+                }, {
+                    field: 'fmodel',
+                    title: '焊机型号id',
+                    halign: "center",
+                    align: "left",
+                    hidden: true
+                }, {
+                    field: 'fselect',
+                    title: '焊接模式',
+                    halign: "center",
+                    align: "left",
+                    hidden: true
+                }, {
+                    field: 'fchanel',
+                    title: '通道号',
+                    width: 100,
+                    halign: "center",
+                    align: "center"
+                }, {
+                    field: 'fselectname',
+                    title: '焊接模式',
+                    width: 100,
+                    halign: "center",
+                    align: "center",
+                    hidden: true
+                }, {
+                    field: 'fweld_ele',
+                    title: '焊接电流',
+                    width: 100,
+                    halign: "center",
+                    align: "center"
+                }, {
+                    field: 'fweld_vol',
+                    title: '焊接电压',
+                    width: 100,
+                    halign: "center",
+                    align: "center"
+                }, {
+                    field: 'fweld_tuny_ele',
+                    title: '焊接电流微调',
+                    width: 100,
+                    halign: "center",
+                    align: "center"
+                }, {
+                    field: 'fweld_tuny_vol',
+                    title: '焊接电压微调',
+                    width: 100,
+                    halign: "center",
+                    align: "center"
+                }, {
+                    field: 'edit',
+                    title: '操作',
+                    width: 130,
+                    halign: "center",
+                    align: "center",
+                    formatter: function (value, row, index) {
+                        var str = "";
+                        str += '<a id="wpsLibDetail" class="easyui-linkbutton" href="javascript:wpsLibDetail(' + encodeURI(JSON.stringify(row)) + ')"/>';
+                        return str;
+                    }
                 }
-            }, onLoadSuccess: function (data) {
-                $("a[id='wpsLibDetail']").linkbutton({text: '详情', plain: true, iconCls: 'icon-detail'});
-            },
-        });
-        $('#smwdlg').window('open');
-    }else {
-        alert("该工艺库已被停用！");
+                ]],
+                pagination: true,
+                rowStyler: function (index, row) {
+                    if ((index % 2) != 0) {
+                        //处理行代背景色后无法选中
+                        var color = new Object();
+//	                color.class="rowColor";
+                        return color;
+                    }
+                }, onLoadSuccess: function (data) {
+                    $("a[id='wpsLibDetail']").linkbutton({text: '详情', plain: true, iconCls: 'icon-detail'});
+                },
+            });
+            $('#smwdlg').window('open');
+        } else {
+            alert("该工艺库已被停用！");
+        }
     }
 }
 
@@ -162,10 +180,7 @@ function wpsLibDetail(row) {
             handler: function () {
                 $("#wpsCraft").dialog('close');
             }
-        }],
-        onClose: function () {
-            $(this).dialog('close');
-        }
+        }]
     });
 }
 
@@ -359,7 +374,7 @@ function showSelectSxWps(id) {
 }
 
 //组织机构等选择框初始化
-function organizeInitialize(){
+function organizeInitialize() {
     $.ajax({
         type: "post",
         async: false,
@@ -422,11 +437,11 @@ function selectMachineList(value) {
     if (value === 0 || value === 1) {
         var wpslibrow = $('#wpslibTable').datagrid('getSelected');
         url = "weldingMachine/getWedlingMachineList";
-        query = {searchStr: 'w.fmodel='+wpslibrow.model};
+        query = {searchStr: 'w.fmodel=' + wpslibrow.model};
 
     } else if (value === 2) {   //密码下发
         url = "weldingMachine/getWedlingMachineList";
-        query = {searchStr: 'w.fmanufacturer_id='+147};
+        query = {searchStr: 'w.fmanufacturer_id=' + 147};
         if (!$('#passwd').numberbox('getValue')) {
             alert("密码不能为空");
             return;
@@ -438,7 +453,7 @@ function selectMachineList(value) {
     } else {
         //控制命令下发
         url = "weldingMachine/getWedlingMachineList";
-        query = {searchStr: 'w.fmanufacturer_id='+147};
+        query = {searchStr: 'w.fmanufacturer_id=' + 147};
     }
     $('#smfm').form('clear');
     $('#smdlg').window({
@@ -446,7 +461,7 @@ function selectMachineList(value) {
         modal: true
     });
     $("#weldingmachineWpsTable").datagrid({
-        height: $("#smdlg").height()-50,
+        height: $("#smdlg").height() - 50,
         width: $("#smdlg").width(),
         idField: 'id',
         pageSize: 10,
@@ -701,7 +716,7 @@ function requestWps() {
     $('#smdlg').form('clear');
 }
 
-function suoquData(str){
+function suoquData(str) {
     var symbol = 0;
     //str:007E0901010156000101E27D
     //007E0901010156000105E67D
@@ -715,7 +730,7 @@ function suoquData(str){
                     console.log("取消订阅成功");
                 },
                 onFailure: function (e) {
-                    console.log("取消订阅失败："+e.errorCode);
+                    console.log("取消订阅失败：" + e.errorCode);
                 }
             })
 //        $('#buttonCancel').linkbutton('enable');
@@ -730,7 +745,7 @@ function suoquData(str){
             console.log("主题订阅成功");
         },
         onFailure: function (e) {
-            console.log("主题订阅失败："+e.errorCode);
+            console.log("主题订阅失败：" + e.errorCode);
         }
     });
     //客户端收到消息时执行的方法
@@ -814,11 +829,31 @@ function giveMainWps() {
 
 //控制命令下发
 function openCondlg() {
-    $('#condlg').window({
-        title: "控制命令下发",
-        modal: true
+    $.ajax({
+        url: 'user/getUserPermission',
+        type: 'post',
+        async: false,
+        data: {},
+        dataType: 'json',
+        success: function (result) {
+            if (result && result.flag) {
+                if (result.issuewps === 1) {
+                    $('#condlg').window({
+                        title: "控制命令下发",
+                        modal: true
+                    });
+                    $('#condlg').window("open");
+                } else {
+                    alert("您的账号不具有下发权限！");
+                }
+            } else {
+                alert("后台查询用户权限异常，请稍后再试！");
+            }
+        },
+        error: function (e) {
+            alert("查询登录用户下发权限异常，请稍后再试！");
+        }
     });
-    $('#condlg').window("open");
 }
 
 //松下选择焊机
@@ -1642,27 +1677,32 @@ function setSxMainWps() {
     }
 }
 
-function dataInitialize(){
+function dataInitialize() {
     //组织机构改变事件
     $("#organize").combobox({
-       onChange:function (){
-           var organize = $("#organize").combobox("getValue");
-           $("#weldingmachineWpsTable").datagrid('options').queryParams.parent = organize; //把查询条件赋值给datagrid内部变量
-           $('#weldingmachineWpsTable').datagrid('reload');
-       }
+        onChange: function () {
+            var organize = $("#organize").combobox("getValue");
+            if (organize === '') {
+                organize = "";
+            } else {
+                organize = " i.fid IN (" + organize + ")";
+            }
+            $("#weldingmachineWpsTable").datagrid('options').queryParams.parent = organize; //把查询条件赋值给datagrid内部变量
+            $('#weldingmachineWpsTable').datagrid('reload');
+        }
     });
     //状态改变事件
     $("#machineStatus").combobox({
-       onChange:function (){
-           var machineStatus = $("#machineStatus").combobox("getValue");
-           if (machineStatus == null || machineStatus == ''){
-               machineStatus = "";
-           }else {
-               machineStatus = "w.FSTATUS_ID = "+machineStatus; //sql拼接
-           }
-           $("#weldingmachineWpsTable").datagrid('options').queryParams.machineStatus = machineStatus; //把查询条件赋值给datagrid内部变量
-           $('#weldingmachineWpsTable').datagrid('reload');
-       }
+        onChange: function () {
+            var machineStatus = $("#machineStatus").combobox("getValue");
+            if (machineStatus == null || machineStatus == '') {
+                machineStatus = "";
+            } else {
+                machineStatus = "w.FSTATUS_ID = " + machineStatus; //sql拼接
+            }
+            $("#weldingmachineWpsTable").datagrid('options').queryParams.machineStatus = machineStatus; //把查询条件赋值给datagrid内部变量
+            $('#weldingmachineWpsTable').datagrid('reload');
+        }
     });
 }
 
@@ -1843,5 +1883,35 @@ function getSxMainWps() {
                 }
             }
         }
+    }
+}
+
+//mq链接
+function mqttConnect() {
+    clientId = Math.random().toString().substr(3, 8) + Date.now().toString(36);//58903383kha3m47w
+    client = new Paho.MQTT.Client(websocketUrl.split(":")[0], parseInt(websocketUrl.split(":")[1]), clientId);
+    var options = {
+        timeout: 5,
+        keepAliveInterval: 10,
+        cleanSession: false,
+        useSSL: false,
+        onSuccess: onConnect,
+        onFailure: function (e) {
+            console.log("failed:" + e.errorCode);
+        },
+        reconnect: true
+    }
+    client.onConnectionLost = onConnectionLost;
+    //client.onMessageArrived = onMessageArrived;
+    client.connect(options);
+}
+
+function onConnect() {
+    console.log("mqtt onConnect");
+}
+
+function onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
     }
 }

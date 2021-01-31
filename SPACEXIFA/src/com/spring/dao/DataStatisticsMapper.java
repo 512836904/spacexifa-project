@@ -79,7 +79,9 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getFauitDetail(@Param("dto") WeldDto dto,@Param("id") BigInteger id,@Param("value") int value);
 	
 	List<DataStatistics> getWorkRank(@Param("parent")BigInteger parent,@Param("time")String time);
-	
+
+	List<DataStatistics> getStandbyRank(@Param("parent")BigInteger parent,@Param("time")String time);
+
 	DataStatistics getWorkMachineCount(@Param("itemid")BigInteger itemid,@Param("time")String time);
 	
 	List<DataStatistics> getItemWeldTime(@Param("dto")WeldDto dto);
@@ -109,6 +111,8 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 	List<DataStatistics> getMachineData(@Param("itemid")BigInteger insid, @Param("dto") WeldDto dto);
 
 	List<DataStatistics> findAverageWorkingTime(@Param("startTime")String startTime,@Param("itemType")int itemType);
+
+	List<DataStatistics> findStandbyWorkingTime(@Param("startTime")String startTime,@Param("itemType")int itemType);
 
 	List<DataStatistics> findLoadRateList(@Param("startTime")String startTime,@Param("itemType")int itemType);
 

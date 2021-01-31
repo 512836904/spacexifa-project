@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div style="margin-bottom: 5px;">
 				焊缝名称：
 				<input class="easyui-textbox" name="junctionno" id="junctionno"/>
-				<select class="easyui-combobox" name="ftype" id="ftype" data-options="editable:false">
+				<select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">
 					<option value="0">正常</option>
 					<option value="1">返修</option>
 				</select>

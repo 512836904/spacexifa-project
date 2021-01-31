@@ -19,7 +19,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 //    public String ip1;
 //    public String connet;
     public Server server;
-    public Thread workThread;
+//    public Thread workThread;
     public java.sql.Statement stmt = null;
     public java.sql.Connection conn = null;
     public SocketChannel socketchannel = null;
@@ -37,9 +37,9 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     public byte[] b;
     public int a = 0;
     public MyMqttClient mqtt;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public NettyServerHandler(Server server) {
-        // TODO Auto-generated constructor stub
         this.server = server;
     }
 
@@ -57,93 +57,30 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
                 mysql.Mysqlbase(str);
                 //娆у崕绾崕
             }else if (str.substring(0, 2).equals("7E") && (str.substring(10, 12).equals("23")) && str.length() == 596) {
-                //通过MQ发送到前端
-                //websocket.Websocketbase(str, listarray2, listarray3, websocketlist);
                 //数据存入oracle数据库
                 mysql.Mysqlbaseoutline(str,server);
                 //娆у崕绾崕
             } else if (str.substring(0, 2).equals("fe") && str.length() == 298) {
-
-//                mysql.Mysqlplc(str, listarrayplc);
                 System.out.println(str);
-
-//                if (socketchannel != null) {
-//                    synchronized (socketchannel) {
-//                        try {
-//                            socketchannel.writeAndFlush(str).sync();
-//                            System.out.println("鍙戦�佹垚鍔�:" + str);
-//                        } catch (Exception e) {
-//                            try {
-//                                socketchannel.close().sync();
-//                            } catch (InterruptedException e1) {
-//                                e1.printStackTrace();
-//                            }
-//                            socketchannel = null;
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
             } else {
-                //mqtt处理
+                /**
+                 * 索取返回，下发返回，控制命令返回，白名单返回
+                 */
                 mqtt.publishMessage("weldmes/upparams", str, 0);
+//                if (str.length() == 112){
+//                    System.out.println("索取返回:"+sdf.format(System.currentTimeMillis()));
+//                }
+//                if (str.length() == 24){
+//                    System.out.println("下发返回:"+sdf.format(System.currentTimeMillis()));
+//                }
             }
-            ReferenceCountUtil.release(msg);
-            ReferenceCountUtil.release(str);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        ctx.flush();
-    }
-
-    public class Workspace implements Runnable {
-
-        private String str = "";
-        public byte[] req;
-        private String socketfail;
-        private String websocketfail;
-        private String data;
-
-        public Workspace(String str) {
-            this.str = str;
-        }
-
-        @Override
-        public void run() {
-            //西安处理(实时数据处理)
-            if (str.substring(0, 2).equals("7E") && (str.substring(10, 12).equals("22")) && str.length() == 596) {
-                //数据存入oracle数据库
-                //mysql.Mysqlbase(str);
-                //通过MQ发送到前端
-                //websocket.Websocketbase(str, listarray2, listarray3, websocketlist);
-
-                //娆у崕绾崕
-            } else if (str.substring(0, 2).equals("fe") && str.length() == 298) {
-
-                mysql.Mysqlplc(str, listarrayplc);
-                System.out.println(str);
-
-                if (socketchannel != null) {
-                    synchronized (socketchannel) {
-                        try {
-                            socketchannel.writeAndFlush(str).sync();
-                            System.out.println("鍙戦�佹垚鍔�:" + str);
-                        } catch (Exception e) {
-                            try {
-                                socketchannel.close().sync();
-                            } catch (InterruptedException e1) {
-                                e1.printStackTrace();
-                            }
-                            socketchannel = null;
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } else {
-                //mqtt处理
-                mqtt.publishMessage("weldmes/upparams", str, 0);
-            }
-            workThread.interrupt();
+        } finally {
+            str = "";
+            ctx.flush();
+            ReferenceCountUtil.release(str);
+            ReferenceCountUtil.release(msg);
         }
     }
 
@@ -154,7 +91,8 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.close().sync();
+        System.out.println("异常：" + cause);
+        ctx.close();
     }
 
 }

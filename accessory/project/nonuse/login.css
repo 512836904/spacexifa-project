@@ -1,0 +1,44 @@
+#login-box{
+    width: 40rem;
+    height: 20rem;
+    border: 2px solid #000000;
+    margin: 0 auto;
+    margin-top: 16rem;
+    background: #ffffff;
+    text-align: center;
+    padding: 2rem;
+}
+
+#login-box .form{
+    margin-top: 2rem;
+}
+
+#login-box .form .item1{
+    margin-top: 1rem;
+}
+#login-box .form .item2{
+    margin-top: 1rem;
+}
+
+#login-box .form .item1 input{
+    border: 0;
+    border:1px solid #000000;
+    padding: 1rem 2rem;
+    margin-left: 3rem;
+    color: #000000;
+    margin: left;
+}
+#login-box .form .item2 input{
+    border: 0;
+    border:1px solid #000000;
+    padding: 1rem 2rem;
+    margin-left: 4rem;
+    color: #000000;
+    margin: right;
+}
+#login-box button{
+    width: 9rem;
+    height: 4rem;
+    margin-top: 2rem;
+}
+

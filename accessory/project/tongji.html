@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 97.7%;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/tongji.css">
+    <link rel="stylesheet" href="./css/prism.css">
+    <link rel="stylesheet" href="./css/chosen.css">
+    <link rel="stylesheet" href="./css/sweetalert.css">
+    <link rel="stylesheet" href="./css/easyui.css">
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/sweetalert-dev.js"></script>
+    <script src="./js/jquery.params.js"></script>
+    <script src="./js/quagga.js"></script>
+    <script src="./js/vconsole.min.js"></script>
+    <script src="./js/alipayjsapi.inc.min.js"></script>
+    <script src="./js/chosen.jquery.js"></script>
+    <script src="./js/paho-mqtt.js"></script>
+    <script src="./js/paho-mqtt-min.js"></script>
+    <script src="./js/jsQR.js"></script>
+    <script src="./js/jquery.easyui.min.js"></script>
+    <script src="./js/easyui-lang-zh_CN.js"></script>
+    <script src="./js/easyui-extend-check.js"></script>
+    <script src="./js/tongji.js"></script>
+    <title>统计</title>
+	<style>
+        #tipDiv {
+            display: none;
+            position: absolute;
+            left: 45%;
+            top: 40%;
+            z-index: 9999;
+            background: #e2e2e2;
+            padding: 20px 60px 20px 60px;
+            border-radius: 5px;
+        }
+
+        #tipInfo {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body style="height: 100%;">
+<!--背景墙-->
+<div id="load" style="width:100%;height:86%;position: absolute;display: none;"></div>
+<!--整体内容-->
+<div id="box">
+    <div class="box-right">
+		<!-- 头部 -->
+        <div class="main-header">
+            <div id="loadingMessage" align="center" style="position: absolute;text-align: center;"></div>
+            <canvas id="canvas" hidden style="position: absolute;text-align: center;display: none;"></canvas>
+            <!-- <div id="output" hidden>
+                <div id="outputMessage"></div>
+            </div> -->
+            <label style="font-size: 75%;">编号:</label>
+            <input id="cardnumber" value="" type="text" readonly="readonly" style="width: 35%;height:83px;font-size: 35px;line-height: 1px;">
+        </div>
+		
+		<!-- 加载动画样式 -->
+        <div id="tipDiv">
+            <img align="center" style="width:50%;heigth: 50%;padding-left: 24%;" src="./images/load.gif">
+            <div id="tipInfo" align="center" style="text-align: center"></div>
+        </div>
+		
+		<!-- 中间内容 -->
+		<div class="meddle">
+			<!-- 中左 --> 
+			<div class="main-left">
+				<div class="item">
+					<label style="float:left">工作号：&ensp;&ensp;</label>
+					<input id="productNumber" value="" type="text" readonly="readonly">
+				</div>
+				
+				<div class="item">
+					<label style="float:left">部套号：&ensp;&ensp;</label>
+					<input id="fwelding_area" value="" type="text" readonly="readonly">
+				</div>
+				
+				<div class="item">
+					<label style="float:left">零件图号：</label>
+					<input id="productDrawNo" value="" type="text" readonly="readonly">
+				</div>
+				
+				<div class="item">
+					<label style="float:left">零件名称：</label>
+					<input id="productName" value="" type="text" readonly="readonly">
+				</div>
+				
+				<div class="item">
+					<label style="float:left">采集编号：</label>
+					<input id="fgatherno" value="" type="text" readonly="readonly">
+				</div>
+				
+				<div class="item">
+					<label style="float:left">工艺名称：</label>
+					<select id="fname" class="easyui-combobox" style="width: 70%;height:55px;font-size: 40px;"></select>
+				</div>
+				
+				<div class="item">
+					<label style="float:left">焊缝名称：</label>
+					<select id="fjunction" class="easyui-combobox" style="width: 70%;height:55px;font-size: 40px;"></select>
+				</div>
+				
+				<div class="item-textarea">
+					<label style="float:left">工艺参数：</label>
+					<textarea id="wpsparameter" readonly="readonly"></textarea>
+				</div>
+			</div>
+			
+			<!-- 中右 -->
+			<div class="main-right">
+				<button id="scan" onclick="mission_onclick(1)">扫描工票信息</button>
+				<button id="scanwps" onclick="mission_onclick(2)">扫描工艺信息</button>
+				<button id="start" onclick="start_onclick()" disabled="disabled">开始任务</button>
+				<button id="over" onclick="over_onclick()" disabled="disabled">结束任务</button>
+			</div>
+		</div>
+    </div>
+</div>
+<script>
+    var video = document.createElement("video");
+    var canvasElement = document.getElementById("canvas");
+    var canvas = canvasElement.getContext("2d");
+    var loadingMessage = document.getElementById("loadingMessage");
+
+    function drawLine(begin, end, color) {
+        canvas.beginPath();
+        canvas.moveTo(begin.x, begin.y);
+        canvas.lineTo(end.x, end.y);
+        canvas.lineWidth = 4;
+        canvas.strokeStyle = color;
+        canvas.stroke();
+    }
+	
+	//显示提示
+    function showTip(info) {
+        $('#tipInfo').html(info);
+        $('#tipDiv').show();
+		document.getElementById("load").style.display = "block";
+		$("#load").show();
+    }
+
+    //初始加载提示
+    //showTip('内容正在加载...');
+
+    //关闭提示
+    function closeTip() {
+		document.getElementById("load").style.display = "none";
+		$("#load").hide();
+        $('#tipDiv').hide();
+    }
+</script>
+</body>
+</html>

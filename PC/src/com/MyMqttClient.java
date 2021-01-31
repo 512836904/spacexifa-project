@@ -292,6 +292,12 @@ public class MyMqttClient {
             }
 
         } else {
+//            if (str.length() == 112){
+//                System.out.println("下发了数据："+sdf.format(System.currentTimeMillis()));
+//            }
+//            if (str.length() == 24){
+//                System.out.println("索取了数据："+sdf.format(System.currentTimeMillis()));
+//            }
             ArrayList<String> listarraybuf = new ArrayList<String>();
             boolean ifdo = false;
             HashMap<String, SocketChannel> socketlist_cl;
@@ -315,7 +321,6 @@ public class MyMqttClient {
                 }
             }
             if (ifdo) {
-                //socketlist_cl = (HashMap<String, SocketChannel>) socketlist.clone();
                 for (int i = 0; i < listarraybuf.size(); i++) {
                     socketlist.remove(listarraybuf.get(i));
                 }

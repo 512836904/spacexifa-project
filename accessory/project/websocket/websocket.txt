@@ -1,0 +1,12 @@
+//解决浏览器不支持websocket,需要引入swfobject.js，web_socket.js
+if (typeof (WebSocket) == "undefined") {
+	WEB_SOCKET_SWF_LOCATION = "WebSocketMain.swf";//指定WebSocketMain.swf存在路径
+	WEB_SOCKET_DEBUG = true;
+}
+var websocket = new WebSocket("ws://192.168.3.57:5550");//创建websocket
+socket.onopen = function() {};//连接
+socket.send(data);//发送数据
+socket.onmessage = function(msg) {};//接收数据
+socket.close();//主动进行断开连接
+socket.onclose = function(e) {};//异常关闭触发
+socket.onerror = function() {};//发生错误触发

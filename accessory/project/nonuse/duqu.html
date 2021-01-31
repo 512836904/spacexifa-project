@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Local File Reader</title>
+</head>
+<body>
+    <h1 id="qihuawu"></h1>
+    <script language="javascript">
+       var btn = document.getElementById("donlowd");
+btn.addEventListener("click",
+  function() {
+    var xhr =new XMLHttpRequest()
+    xhr.open("GET", "data.txt", true);//注意路径问题读取data.txt文件的内容。
+    xhr.send(null);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200||xhr.status==0) {//请求本地txt文件时状态码是0。
+          alert(xhr.responseText);
+        } else {
+          alert(xhr.status);
+        }
+      }
+    }
+  }, false)
+    </script>
+	 <button id="donlowd"  style="width: 20%;height: 81%;font-size: 30px;margin: 40px 100px;">确认</button>
+					
+</body>
+</html>

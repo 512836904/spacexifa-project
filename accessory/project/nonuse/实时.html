@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="实时.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="box">
+        <div class="box_left">
+        <li>
+            <a href="javascript:;">xxx公司</a>
+            <ul class="two-nav">
+                <li>
+                    <a href="javascript:;">A厂房</a>
+                    <ul class="three-nav_1">
+                        <li><a href="javascipt:;">A1车间</a>
+                            <ul class="four-nav_1">
+                                <li><a href="javascipt:;">A1班组</a></li>
+                                <li><a href="javascipt:;">A2班组</a></li>
+                            </ul>
+                        </li>                       
+                    </ul>
+                    <ul class="three-nav_2">
+                        <li><a href="javascipt:;">A2车间</a>
+                            <ul class="four-nav_2">
+                                <li><a href="javascipt:;">A3班组</a></li>
+                            </ul>
+                        </li>                       
+                    </ul>
+                </li>
+            </div>
+        <div class="box_right">
+            <div class="header">
+                <div class="header_left">其他加工区</div>
+                <div class="header_right">氩弧焊区
+                   <ul id="item" onclick="ac()">
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                       <li>
+                        <img src="./image/1-141015160316318.jpg" width="150px" height="120px">
+                       </li>
+                   </ul>
+                </div>
+            </div>
+            
+            <div class="main">
+                <div class="main_left">其他加工区</div>
+                <div class="main_right">
+                    <ul id="item" onclick="ac()">
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                        <li>
+                         <img src="./image/1-141015160316318.jpg" width="150px" height="80px">
+                        </li>
+                    </ul>
+                </div>
+            
+            <div class="foot"></div>
+        </div>
+    </div>
+
+
+    <script>
+    function ac(){
+        var items=document.getElementById("item");
+        var lis=document.getElementsByTagName("li");
+        for(var i=0;i<lis.length;i++){
+            lis[i].onclick=function(){
+                alert("确定？")
+            }
+        }
+    }
+    </script>
+</body>
+</html>

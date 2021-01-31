@@ -25,10 +25,13 @@ import java.nio.channels.ServerSocketChannel;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -85,14 +88,16 @@ public class Server implements Runnable {
     private ArrayList<String> dbdata;
     public String outlinestatus = "A";
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
-
+    //创建缓存线程池，处理PC实时数据
+    public static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
     public String getconnet() {
         return connet;
     }
-
     public ArrayList<String> getlistarray1() {
         return listarray1;
     }
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");;
+
 
     public void run() {
 
@@ -389,6 +394,16 @@ public class Server implements Runnable {
                     Date d1 = new Date((DateTools.parse("yyyy-MM-dd HH:mm:ss", time2).getTime()) - 3600000);
                     String time3 = DateTools.format("yyyy-MM-dd HH:mm:ss", d1); //当前时间一个小时前
 
+                    LocalDateTime localDateTime = LocalDateTime.now().minusHours(12);
+                    String twelveHourBefore = dateTimeFormatter.format(localDateTime);
+
+                    /**
+                     * 开始时间超过12个小时，自动结束掉任务
+                     */
+                    String updateTaskResultSql = "UPDATE TB_TASKRESULT SET FREALENDTIME = SYSDATE,FOPERATETYPE = 2 " +
+                            "WHERE FOPERATETYPE = 1 AND FREALSTARTTIME <= TO_DATE('"+twelveHourBefore+"', 'yyyy-mm-dd hh24:mi:ss')";
+                    statement.executeQuery(updateTaskResultSql);
+
                     String timework = null;
                     String timestandby = null;
                     String timealarm = null;
@@ -403,8 +418,8 @@ public class Server implements Runnable {
                         timework = rs1.getString("fUploadDataTime");
                     }
 
-                    System.out.println("当前时间:" + time2);
-                    System.out.println("一个小时前:" + time3);
+//                    System.out.println("当前时间:" + time2);
+//                    System.out.println("一个小时前:" + time3);
 
                     ResultSet rs2 = statement.executeQuery(sqlfirststandby);
                     while (rs2.next()) {

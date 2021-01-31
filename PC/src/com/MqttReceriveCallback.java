@@ -9,7 +9,6 @@ public class MqttReceriveCallback implements MqttCallback{
 	private MyMqttClient myMqttClient;
 
 	public MqttReceriveCallback(MyMqttClient myMqttClient) {
-		// TODO Auto-generated constructor stub
 		this.myMqttClient = myMqttClient;
 	}
 
@@ -20,7 +19,6 @@ public class MqttReceriveCallback implements MqttCallback{
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		//System.out.println("com.Client ������Ϣ���� : " + new String(message.getPayload()));
 
 		myMqttClient.webdata(new String(message.getPayload()));
 		

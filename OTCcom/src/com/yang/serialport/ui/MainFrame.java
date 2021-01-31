@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainFrame {
 
@@ -42,6 +44,9 @@ public class MainFrame {
     public TcpClientHandler TC = new TcpClientHandler();
     public HashMap<String, SocketChannel> socketlist = new HashMap();
     public int socketcount = 0;
+
+    //创建缓存线程池，处理OTC实时数据
+    public static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
     /**
      * 程序界面宽度
@@ -562,6 +567,84 @@ public class MainFrame {
         //new MainFrame().setVisible(true);
         new MainFrame();
     }
+
+    //界面布局
+//	public void initView() {
+//		// 关闭程序
+//		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+//		// 禁止窗口最大化
+//		setResizable(false);
+//
+//		// 设置程序窗口居中显示
+//		Point p = GraphicsEnvironment.getLocalGraphicsEnvironment()
+//				.getCenterPoint();
+//		setBounds(p.x - WIDTH / 2, p.y - HEIGHT / 2, WIDTH, HEIGHT);
+//		this.setLayout(null);
+//
+//		setTitle("Wifi采集器");
+//	}
+
+    //界面布局
+//	public void initComponents() {
+//		// 数据显示
+//		//dataView.setFocusable(false);
+//		dataView.setEditable(false);
+//		dataView.getDocument().addDocumentListener(new DocumentListener(){
+//			@Override
+//			public void insertUpdate(DocumentEvent e) {
+//				// TODO Auto-generated method stub
+//				SwingUtilities.invokeLater(new Runnable(){
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						if(dataView.getLineCount() >= 1000){
+//							int end = 0;
+//							try{
+//								end = dataView.getLineEndOffset(500);
+//							}catch (Exception e) {  
+//                            }  
+//							dataView.replaceRange("", 0, end);
+//						}
+//					}
+//				});
+//			}
+//			@Override
+//			public void removeUpdate(DocumentEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			@Override
+//			public void changedUpdate(DocumentEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+//		scrollDataView.setBounds(10, 10, 475, 300);
+//		add(scrollDataView);
+//
+//		commChoice.setFocusable(false);
+//		commChoice.setBounds(60, 25, 100, 20);
+//		serialPortPanel.add(commChoice);
+//
+//		baudrateLabel.setForeground(Color.gray);
+//		baudrateLabel.setBounds(10, 60, 40, 20);
+//		serialPortPanel.add(baudrateLabel);
+//
+//		baudrateChoice.setFocusable(false);
+//		baudrateChoice.setBounds(60, 60, 100, 20);
+//		serialPortPanel.add(baudrateChoice);
+//
+//		// 操作
+//		operatePanel.setBorder(BorderFactory.createTitledBorder("操作"));
+//		operatePanel.setBounds(70, 220, 375, 100);
+//		operatePanel.setLayout(null);
+//
+//		serialPortOperate.setFocusable(false);
+//		serialPortOperate.setBounds(210, 40, 90, 30);
+//
+//		sendData.setFocusable(false);
+//		sendData.setBounds(70, 40, 90, 30);
+//	}
 
 }  
 	 

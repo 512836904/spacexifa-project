@@ -53,6 +53,9 @@ function loadWorkRankData(day){
                 Left2.setOption(option);
             }
         }
+        ,error: function (e) {
+            alert("加载失败！");
+        }
     });
 }
 

@@ -489,7 +489,7 @@
                         feild["gzh"] = data[index].JOB_NUMBER;
                         feild["bth"] = data[index].SET_NUMBER;
                         feild["ljm"] = data[index].PART_NAME;
-                        feild["gzzsc"] = data[index].worktime;
+                        feild["gzzsc"] = Number(data[index].worktime).toFixed(1);
                         feild["zhcxh"] = Number(data[index].wirefeedrate).toFixed(2);
                         tablearray.push(feild);
                     }

@@ -10,8 +10,8 @@
 	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	
 	<!-- 注解扫描包 -->
-	<context:component-scan base-package="com.erdangjiade.spring.security" />
-	<context:component-scan base-package="com.spring.controller" />
+	<context:component-scan base-package="com.shth.spacexifa.security" />
+	<context:component-scan base-package="com.shth.spacexifa.controller" />
 	<!-- 开启注解 -->
 	<mvc:annotation-driven />
 	<mvc:default-servlet-handler/>
@@ -36,7 +36,7 @@
 
 	<!-- 定义跳转的文件的前后缀 ，视图模式配置-->
 	<bean id="htmlViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="com.erdangjiade.spring.security.HtmlResourceView"/><!--指定html的解析器-->
+		<property name="viewClass" value="com.shth.spacexifa.security.HtmlResourceView"/><!--指定html的解析器-->
 		<property name="prefix" value="/WEB-INF/html/" />
 		<property name="suffix" value=".html"></property>
 		<property name="order" value="0"></property>

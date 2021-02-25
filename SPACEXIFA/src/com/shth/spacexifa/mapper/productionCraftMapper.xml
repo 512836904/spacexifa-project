@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.shth.spacexifa.dao.ProductionCraftMapper">
+
+	<sql id="production_craft">
+		pc.FID,pc.FNAME,pc.PREHEAT,pc.INTERLAMINATION,pc.WELDING_MATERIAL,pc.ELECTRICITY_FLOOR,pc.ELECTRICITY_UPPER,pc.VOLTAGE_FLOOR,pc.VOLTAGE_UPPER,
+		pc.SOLDER_SPEED_FLOOR,pc.SOLDER_SPEED_UPPER,pc.WIDE_SWING,pc.RESTS,pc.DATA_SOURCES,pc.CREATOR,pc.CREATE_TIME,pc.MENDER,pc.UPDATE_TIME,
+		pc.FJUNCTION,pc.WIRE_DIAMETER,pc.FREPAIRTYPE
+	</sql>
+
+	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="findProductionCraftList" resultType="com.shth.spacexifa.model.ProductionCraft">
+		SELECT <include refid="production_craft"/>,j.JUNCTION_NAME FROM TB_PRODUCTION_CRAFT pc
+		LEFT JOIN TB_JUNCTION j ON pc.FJUNCTION = j.FID
+		WHERE 1 = 1
+		<if test="searchStr != null and searchStr != ''">
+			AND FNAME LIKE CONCAT(#{searchStr}, '%')
+		</if>
+	</select>
+	
+	<insert id="addProductionCraft" parameterType="com.shth.spacexifa.model.ProductionCraft" flushCache="true">
+		<selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="FID">
+			select TB_PRODUCTION_CRAFT_ID.nextval as FID from dual
+		</selectKey>
+		<if test="FID != null and FID != ''">
+			INSERT INTO TB_PRODUCTION_CRAFT
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+					FID,
+				<if test="FNAME != null and FNAME != ''">
+					FNAME,
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					PREHEAT,
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					INTERLAMINATION,
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					WELDING_MATERIAL,
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					ELECTRICITY_FLOOR,
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					ELECTRICITY_UPPER,
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					VOLTAGE_FLOOR,
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					VOLTAGE_UPPER,
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					SOLDER_SPEED_FLOOR,
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					SOLDER_SPEED_UPPER,
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					WIDE_SWING,
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					RESTS,
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					DATA_SOURCES,
+				</if>
+				<if test="CREATOR != null and CREATOR != ''">
+					CREATOR,
+				</if>
+				<if test="CREATE_TIME != null and CREATE_TIME != ''">
+					CREATE_TIME,
+				</if>
+				<if test="FJUNCTION != null and FJUNCTION != 0">
+					FJUNCTION,
+				</if>
+				<if test="WIRE_DIAMETER != null and WIRE_DIAMETER != ''">
+					WIRE_DIAMETER,
+				</if>
+				<if test="FREPAIRTYPE != 0">
+					FREPAIRTYPE,
+				</if>
+			</trim>
+			<trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+					#{FID},
+				<if test="FNAME != null and FNAME != ''">
+					#{FNAME},
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					#{PREHEAT},
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					#{INTERLAMINATION},
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					#{WELDING_MATERIAL},
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					#{ELECTRICITY_FLOOR},
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					#{ELECTRICITY_UPPER},
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					#{VOLTAGE_FLOOR},
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					#{VOLTAGE_UPPER},
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					#{SOLDER_SPEED_FLOOR},
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					#{SOLDER_SPEED_UPPER},
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					#{WIDE_SWING},
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					#{RESTS},
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					#{DATA_SOURCES},
+				</if>
+				<if test="CREATOR != null and CREATOR != ''">
+					#{CREATOR},
+				</if>
+				<if test="CREATE_TIME != null and CREATE_TIME != ''">
+					to_date(#{CREATE_TIME}, 'yyyy-mm-dd hh24:mi:ss'),
+				</if>
+				<if test="FJUNCTION != null and FJUNCTION != 0">
+					#{FJUNCTION},
+				</if>
+				<if test="WIRE_DIAMETER != null and WIRE_DIAMETER != ''">
+					#{WIRE_DIAMETER},
+				</if>
+				<if test="FREPAIRTYPE != 0">
+					#{FREPAIRTYPE},
+				</if>
+			</trim>
+		</if>
+	</insert>
+
+	<update id="updateProductionCraft" parameterType="com.shth.spacexifa.model.ProductionCraft" flushCache="true">
+		<if test="FID != null and FID != ''">
+			UPDATE TB_PRODUCTION_CRAFT
+			<set>
+				<if test="FNAME != null and FNAME != ''">
+					FNAME = #{FNAME},
+				</if>
+				<if test="PREHEAT != null and PREHEAT != ''">
+					PREHEAT = #{PREHEAT},
+				</if>
+				<if test="INTERLAMINATION != null and INTERLAMINATION != ''">
+					INTERLAMINATION = #{INTERLAMINATION},
+				</if>
+				<if test="WELDING_MATERIAL != null and WELDING_MATERIAL != ''">
+					WELDING_MATERIAL = #{WELDING_MATERIAL},
+				</if>
+				<if test="ELECTRICITY_FLOOR != null and ELECTRICITY_FLOOR != ''">
+					ELECTRICITY_FLOOR = #{ELECTRICITY_FLOOR},
+				</if>
+				<if test="ELECTRICITY_UPPER != null and ELECTRICITY_UPPER != ''">
+					ELECTRICITY_UPPER = #{ELECTRICITY_UPPER},
+				</if>
+				<if test="VOLTAGE_FLOOR != null and VOLTAGE_FLOOR != ''">
+					VOLTAGE_FLOOR = #{VOLTAGE_FLOOR},
+				</if>
+				<if test="VOLTAGE_UPPER != null and VOLTAGE_UPPER != ''">
+					VOLTAGE_UPPER = #{VOLTAGE_UPPER},
+				</if>
+				<if test="SOLDER_SPEED_FLOOR != null and SOLDER_SPEED_FLOOR != ''">
+					SOLDER_SPEED_FLOOR = #{SOLDER_SPEED_FLOOR},
+				</if>
+				<if test="SOLDER_SPEED_UPPER != null and SOLDER_SPEED_UPPER != ''">
+					SOLDER_SPEED_UPPER = #{SOLDER_SPEED_UPPER},
+				</if>
+				<if test="WIDE_SWING != null and WIDE_SWING != ''">
+					WIDE_SWING = #{WIDE_SWING},
+				</if>
+				<if test="RESTS != null and RESTS != ''">
+					RESTS = #{RESTS},
+				</if>
+				<if test="DATA_SOURCES != null and DATA_SOURCES != ''">
+					DATA_SOURCES = #{DATA_SOURCES},
+				</if>
+				<if test="MENDER != null and MENDER != ''">
+					MENDER = #{MENDER},
+				</if>
+			</set>
+			WHERE FID = #{FID}
+		</if>
+	</update>
+
+	<delete id="deleteProductionCraft" parameterType="com.shth.spacexifa.model.ProductionCraft" flushCache="true">
+		<if test="FID != null and FID != ''">
+			DELETE FROM TB_PRODUCTION_CRAFT WHERE FID = #{FID}
+		</if>
+	</delete>
+
+	<select id="getLiarbryJunctionById" parameterType="com.shth.spacexifa.model.ProductionCraft" resultType="com.shth.spacexifa.model.ProductionCraft">
+        SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID FROM TB_LIBRARY_JUNCTION
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}
+    </select>
+
+	<insert id="addLiarbryJunction" parameterType="com.shth.spacexifa.model.ProductionCraft" flushCache="true">
+		<selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="FID">
+			select TB_LIBRARY_JUNCTION_ID.nextval as FID from dual
+		</selectKey>
+		<if test="FID != null and FID != 0">
+			INSERT INTO TB_LIBRARY_JUNCTION(FID,TRACKINGCARD_ID,PRODUCTION_ID) VALUES (#{FID},#{TRACKINGCARD_ID},#{PRODUCTION_ID})
+		</if>
+	</insert>
+
+	<!-- 根据工作号id查询所有工艺信息（一个工票对应多个工艺） -->
+	<select id="getLibraryJunction" parameterType="java.math.BigInteger" resultType="com.shth.spacexifa.model.ProductionCraft">
+ 		SELECT lj.FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID,pc.FNAME
+ 		FROM TB_LIBRARY_JUNCTION lj
+ 		LEFT JOIN TB_PRODUCTION_CRAFT pc ON lj.PRODUCTION_ID = pc.FID
+        WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID}
+	</select>
+
+	<delete id="deleteLibraryJunctionByTRACKINGCARD_ID" parameterType="java.math.BigInteger">
+		DELETE FROM TB_LIBRARY_JUNCTION WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID}
+	</delete>
+
+	<select id="findProductionByjid" parameterType="java.math.BigInteger" resultType="com.shth.spacexifa.model.ProductionCraft">
+		SELECT * FROM(
+			SELECT FID,FNAME,FJUNCTION FROM TB_PRODUCTION_CRAFT WHERE FJUNCTION = #{junction_id}
+		) WHERE 1>= ROWNUM
+	</select>
+
+	<select id="findAllProductionName" resultType="com.shth.spacexifa.model.ProductionCraft">
+		SELECT DISTINCT FNAME FROM TB_PRODUCTION_CRAFT
+	</select>
+</mapper>

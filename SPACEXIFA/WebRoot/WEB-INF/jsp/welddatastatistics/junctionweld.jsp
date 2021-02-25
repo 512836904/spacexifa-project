@@ -52,12 +52,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<input class="easyui-textbox" style="width:120px;" name="product_name" id="product_name"/>
 				</div>
 				<div  style="float: left;">
-					<label>零件图号：</label>
+					<label>工艺编号：</label>
 					<input class="easyui-textbox" style="width:120px;" name="taskno" id="taskno"/>
-				</div>
-				<div  style="float: left;">
-					<label>零件名：</label>
-					<input class="easyui-textbox" style="width:120px;" name="fwps_lib_num" id="fwps_lib_num"/>
 				</div>
 				<div>
 					<label>焊缝名称：</label>
@@ -72,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<div  style="float: left;">
 					<a href="javascript:serach();" class="easyui-linkbutton" iconCls="icon-select" >搜索</a>&emsp;
-					<a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>
+<%--					<a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>--%>
 				</div>
 			</div>
 		</div>

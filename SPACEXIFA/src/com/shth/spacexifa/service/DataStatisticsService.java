@@ -28,7 +28,7 @@ public interface DataStatisticsService {
 	List<DataStatistics> getItemMachineByItemType(WeldDto dto, int itemtype);
 
 	List<DataStatistics> getItemMachineCount(BigInteger parent);
-	
+
 	/**
 	 * 获取开机焊机总数
 	 * @param itemid  项目部id
@@ -44,13 +44,13 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getMachineRadio(WeldDto dto, int itemtype);
-	
+
 	/**
 	 * 获取参数
 	 * @return
 	 */
 	DataStatistics getParameter();
-	
+
 	/**
 	 * 获取工作的焊机数
 	 * @param itemid  项目部id
@@ -68,7 +68,7 @@ public interface DataStatisticsService {
 	DataStatistics getWorkJunctionNum(BigInteger itemid,WeldDto dto);
 
 	DataStatistics getWorkJunctionNumByWelder(BigInteger itemid,WeldDto dto);
-	
+
 	/**
 	 * 获取开机总时长
 	 * @param itemid  项目部id
@@ -96,11 +96,11 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	BigInteger getStandytime(BigInteger itemid,WeldDto dto);
-	
+
 	BigInteger getStandytimeByWelder(BigInteger itemid,WeldDto dto);
-	
+
 	BigInteger getStandytimeByJunction(BigInteger itemid,WeldDto dto);
-	
+
 	/**
 	 * 获取焊接时长，平均电流电压
 	 * @param itemid  项目部id
@@ -108,11 +108,11 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	DataStatistics getWorkTimeAndEleVol(BigInteger itemid,WeldDto dto);
-	
+
 	DataStatistics getWorkTimeAndEleVolByWelder(BigInteger itemid,WeldDto dto);
-	
+
 	DataStatistics getWorkTimeAndEleVolByJunction(BigInteger itemid,WeldDto dto);
-	
+
 	/**
 	 * 获取所有的焊机id，编号以及组织机构id，名称
 	 * @param page 分页
@@ -120,14 +120,14 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getAllMachine(Page page,BigInteger itemid);
-	
+
 	/**
 	 * 获取所有的焊工编号，姓名
 	 * @param page
 	 * @return
 	 */
 	List<DataStatistics> getAllWelder(Page page,BigInteger parent);
-	
+
 	/**
 	 * 获取所有悍缝编号及组织机构id，name
 	 * @param page 分页
@@ -135,7 +135,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getAllJunction(Page page,String junctionno);
-	
+
 	/**
 	 * 获取所有项目部组织机构
 	 * @return
@@ -149,7 +149,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldItemInCount(Page page, WeldDto dto);
-	
+
 	/**
 	 * 获取组织机构超规范焊接时间
 	 * @param page 分页
@@ -157,7 +157,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldItemOutCount(Page page, WeldDto dto);
-	
+
 	/**
 	 * 获取焊机累计焊接时间
 	 * @param page 分页
@@ -165,7 +165,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldMachineInCount(Page page, WeldDto dto ,BigInteger itemid);
-	
+
 	/**
 	 * 获取焊机超规范焊接时间
 	 * @param page 分页
@@ -173,7 +173,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldMachineOutCount(Page page, WeldDto dto ,BigInteger itemid);
-	
+
 	/**
 	 * 获取焊工累计焊接时间
 	 * @param page 分页
@@ -181,7 +181,12 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldPersonInCount(Page page, WeldDto dto);
-	
+
+	/**
+	 * 根据焊缝id查询工艺信息表
+	 */
+	DataStatistics getmaxele(BigInteger junction_id);
+
 	/**
 	 * 获取焊工超规范焊接时间
 	 * @param page 分页
@@ -189,7 +194,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldPersonOutCount(Page page, WeldDto dto);
-	
+
 	/**
 	 * 获取工件累计焊接时间
 	 * @param page 分页
@@ -197,7 +202,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldPieceInCount(Page page, WeldDto dto,String junctionno);
-	
+
 	/**
 	 * 获取工件超规范焊接时间
 	 * @param page 分页
@@ -205,7 +210,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldPieceOutCount(Page page, WeldDto dto,String junctionno);
-	
+
 	/**
 	 * 获取焊机故障
 	 * @param page 分页
@@ -222,7 +227,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getFauit(WeldDto dto,int value);
-	
+
 	/**
 	 * 获取焊机故障明细
 	 * @param page 分页
@@ -246,7 +251,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getAllMachineData(BigInteger itemid);
-	
+
 	/**
 	 * 人员生产数据导出Excel
 	 * @return
@@ -317,7 +322,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldWorkpieceOutCountData(WeldDto dto, String junctionno);
-	
+
 	/**
 	 * 焊工工作量排行（焊接时长）
 	 * @param parent 事业部id
@@ -342,7 +347,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWireAndFlow(BigInteger userInsframework, WeldDto dto);
-	
+
 	/**
 	 * 获取用户当前组织机构下的开机和焊接的焊机数以及总焊机数
 	 * @param userInsframework
@@ -350,7 +355,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getEquipmentUtilize(BigInteger userInsframework, WeldDto dto);
-	
+
 	/**
 	 * 获取用户当前组织机构下的开机时间和焊接时间
 	 * @param userInsframework
@@ -358,7 +363,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getOnAndWeldTime(BigInteger userInsframework, WeldDto dto);
-	
+
 	/**
 	 * 获取工作的焊机数
 	 * @param itemid
@@ -366,21 +371,21 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	DataStatistics getWorkMachineCount(BigInteger itemid, String time);
-	
+
 	/**
 	 * 获取项目部正常工作时长
 	 * @param dto 事业部id，起始时间，结束时间
 	 * @return
 	 */
 	List<DataStatistics> getItemWeldTime(WeldDto dto);
-	
+
 	/**
 	 * 获取项目部超标工作时长
 	 * @param dto 事业部id，起始时间，结束时间
 	 * @return
 	 */
 	List<DataStatistics> getItemOverProofTime(WeldDto dto);
-	
+
 	/**
 	 * 获取生产任务详情
 	 * @param parent 组织机构id
@@ -391,7 +396,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getTaskDetail(BigInteger parent,String welderno,String taskno,String time1,String time2);
-	
+
 	/**
 	 * 获取所有任务
 	 * @param page 分页
@@ -404,7 +409,7 @@ public interface DataStatisticsService {
 	 */
 	List<DataStatistics> getTask(Page page,BigInteger parent,String welderno,String taskno,String time1,String time2);
 	List<DataStatistics> getTask(BigInteger parent,String welderno,String taskno,String time1,String time2);
-	
+
 	/**
 	 * 获取焊机任务表
 	 * @param page
@@ -415,23 +420,23 @@ public interface DataStatisticsService {
 	 */
 	List<DataStatistics> getMachineTask(Page page,BigInteger parent,String sql,int type);
 	List<DataStatistics> getMachineTask(BigInteger parent,String sql,int type);
-	
+
 	String getDay(String time,String time2);
-	
+
 	/**
-	 * 
+	 *
 	 * @param
 	 * @param
 	 * @return
 	 */
 	List<DataStatistics> getMachineNoTask(BigInteger insid, String time1, String totime, String time2);
-	
+
 	/**
 	 * 不同组织机构设备故障次数
 	 * @return
 	 */
 	List<DataStatistics> getWarnTimes(BigInteger itemid, WeldDto dto);
-	
+
 	/**
 	 * 获取用户当前组织机构下的开机时间和焊接时间
 	 * @param userInsframework
@@ -439,7 +444,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getTaskDetails(BigInteger userInsframework, WeldDto dto);
-	
+
 	/**
 	 * 查询历史数据
 	 * @Description
@@ -450,7 +455,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getHistoryData(String str, String filed);
-	
+
 	/**
 	 * 班组生产数据报表
 	 * @param

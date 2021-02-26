@@ -45,13 +45,13 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		// TODO Auto-generated method stub
 		wjm.turnDown(weldtask);
 	}
-	
+
 	@Override
 	public void passReview(String fid,String value) {
 		// TODO Auto-generated method stub
 		wjm.passReview(fid,value);
 	}
-	
+
 	@Override
 	public boolean deleteJunction(BigInteger id) {
 		return wjm.deleteJunction(id);
@@ -72,6 +72,18 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 	public List<WeldedJunction> getJunctionweldtime(Page page, String search) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return wjm.getJunctionweldtime(search);
+	}
+
+	@Override
+	public List<WeldedJunction> getWelderweldtime(Page page, String search) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return wjm.getWelderweldtime(search);
+	}
+
+	@Override
+	public List<WeldedJunction> getMachineweldtime(Page page, String search) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return wjm.getMachineweldtime(search);
 	}
 
 	@Override
@@ -103,9 +115,9 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 	}
 
 	@Override
-	  public int getCountByTaskid(BigInteger taskid,BigInteger type) {
-	    return wjm.getCountByTaskid(taskid,type);
-	  }
+	public int getCountByTaskid(BigInteger taskid,BigInteger type) {
+		return wjm.getCountByTaskid(taskid,type);
+	}
 
 	@Override
 	public boolean addTask(WeldedJunction wj) {
@@ -139,7 +151,7 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		// TODO Auto-generated method stub
 		return wjm.updateTask(wj);
 	}
-	
+
 	@Override
 	public List<WeldedJunction> getSwDetail(Page page,String taskno,String time, WeldDto dto) {
 		// TODO Auto-generated method stub
@@ -159,7 +171,7 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return wjm.getCardList(search);
 	}
-	
+
 	@Override
 	public List<WeldedJunction> getCardList(String search) {
 		// TODO Auto-generated method stub
@@ -184,7 +196,7 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		// TODO Auto-generated method stub
 		return wjm.getProductList(search);
 	}
-	
+
 	@Override
 	public List<WeldedJunction> getProductList(String search) {
 		// TODO Auto-generated method stub
@@ -214,7 +226,7 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		// TODO Auto-generated method stub
 		return wjm.getProductByCardid(fid);
 	}
-	
+
 	@Override
 	public void updateProductNum(WeldedJunction wj) {
 		// TODO Auto-generated method stub

@@ -44,6 +44,8 @@ public class DataStatisticsController {
     private WpsService wpsService;
     @Autowired
     private WeldedJunctionService wjm;
+    @Autowired
+    private ProductionCraftService craftService;
 
     IsnullUtil iutil = new IsnullUtil();
 
@@ -332,7 +334,7 @@ public class DataStatisticsController {
                         time = weldtime.getWorktime().doubleValue() / 60;
                         //String[] str = parameter.getWireweight().split(",");
                         //double wireweight = Double.valueOf(str[0]);
-                       // double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;//焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
+                        // double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;//焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
                         double wire =weldtime.getWirefeedrate();
                         double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;//气体消耗量=气体流量*焊接时间
                         json.put("t8", wire);//焊丝消耗
@@ -700,8 +702,8 @@ public class DataStatisticsController {
                     title.put("worktime", 0);//焊接时间
                 }
                 json.put("t6", electric);//电能消耗
-            ary.add(json);
-            titleary.add(title);
+                ary.add(json);
+                titleary.add(title);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -712,6 +714,11 @@ public class DataStatisticsController {
         return obj.toString();
     }
 
+    /**
+     * 获取焊缝历史曲线数据
+     * @param request
+     * @return
+     */
     @RequestMapping("/getJunctionHistoryList")
     @ResponseBody
     public String getJunctionHistoryList(HttpServletRequest request) {
@@ -746,6 +753,70 @@ public class DataStatisticsController {
                 json.put("part_number", w.getRoomNo());//零件图号
                 json.put("part_name", w.getArea());//零件名
                 json.put("worktime", getTimeStrBySecond(w.getCounts()));//焊接时长
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+
+
+
+    /**
+     * 人员焊接数据报表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getwelderweldtime")
+    @ResponseBody
+    public String getwelderweldtime(HttpServletRequest request) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+        page = new Page(pageIndex, pageSize, total);
+        String search = request.getParameter("search");
+        long total = 0;
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        WeldDto dto = new WeldDto();
+        String time1 = request.getParameter("dtoTime1");
+        String time2 = request.getParameter("dtoTime2");
+        double temp1=0,temp2=0;
+        try {
+            if (iutil.isNull(time1)) {
+                dto.setDtoTime1(time1);
+            }
+            if (iutil.isNull(time2)) {
+                dto.setDtoTime2(time2);
+            }
+            //List<WeldedJunction> list = wjm.getJunctionweldtime(page,search);
+            List<WeldedJunction> list = wjm.getWelderweldtime(page,search);
+            if (list != null) {
+                PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
+                total = pageinfo.getTotal();
+            }
+            for (WeldedJunction w : list) {
+                json.put("fprefix_number",w.getFprefix_number());
+                json.put("fsuffix_number", w.getFsuffix_number());
+                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                json.put("fproduct_number", w.getFproduct_number());
+                json.put("fweldername", w.getFwelder_name());
+                json.put("fweldernum", w.getPipelineNo());
+                json.put("fitem", w.getSerialNo());
+                json.put("junctionname", w.getWeldedJunctionno());
+                json.put("alarmtime", getTimeStrBySecond(w.getCounts()));
+                json.put("worktime", getTimeStrBySecond(w.getMachid()));
+                json.put("welder_id", w.getFwelder_id());
+                json.put("fjunction_id", w.getIid());
+                json.put("nomeltime", getTimeStrBySecond(w.getMachid().subtract(w.getCounts())));
+                if (Integer.valueOf(w.getMachid().toString()) + Integer.valueOf(w.getCounts().toString()) != 0) {
+                    json.put("temp", new DecimalFormat("0.00").format((float) Integer.valueOf(w.getMachid().subtract(w.getCounts()).toString()) / (Integer.valueOf(w.getMachid().toString())) * 100));//规范符合率
+                } else {
+                    json.put("temp", 0);
+                }
                 ary.add(json);
             }
         } catch (Exception e) {
@@ -808,6 +879,34 @@ public class DataStatisticsController {
         obj.put("rows", ary);
         return obj.toString();
     }
+
+
+    /**
+     * 查询最大电流
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getMaxele")
+    @ResponseBody
+    public String getMaxele(HttpServletRequest request) {
+        String junctiob_id = request.getParameter("fjunction");
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        WeldDto dto = new WeldDto();
+        double temp1=0,temp2=0;
+        try {
+            DataStatistics DataStatistics = dss.getmaxele(BigInteger.valueOf(Long.parseLong(junctiob_id)));
+            //ProductionCraft productionByjid = craftService.findProductionByjid(BigInteger.valueOf(Long.parseLong(junctiob_id)));
+            if (null != DataStatistics) {
+                obj.put("maxele", DataStatistics.getElectricity());
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return obj.toString();
+    }
+
 
     /**
      * 跳转人员焊接数据报表

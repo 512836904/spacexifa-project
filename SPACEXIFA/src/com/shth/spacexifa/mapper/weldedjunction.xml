@@ -52,7 +52,7 @@
         <result property="fstatus" column="fstatus"/>
     </resultMap>
 
-     <resultMap id="wmMap" type="com.shth.spacexifa.model.WeldedJunction">
+    <resultMap id="wmMap" type="com.shth.spacexifa.model.WeldedJunction">
         <id property="id" column="fid"></id>
         <result property="machid" column="machid"></result>
         <result property="machine_num" column="fequipment_no"></result>
@@ -190,6 +190,39 @@
         GROUP BY t.FMACHINEID,t.FCARD_ID,t.FREALSTARTTIME,t.FREALENDTIME,t.FREPAIRTYPE,w.FEQUIPMENT_NO,J.JUNCTION_NAME,j.fid,u.WORKTICKET_NUMBER,u.JOB_NUMBER,u.SET_NUMBER,u.PART_DRAWING_NUMBER,u.PART_NAME,p.FNAME,p.fid
     </select>
 
+    <select id="getWelderweldtime" resultMap="wjMap" parameterType="java.lang.String">
+        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,fitem serialNo,fname fproduct_number,weldername fwelder_name,fweldernum pipelineNo,fwelder_id,iid,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid from(
+        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime from tb_work w
+        left join tb_welded_junction j on w.fcard_id = j.fid
+        left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
+        left join TB_WELDER e on w.FWELDER_ID = e.fid
+        inner join TB_INSFRAMEWORK i on e.fowner = i.fid
+        LEFT JOIN tb_insframework ins on ins.fid = i.fparent
+        LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
+        left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
+        where 1=1
+        <if test="search!=null and search!=''">
+            and${search}
+        </if>
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname,e.fwelder_no,i.fname,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
+        UNION ALL
+        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,u.junction_name junctionname,sum(w.fworktime) inside,0 worktime from tb_work w
+        left join tb_welded_junction j on w.fcard_id = j.fid
+        left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
+        left join TB_WELDER e on w.FWELDER_ID = e.fid
+        inner join TB_INSFRAMEWORK i on e.fowner = i.fid
+        LEFT JOIN tb_insframework ins on ins.fid = i.fparent
+        LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
+        left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
+        where w.fstatus = 99
+        <if test="search!=null and search!=''">
+            and${search}
+        </if>
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
+        )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,fweldernum,junctionname,fitem,fwelder_id,iid
+    </select>
+
+
     <select id="getJunctionweldtime" resultMap="wjMap" parameterType="java.lang.String">
         select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,fname fproduct_number,weldername fwelder_name,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid from(
         select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime from tb_work w
@@ -210,39 +243,39 @@
         left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
         where w.fjunction_id > 0 and c.fname > 0 and w.fstatus = 99
         <if test="search!=null and search!=''">
-           and${search}
+            and${search}
         </if>
         GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,u.junction_name
         )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,junctionname
-        </select>
+    </select>
 
     <select id="getJMByWelder" resultMap="wjMap">
-<!--        select COUNT(l.fid) counts,m.fequipment_no,m.fid-->
-<!--        machid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,-->
-<!--        l.fmax_voltage fmax_valtage,l.fmin_voltage fmin_valtage FROM tb_live_data l-->
-<!--        &lt;!&ndash;INNER join tb_welded_junction j on l.fjunction_id = j.fid-->
-<!--        INNER JOIN tb_welding_machine m on m.fid=l.fmachine_id &ndash;&gt;-->
-<!--        LEFT JOIN tb_welded_junction j ON l.fjunction_id = j.fid-->
-<!--        LEFT JOIN tb_welding_machine m ON m.fid=l.fmachine_id-->
-<!--        WHERE 1=1-->
-<!--        <if test="welderid!=null and welderid!=''">-->
-<!--            and l.fwelder_no=#{welderid}-->
-<!--        </if>-->
-<!--        <if test="dto!=null and dto!=''">-->
-<!--            <if test="dto.search!=null and dto.search!=''">-->
-<!--                and l.fjunction_no = #{dto.search}-->
-<!--            </if>-->
-<!--            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">-->
-<!--                and (fweldtime between to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')-->
-<!--            </if>-->
-<!--            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">-->
-<!--                and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss'))-->
-<!--            </if>-->
-<!--        </if>-->
-<!--        and (l.fstatus='3' or l.fstatus='5' or l.fstatus='7' or l.fstatus='99')-->
-<!--        &lt;!&ndash;group by m.fequipment_no,fwelded_junction_no&ndash;&gt;-->
-<!--        group by-->
-<!--        m.fequipment_no,m.fid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,l.fmax_voltage,l.fmin_voltage-->
+        <!--        select COUNT(l.fid) counts,m.fequipment_no,m.fid-->
+        <!--        machid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,-->
+        <!--        l.fmax_voltage fmax_valtage,l.fmin_voltage fmin_valtage FROM tb_live_data l-->
+        <!--        &lt;!&ndash;INNER join tb_welded_junction j on l.fjunction_id = j.fid-->
+        <!--        INNER JOIN tb_welding_machine m on m.fid=l.fmachine_id &ndash;&gt;-->
+        <!--        LEFT JOIN tb_welded_junction j ON l.fjunction_id = j.fid-->
+        <!--        LEFT JOIN tb_welding_machine m ON m.fid=l.fmachine_id-->
+        <!--        WHERE 1=1-->
+        <!--        <if test="welderid!=null and welderid!=''">-->
+        <!--            and l.fwelder_no=#{welderid}-->
+        <!--        </if>-->
+        <!--        <if test="dto!=null and dto!=''">-->
+        <!--            <if test="dto.search!=null and dto.search!=''">-->
+        <!--                and l.fjunction_no = #{dto.search}-->
+        <!--            </if>-->
+        <!--            <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">-->
+        <!--                and (fweldtime between to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')-->
+        <!--            </if>-->
+        <!--            <if test="dto.dtoTime2!=null and dto.dtoTime2!=''">-->
+        <!--                and to_date(#{dto.dtoTime2}, 'yyyy-mm-dd hh24:mi:ss'))-->
+        <!--            </if>-->
+        <!--        </if>-->
+        <!--        and (l.fstatus='3' or l.fstatus='5' or l.fstatus='7' or l.fstatus='99')-->
+        <!--        &lt;!&ndash;group by m.fequipment_no,fwelded_junction_no&ndash;&gt;-->
+        <!--        group by-->
+        <!--        m.fequipment_no,m.fid,fwelded_junction_no,fdyne,l.fmax_electricity,l.fmin_electricity,l.fmax_voltage,l.fmin_voltage-->
         select t.FMACHINEID machid,t.FCARD_ID insfid,t.FREALSTARTTIME fstart_time,t.FREALENDTIME fend_time,w.FEQUIPMENT_NO fequipment_no,
         J.JUNCTION_NAME fwelded_junction_no,j.fid funit,u.WORKTICKET_NUMBER ftask_no,u.JOB_NUMBER fserial_no,u.SET_NUMBER fpipeline_no,
         u.PART_DRAWING_NUMBER froom_no,u.PART_NAME farea,p.FNAME iname,p.fid iid from TB_TASKRESULT t
@@ -279,7 +312,7 @@
 	</select>
 
     <insert id="addJunction" parameterType="com.shth.spacexifa.model.WeldedJunction">
-		insert into tb_welded_junction(fwelded_junction_no,fserial_no,fpipeline_no,froom_no,funit,farea,fsystems,fchildren,fexternal_diameter,fwall_thickness,fdyne,fspecification,fmax_electricity,fmin_electricity,felectricity_unit,fmax_valtage,fmin_valtage,fvaltage_unit,fitemId,Fmaterial,fnextExternal_diameter,fnextwall_thickness,Fnext_material,fstart_time,fend_time, fcreater, fcreatedate,fupdater,fupdatedate,fupdatecount) 
+		insert into tb_welded_junction(fwelded_junction_no,fserial_no,fpipeline_no,froom_no,funit,farea,fsystems,fchildren,fexternal_diameter,fwall_thickness,fdyne,fspecification,fmax_electricity,fmin_electricity,felectricity_unit,fmax_valtage,fmin_valtage,fvaltage_unit,fitemId,Fmaterial,fnextExternal_diameter,fnextwall_thickness,Fnext_material,fstart_time,fend_time, fcreater, fcreatedate,fupdater,fupdatedate,fupdatecount)
 		values(#{weldedJunctionno},#{serialNo},#{pipelineNo},#{roomNo},#{unit},#{area},#{systems},#{ },#{externalDiameter},#{wallThickness},#{dyne},#{specification},#{maxElectricity},#{minElectricity},#{electricity_unit},#{maxValtage},#{minValtage},#{valtage_unit},#{insfid},#{material},#{nextexternaldiameter},#{nextwall_thickness},#{next_material},#{startTime},#{endTime},#{creater},SYSDATE,#{updater},SYSDATE,0)
 	</insert>
 
@@ -304,7 +337,7 @@
 	</select>
 
     <insert id="addTask" parameterType="com.shth.spacexifa.model.WeldedJunction">
-		insert into tb_welded_junction(fwelded_junction_no,fstart_time,fengineering_symbol,fweld_method,fweld_position,fbase_material_type,fweld_material_model,foperator,ftechnological_design,fwarm_up_requirement,finter_channel_temperature,fcarbon_requirement,fpost_heat_requirement,fannealed_weld,fassembly_clearance,fcarbon_depth,fcarbon_width,fpost_heat_temperature,fafter_hot_time,fwpslib_id,fitemId) 
+		insert into tb_welded_junction(fwelded_junction_no,fstart_time,fengineering_symbol,fweld_method,fweld_position,fbase_material_type,fweld_material_model,foperator,ftechnological_design,fwarm_up_requirement,finter_channel_temperature,fcarbon_requirement,fpost_heat_requirement,fannealed_weld,fassembly_clearance,fcarbon_depth,fcarbon_width,fpost_heat_temperature,fafter_hot_time,fwpslib_id,fitemId)
 		values(#{weldedJunctionno},#{startTime},#{fengineering_symbol},#{fweld_method},#{fweld_position},#{fbase_material_type},#{fweld_material_model},#{fwelder_id},#{ftechnological_design},#{fwarm_up_requirement},#{finter_channel_temperature},#{fcarbon_requirement},#{fpost_heat_requirement},#{fannealed_weld},#{fassembly_clearance},#{fcarbon_depth},#{fcarbon_width},#{fpost_heat_temperature},#{fafter_hot_time},#{fwpslib_id},#{iid})
 	</insert>
 
@@ -390,8 +423,8 @@
     </insert>
 
     <update id="updateCard" parameterType="com.shth.spacexifa.model.WeldedJunction">
-		update tb_welded_junction set 
-		fwelded_junction_no=#{weldedJunctionno},ftask_no=#{ftask_no},fitemId=#{iid} 
+		update tb_welded_junction set
+		fwelded_junction_no=#{weldedJunctionno},ftask_no=#{ftask_no},fitemId=#{iid}
 		where fid=#{id}
 	</update>
 
@@ -404,7 +437,7 @@
 	</update>
 
     <delete id="deleteCard">
-		DELETE FROM tb_welded_junction j 
+		DELETE FROM tb_welded_junction j
 		WHERE j.fid=#{id}
 	</delete>
 
@@ -413,7 +446,7 @@
 	</delete>
 
     <insert id="addProductNum" parameterType="com.shth.spacexifa.model.WeldedJunction">
-		INSERT INTO tb_product_number (fprefix_number,fproduct_number,fcard_id,fwps_lib_id,fsuffix_number) VALUES 
+		INSERT INTO tb_product_number (fprefix_number,fproduct_number,fcard_id,fwps_lib_id,fsuffix_number) VALUES
 		(#{fprefix_number}, #{fproduct_number}, #{id}, #{fwpslib_id}, #{fsuffix_number})
 	</insert>
 
@@ -445,15 +478,15 @@
     </select>
 
     <select id="getProductByCardid" resultMap="wjMap">
-		SELECT p.fwps_lib_id fwpslib_id,max(fprefix_number) fprefix_number,max(fsuffix_number) fsuffix_number,MIN(fproduct_number) fproduct_number,COUNT(p.fid) id 
-		FROM tb_product_number p 
+		SELECT p.fwps_lib_id fwpslib_id,max(fprefix_number) fprefix_number,max(fsuffix_number) fsuffix_number,MIN(fproduct_number) fproduct_number,COUNT(p.fid) id
+		FROM tb_product_number p
 		WHERE p.fcard_id=#{fid}
 		GROUP BY fwps_lib_id
 	</select>
 
     <insert id="addProductWpsHistory">
 		INSERT INTO tb_product_wps(fcard_id,fproduct_id,fwps_id,fuser_id,foperate_time)
-		SELECT #{fid},fid,#{wpsId},#{userId},to_date(#{time}, 'yyyy-mm-dd hh24:mi:ss') FROM tb_product_number 
+		SELECT #{fid},fid,#{wpsId},#{userId},to_date(#{time}, 'yyyy-mm-dd hh24:mi:ss') FROM tb_product_number
 		WHERE fcard_id=#{fid} AND fid NOT IN (SELECT DISTINCT ftaskid FROM tb_taskresult WHERE fcard_id=#{fid})
 	</insert>
 

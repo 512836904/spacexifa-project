@@ -8,25 +8,25 @@ import com.shth.spacexifa.model.WeldedJunction;
 import com.shth.spacexifa.page.Page;
 
 public interface WeldedJunctionService {
-	
+
 	/**
 	 * 查询所有任务
 	 */
 	List<WeldedJunction> getWeldedJunctionAll(Page page, String str);
 	List<WeldedJunction> getWeldedJunctionAll(String str);
-	
+
 	/**
 	 * 查询所有任务(不包含分页信息)
 	 */
 	List<WeldedJunction> getWeldedJunction(String str);
-	
+
 	/**
 	 * 根据id查询
 	 * @param id 任务id
 	 * @return
 	 */
 	WeldedJunction getWeldedJunctionById(BigInteger id);
-	
+
 	/**
 	 * 工件焊接时长
 	 * @param welder
@@ -34,6 +34,22 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	List<WeldedJunction> getJunctionweldtime(Page page,String str);
+
+	/**
+	 * 人员焊接时长
+	 * @param welder
+	 * @param dto
+	 * @return
+	 */
+	List<WeldedJunction> getWelderweldtime(Page page,String str);
+
+	/**
+	 * 设备焊接时长
+	 * @param welder
+	 * @param dto
+	 * @return
+	 */
+	List<WeldedJunction> getMachineweldtime(Page page,String str);
 
 	/**
 	 * 根据焊工获取任务
@@ -59,7 +75,7 @@ public interface WeldedJunctionService {
 	 * @return 受影响的行数
 	 */
 	int getWeldedjunctionByNo(String wjno);
-	
+
 	/**
 	 * 新增任务
 	 * @param wj
@@ -77,7 +93,7 @@ public interface WeldedJunctionService {
 	 * @param wj
 	 */
 	boolean deleteJunction(BigInteger id);
-	
+
 	/**
 	 * 驳回保存
 	 * @Description
@@ -86,7 +102,7 @@ public interface WeldedJunctionService {
 	 * @param wps
 	 */
 	void turnDown(WeldedJunction weldtask);
-	
+
 	/**
 	 * 通过审核
 	 * @Description
@@ -96,60 +112,60 @@ public interface WeldedJunctionService {
 	 * @param value
 	 */
 	void passReview(String fid,String value);
-	
+
 	/**
 	 * 焊工对应的焊机任务信息
 	 * @param page 分页
-	 * @param dto 
+	 * @param dto
 	 * @param str
 	 * @param welderid 焊机编号
 	 * @return
 	 */
 	List<WeldedJunction> getJMByWelder(Page page, WeldDto dto,String welderid);
-	
+
 	/**
 	 * 时间段内焊接开始时间
 	 */
 	String getFirsttime(WeldDto dto, BigInteger machineid, String welderid,String junid);
-	
+
 	/**
 	 * 时间段内焊接结束时间
 	 */
 	String getLasttime(WeldDto dto, BigInteger machineid, String welderid,String junid);
-	
+
 	/**
 	 * 查询任务执行
 	 */
 	List<WeldedJunction> getTaskResultAll(Page page, String str);
-	
+
 	/**
 	 * 判断任务是否已经开始被执行或完成
 	 * @param taskid任务id
 	 * @return
 	 */
 	int getCountByTaskid(BigInteger taskid,BigInteger type);
-	
+
 	/**
 	 * 新增任务
 	 * @param object
 	 * @return
 	 */
 	boolean addTask(WeldedJunction wj);
-	
+
 	/**
 	 * 修改任务
 	 * @param object
 	 * @return
 	 */
 	boolean updateTask(WeldedJunction wj);
-	
+
 	/**
 	 * 根据任务ID修改任务
 	 * @param object
 	 * @return
 	 */
 	boolean updateTaskByFid(WeldedJunction wj);
-	
+
 	/**
 	 * 查询空闲任务
 	 * @param str
@@ -163,7 +179,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	List<WeldedJunction> getRealWelder(Page page,BigInteger taskid);
-	
+
 	/**
 	 * 以任务编号，焊机焊工id为条件查询所有层道
 	 * @param page
@@ -173,7 +189,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	List<WeldedJunction> getSwDetail(Page page,String taskno,String time,WeldDto dto);
-	
+
 	/**
 	 * 获取电子跟踪卡列表
 	 * @Description
@@ -185,7 +201,7 @@ public interface WeldedJunctionService {
 	 */
 	List<WeldedJunction> getCardList(Page page, String search);
 	List<WeldedJunction> getCardList(String search);
-	
+
 	/**
 	 * 新增电子跟踪卡
 	 * @Description
@@ -194,7 +210,7 @@ public interface WeldedJunctionService {
 	 * @param wj
 	 */
 	void addCard(WeldedJunction wj);
-	
+
 	/**
 	 * 更新电子跟踪卡
 	 * @Description
@@ -203,7 +219,7 @@ public interface WeldedJunctionService {
 	 * @param wj
 	 */
 	void updateCard(WeldedJunction wj);
-	
+
 	/**
 	 * 删除电子跟踪卡
 	 * @Description
@@ -212,7 +228,7 @@ public interface WeldedJunctionService {
 	 * @param fid
 	 */
 	void deleteCard(String fid);
-	
+
 	/**
 	 * 新增产品序号
 	 * @Description
@@ -221,7 +237,7 @@ public interface WeldedJunctionService {
 	 * @param wj
 	 */
 	void addProductNum(WeldedJunction wj);
-	
+
 	/**
 	 * 根据电子跟踪卡id删除对应产品
 	 * @Description
@@ -230,7 +246,7 @@ public interface WeldedJunctionService {
 	 * @param fid
 	 */
 	void deleteProduct(String fid);
-	
+
 	/**
 	 * 产品列表
 	 * @Description
@@ -242,7 +258,7 @@ public interface WeldedJunctionService {
 	 */
 	List<WeldedJunction> getProductList(Page page, String search);
 	List<WeldedJunction> getProductList(String search);
-	
+
 	/**
 	 * 根据卡号获取对应的产品信息
 	 * @Description
@@ -252,7 +268,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	WeldedJunction getProductByCardid(String fid);
-	
+
 	/**
 	 * 更换电子跟踪卡
 	 * @Description
@@ -261,7 +277,7 @@ public interface WeldedJunctionService {
 	 * @param wj
 	 */
 	void updateProductNum(WeldedJunction wj);
-	
+
 	/**
 	 * 新增工艺切换记录
 	 * @Description
@@ -273,7 +289,7 @@ public interface WeldedJunctionService {
 	 * @param time
 	 */
 	void addProductWpsHistory(String fid,String wpsId, String userId, String time);
-	
+
 	/**
 	 * 获取临时工艺切换历史列表
 	 * @Description
@@ -284,7 +300,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	List<WeldedJunction> getProductWpsHistory(Page page, String search);
-	
+
 	/**
 	 * 获取电子跟踪卡count数
 	 * @Description
@@ -294,7 +310,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	int getCardCount(String cardName);
-	
+
 	/**
 	 * 获取任务编号count数
 	 * @Description
@@ -304,7 +320,7 @@ public interface WeldedJunctionService {
 	 * @return
 	 */
 	int getTaskCount(String taskName);
-	
+
 	/**
 	 * 根据电子跟踪卡号id获取对应的工艺规程id
 	 * @Description

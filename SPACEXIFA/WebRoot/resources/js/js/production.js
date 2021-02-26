@@ -65,7 +65,7 @@ $(function () {
                 fontSize: 12
             }
         }, {
-            text: '焊材消耗量（G）',
+            text: '焊材消耗量',
             left: '30%',
             //y轴取四位数时，取grid的left-1%
             textStyle: {

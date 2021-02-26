@@ -99,6 +99,23 @@ public class WeldedJunctionControll {
         return "td/HistoryWeldMa";
     }
 
+    /**
+     * 焊接数据报表统计传参
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getNnstandardHistory")
+    public String getNnstandardHistory(HttpServletRequest request) {
+        if (request.getParameter("fid") != null && request.getParameter("fid") != "") {
+            request.setAttribute("fid", request.getParameter("fid"));
+            request.setAttribute("fjunction_id", request.getParameter("fjunction_id"));
+            request.setAttribute("dtoTime1", request.getParameter("dtoTime1"));
+            request.setAttribute("dtoTime2", request.getParameter("dtoTime2"));
+        }
+        return "td/PersonWeldHistory";
+    }
+
     @RequestMapping("/goShowMoreJunction")
     public String goShowMoreJunction(HttpServletRequest request, @RequestParam String id) {
         try {
@@ -169,8 +186,8 @@ public class WeldedJunctionControll {
                 json.put("itemid", w.getIid());
                 json.put("startTime", w.getStartTime());
                 json.put("endTime", w.getEndTime());
-               // json.put("creatTime", w.getCreatTime());
-               // json.put("updateTime", w.getUpdateTime());
+                // json.put("creatTime", w.getCreatTime());
+                // json.put("updateTime", w.getUpdateTime());
                 json.put("updatecount", w.getUpdatecount());
                 json.put("nextwall_thickness", w.getNextwall_thickness());
                 json.put("next_material", w.getNext_material());

@@ -21,7 +21,7 @@ import java.util.List;
 public class DataStatisticsServiceImpl implements DataStatisticsService {
 	@Autowired
 	private DataStatisticsMapper ds;
-	
+
 	@Override
 	public List<DataStatistics> getItemMachineCount(Page page,BigInteger parent) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
@@ -65,8 +65,14 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
+	public DataStatistics getmaxele(BigInteger fjunctionid) {
+		return ds.getmaxele(fjunctionid);
+	}
+
+
+	@Override
 	public BigInteger getStaringUpTime(BigInteger itemid, WeldDto dto) {
-		return ds.getStaringUpTime(itemid, dto); 
+		return ds.getStaringUpTime(itemid, dto);
 	}
 
 	@Override
@@ -249,7 +255,7 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 
 	@Override
 	public BigInteger getStaringUpTimeByJunction(BigInteger itemid, WeldDto dto) {
-		return ds.getStaringUpTimeByJunction(itemid, dto); 
+		return ds.getStaringUpTimeByJunction(itemid, dto);
 	}
 
 	@Override
@@ -270,7 +276,7 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 
 	@Override
 	public BigInteger getStaringUpTimeByWelder(BigInteger itemid, WeldDto dto) {
-		return ds.getStaringUpTimeByWelder(itemid, dto); 
+		return ds.getStaringUpTimeByWelder(itemid, dto);
 	}
 
 	@Override
@@ -300,13 +306,13 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 
 	@Override
 	public List<DataStatistics> getTaskDetail(BigInteger parent, String welderno, String taskno, String time1,
-			String time2) {
+											  String time2) {
 		return ds.getTaskDetail(parent, welderno, taskno, time1, time2);
 	}
 
 	@Override
 	public List<DataStatistics> getTask(Page page, BigInteger parent, String welderno, String taskno, String time1,
-			String time2) {
+										String time2) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return ds.getTask(parent, welderno, taskno, time1, time2);
 	}
@@ -326,25 +332,25 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 		// TODO Auto-generated method stub
 		return ds.getWireAndFlow(itemid, dto);
 	}
-	
+
 	@Override
 	public List<DataStatistics> getEquipmentUtilize(BigInteger itemid, WeldDto dto) {
 		// TODO Auto-generated method stub
 		return ds.getEquipmentUtilize(itemid, dto);
 	}
-	
+
 	@Override
 	public List<DataStatistics> getOnAndWeldTime(BigInteger itemid, WeldDto dto) {
 		// TODO Auto-generated method stub
 		return ds.getOnAndWeldTime(itemid, dto);
 	}
-	
+
 	@Override
 	public List<DataStatistics> getMachineTask(Page page, BigInteger parent, String sql, int type) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
 		return ds.getMachineTask(parent, sql, type);
 	}
-	
+
 	@Override
 	public List<DataStatistics> getMachineTask(BigInteger parent, String sql, int type) {
 		return ds.getMachineTask(parent, sql, type);
@@ -356,14 +362,14 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 		try{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date d = sdf.parse(time1);
-			Calendar cal = Calendar.getInstance(); 
+			Calendar cal = Calendar.getInstance();
 			cal.setTime(d);
 			int day=cal.get(Calendar.DATE);
 			long t1 = sdf.parse(time1).getTime();
 			long t2 = sdf.parse(time2).getTime();
 			int days = day + (int)((t2-t1)/(1000*60*60*24))+1;
 			for(int i = day; i < days; i++){
-				Calendar calendar = Calendar.getInstance();  
+				Calendar calendar = Calendar.getInstance();
 				Date dates = sdf.parse(time1);
 				calendar.setTime(dates);
 				calendar.set(Calendar.DATE, i);

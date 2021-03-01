@@ -58,6 +58,13 @@ public class Websocket {
                             welderno = "0" + welderno;
                         }
                     }
+                    String whiteListVersion = String.valueOf(Long.parseLong(str.substring(26, 30), 16));//白名单版本号
+                    if (whiteListVersion.length() < 4) {
+                        int lenth = 4 - whiteListVersion.length();
+                        for (int i = 0; i < lenth; i++) {
+                            whiteListVersion = "0" + whiteListVersion;
+                        }
+                    }
                     String gatherno = String.valueOf(Long.parseLong(str.substring(16, 20), 16));//采集模块编号
                     if (gatherno.length() < 4) {
                         int lenth = 4 - gatherno.length();
@@ -303,14 +310,14 @@ public class Websocket {
                             }
                             strsend = strsend + welderid + weldid + gatherno + junctionNo + gasflow + ins + itemins + weldmodel + status + electricity +
                                     voltage + setelectricity + setvoltage + timesql + maxelectricity + minelectricity + maxvoltage + minvoltage + channel + speed + cardid +
-                                    wpsid + productid + workprocedureid + workstepid + weld_speed + lon_air_flow + hatwire_current + laser_power;
+                                    wpsid + productid + workprocedureid + workstepid + whiteListVersion + lon_air_flow + hatwire_current + laser_power;
 
                             String strstrsend = welderid + weldid + gatherno + junctionNo + gasflow + ins + itemins + weldmodel + status + electricity +
                                     voltage + setelectricity + setvoltage + timesql + maxelectricity + minelectricity + maxvoltage + minvoltage + channel + speed + cardid +
-                                    wpsid + productid + workprocedureid + workstepid + weld_speed + lon_air_flow + hatwire_current + laser_power;
+                                    wpsid + productid + workprocedureid + workstepid + whiteListVersion + lon_air_flow + hatwire_current + laser_power;
                             //焊工id、焊机id、采集编号、焊口号(8位)、保护气流量、焊机组织id、组织id（配置文件）、焊机型号（值）、报警信息、焊接电流、焊接电压、给定电流、给定电压、
-                            //焊机工作时间、最大电流、最小电流、最大电压、最小电压、通道号、送丝速度、电子跟踪卡id（工作号id/工票id）、
-                            //工艺id、产品号id、工步号id、焊缝号id、焊机速度、离子气流量、热丝电流、激光功率
+                            //焊机工作时间、最大电流、最小电流、最大电压、最小电压（87-91）、通道号、送丝速度、电子跟踪卡id（工作号id/工票id）【99-103】、
+                            //工艺id（103-107）、产品号id、工步号id、焊缝号id、焊机速度【修改：白名单版本号（119-123）】、离子气流量、热丝电流、激光功率
                             //0000000000610000000100000000001700000000000000019001902021-01-12 16:57:32.0024001400240014000000000000000000000000000000000000000000000
                             //0000000001140000000100000000001700000000000000019001902021-01-12 16:57:32.0024001400240014000000000000000000000000000000000000000000000
                             //0000000000670000000100000000001700000000000000019001902021-01-12 16:57:32.0024001400240014000000000000000000000000000000000000000000000
@@ -319,13 +326,14 @@ public class Websocket {
                             System.out.println("采集编号：" + str.substring(16, 20));
                             String junctionNo = Integer.valueOf(str.substring(76 + a, 84 + a), 16).toString();
                             System.out.println("字节码解析异常：" + e);
+                            continue;
                         }
                     }
                     //MQTT处理,发送到前端(length:405)
                     mqtt.publishMessage("weldmesrealdata", strsend, 0);
                     strsend = "";
                 }
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }

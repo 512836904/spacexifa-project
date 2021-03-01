@@ -51,7 +51,7 @@
     </authentication-manager> -->
     
     <beans:bean id="myFilter" 
-        class="com.erdangjiade.spring.security.MyFilterSecurityInterceptor">  
+        class="com.shth.spacexifa.security.MyFilterSecurityInterceptor">
         <beans:property name="authenticationManager" ref="authenticationManager" />  
         <beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />  
         <beans:property name="securityMetadataSource" ref="securityMetadataSource" />  
@@ -75,10 +75,10 @@
 	     <beans:property name="maxIdleTime" value="180"/>
      </beans:bean>  
      
-     <beans:bean id="myUserDetailService" class="com.erdangjiade.spring.security.MyUserDetailService" />
+     <beans:bean id="myUserDetailService" class="com.shth.spacexifa.security.MyUserDetailService" />
      
      <beans:bean id="myAccessDecisionManagerBean" 
-        class="com.erdangjiade.spring.security.MyAccessDecisionManager">  
+        class="com.shth.spacexifa.security.MyAccessDecisionManager">
      </beans:bean>  
      
      <!-- 读取资源文件 -->
@@ -91,7 +91,7 @@
      </beans:bean>
     
      <beans:bean id="securityMetadataSource" 
-     class="com.erdangjiade.spring.security.MyInvocationSecurityMetadataSource" />  
+     class="com.shth.spacexifa.security.MyInvocationSecurityMetadataSource" />
     
     <!-- 指定中文资源 。默认命名空间是security,所以要加前缀beans: --> 
      <beans:bean id="messageSource"

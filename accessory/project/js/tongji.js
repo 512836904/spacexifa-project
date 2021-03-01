@@ -7,6 +7,8 @@
     });
     //根据IP查采集编号
     loadRequestPath();
+    //查询所有焊工id和焊工姓名集合
+    loadWeldersList();
     //工艺焊缝联动查询
     loadProduction();
     //mq连接
@@ -25,6 +27,7 @@ var weldLineId = 0;
 var wpsId = 0;
 var cardId = 0;
 var repairType = 0;
+var welderList = new Array();
 
 //根据手持终端IP查询采集编号
 function loadRequestPath() {
@@ -51,6 +54,22 @@ function loadRequestPath() {
             console.log(e);
             $("#start").attr("disabled", "disabled");
             alert("该终端设备未进行绑定，请联系管理员！");
+        }
+    });
+}
+
+//查询所有焊工信息集合
+function loadWeldersList(){
+    $.ajax({
+        type: "post",
+        dataType: 'jsonp',
+        jsonp: 'jsonpCallback',
+        data: {},
+        url: iphostport + "/SPACEXIFA/terminal/loadWeldersList",
+        success: function (result) {
+            if (result) {
+                welderList = result.welderList;
+            }
         }
     });
 }
@@ -362,7 +381,8 @@ function start_onclick() {
             productName: $("#productName").val(),
             wpsparameter: $("#wpsparameter").val(),
             fgatherno: $("#fgatherno").val(),
-            repairType: repairType
+            repairType: repairType,
+            welderId: $("#welderId").val()
         }
         $.ajax({
             type: "POST",
@@ -416,7 +436,7 @@ function sendMQSaveLiveData(resultType, cardId, wpsId, weldLineId) {
     var taskResultData = {
         type: resultType,
         machine: "m-" + $("#fgatherno").val(),
-        welderid: 0,            //焊工id
+        welderid: $("#welderId").val(),            //焊工id
         cardid: cardId,         //电子跟踪卡id
         wpsid: wpsId,           //工艺id
         productid: repairType,  //产品号id（返修状态）
@@ -780,6 +800,16 @@ function mqttConnect() {
 //连接
 function onConnect() {
     console.log("onConnect");
+    //订阅消息主题
+    client.subscribe("weldmesrealdata", {
+        qos: 0,
+        onSuccess: function (e) {
+            console.log("主题订阅成功");
+        },
+        onFailure: function (e) {
+            console.log("主题订阅失败：" + e.errorCode);
+        }
+    });
 }
 
 //断线重连
@@ -792,6 +822,27 @@ function onConnectionLost(responseObject) {
 //接收到消息
 function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
+    var da = message.payloadString;
+    var gatherNo = da.substring(8, 12).toString();//采集编号
+    if ($("#fgatherno").val() !== ''){
+        if (gatherNo === $("#fgatherno").val()){
+            var welderId = parseInt(da.substring(0, 4));//焊工id
+            //查找焊工数组是否有id，有则展示
+            var wederidIndex = welderList.map(a => a.id).indexOf(welderId);
+            if (wederidIndex !== -1){
+                $("#welderId").val(welderId);
+                $("#welderName").val(welderList[wederidIndex].name);
+                client.unsubscribe("weldmesrealdata", {
+                    onSuccess: function (e) {
+                        console.log("取消订阅成功");
+                    },
+                    onFailure: function (e) {
+                        console.log("取消订阅失败：" + e.errorCode);
+                    }
+                });
+            }
+        }
+    }
 }
 
 //取消消息订阅

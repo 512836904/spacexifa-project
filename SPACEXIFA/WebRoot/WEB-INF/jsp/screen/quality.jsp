@@ -37,7 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h1><span>质量管理展示</span></h1>
         <div class="leftCompany"></div>
         <div class="rightTime"></div>
-		<div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 40%;" class="img" src="resources/images/images/logo.png"/></div>
+		<div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 97%;" class="img" src="resources/images/images/logo.png"/></div>
         <div class="exchange" id="quanping">
             <button style="background-color: #022986;width: 170%;height: 150%;" onclick="javascript:requestFullScreen()"><span style="color: #ffffff;">全屏</span></button>
         </div>

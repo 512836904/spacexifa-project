@@ -38,7 +38,7 @@
     <h1><span>项目管理界面</span></h1>
     <div class="leftCompany"></div>
     <div class="rightTime"></div>
-    <div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 40%;" class="img"
+    <div class="logo" style="float:left;"><img id="logo_img" style="width: 50%;height: 97%;" class="img"
                                                src="resources/images/images/logo.png"/></div>
     <div class="exchange" id="quanping">
         <button style="background-color: #022986;width: 170%;height: 150%;" onclick="javascript:requestFullScreen()">
@@ -489,7 +489,7 @@
                         feild["gzh"] = data[index].JOB_NUMBER;
                         feild["bth"] = data[index].SET_NUMBER;
                         feild["ljm"] = data[index].PART_NAME;
-                        feild["gzzsc"] = data[index].worktime;
+                        feild["gzzsc"] = Number(data[index].worktime).toFixed(1);
                         feild["zhcxh"] = Number(data[index].wirefeedrate).toFixed(2);
                         tablearray.push(feild);
                     }

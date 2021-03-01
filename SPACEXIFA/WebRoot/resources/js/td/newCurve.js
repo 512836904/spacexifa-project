@@ -5,7 +5,9 @@ var dic, starows, redata, symbol = 0, welderName, socket;
 var worknum = 0, standbynum = 0, warnnum = 0, offnum = 0, flag = 0, showflag = 0;
 var liveary = new Array(), machine = new Array;
 var subscribeTopic = new Array();
+var weldersArray = new Array();
 var taskNum;
+var whiteListVersion;   //白名单版本
 
 $(function () {
     $.ajax({
@@ -21,6 +23,36 @@ $(function () {
         },
         error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");
+        }
+    });
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "pmt/getParameterAll",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            var res = eval(result.rows);
+            for (var i = 0; i < res.length; i++) {
+                whiteListVersion = res[i].numversion;
+                break;
+            }
+        }
+    });
+    //查询所有焊工信息(过滤离职焊工)
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "welders/findAllWelders",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                weldersArray = result.ary;
+            }
+        },
+        error: function (errorMsg) {
+            console.log("查询所有焊工信息异常！");
         }
     });
     loadtree();
@@ -195,7 +227,7 @@ function mqttTest() {
         useSSL: false,
         onSuccess: onConnect,
         onFailure: function (e) {
-            console.log("mq连接失败："+e.errorCode);
+            console.log("mq连接失败：" + e.errorCode);
         },
         reconnect: true
     }
@@ -333,10 +365,10 @@ function iview() {
                     var minvol = parseInt(redata.substring(87 + i, 91 + i), 10);
                     var card = parseInt(redata.substring(99 + i, 103 + i), 10);
                     var mstatus = redata.substring(36 + i, 38 + i);
-                    if(mstatus == 3 || mstatus == 3 || mstatus == 5 || mstatus == 7){
-                        if(card == "0"){
+                    if (mstatus == 3 || mstatus == 3 || mstatus == 5 || mstatus == 7) {
+                        if (card == "0") {
                             $("#m2" + machine[f].fid).html("任务未绑定");
-                        }else{
+                        } else {
                             $("#m2" + machine[f].fid).html("任务已下发");
                         }
                     }
@@ -492,7 +524,89 @@ function iview() {
                 }
             }
         }
+        var whiterList = parseInt(redata.substring(119, 123));
+        //版本号不是最新版本，取出采集编号，进行下发
+        if (whiterList !== whiteListVersion) {
+            var gatherno = redata.substring(8, 12).toString();
+            joinMachineCode(whiteListVersion, gatherno);
+        }
     }
+}
+
+//获取选择的焊机进行下发
+function joinMachineCode(whiteList, gatherno) {
+    var weldercode = "";
+    var leaveOverLength = 0;
+    //焊工编号字节码数据包处理
+    if (weldersArray.length > 0 && weldersArray.length <= 400) {
+        for (var index in weldersArray) {
+            var welderno = weldersArray[index].welderno;
+            var weldernum = parseInt(welderno.substring(4, 9)).toString(16);
+            weldercode = weldercode + weldernum;
+        }
+    } else {
+        console.log("查询不到焊工信息或焊工信息过多不支持下发！");
+        return false;
+    }
+    weldercode = weldercode.toUpperCase();
+    leaveOverLength = 1600 - weldercode.length;
+    console.log("焊工长度:" + weldercode.length);
+    console.log("预留长度：" + leaveOverLength);
+    var numVersion = parseInt(whiteList).toString(16);
+    if (numVersion.length < 4) {
+        var len = 4 - numVersion.length;
+        for (var i = 0; i < len; i++) {
+            numVersion = "0" + numVersion;
+        }
+    }
+    var code = "";
+    for (var i = 0; i < leaveOverLength; i++) {
+        code = code + "0";
+    }
+    console.log("卡号总长度：" + (weldercode + code).length);
+    var codehead = "007E0000000017";
+    //var codefoot = "0000" + weldercode + code + "007D";
+    var codefoot = numVersion + weldercode + code + "007D";
+    //焊工白名单数据通过mq下发
+    sendWelderCodeByMQ(gatherno, codehead, codefoot);
+}
+
+//下发
+function sendWelderCodeByMQ(gatherno, codehead, codefoot) {
+    //订阅消息主题
+    client.subscribe("weldmes/upparams", {
+        qos: 0,
+        onSuccess: function (e) {
+            console.log("主题订阅成功");
+        },
+        onFailure: function (e) {
+            console.log("主题订阅失败:" + e.errorCode);
+        }
+    });
+    var fgatherno = parseInt(gatherno).toString(16);
+    if (fgatherno.length < 4) {
+        var len = 4 - fgatherno.length;
+        for (var i = 0; i < len; i++) {
+            fgatherno = "0" + fgatherno;
+        }
+    }
+    var datacode = (codehead + fgatherno + codefoot).toUpperCase();
+    console.log("数据包总长度：" + datacode.length);
+    // console.log(datacode);
+    var message = new Paho.MQTT.Message(datacode);
+    message.destinationName = "whiteList-dataIssue";
+    client.send(message);
+    console.log("白名单下发中！");
+    window.setTimeout(function () {
+        client.unsubscribe("weldmes/upparams", {
+            onSuccess: function (e) {
+                console.log("取消订阅成功");
+            },
+            onFailure: function (e) {
+                console.log("取消订阅失败：" + e.errorCode);
+            }
+        });
+    }, 1000);
 }
 
 var charts, flagnum = 0;

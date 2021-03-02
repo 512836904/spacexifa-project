@@ -96,7 +96,9 @@ public class Server implements Runnable {
     public ArrayList<String> getlistarray1() {
         return listarray1;
     }
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");;
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    //创建德鲁伊数据库连接池
+    public static OracleDBConnection dbConnection = new OracleDBConnection();
 
 
     public void run() {
@@ -175,7 +177,7 @@ public class Server implements Runnable {
                 Connection connection = null;
                 Statement statement = null;
                 try {
-                    connection = OracleDBConnection.getConnection();
+                    connection = Server.dbConnection.getConnection();
                     statement = connection.createStatement();
                     //基本版
                     //获取上次统计时间，为空插入赋默认值
@@ -366,7 +368,7 @@ public class Server implements Runnable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    OracleDBConnection.close(connection, statement, null);
+                    Server.dbConnection.close(connection, statement, null);
                 }
             }
         }, time1, (60 * 60 * 24), TimeUnit.SECONDS);
@@ -381,7 +383,7 @@ public class Server implements Runnable {
                 Connection connection = null;
                 Statement statement = null;
                 try {
-                    connection = OracleDBConnection.getConnection();
+                    connection = Server.dbConnection.getConnection();
                     statement = connection.createStatement();
                     //基本版
                     //获取上次统计时间，为空插入赋默认值
@@ -492,7 +494,7 @@ public class Server implements Runnable {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } finally {
-                    OracleDBConnection.close(connection, statement, null);
+                    Server.dbConnection.close(connection, statement, null);
                 }
             }
         }, time, 60 * 60, TimeUnit.SECONDS);

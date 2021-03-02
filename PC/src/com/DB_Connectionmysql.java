@@ -113,7 +113,7 @@ public class DB_Connectionmysql {
                 Statement statement = null;
                 try {
                     if (connection == null || connection.isClosed()) {
-                        connection = OracleDBConnection.getConnection();
+                        connection = Server.dbConnection.getConnection();
                     }
                     if (statement == null || statement.isClosed()) {
                         statement = connection.createStatement();
@@ -125,7 +125,7 @@ public class DB_Connectionmysql {
                     e.printStackTrace();
                 } finally {
                     //释放连接，归还资源
-                    OracleDBConnection.close(connection, statement, null);
+                    Server.dbConnection.close(connection, statement, null);
                 }
             }
         }
@@ -978,7 +978,7 @@ public class DB_Connectionmysql {
                     Connection connection = null;
                     Statement statement = null;
                     try {
-                        connection = OracleDBConnection.getConnection();
+                        connection = Server.dbConnection.getConnection();
                         statement = connection.createStatement();
                         statement.executeUpdate(inSqlplc1);
                         workplc = workplc + 1;
@@ -993,7 +993,7 @@ public class DB_Connectionmysql {
                         System.out.println("Broken insert");
                         e.printStackTrace();
                     } finally {
-                        OracleDBConnection.close(connection, statement, null);
+                        Server.dbConnection.close(connection, statement, null);
                     }
                 }
                 break;
@@ -1027,7 +1027,7 @@ public class DB_Connectionmysql {
                     Connection connection = null;
                     Statement statement = null;
                     try {
-                        connection = OracleDBConnection.getConnection();
+                        connection = Server.dbConnection.getConnection();
                         statement = connection.createStatement();
                         statement.executeUpdate(inSqlplc2);
                         workplc = workplc + 1;
@@ -1042,7 +1042,7 @@ public class DB_Connectionmysql {
                         System.out.println("Broken insert");
                         e.printStackTrace();
                     } finally {
-                        OracleDBConnection.close(connection, statement, null);
+                        Server.dbConnection.close(connection, statement, null);
                     }
                 }
                 break;
@@ -1076,7 +1076,7 @@ public class DB_Connectionmysql {
                     Connection connection = null;
                     Statement statement = null;
                     try {
-                        connection = OracleDBConnection.getConnection();
+                        connection = Server.dbConnection.getConnection();
                         statement = connection.createStatement();
                         statement.executeUpdate(inSqlplc3);
                         workplc = workplc + 1;
@@ -1091,7 +1091,7 @@ public class DB_Connectionmysql {
                         System.out.println("Broken insert");
                         e.printStackTrace();
                     } finally {
-                        OracleDBConnection.close(connection, statement, null);
+                        Server.dbConnection.close(connection, statement, null);
                     }
                 }
                 break;
@@ -1125,7 +1125,7 @@ public class DB_Connectionmysql {
                     Connection connection = null;
                     Statement statement = null;
                     try {
-                        connection = OracleDBConnection.getConnection();
+                        connection = Server.dbConnection.getConnection();
                         statement = connection.createStatement();
                         statement.executeUpdate(inSqlplc4);
                         workplc = workplc + 1;
@@ -1140,7 +1140,7 @@ public class DB_Connectionmysql {
                         System.out.println("Broken insert");
                         e.printStackTrace();
                     } finally {
-                        OracleDBConnection.close(connection, statement, null);
+                        Server.dbConnection.close(connection, statement, null);
                     }
                 }
                 break;

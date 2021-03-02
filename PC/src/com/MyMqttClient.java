@@ -298,6 +298,20 @@ public class MyMqttClient {
 //            if (str.length() == 24){
 //                System.out.println("索取了数据："+sdf.format(System.currentTimeMillis()));
 //            }
+            Server.cachedThreadPool.execute(new writeMessageByMq(str));
+
+        }
+    }
+
+    class writeMessageByMq implements Runnable {
+
+        private String str = "";
+        writeMessageByMq(String str){
+            this.str = str;
+        }
+
+        @Override
+        public void run() {
             ArrayList<String> listarraybuf = new ArrayList<String>();
             boolean ifdo = false;
             HashMap<String, SocketChannel> socketlist_cl;

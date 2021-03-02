@@ -24,7 +24,7 @@ public class DB_Connectioncode {
 
         try {
             if (conn == null || conn.isClosed()) {
-                conn = OracleDBConnection.getConnection();
+                conn = Server.dbConnection.getConnection();
             }
             if (stmt == null || stmt.isClosed()) {
                 stmt = conn.createStatement();
@@ -42,13 +42,13 @@ public class DB_Connectioncode {
             e.printStackTrace();
             System.out.println("查询焊工信息异常：" + e.getMessage());
         } finally {
-            OracleDBConnection.close(conn, stmt, null);
+            Server.dbConnection.close(conn, stmt, null);
         }
         //查焊机和采集模块的关联信息
         inSql = "SELECT wm.FID fmachineId,g.FID,wm.FEQUIPMENT_NO,g.FGATHER_NO,wm.FINSFRAMEWORK_ID FROM tb_welding_machine wm LEFT JOIN TB_GATHER g ON wm.FGATHER_ID = g.FID";
         try {
             if (conn == null || conn.isClosed()) {
-                conn = OracleDBConnection.getConnection();
+                conn = Server.dbConnection.getConnection();
             }
             if (stmt == null || stmt.isClosed()) {
                 stmt = conn.createStatement();
@@ -68,13 +68,13 @@ public class DB_Connectioncode {
             e.printStackTrace();
             System.out.println("查询焊机和采集模块信息异常：" + e.getMessage());
         } finally {
-            OracleDBConnection.close(conn, stmt, null);
+            Server.dbConnection.close(conn, stmt, null);
         }
         //查询焊缝的电流电压最大最小值
         inSql = "SELECT FID,JUNCTION_NAME,CURRENT_LIMIT,CURRENT_LOWER_LIMIT,FMAXVOLTAGE,FMINVOLTAGE FROM TB_JUNCTION";
         try {
             if (conn == null || conn.isClosed()) {
-                conn = OracleDBConnection.getConnection();
+                conn = Server.dbConnection.getConnection();
             }
             if (stmt == null || stmt.isClosed()) {
                 stmt = conn.createStatement();
@@ -127,13 +127,13 @@ public class DB_Connectioncode {
             e.printStackTrace();
             System.out.println("查询焊缝信息异常：" + e.getMessage());
         } finally {
-            OracleDBConnection.close(conn, stmt, null);
+            Server.dbConnection.close(conn, stmt, null);
         }
         //查询参数表
         inSql = "SELECT fair_flow_volume from tb_parameter";
         try {
             if (conn == null || conn.isClosed()) {
-                conn = OracleDBConnection.getConnection();
+                conn = Server.dbConnection.getConnection();
             }
             if (stmt == null || stmt.isClosed()) {
                 stmt = conn.createStatement();
@@ -177,7 +177,7 @@ public class DB_Connectioncode {
             e.printStackTrace();
             System.out.println("查询焊机信息异常：" + e.getMessage());
         } finally {
-            OracleDBConnection.close(conn, stmt, null);
+            Server.dbConnection.close(conn, stmt, null);
         }
     }
 

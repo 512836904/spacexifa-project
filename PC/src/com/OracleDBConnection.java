@@ -40,7 +40,7 @@ public class OracleDBConnection {
      * @return
      * @throws SQLException
      */
-    public synchronized static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         return getDataSource().getConnection();
     }
 
@@ -48,7 +48,7 @@ public class OracleDBConnection {
      * 关闭连接
      * @param conn
      */
-    public synchronized static void close(Connection conn, Statement stmt, ResultSet rs) {
+    public static void close(Connection conn, Statement stmt, ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -75,7 +75,7 @@ public class OracleDBConnection {
     /**
      * 获取连接池方法
      */
-    public synchronized static DataSource getDataSource() {
+    public static DataSource getDataSource() {
         return dataSource;
     }
 

@@ -146,4 +146,5 @@ public interface WpsMapper {
 	int updateTaskResultById(Wps wps);
 	int updateStatusByFids(@Param("list")List<String> list,@Param("type") int type);
 	List<Wps> findAllWorkNumer();
+	Wps getWeldedJunctionById(@Param("fid") BigInteger fid);
 }

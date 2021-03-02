@@ -741,4 +741,9 @@ public class WpsServiceImpl implements WpsService{
 	public List<Wps> findAllWorkNumer() {
 		return mapper.findAllWorkNumer();
 	}
+
+	@Override
+	public Wps getWeldedJunctionById(BigInteger fid) {
+		return mapper.getWeldedJunctionById(fid);
+	}
 }

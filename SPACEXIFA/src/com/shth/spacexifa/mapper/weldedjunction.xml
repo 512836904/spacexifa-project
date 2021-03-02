@@ -304,7 +304,8 @@
     </select>
 
     <select id="getWeldedJunctionById" resultMap="wjMap" parameterType="java.lang.String">
-		SELECT j. * , i.fid iid, i.fname iname FROM tb_welded_junction j INNER JOIN tb_insframework i ON j.fitemId = i.fid WHERE j.fid = #{id}
+        SELECT FID,FSTATUS,WORKTICKET_NUMBER,CRAFT_PARAM,JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME
+        FROM TB_WELDED_JUNCTION where fid = #{id}
 	</select>
 
     <select id="getWeldedjunctionByNo" resultType="java.lang.Integer" parameterType="java.lang.String">

@@ -114,10 +114,10 @@
         FROM tb_welding_machine w
                  INNER JOIN tb_insframework i ON w.finsframework_id = i.fid
                  INNER JOIN tb_dictionary dic ON dic.fvalue = w.fmanufacturer_id
-                 INNER JOIN tb_dictionary d ON d.fvalue = w.fstatus_id
+                 INNER JOIN tb_dictionary d ON d.fvalue = w.FMODEL
                  INNER JOIN tb_dictionary di ON di.fvalue = w.ftype_id
-                 left JOIN tb_gather g ON g.FMACHINE_ID = w.fid
-        where (d.ftypeid = 3 and di.ftypeid = 4 and dic.ftypeid = 14)
+                 left JOIN tb_gather g ON w.FGATHER_ID = g.FID
+        where (d.ftypeid = 17 and di.ftypeid = 4 and dic.ftypeid = 14)
           and w.fid = #{wid}
     </select>
 

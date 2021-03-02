@@ -131,6 +131,10 @@
         </if>
     </select>
 
+    <select id="getJunctionById" parameterType="java.lang.Long" resultType="com.shth.spacexifa.model.Junction">
+        SELECT fid,junction_name FROM TB_JUNCTION WHERE FID = #{fid}
+    </select>
+
     <!-- <select id="getLiarbryJunctionById" parameterType="int" resultType="com.shth.spacexifa.model.ProductionCraft">
         SELECT FID,TRACKINGCARD_ID,PRODUCTION_ID,JUNCTION_ID FROM TB_LIBRARY_JUNCTION
         WHERE TRACKINGCARD_ID = #{TRACKINGCARD_ID} AND PRODUCTION_ID = #{PRODUCTION_ID}

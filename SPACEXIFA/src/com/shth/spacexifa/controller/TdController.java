@@ -35,9 +35,10 @@ public class TdController {
     @Autowired
     private WeldingMachineService wm;
 
-
     @Autowired
-    private WpsService Wps;
+    private WpsService wpsService;
+    @Autowired
+    private JunctionService junctionService;
 
     IsnullUtil iutil = new IsnullUtil();
 
@@ -53,8 +54,8 @@ public class TdController {
         String websocket = request.getSession().getServletContext().getInitParameter("websocket");
 //		request.setAttribute("web_socket", websocket);
         StringBuffer requestURL = request.getRequestURL();
-        System.out.println("requestURL:======================="+requestURL);
-        if (String.valueOf(requestURL).contains("10.110.11.3")){
+        System.out.println("requestURL:=======================" + requestURL);
+        if (String.valueOf(requestURL).contains("10.110.11.3")) {
             websocket = "10.110.11.3:8083";
         }
         JSONObject obj = new JSONObject();
@@ -82,6 +83,7 @@ public class TdController {
 
     /**
      * 跳转焊接管理界面
+     *
      * @param request
      * @return
      */
@@ -93,6 +95,7 @@ public class TdController {
 
     /**
      * 跳转质量管理界面
+     *
      * @param request
      * @return
      */
@@ -104,6 +107,7 @@ public class TdController {
 
     /**
      * 跳转项目管理界面
+     *
      * @param request
      * @return
      */
@@ -137,9 +141,9 @@ public class TdController {
     @RequestMapping("/goNextcurve")
     public String goNextcurve(HttpServletRequest request) {
         lm.getUserId(request);
-        String value = request.getParameter("value");
-        String valuename = request.getParameter("valuename");
-        String type = request.getParameter("type");
+        String value = request.getParameter("value");//采集编号
+        String valuename = request.getParameter("valuename");//焊机固号
+        String type = request.getParameter("type");//焊机类型
         String model = request.getParameter("model");
         String typeValue = request.getParameter("typeValue");
         String flag = request.getParameter("flag");
@@ -664,7 +668,7 @@ public class TdController {
             }
         } else {
             try {
-                MyUser myuser = (MyUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                MyUser myuser = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 long uid = myuser.getId();
                 List<Insframework> insframework = insm.getInsByUserid(BigInteger.valueOf(uid));
                 parent = insframework.get(0).getId();
@@ -698,7 +702,7 @@ public class TdController {
                         }
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -831,7 +835,6 @@ public class TdController {
                 ary.add(json);
             }
         } catch (Exception e) {
-            e.getMessage();
             e.printStackTrace();
         }
         obj.put("rows", ary);
@@ -849,10 +852,19 @@ public class TdController {
 			calendar.add(Calendar.DATE, 1); //得到后一天
 			String totime = sdf.format(calendar.getTime());*/
 //			Td list = tdService.getLiveTime(time.substring(0,11)+"00:00:00", time.substring(0,14)+"00:00", new BigInteger(request.getParameter("machineid")));
+            //根据焊机id查询焊机相关信息
             WeldingMachine machinelist = wm.getWeldingMachineById(new BigInteger(request.getParameter("machineid")));
-            json.put("machineno", machinelist.getTypename());
-            json.put("mvaluename", machinelist.getMvaluename());
-            json.put("machine", machinelist.getEquipmentNo());
+            if (null != machinelist) {
+                json.put("machineno", machinelist.getTypename());//焊机型号
+                json.put("mvaluename", machinelist.getMvaluename());//厂商
+                json.put("machine", machinelist.getEquipmentNo());//焊机固号（焊机名称）
+                json.put("insName", machinelist.getInsframeworkId().getName());//焊机班组
+            } else {
+                json.put("machineno", "");//焊机型号
+                json.put("mvaluename", "");//厂商
+                json.put("machine", "");//焊机固号（焊机名称）
+                json.put("insName", "");//焊机班组
+            }
 //			if(list!=null){
 //				json.put("worktime",list.getWorktime());
 //				json.put("time",list.getWorktime());
@@ -863,13 +875,57 @@ public class TdController {
         return json.toString();
     }
 
+    /**
+     * 根据工作号id查询工作号信息
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("getWorkInfoByCardId")
+    @ResponseBody
+    public String getWorkInfoByCardId(HttpServletRequest request) {
+        JSONObject jsonObject = new JSONObject();
+        String JOB_NUMBER = "";//工作号
+        String SET_NUMBER = "";//工作号
+        String PART_DRAWING_NUMBER = "";//工作号
+        String PART_NAME = "";//工作号
+        String junctionName = "";//焊缝名称
+        try {
+            String cardId = request.getParameter("cardId");//工作号id
+            String junctionId = request.getParameter("junctionId");//焊缝id
+            if (null != cardId && !"".equals(cardId)) {
+                Wps wps = wpsService.getWeldedJunctionById(BigInteger.valueOf(Long.parseLong(cardId)));
+                if (null != wps) {
+                    JOB_NUMBER = wps.getJOB_NUMBER();
+                    SET_NUMBER = wps.getSET_NUMBER();
+                    PART_DRAWING_NUMBER = wps.getPART_DRAWING_NUMBER();
+                    PART_NAME = wps.getPART_NAME();
+                }
+            }
+            if (null != junctionId && !"".equals(junctionId)) {
+                Junction junctionById = junctionService.getJunctionById(Long.parseLong(junctionId));
+                if (null != junctionById) {
+                    junctionName = junctionById.getJunction_name();
+                }
+            }
+            jsonObject.put("JOB_NUMBER", JOB_NUMBER);
+            jsonObject.put("SET_NUMBER", SET_NUMBER);
+            jsonObject.put("PART_DRAWING_NUMBER", PART_DRAWING_NUMBER);
+            jsonObject.put("PART_NAME", PART_NAME);
+            jsonObject.put("junctionName", junctionName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
     @RequestMapping("/getTrackCard")
     @ResponseBody
     public String getTrackCard(HttpServletRequest request) {
         JSONObject obj = new JSONObject();
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
-        List<Wps> wps = Wps.gettrackcard();
+        List<Wps> wps = wpsService.gettrackcard();
         try {
             for (Wps w : wps) {
                 json.put("fid", w.getFid());

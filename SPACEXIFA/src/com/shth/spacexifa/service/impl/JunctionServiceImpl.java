@@ -48,4 +48,9 @@ public class JunctionServiceImpl implements JunctionService {
     public List<Junction> findJunctionByFname(String fname) {
         return junctionMapper.findJunctionByFname(fname);
     }
+
+    @Override
+    public Junction getJunctionById(Long fid) {
+        return junctionMapper.getJunctionById(fid);
+    }
 }

@@ -33,4 +33,6 @@ public interface JunctionService {
      * @return
      */
     List<Junction> findJunctionByFname(String fname);
+
+    Junction getJunctionById(Long fid);
 }

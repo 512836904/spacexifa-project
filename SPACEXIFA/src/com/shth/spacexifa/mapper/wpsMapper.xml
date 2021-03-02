@@ -1327,4 +1327,10 @@
         INNER JOIN TB_JUNCTION j ON pc.FJUNCTION = j.FID
         WHERE wj.FSTATUS = 1
     </select>
+
+    <select id="getWeldedJunctionById" parameterType="java.math.BigInteger" resultType="Wps">
+        SELECT wj.FID,WORKTICKET_NUMBER,CRAFT_PARAM,RAW_MATERI,PROCESS,JOB_NUMBER,
+               SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,FSTATUS
+        FROM TB_WELDED_JUNCTION wj WHERE FID = #{fid}
+    </select>
 </mapper>

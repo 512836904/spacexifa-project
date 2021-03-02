@@ -167,18 +167,22 @@ function getMachine(insfid) {
                     var imgnum = machine[i].model;
                     // console.log("imgnum:"+imgnum);
                     var str = '<div id="machine' + machine[i].fid + '" style="width:250px;height:120px;float:left;margin-right:10px;display:none">' +
-                        '<div style="float:left;width:40%;height:100%;">' +
-                        '<a href="td/goNextcurve?value=' + machine[i].fgather_no + '&valuename=' + machine[i].fequipment_no + '&type=' + machine[i].model + '">' +
-                        '<img id="img' + machine[i].fid + '" src="resources/images/welder_' + imgnum + '3.png" style="height:110px;width:90%;padding-top:10px;"></a>' +
-                        '</div>' +
-                        '<div style="float:left;width:60%;height:100%;">' +
-                        '<ul><li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">设备编号：<span id="m1' + machine[i].fid + '">' + machine[i].fequipment_no + '</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">任务状态：<span id="m2' + machine[i].fid + '">--</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">操作人员：<span id="m3' + machine[i].fid + '">--</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电流：<span id="m4' + machine[i].fid + '">--A</span></li>' +
-                        '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电压：<span id="m5' + machine[i].fid + '">--V</span></li>' +
-                        '<li style="width:100%;height:19px;">焊机状态：<span id="m6' + machine[i].fid + '">关机</span></li></ul>' +
-                        '<input id="status' + machine[i].fid + '" type="hidden" value="3"></div></div>';
+                            '<div style="float:left;width:40%;height:100%;">' +
+                                '<a href="td/goNextcurve?value=' + machine[i].fgather_no + '&valuename=' + machine[i].fequipment_no + '&type=' + machine[i].model + '">' +
+                                    '<img id="img' + machine[i].fid + '" src="resources/images/welder_' + imgnum + '3.png" style="height:110px;width:90%;padding-top:10px;">' +
+                                '</a>' +
+                            '</div>' +
+                            '<div style="float:left;width:60%;height:100%;">' +
+                                '<ul><li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">设备编号：<span id="m1' + machine[i].fid + '">' + machine[i].fequipment_no + '</span></li>' +
+                                    '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">采集编号：<span id="m2' + machine[i].fid + '">--</span></li>' +
+                                    '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">操作人员：<span id="m3' + machine[i].fid + '">--</span></li>' +
+                                    '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电流：<span id="m4' + machine[i].fid + '">--A</span></li>' +
+                                    '<li style="width:100%;height:19px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">焊接电压：<span id="m5' + machine[i].fid + '">--V</span></li>' +
+                                    '<li style="width:100%;height:19px;">焊机状态：<span id="m6' + machine[i].fid + '">关机</span></li>' +
+                                '</ul>' +
+                                '<input id="status' + machine[i].fid + '" type="hidden" value="3">' +
+                            '</div>' +
+                        '</div>';
                     $("#curve").append(str);
                     var statusnum = $("#status").combobox('getValue');
                     if (showflag == 0 && (statusnum == 99 || statusnum == 3)) {
@@ -338,22 +342,16 @@ function iview() {
                 //根据采集模块编号判断是否同一个焊机
                 if (machine[f].fgather_no == redata.substring(8 + i, 12 + i).toString()) { //采集模块编号
                     var imgnum = machine[f].model;
-                    $("#m3" + machine[f].fid).html("--");
-                    $("#m2" + machine[f].fid).html("--");
+                    $("#m3" + machine[f].fid).html("--");//操作人员
+                    $("#m2" + machine[f].fid).html("--");//采集编号
                     for (var k = 0; k < welderName.length; k++) {
-                        if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i))) {    //焊工号
+                        if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i).toString())) {    //焊工号
                             $("#m3" + machine[f].fid).html(welderName[k].fname);
-                            //alert(welderName[k].fname);
+                            break;
                         }
                     }
-                    //$("#m3" + machine[f].fid).html(redata.substring(0 + i, 4 + i));
-                    // for (var t = 0; t < taskNum.length; t++) {
-                    //     if (taskNum[t].id == parseInt(redata.substring(12 + i, 16 + i), 10)) {  //焊口号
-                    //         $("#m2" + machine[f].fid).html(taskNum[t].weldedJunctionno);
-                    //     }
-                    // }
-                    //$("#m2" + machine[f].fid).html(redata.substring(8 + i, 12 + i));
-                    if (parseInt(redata.substring(32 + i, 36 + i), 10) == 128) {//焊机型号
+                    $("#m2" + machine[f].fid).html(machine[f].fgather_no);
+                    if (parseInt(redata.substring(32 + i, 36 + i), 10) == 128) {//焊机型号[CPVE500]
                         var liveele = parseInt((parseInt(redata.substring(38 + i, 42 + i), 10)));//实际电流
                     } else {
                         var liveele = parseInt(redata.substring(38 + i, 42 + i), 10);
@@ -363,15 +361,15 @@ function iview() {
                     var minele = parseInt(redata.substring(79 + i, 83 + i), 10);
                     var maxvol = parseInt(redata.substring(83 + i, 87 + i), 10);
                     var minvol = parseInt(redata.substring(87 + i, 91 + i), 10);
-                    var card = parseInt(redata.substring(99 + i, 103 + i), 10);
+                    var card = parseInt(redata.substring(99 + i, 103 + i), 10);//工作号id
                     var mstatus = redata.substring(36 + i, 38 + i);
-                    if (mstatus == 3 || mstatus == 3 || mstatus == 5 || mstatus == 7) {
-                        if (card == "0") {
-                            $("#m2" + machine[f].fid).html("任务未绑定");
-                        } else {
-                            $("#m2" + machine[f].fid).html("任务已下发");
-                        }
-                    }
+                    // if (mstatus == 3 || mstatus == 3 || mstatus == 5 || mstatus == 7) {
+                    //     if (card == "0") {
+                    //         $("#m2" + machine[f].fid).html("任务未绑定");
+                    //     } else {
+                    //         $("#m2" + machine[f].fid).html("任务已下发");
+                    //     }
+                    // }
                     var livestatus, livestatusid, liveimg;
                     switch (mstatus) {
                         case "00":

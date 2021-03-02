@@ -52,7 +52,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
             //西安处理(实时数据处理)
             if (str.substring(0, 2).equals("7E") && (str.substring(10, 12).equals("22")) && str.length() == 596) {
                 //通过MQ发送到前端
-                websocket.Websocketbase(str);
+                Server.cachedThreadPool.execute(new Websocket.Websocketbase(str));
                 //数据存入oracle数据库
                 mysql.Mysqlbase(str);
                 //娆у崕绾崕
@@ -66,7 +66,8 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
                 /**
                  * 索取返回，下发返回，控制命令返回，白名单返回
                  */
-                mqtt.publishMessage("weldmes/upparams", str, 0);
+                Server.cachedThreadPool.execute(new mqPublistMes(str));
+                //mqtt.publishMessage("weldmes/upparams", str, 0);
 //                if (str.length() == 112){
 //                    System.out.println("索取返回:"+sdf.format(System.currentTimeMillis()));
 //                }
@@ -77,12 +78,25 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            str = "";
-            ctx.flush();
             ReferenceCountUtil.release(str);
             ReferenceCountUtil.release(msg);
+            ReferenceCountUtil.release(ctx);
         }
     }
+
+    public class mqPublistMes implements Runnable {
+
+        private String str;
+
+        public mqPublistMes(String str){
+            this.str = str;
+        }
+
+        @Override
+        public void run() {
+            mqtt.publishMessage("weldmes/upparams", str, 0);
+        }
+    };
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {

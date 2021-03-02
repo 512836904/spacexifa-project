@@ -20,6 +20,8 @@ public interface JunctionMapper extends Mapper<Junction> {
 
     List<Junction> findJunctionByFname(@Param("fname") String fname);
 
+    Junction getJunctionById(@Param("fid") Long fid);
+
 //    //根据工艺信息id和焊缝id查询一条记录
 //    List<Junction> getLiarbryJunctionById(@Param("library_id") int library_id,@Param("junction_id") int junction_id);
 //

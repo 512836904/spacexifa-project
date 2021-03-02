@@ -714,4 +714,6 @@ public interface WpsService {
 	 * @return
 	 */
 	List<Wps> findAllWorkNumer();
+
+	Wps getWeldedJunctionById(BigInteger fid);
 }

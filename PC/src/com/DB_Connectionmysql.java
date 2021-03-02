@@ -99,7 +99,7 @@ public class DB_Connectionmysql {
         Server.cachedThreadPool.execute(new SqlWorkInsert(sql));
     }
 
-    public class SqlWorkInsert implements Runnable {
+    public static class SqlWorkInsert implements Runnable {
         private String sql = "";
 
         public SqlWorkInsert(String sql) {

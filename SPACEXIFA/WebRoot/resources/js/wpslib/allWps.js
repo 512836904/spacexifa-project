@@ -3,6 +3,24 @@
  */
 $(function () {
     wpslibDatagrid();
+    $.ajax({
+        url: 'pmt/getParameterBySupergage',
+        type: 'post',
+        dataType: 'json',
+        data: {},
+        success: function (result) {
+            $("#supergage_status").val(result.supergage_status);
+            $("#paramterId").val(result.paramterId);
+            if (result.supergage_status == 1){
+                document.getElementById("supergageShow").checked = true;
+            } else {
+                document.getElementById("supergageHide").checked = true;
+            }
+        },
+        error: function () {
+            console.log("工作号展示异常");
+        }
+    });
 })
 
 var chartStr = "";
@@ -74,27 +92,27 @@ function wpslibDatagrid() {
             halign: "center",
             align: "center"
         }, {
-                field: 'craft_param',
-                title: '工艺参数',
-                width: 300,
-                halign: "center",
-                align: "center"
-            }, {
-                field: 'status',
-                title: '工作号是否展示',
-                width: 150,
-                halign: "center",
-                align: "center",
-                formatter: function (value, row, index) {
-                    var str = "";
-                    if (value === 0) {
-                        str += "<span style='color: #CC2222'>否</span>";
-                    } else if (value === 1) {
-                        str += "<span style='color: #00ee00'>是</span>";
-                    }
-                    return str;
+            field: 'craft_param',
+            title: '工艺参数',
+            width: 300,
+            halign: "center",
+            align: "center"
+        }, {
+            field: 'status',
+            title: '工作号是否展示',
+            width: 150,
+            halign: "center",
+            align: "center",
+            formatter: function (value, row, index) {
+                var str = "";
+                if (value === 0) {
+                    str += "<span style='color: #CC2222'>否</span>";
+                } else if (value === 1) {
+                    str += "<span style='color: #00ee00'>是</span>";
                 }
+                return str;
             }
+        }
             // , {
             // 	field : 'raw_materi',
             // 	title : '原料',
@@ -256,6 +274,42 @@ function allcancel() {
     } else {
         alert("请至少选择一个工作号取消展示！");
     }
+}
+
+//超规范信息一键展示,隐藏
+function supergageShowOrHide(status) {
+    if (status === 1){
+        document.getElementById("supergageShow").checked = true;
+    } else {
+        document.getElementById("supergageHide").checked = true;
+    }
+    $.ajax({
+        url: 'pmt/updateParameterBySupergage',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            supergage_status: status,
+            paramterId: $("#paramterId").val()
+        },
+        success: function (result) {
+            if (result && result.success) {
+                if (status === 1){
+                    alert("展示成功！");
+                }else {
+                    alert("隐藏成功！");
+                }
+            } else {
+                if (status === 1){
+                    alert("展示失败！");
+                }else {
+                    alert("隐藏失败！");
+                }
+            }
+        },
+        error: function () {
+            console.log("超规范信息展示异常");
+        }
+    });
 }
 
 function getContextPath() {

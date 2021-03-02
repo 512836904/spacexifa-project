@@ -38,6 +38,16 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
     @Override
+    public Parameter getParameterBySupergage() {
+        return mapper.getParameterBySupergage();
+    }
+
+    @Override
+    public int updateParameterBySupergage(Parameter parameter) {
+        return mapper.updateParameterBySupergage(parameter);
+    }
+
+    @Override
     public List<Parameter> getParameter() {
         return mapper.getParameter();
     }

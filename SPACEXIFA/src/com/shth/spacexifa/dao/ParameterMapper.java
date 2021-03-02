@@ -10,4 +10,7 @@ public interface ParameterMapper {
 	void UpdateParameter(Parameter para);
 	void UpdateNumVersion(BigInteger num);
 	List<Parameter> getParameter();
+
+	Parameter getParameterBySupergage();
+	int updateParameterBySupergage(Parameter parameter);
 }

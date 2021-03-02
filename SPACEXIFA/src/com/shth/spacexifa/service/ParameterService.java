@@ -10,4 +10,9 @@ public interface ParameterService {
 	void UpdateParameter(Parameter para);
 	List<Parameter> getParameter();
 	void UpdateNumVersion(BigInteger num);
+
+	//查询超规范信息是否展示
+	Parameter getParameterBySupergage();
+	//修改超规范信息展示状态
+	int updateParameterBySupergage(Parameter parameter);
 }

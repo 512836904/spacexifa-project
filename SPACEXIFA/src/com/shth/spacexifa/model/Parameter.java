@@ -19,6 +19,7 @@ public class Parameter {
     private String fas;
     private String fns;
     private BigInteger numversion;
+    private int SUPERGAGE_STATUS; //超规范信息是否展示
 
     public Parameter() {
         super();
@@ -152,22 +153,11 @@ public class Parameter {
         this.fas = fas;
     }
 
-    public Parameter(BigInteger id, BigInteger folt, int fvv, String fcn, String fst, String fsft, String fct, String fww, String fafv, String fspeed, String fwc, String fsp, String fds, String fas, String fns) {
-        super();
-        this.id = id;
-        this.folt = folt;
-        this.fvv = fvv;
-        this.fcn = fcn;
-        this.fst = fst;
-        this.fsft = fsft;
-        this.fct = fct;
-        this.fww = fww;
-        this.fafv = fafv;
-        this.fspeed = fspeed;
-        this.fwc = fwc;
-        this.fsp = fsp;
-        this.fds = fds;
-        this.fns = fns;
-        this.fas = fas;
+    public int getSUPERGAGE_STATUS() {
+        return SUPERGAGE_STATUS;
+    }
+
+    public void setSUPERGAGE_STATUS(int SUPERGAGE_STATUS) {
+        this.SUPERGAGE_STATUS = SUPERGAGE_STATUS;
     }
 }

@@ -2,8 +2,10 @@ package com.shth.spacexifa.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.shth.spacexifa.model.Junction;
+import com.shth.spacexifa.model.Parameter;
 import com.shth.spacexifa.page.Page;
 import com.shth.spacexifa.service.JunctionService;
+import com.shth.spacexifa.service.ParameterService;
 import com.shth.spacexifa.util.IsnullUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -31,6 +33,8 @@ public class JunctionController {
 
     @Autowired
     JunctionService junctionService;
+    @Autowired
+    private ParameterService parameterService;
 
     @RequestMapping("/goJunction")
     public String goJunction(HttpServletRequest request, Model model) {
@@ -173,6 +177,35 @@ public class JunctionController {
             }else{
                 obj.put("success", false);
             }
+        }catch (Exception e){
+            obj.put("success", false);
+            obj.put("errorMsg", e.getMessage());
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    /**
+     * 查询焊缝所有信息【电流电压上限】不分页
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getJunctionAllInfo")
+    @ResponseBody
+    public String getJunctionAllInfo(HttpServletRequest request){
+        JSONObject obj = new JSONObject();
+        int supergage_status = 1; //默认展示
+        try {
+            //查询所有焊缝信息不分页
+            List<Junction> junctionAllInfo = junctionService.getJunctionAllInfo();
+            //查询超规范信息是否展示
+            Parameter parameter = parameterService.getParameterBySupergage();
+            if (null != parameter){
+                supergage_status = parameter.getSUPERGAGE_STATUS();
+            }
+            obj.put("junctionAllInfo" ,junctionAllInfo);
+            obj.put("supergage_status" ,supergage_status);
+            obj.put("success", true);
         }catch (Exception e){
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());

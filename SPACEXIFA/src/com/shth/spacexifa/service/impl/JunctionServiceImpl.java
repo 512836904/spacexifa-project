@@ -53,4 +53,9 @@ public class JunctionServiceImpl implements JunctionService {
     public Junction getJunctionById(Long fid) {
         return junctionMapper.getJunctionById(fid);
     }
+
+    @Override
+    public List<Junction> getJunctionAllInfo() {
+        return junctionMapper.getJunctionAllInfo();
+    }
 }

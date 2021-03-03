@@ -35,4 +35,6 @@ public interface JunctionService {
     List<Junction> findJunctionByFname(String fname);
 
     Junction getJunctionById(Long fid);
+
+    List<Junction> getJunctionAllInfo();
 }

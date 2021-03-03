@@ -2,6 +2,8 @@ var websocketURL;
 var redata;
 var allWorkNumer;
 var allWelderInfo;
+var supergage_status;
+var junctionAllInfo = new Array();
 
 $(function () {
     //焊接工艺规范符合率初始化
@@ -50,6 +52,23 @@ function loadUrl() {
             if (result) {
                 allWorkNumer = result.allWorkNumer;
                 allWelderInfo = result.allWelderInfo;
+            }
+        },
+        error: function (errorMsg) {
+            console.log("数据加载异常！" + errorMsg);
+        }
+    });
+    //加载所有焊缝信息及超规范是否展示状态
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "junction/getJunctionAllInfo",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                junctionAllInfo = result.junctionAllInfo;
+                supergage_status = result.supergage_status;
             }
         },
         error: function (errorMsg) {
@@ -338,6 +357,7 @@ function onMessageArrived(message) {
             }
             var addOrremove = false;
             var appindex = 0;
+            var junctionName_num = 0; //焊缝名称所在数组的下标
             if (JOB_NUMBER !== '' && name !== ''){
                 if (appTableArray.length > 0) {
                     for (var index in appTableArray) {
@@ -348,7 +368,7 @@ function onMessageArrived(message) {
                         var gzh_num = appTableArray.map(a => a.gzh).indexOf(JOB_NUMBER);
                         var bth_num = appTableArray.map(a => a.bth).indexOf(SET_NUMBER);
                         var ljm_num = appTableArray.map(a => a.ljm).indexOf(PART_NAME);
-                        var junctionName_num = appTableArray.map(a => a.junctionName).indexOf(junction_name);
+                        junctionName_num = appTableArray.map(a => a.junctionName).indexOf(junction_name);
                         var welder_num = appTableArray.map(a => a.welder).indexOf(name);
                         var banzu_num = appTableArray.map(a => a.banzu).indexOf(iname);
                         appindex = index;
@@ -361,24 +381,67 @@ function onMessageArrived(message) {
                     addOrremove = true;
                 }
             }
-            //如果不重复则可以增加新数据
-            if (addOrremove) {
-                let feild = {};
-                feild["gzh"] = JOB_NUMBER;
-                feild["bth"] = SET_NUMBER;
-                feild["ljm"] = PART_NAME;
-                feild["junctionName"] = junction_name;
-                feild["banzu"] = iname;
-                feild["welder"] = name;
-                feild["electricity"] = parseInt(ele);
-                feild["voltage"] = parseInt(vol);
-                appTableArray.push(feild);
+            //判断超规范信息是否展示【0否1是】
+            if (supergage_status === 1){
+                //如果不重复则可以增加新数据
+                if (addOrremove) {
+                    let feild = {};
+                    feild["gzh"] = JOB_NUMBER;
+                    feild["bth"] = SET_NUMBER;
+                    feild["ljm"] = PART_NAME;
+                    feild["junctionName"] = junction_name;
+                    feild["banzu"] = iname;
+                    feild["welder"] = name;
+                    feild["electricity"] = parseInt(ele);
+                    feild["voltage"] = parseInt(vol);
+                    appTableArray.push(feild);
+                } else {
+                    if (JOB_NUMBER !== '' && name !== ''){
+                        appTableArray[appindex].electricity = parseInt(ele);
+                        appTableArray[appindex].voltage = parseInt(vol);
+                    }
+                }
             } else {
-                if (JOB_NUMBER !== '' && name !== ''){
-                    appTableArray[appindex].electricity = parseInt(ele);
-                    appTableArray[appindex].voltage = parseInt(vol);
+                var maxele = 0;
+                var maxvol = 0;
+                //超规范信息不展示，取出对应的上限值
+                for (var index in junctionAllInfo){
+                    //判断是否为同一条焊缝
+                    if (junction_name == junctionAllInfo[index].junction_name){
+                        //取出电流电压上限
+                        maxele = Number(junctionAllInfo[index].current_limit);
+                        maxvol = Number(junctionAllInfo[index].FMAXVOLTAGE);
+                        break;
+                    }
+                }
+                //电流电压超过额定值
+                if (Number(ele) > maxele || Number(vol) > maxvol) {
+                    //根据焊缝名称查找数组如果有则删除
+                    if (junctionName_num !== -1) {
+                        appTableArray.remove(junctionName_num);
+                    }
+                } else {
+                    //如果不重复则可以增加新数据
+                    if (addOrremove) {
+                        let feild = {};
+                        feild["gzh"] = JOB_NUMBER;
+                        feild["bth"] = SET_NUMBER;
+                        feild["ljm"] = PART_NAME;
+                        feild["junctionName"] = junction_name;
+                        feild["banzu"] = iname;
+                        feild["welder"] = name;
+                        feild["electricity"] = parseInt(ele);
+                        feild["voltage"] = parseInt(vol);
+                        appTableArray.push(feild);
+                    } else {
+                        if (JOB_NUMBER !== '' && name !== ''){
+                            appTableArray[appindex].electricity = parseInt(ele);
+                            appTableArray[appindex].voltage = parseInt(vol);
+                        }
+                    }
                 }
             }
+
         }
         appvue.tableData = appTableArray;
     }

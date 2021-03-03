@@ -278,6 +278,10 @@ function allcancel() {
 
 //超规范信息一键展示,隐藏
 function supergageShowOrHide(status) {
+    /**
+     * 查询每个焊缝的电流电压上限，在实时信息展示中，
+     * 判断电流电压如果超出上限，则不进行展示
+     */
     if (status === 1){
         document.getElementById("supergageShow").checked = true;
     } else {

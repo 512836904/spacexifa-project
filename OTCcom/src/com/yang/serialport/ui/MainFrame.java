@@ -135,7 +135,7 @@ public class MainFrame {
         //webservice配置
         iutil = new IsnullUtil();
         dcf = JaxWsDynamicClientFactory.newInstance();
-        client = dcf.createClient("http://" + ip + ":8080/CIWJN_Service/cIWJNWebService?wsdl");
+        client = dcf.createClient("http://" + ip + ":8080/CIWJN_Service/CIWJNWebService?wsdl");
         //client = dcf.createClient("http://" + "119.3.100.103" + ":9090/CIWJN_Service/cIWJNWebService?wsdl");
         iutil.Authority(client);
 
@@ -300,8 +300,7 @@ public class MainFrame {
 
             //任务下发
             String obj1111 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
-            Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
-                    new Object[]{obj1111});
+            Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"), new Object[]{obj1111});
             String restr = objects[0].toString();
             JSONArray ary = JSONArray.parseArray(restr);
 

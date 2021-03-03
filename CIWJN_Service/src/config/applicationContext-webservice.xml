@@ -10,14 +10,14 @@
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
-	<bean id="ciwjnWebService" class="com.shth.spacexifa.webservice.impl.CIWJNWebServiceImpl"/>
+	<bean id="CIWJNWebService" class="com.shth.spacexifa.webservice.impl.CIWJNWebServiceImpl"/>
 	<bean id="inInterceptor" class="com.shth.spacexifa.webservice.impl.AuthInterceptor"/>
 	
 	<!-- 	address的名称就是访问的WebService的name -->
-	<jaxws:server id="ciejnService" serviceClass="com.shth.spacexifa.webservice.CIWJNWebService" address="/cIWJNWebService">
+	<jaxws:server id="ciejnService" serviceClass="com.shth.spacexifa.webservice.CIWJNWebService" address="/CIWJNWebService">
     	<jaxws:serviceBean>
 			<!--  要暴露的 bean 的引用 -->
-        	<ref bean="ciwjnWebService"/>
+        	<ref bean="CIWJNWebService"/>
     	</jaxws:serviceBean>
     	<!-- <jaxws:inInterceptors>
     	    拦截处理用户名密码

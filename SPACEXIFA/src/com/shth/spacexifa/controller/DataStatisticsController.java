@@ -260,7 +260,7 @@ public class DataStatisticsController {
                 json.put("t0", i.getName());//所属班组
                 json.put("t1", i.getTotal());//设备总数
                 int machinenum = 0;
-                BigInteger starttime = null;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             BigInteger starttime = null;
                 DataStatistics weldtime = null;
                 DataStatistics junction = dss.getWorkJunctionNum(i.getId(), dto);//获取工作(焊接)的焊口数
                 BigInteger standytime = null;
@@ -387,6 +387,7 @@ public class DataStatisticsController {
         }
         String time1 = request.getParameter("dtoTime1");
         String time2 = request.getParameter("dtoTime2");
+        String item = request.getParameter("item");
         page = new Page(pageIndex, pageSize, total);
         JSONObject obj = new JSONObject();
         JSONArray ary = new JSONArray();
@@ -395,6 +396,7 @@ public class DataStatisticsController {
         WeldDto dto = new WeldDto();
         JSONArray titleary = new JSONArray();
         long total = 0;
+        BigInteger itemid = null;
         try {
             if (iutil.isNull(time1)) {
                 dto.setDtoTime1(time1);
@@ -402,7 +404,11 @@ public class DataStatisticsController {
             if (iutil.isNull(time2)) {
                 dto.setDtoTime2(time2);
             }
-            dto.setParent(im.getUserInsframework());
+            if (iutil.isNull(item)) {
+                dto.setParent(new BigInteger(item));
+            } else {
+                dto.setParent(im.getUserInsframework());
+            }
             List<DataStatistics> ilist = dss.getWeldItemInCount(page, dto);
 //			List<DataStatistics> olist = dss.getWeldItemOutCount(page,dto);
 

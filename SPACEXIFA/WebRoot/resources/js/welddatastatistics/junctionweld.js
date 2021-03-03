@@ -81,7 +81,22 @@ function wpslibDatagrid(){
 			width : 100,
 			halign : "center",
 			align : "left"
-		}] ],
+		}, {
+		field : 'edit',
+			title : '编辑',
+			width : 130,
+			halign : "center",
+			align : "left",
+			formatter:function(value,row,index){
+			var str = "";
+			var chart="";
+			var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
+			var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
+			chart= "fid=" +row.welder_id + "&fjunction_id=" + row.fjunction_id + "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')';
+			str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+			return str;
+		}
+	}] ],
 		pagination : true,
 		rowStyler: function(index,row){
 			if ((index % 2)!=0){
@@ -89,6 +104,9 @@ function wpslibDatagrid(){
 				var color=new Object();
 				return color;
 			}
+		},
+		onLoadSuccess:function(data){
+			$("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-search'});
 		}
 	});
 }
@@ -108,7 +126,7 @@ function parameterStr1(){
 	var fwps_lib_num = $("#fwps_lib_num").val();
 	var fwelded_junction_no = $("#fwelded_junction_no").val();
 	var product_number = $("#product_number").val();
-	var junction_name = $("#junction_name").val();
+	var junction_name = $("#fwelded_junction_no").val();
 	//var welderno = $("#welderno").val();
 
 	if(product_drawing_no != ""){

@@ -1022,6 +1022,7 @@
                 and (j.fid=#{dto.parent} or ins.fid=#{dto.parent} or insf.fid=#{dto.parent} or
                 insf.fparent=#{dto.parent})
             </if>
+
         </if>
         union all
         SELECT j.fid, j.fname insname,SUM(a.fworktime) insid, 0 hour FROM tb_insframework j

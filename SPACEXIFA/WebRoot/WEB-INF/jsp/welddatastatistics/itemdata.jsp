@@ -38,6 +38,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	  	<div id="dg_btn">
 			<div style="margin-bottom: 5px;">
+				所属作业区：
+				<select class="easyui-combobox" name="zitem" id="zitem" data-options="editable:false"></select>
+				所属班组：
+				<select class="easyui-combobox" name="bitem" id="bitem" data-options="editable:false"></select>
 				时间：
 				<input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">--
 				<input class="easyui-datetimebox" name="dtoTime2" id="dtoTime2">

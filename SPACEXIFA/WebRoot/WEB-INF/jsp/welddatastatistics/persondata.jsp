@@ -46,7 +46,7 @@
 	<%--			</div>--%>
 	<%--		</div>--%>
 	<div class="functiondiv">
-		<div>
+		<div style="float: left;">
 			<div  style="float: left;">
 				<label>所属作业区：</label>
 				<select class="easyui-combobox" name="zitem" id="zitem" data-options="editable:false"></select>
@@ -67,6 +67,8 @@
 				<label>工艺编号：</label>
 				<input class="easyui-textbox" style="width:120px;" name="taskno" id="taskno"/>
 			</div>
+		</div>
+		<div style="float: left;">
 			<div style="float: left;">
 				<label>焊缝名称：</label>
 				<input class="easyui-textbox" style="width:120px;" name="fwelded_junction_no" id="fwelded_junction_no"/>
@@ -77,11 +79,9 @@
 			</div>
 			<div style="float: left;">
 				<label>焊工编号：</label>
-				<input class="easyui-textbox" style="width:140px;" name="weldernum" id="weldernum"/>
+				<input class="easyui-textbox" style="width:120px;" name="weldernum" id="weldernum"/>
 			</div>
-		</div>
-		<div>
-			<div  style="float: left;">
+			<div style="float: left;">
 				<label>时间：</label>
 				<input class="easyui-datetimebox" style="width:150px;" name="dtoTime1" id="dtoTime1">--
 				<input class="easyui-datetimebox" style="width:150px;" name="dtoTime2" id="dtoTime2">&emsp;

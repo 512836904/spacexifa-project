@@ -58,7 +58,7 @@ function dgDatagrid() {
                     height: 600,
                     width: 1050,
                     url: url1,
-                    pageSize: 10,
+                    pageSize: 50,
                     pageList: [10, 20, 30, 40, 50],
                     singleSelect: true,
                     rownumbers: true,

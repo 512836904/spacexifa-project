@@ -220,6 +220,7 @@
         </if>
         GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
         )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,fweldernum,junctionname,fitem,fwelder_id,iid
+        ORDER BY fname
     </select>
 
 
@@ -292,6 +293,9 @@
             </if>
             <if test="dto.machineid!=null and dto.machineid!=''">
                 and t.fmachineid=#{dto.machineid}
+            </if>
+            <if test="dto.junctionid!=null and dto.junctionid!=''">
+                and J.fid=#{dto.junctionid}
             </if>
             <if test="dto.dtoTime1!=null and dto.dtoTime1!=''">
                 and t.frealstarttime &gt;=to_date(#{dto.dtoTime1}, 'yyyy-mm-dd hh24:mi:ss')

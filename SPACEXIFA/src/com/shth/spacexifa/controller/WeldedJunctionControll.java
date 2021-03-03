@@ -406,6 +406,7 @@ public class WeldedJunctionControll {
         String wjno = request.getParameter("wjno");
         String welderid = request.getParameter("welderid");//焊工id
         String machineid = request.getParameter("machineid");//焊机id
+        String fjunction_id = request.getParameter("fjunction_id");//焊缝id
         WeldDto dto = new WeldDto();
         if (!iutil.isNull(parentId)) {
             //数据权限处理
@@ -437,6 +438,9 @@ public class WeldedJunctionControll {
         }
         if (iutil.isNull(parentId)) {
             parent = new BigInteger(parentId);
+        }
+        if (iutil.isNull(fjunction_id)) {
+            dto.setJunctionid(new BigInteger(fjunction_id));
         }
         pageIndex = Integer.parseInt(request.getParameter("page"));
         pageSize = Integer.parseInt(request.getParameter("rows"));

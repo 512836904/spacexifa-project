@@ -716,4 +716,6 @@ public interface WpsService {
 	List<Wps> findAllWorkNumer();
 
 	Wps getWeldedJunctionById(BigInteger fid);
+
+	Wps getTaskResultByWelderId(BigInteger welderId);
 }

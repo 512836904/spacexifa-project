@@ -8,6 +8,7 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -148,6 +149,45 @@ public class TerminalController {
         List<Welder> welderList = welderService.findAllWelderInfo();
         JSONObject object = new JSONObject();
         object.put("welderList", welderList);
+        String respondata = JSON.toJSONString(object);
+        //构造回调函数格式jsonpCallback(数据)
+        try {
+            String jsonpCallback = request.getParameter("jsonpCallback");
+            response.getWriter().println(jsonpCallback + "(" + respondata + ")");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据焊工id查询上一次的手持终端任务
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/loadTaskResultByWelderId")
+    public void loadTaskResultByWelderId(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "welderId") BigInteger welderId) {
+        String workticketNumber = "";
+        String jobNumber = "";
+        String setNumber = "";
+        String partDrawingNumber = "";
+        String partName = "";
+        String craftParam = "";
+        Wps resultByWelderId = wpsService.getTaskResultByWelderId(welderId);
+        if (null != resultByWelderId) {
+            workticketNumber = resultByWelderId.getWorkticket_number();//工票编号
+            jobNumber = resultByWelderId.getJOB_NUMBER();//工作号
+            setNumber = resultByWelderId.getSET_NUMBER();//部套号
+            partDrawingNumber = resultByWelderId.getPART_DRAWING_NUMBER();//零件图号
+            partName = resultByWelderId.getPART_NAME();//零件名
+            craftParam = resultByWelderId.getCraft_param();
+        }
+        JSONObject object = new JSONObject();
+        object.put("workticketNumber", workticketNumber);
+        object.put("jobNumber", jobNumber);
+        object.put("setNumber", setNumber);
+        object.put("partDrawingNumber", partDrawingNumber);
+        object.put("partName", partName);
+        object.put("craftParam", craftParam);
         String respondata = JSON.toJSONString(object);
         //构造回调函数格式jsonpCallback(数据)
         try {
@@ -442,9 +482,10 @@ public class TerminalController {
             if (null != machineByGatherNo) {
                 machinemodel = machineByGatherNo.getModel();//焊机型号
                 Wps wps = new Wps();
-                wps.setFwelded_junction_no(String.valueOf(welded_jun_id));//电子跟踪卡id
-                wps.setMacid(machineByGatherNo.getId());//焊机id
-                wps.setWelderid(BigInteger.valueOf(Long.parseLong(welderId)));
+                wps.setFCARD_ID(welded_jun_id);//电子跟踪卡id
+                wps.setFMACHINEID(machineByGatherNo.getId());//焊机id
+                wps.setFWELDERID(BigInteger.valueOf(Long.parseLong(welderId)));//焊工id
+                wps.setFCRAFT_ID(produ_id);//生产工艺id
                 if (null != repairType && !"".equals(repairType)) {
                     if ("1".equals(repairType)) {
                         wps.setFREPAIRTYPE(Integer.parseInt(repairType));//返修状态
@@ -460,7 +501,8 @@ public class TerminalController {
                         task_id = wps.getFid();
                     } else {
                         //task_id = taskResultById.getFid();
-                        wpsService.updateTaskResultById(wps);
+                        wpsService.updateTaskResultById(wps);//结束任务
+                        //新增一个任务
                         wpsService.overCard(wps);
                         task_id = wps.getFid();
                     }

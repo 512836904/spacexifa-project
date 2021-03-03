@@ -59,7 +59,7 @@ function loadRequestPath() {
 }
 
 //查询所有焊工信息集合
-function loadWeldersList(){
+function loadWeldersList() {
     $.ajax({
         type: "post",
         dataType: 'jsonp',
@@ -69,6 +69,30 @@ function loadWeldersList(){
         success: function (result) {
             if (result) {
                 welderList = result.welderList;
+            }
+        }
+    });
+}
+
+//查询当前焊工上一次的任务
+function loadTaskResultByWelderId(welderId) {
+    $.ajax({
+        type: "post",
+        dataType: 'jsonp',
+        jsonp: 'jsonpCallback',
+        data: {
+            welderId: welderId
+        },
+        url: iphostport + "/SPACEXIFA/terminal/loadTaskResultByWelderId",
+        success: function (result) {
+            if (result) {
+                $("#cardnumber").val(result.workticketNumber);//工票编号
+                $("#productNumber").val(result.jobNumber);//工作号
+                $("#fwelding_area").val(result.setNumber);//布套号
+                $("#productDrawNo").val(result.partDrawingNumber);//零件图号
+                $("#productName").val(result.partName);//零件名
+                $("#wpsparameter").val(result.craftParam);//工艺参数
+                setJunction(result.craftParam);//工艺及焊缝信息赋值
             }
         }
     });
@@ -240,7 +264,7 @@ function tick() {
             //工艺参数赋值
             $("#wpsparameter").val(datalist);
             document.getElementById("wpsparameter").focus();
-            setJunction(datalist);
+            setJunction(datalist);//扫描工艺二维码获取信息并赋值
         }
         datalist = "";
     } else {
@@ -476,8 +500,8 @@ function suoquData() {
     checksend = checksend.substring(a2 - 2, a2);
     checksend = checksend.toUpperCase();
     var str = "00" + xxx + checksend + "7D";
-	console.log("索取:"+str.length);
-	//alert("索取:"+str.length);
+    console.log("索取:" + str.length);
+    //alert("索取:"+str.length);
     var message = new Paho.MQTT.Message(str);
     message.destinationName = "hand-held-terminal-askFor";
     client.send(message);
@@ -495,7 +519,7 @@ function suoquData() {
     var oneMinuteTimer = window.setTimeout(function () {
         if (symbol === 0) {
             mqttClientUnsubscribe();
-			closeTip();
+            closeTip();
             alert("索取超时");
         }
     }, 15000);
@@ -520,7 +544,7 @@ function suoquData() {
                 mqttClientUnsubscribe();
                 window.clearTimeout(oneMinuteTimer);
                 //alert("索取成功!");
-				console.log("索取成功");
+                console.log("索取成功");
                 document.getElementById("tipInfo").innerText = "数据索取成功,正在下发数据...";
                 jointCode(da);
             }
@@ -659,7 +683,7 @@ function jointCode(strdata) {
             issueData(data);
         }
         console.log(strdata.length);
-        console.log("下发:"+data.length);
+        console.log("下发:" + data.length);
         //data:007E3601010152000201001E000100BD00C2000000EB001A000000F6010000000001FFEC010C0000000319040000000000B4000000009E7D
     } else {
         console.log("电流电压或索取数据为空");
@@ -819,19 +843,23 @@ function onConnectionLost(responseObject) {
     }
 }
 
+var vlog = true;
+
 //接收到消息
 function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
     var da = message.payloadString;
     var gatherNo = da.substring(8, 12).toString();//采集编号
-    if ($("#fgatherno").val() !== ''){
-        if (gatherNo === $("#fgatherno").val()){
+    //界面刷新，接收消息，获得当前焊工信息
+    if ($("#fgatherno").val() !== '' && vlog) {
+        if (gatherNo === $("#fgatherno").val()) {
             var welderId = parseInt(da.substring(0, 4));//焊工id
             //查找焊工数组是否有id，有则展示
             var wederidIndex = welderList.map(a => a.id).indexOf(welderId);
-            if (wederidIndex !== -1){
+            if (wederidIndex !== -1) {
                 $("#welderId").val(welderId);
                 $("#welderName").val(welderList[wederidIndex].name);
+                vlog = false;
                 client.unsubscribe("weldmesrealdata", {
                     onSuccess: function (e) {
                         console.log("取消订阅成功");
@@ -840,6 +868,8 @@ function onMessageArrived(message) {
                         console.log("取消订阅失败：" + e.errorCode);
                     }
                 });
+                //根据焊工id查询上一次手持终端任务
+                loadTaskResultByWelderId(welderId);
             }
         }
     }

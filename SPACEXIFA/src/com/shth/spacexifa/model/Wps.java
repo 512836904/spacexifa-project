@@ -287,7 +287,9 @@ public class Wps {
 	 * @return
 	 */
 	private BigInteger FMACHINEID;	//焊机id
+	private BigInteger FWELDERID;	//焊工id
 	private BigInteger FCARD_ID;	//跟踪卡id
+	private BigInteger FCRAFT_ID;	//生产工艺id
 	private String FREALSTARTTIME;	//开始时间
 	private String FREALENDTIME;	//结束时间
 	private int FREPAIRTYPE;		//返修状态（0否，1是）
@@ -1920,12 +1922,28 @@ public class Wps {
 		this.FMACHINEID = FMACHINEID;
 	}
 
+	public BigInteger getFWELDERID() {
+		return FWELDERID;
+	}
+
+	public void setFWELDERID(BigInteger FWELDERID) {
+		this.FWELDERID = FWELDERID;
+	}
+
 	public BigInteger getFCARD_ID() {
 		return FCARD_ID;
 	}
 
 	public void setFCARD_ID(BigInteger FCARD_ID) {
 		this.FCARD_ID = FCARD_ID;
+	}
+
+	public BigInteger getFCRAFT_ID() {
+		return FCRAFT_ID;
+	}
+
+	public void setFCRAFT_ID(BigInteger FCRAFT_ID) {
+		this.FCRAFT_ID = FCRAFT_ID;
 	}
 
 	public String getFREALSTARTTIME() {

@@ -746,4 +746,9 @@ public class WpsServiceImpl implements WpsService{
 	public Wps getWeldedJunctionById(BigInteger fid) {
 		return mapper.getWeldedJunctionById(fid);
 	}
+
+	@Override
+	public Wps getTaskResultByWelderId(BigInteger welderId) {
+		return mapper.getTaskResultByWelderId(welderId);
+	}
 }

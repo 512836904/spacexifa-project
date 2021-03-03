@@ -1123,9 +1123,10 @@
         <selectKey resultType="java.math.BigInteger" order="BEFORE" keyProperty="fid">
             select TB_TASKRESULT_ID.nextval as fid from dual
         </selectKey>
-        INSERT INTO TB_TASKRESULT (FID,FWELDERID,FMACHINEID,FREALSTARTTIME,FOPERATETYPE,FCARD_ID,FREPAIRTYPE)
-        VALUES (#{fid},#{welderid},#{macid},SYSDATE,1,#{fwelded_junction_no},#{FREPAIRTYPE})
+        INSERT INTO TB_TASKRESULT(FID,FWELDERID,FMACHINEID,FREALSTARTTIME,FOPERATETYPE,FCARD_ID,FREPAIRTYPE,FCRAFT_ID)
+        VALUES (#{fid},#{FWELDERID},#{FMACHINEID},SYSDATE,1,#{FCARD_ID},#{FREPAIRTYPE},#{FCRAFT_ID})
 	</insert>
+
     <insert id="addWeldpramatia" parameterType="Wps">
 		INSERT INTO TB_PARAMETER (FSTOP_TIME,FCONTINUOUS_TIME,FWIRE_WEIGHT,FAIR_FLOW_VOLUME,FSPEED,FWELDING_COEFFICIENT,FSTANDBY_POWER,FDAY_SHIFT,FAFTERNOON_SHIFT,FNIGHT_SHIFT)
 		VALUES (#{endtime},#{fstarttime},#{f002},#{f001},#{welderid},#{macid},#{fproduct_number},#{femployee_id},#{fstep_id},#{fjunction})
@@ -1277,7 +1278,7 @@
     <select id="findTaskResultById" parameterType="java.math.BigInteger" resultType="Wps">
         <if test="machineId != null and cardId != null">
             SELECT * FROM (
-            SELECT FID,FMACHINEID,FCARD_ID,FREALSTARTTIME,FOPERATETYPE
+            SELECT FID,FMACHINEID,FCARD_ID,FREALSTARTTIME,FOPERATETYPE,FCRAFT_ID
             FROM TB_TASKRESULT
             WHERE FMACHINEID = #{machineId} AND FCARD_ID = #{cardId}
             ORDER BY FREALSTARTTIME DESC
@@ -1289,7 +1290,7 @@
     <select id="findTaskResultByWelderId" parameterType="java.math.BigInteger" resultType="Wps">
         <if test="wederId != null">
             SELECT * FROM (
-            SELECT FID,FMACHINEID,FCARD_ID,FREALSTARTTIME,FOPERATETYPE
+            SELECT FID,FMACHINEID,FCARD_ID,FREALSTARTTIME,FOPERATETYPE,FCRAFT_ID
             FROM TB_TASKRESULT
             WHERE FWELDERID = #{wederId}
             ORDER BY FREALSTARTTIME DESC
@@ -1332,5 +1333,15 @@
         SELECT wj.FID,WORKTICKET_NUMBER,CRAFT_PARAM,RAW_MATERI,PROCESS,JOB_NUMBER,
                SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,FSTATUS
         FROM TB_WELDED_JUNCTION wj WHERE FID = #{fid}
+    </select>
+
+    <!-- 根据焊工查询最新的手持终端任务 -->
+    <select id="getTaskResultByWelderId" parameterType="java.math.BigInteger" resultType="Wps">
+        <if test="FWELDERID != null">
+            SELECT m.*,wj.WORKTICKET_NUMBER,wj.JOB_NUMBER,wj.SET_NUMBER,wj.PART_DRAWING_NUMBER,wj.PART_NAME,wj.CRAFT_PARAM
+            FROM (SELECT * FROM (SELECT t.FID,t.FWELDERID,FMACHINEID,t.FREALSTARTTIME,t.FCARD_ID,t.FCRAFT_ID
+            FROM TB_TASKRESULT t WHERE t.FWELDERID = #{FWELDERID} ORDER BY t.FREALSTARTTIME DESC) WHERE ROWNUM = 1) m
+            INNER JOIN TB_WELDED_JUNCTION wj ON m.FCARD_ID = wj.FID
+        </if>
     </select>
 </mapper>

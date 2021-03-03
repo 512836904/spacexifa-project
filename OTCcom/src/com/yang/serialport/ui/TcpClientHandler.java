@@ -176,37 +176,39 @@ public class TcpClientHandler extends ChannelHandlerAdapter {
 
         @Override
         public void run() {
-            ArrayList<String> listarraybuf = new ArrayList<String>();
-            boolean ifdo = false;
-            Iterator<Entry<String, SocketChannel>> webiter = client.mainFrame.socketlist.entrySet().iterator();
-            while (webiter.hasNext()) {
-                try {
-                    Entry<String, SocketChannel> entry = (Entry<String, SocketChannel>) webiter.next();
-                    socketfail = entry.getKey();
-                    SocketChannel socketcon = entry.getValue();
-                    byte[] data = new byte[str.length() / 2];
-                    for (int i1 = 0; i1 < data.length; i1++) {
-                        String tstr1 = str.substring(i1 * 2, i1 * 2 + 2);
-                        Integer k = Integer.valueOf(tstr1, 16);
-                        data[i1] = (byte) k.byteValue();
-                    }
-                    ByteBuf byteBuf = Unpooled.buffer();
-                    byteBuf.writeBytes(data);
+            synchronized (client.mainFrame.socketlist) {
+                ArrayList<String> listarraybuf = new ArrayList<String>();
+                boolean ifdo = false;
+                Iterator<Entry<String, SocketChannel>> webiter = client.mainFrame.socketlist.entrySet().iterator();
+                while (webiter.hasNext()) {
                     try {
-                        if (socketcon.isOpen() && socketcon.isActive() && socketcon.isWritable()) {
-                            socketcon.writeAndFlush(byteBuf);
+                        Entry<String, SocketChannel> entry = (Entry<String, SocketChannel>) webiter.next();
+                        socketfail = entry.getKey();
+                        SocketChannel socketcon = entry.getValue();
+                        byte[] data = new byte[str.length() / 2];
+                        for (int i1 = 0; i1 < data.length; i1++) {
+                            String tstr1 = str.substring(i1 * 2, i1 * 2 + 2);
+                            Integer k = Integer.valueOf(tstr1, 16);
+                            data[i1] = (byte) k.byteValue();
+                        }
+                        ByteBuf byteBuf = Unpooled.buffer();
+                        byteBuf.writeBytes(data);
+                        try {
+                            if (socketcon.isOpen() && socketcon.isActive() && socketcon.isWritable()) {
+                                socketcon.writeAndFlush(byteBuf);
+                            }
+                        } catch (Exception e) {
+                            listarraybuf.add(socketfail);
+                            ifdo = true;
                         }
                     } catch (Exception e) {
-                        listarraybuf.add(socketfail);
-                        ifdo = true;
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-            if (ifdo) {
-                for (int i = 0; i < listarraybuf.size(); i++) {
-                    client.mainFrame.socketlist.remove(listarraybuf.get(i));
+                if (ifdo) {
+                    for (int i = 0; i < listarraybuf.size(); i++) {
+                        client.mainFrame.socketlist.remove(listarraybuf.get(i));
+                    }
                 }
             }
         }

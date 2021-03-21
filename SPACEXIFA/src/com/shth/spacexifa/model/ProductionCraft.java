@@ -33,7 +33,18 @@ public class ProductionCraft {
     private String WIRE_DIAMETER;               //焊丝直径
     private int FREPAIRTYPE;               //返修状态（0否，1是）
 
+
     private String JUNCTION_NAME;       //焊缝名称
+    private String CRAFT_PARAM;				//工艺参数
+
+    public String getCraft_param() {
+        return CRAFT_PARAM;
+    }
+
+    public void setCraft_param(String CRAFT_PARAM) {
+        this.CRAFT_PARAM = CRAFT_PARAM;
+    }
+
 
     public BigInteger getFID() {
         return FID;

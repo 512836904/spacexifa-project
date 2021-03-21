@@ -358,6 +358,14 @@ function workgas() {
 				}
 			}
 		],
+		dataZoom: [
+			{
+				id: 'dataZoomX',
+				type: 'slider',
+				xAxisIndex: [0],
+				filterMode: 'filter'
+			}
+		],
 		series: [{
 			name: "工作时间",
 			type: "bar",

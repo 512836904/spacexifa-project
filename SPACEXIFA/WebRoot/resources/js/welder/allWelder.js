@@ -14,7 +14,7 @@ function weldDatagrid() {
         height: $("#body").height(),
         width: $("#body").width(),
         idField: 'id',
-        pageSize: 10,
+        pageSize: 50,
         pageList: [10, 20, 30, 40, 50],
         url: "welders/getAllWelder",
         singleSelect: true,

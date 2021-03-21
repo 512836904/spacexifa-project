@@ -6,15 +6,36 @@ $(function(){
 })
 
 var searchStr = "";
+var tasktime = "";
+function gettasktime() {
+	tasktime = "";
+	var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
+	var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
+	if(dtoTime1 != ""){
+		if(tasktime == ""){
+			tasktime += " k.FREALSTARTTIME >to_date('" +dtoTime1+"', 'yyyy-mm-dd hh24:mi:ss')";
+		}else{
+			tasktime += " AND k.FREALSTARTTIME >to_date('"+dtoTime1+"', 'yyyy-mm-dd hh24:mi:ss')";
+		}
+	}
+	if(dtoTime2 != ""){
+		if(tasktime == ""){
+			tasktime += " k.FREALENDTIME < to_date('"+dtoTime2+"', 'yyyy-mm-dd hh24:mi:ss')";
+		}else{
+			tasktime += " AND k.FREALENDTIME <to_date('"+dtoTime2+"', 'yyyy-mm-dd hh24:mi:ss')";
+		}
+	}
+}
 function wpslibDatagrid(){
+	gettasktime();
 	parameterStr1();
-	var url1 = encodeURI("datastatistics/getjunctionweldtime?search="+searchStr);
+	var url1 = encodeURI("datastatistics/getjunctionweldtime?search="+searchStr+"&tasktime="+tasktime);
 	$("#taskviewtable").datagrid( {
 		fitColumns : false,
 		height: $("#wpsTableDiv").height(),
 		width: $("#wpsTableDiv").width(),
 		idField : 'fid',
-		pageSize : 10,
+		pageSize : 50,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		url : url1,
 		singleSelect : true,
@@ -90,10 +111,17 @@ function wpslibDatagrid(){
 			formatter:function(value,row,index){
 			var str = "";
 			var chart="";
-			var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
-			var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
-			chart= "fid=" +row.welder_id + "&fjunction_id=" + row.fjunction_id + "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')';
-			str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+			var dtoTime1 = row.fstarttime
+			var dtoTime2 = row.fendtime;
+			var taskid = row.taskid;
+			chart= "fid=" +row.welderid + "&fjunction_id=" + row.junctionid + "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')';
+				if(dtoTime1==0){
+					str += '<a id="mcs" class="easyui-linkbutton" style="pointer-events: none;" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+					//$("#mc").attr("disabled", "disabled");
+					//document.getElementById("mc").disabled=false;
+				}else{
+				    str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+				}
 			return str;
 		}
 	}] ],
@@ -106,7 +134,14 @@ function wpslibDatagrid(){
 			}
 		},
 		onLoadSuccess:function(data){
-			$("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-search'});
+			var xx = data.rows;
+			for(var i in xx){
+				if(xx[i].fstarttime==0){
+					$("a[id='mcs']").linkbutton({text:'任务进行中',plain:true,iconCls:'icon-reload'});
+				}else{
+					$("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-ok'});
+				}
+			}
 		}
 	});
 }
@@ -128,7 +163,14 @@ function parameterStr1(){
 	var product_number = $("#product_number").val();
 	var junction_name = $("#fwelded_junction_no").val();
 	//var welderno = $("#welderno").val();
-
+	var ftype = $("#ftype").combobox('getValue');
+	if(ftype != ""){
+		if(searchStr == ""){
+			searchStr += " w.FPRODUCT_NUMBER_ID = '" + ftype + "'";
+		}else{
+			searchStr += " AND w.FPRODUCT_NUMBER_ID = '" + ftype + "'";
+		}
+	}
 	if(product_drawing_no != ""){
 		if(searchStr == ""){
 			searchStr += " j.JOB_NUMBER LIKE "+"'%" + product_drawing_no + "%'";

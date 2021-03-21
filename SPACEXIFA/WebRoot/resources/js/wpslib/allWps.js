@@ -39,8 +39,8 @@ function wpslibDatagrid() {
         height: $("#body").height(),
         width: $("#body").width(),
         idField: 'fid',
-        pageSize: 10,
-        pageList: [10, 20, 30, 40, 50],
+        pageSize: 200,
+        pageList: [10, 20, 50, 100, 200],
         url: "wps/getWpsList",
         singleSelect: false,
         rownumbers: true,
@@ -132,6 +132,7 @@ function wpslibDatagrid() {
                 width: 150,
                 halign: "center",
                 align: "center",
+                hidden: true,
                 formatter: function (value, row, index) {
                     var str = "";
                     if (value == null) {

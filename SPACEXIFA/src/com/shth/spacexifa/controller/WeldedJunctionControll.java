@@ -110,8 +110,10 @@ public class WeldedJunctionControll {
         if (request.getParameter("fid") != null && request.getParameter("fid") != "") {
             request.setAttribute("fid", request.getParameter("fid"));
             request.setAttribute("fjunction_id", request.getParameter("fjunction_id"));
-            request.setAttribute("dtoTime1", request.getParameter("dtoTime1"));
-            request.setAttribute("dtoTime2", request.getParameter("dtoTime2"));
+            request.setAttribute("dto1", request.getParameter("dtoTime1"));
+            request.setAttribute("dto2", request.getParameter("dtoTime2"));
+        }if (request.getParameter("machin_id") != null && request.getParameter("machin_id") != "") {
+            request.setAttribute("machin_id", request.getParameter("machin_id"));
         }
         return "td/PersonWeldHistory";
     }
@@ -397,9 +399,14 @@ public class WeldedJunctionControll {
         return data + "";
     }
 
-    @RequestMapping("/getWeldingJun")
+    /**
+     * 焊缝、焊机历史曲线
+     * @param request
+     * @return
+     */
+    @RequestMapping("/gethistorypersonmachine")
     @ResponseBody
-    public String getWeldingJun(HttpServletRequest request) {
+    public String gethistorypersonmachine(HttpServletRequest request) {
         String time1 = request.getParameter("dtoTime1");
         String time2 = request.getParameter("dtoTime2");
         String parentId = request.getParameter("parent");
@@ -435,6 +442,95 @@ public class WeldedJunctionControll {
         }
         if (iutil.isNull(time2)) {
             dto.setDtoTime2(time2);
+        }
+        if (iutil.isNull(parentId)) {
+            parent = new BigInteger(parentId);
+        }
+        if (iutil.isNull(fjunction_id)) {
+            dto.setJunctionid(new BigInteger(fjunction_id));
+        }
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+
+        page = new Page(pageIndex, pageSize, total);
+        List<WeldedJunction> list = wjm.getJMByWelder(page, dto, welderid);
+        long total = 0;
+
+        if (list != null) {
+            PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
+            total = pageinfo.getTotal();
+        }
+
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        try {
+            for (WeldedJunction w : list) {
+                json.put("firsttime",w.getStartTime());
+                json.put("lasttime", w.getEndTime());
+                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                json.put("welderid", w.getIid());
+                json.put("welder_no", w.getIname());
+                json.put("machid", w.getMachid());
+                json.put("machine_num", w.getMachine_num());
+                json.put("taskno", w.getFtask_no());//任务编号（工票号）
+                json.put("task_id", w.getInsfid());
+                json.put("junction_name", w.getWeldedJunctionno());
+                json.put("junction_id", w.getUnit());
+                json.put("job_number", w.getSerialNo());//工作号
+                json.put("set_number", w.getPipelineNo());//部套号
+                json.put("part_number", w.getRoomNo());//零件图号
+                json.put("part_name", w.getArea());//零件名
+                //json.put("worktime", getTimeStrBySecond(w.getCounts()));//焊接时长
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
+        }
+        obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+
+    @RequestMapping("/getWeldingJun")
+    @ResponseBody
+    public String getWeldingJun(HttpServletRequest request) {
+        String time1 = request.getParameter("dtoTime1");
+        String time2 = request.getParameter("dtoTime2");
+        String parentId = request.getParameter("parent");
+        String wjno = request.getParameter("wjno");
+        String welderid = request.getParameter("welderid");//焊工id
+        String machineid = request.getParameter("machineid");//焊机id
+        String fjunction_id = request.getParameter("fjunction_id");//焊缝id
+        WeldDto dto = new WeldDto();
+        if (!iutil.isNull(parentId)) {
+            //数据权限处理
+            BigInteger uid = lm.getUserId(request);
+            String afreshLogin = (String) request.getAttribute("afreshLogin");
+            if (iutil.isNull(afreshLogin)) {
+                return "0";
+            }
+            int types = insm.getUserInsfType(uid);
+            if (types == 21) {
+                parentId = insm.getUserInsfId(uid).toString();
+            }
+        }
+        BigInteger parent = null;
+        if (iutil.isNull(machineid)) {
+            dto.setMachineid(new BigInteger(machineid));
+        }
+        if (iutil.isNull(welderid)) {
+            dto.setWelderno(welderid);
+        }
+        if (iutil.isNull(time1)) {
+            dto.setDtoTime1(time1.substring(1,20));
+        }
+        if (iutil.isNull(wjno)) {
+            dto.setSearch(wjno);//用来保存任务编号
+        }
+        if (iutil.isNull(time2)) {
+            dto.setDtoTime2(time2.substring(1,20));
         }
         if (iutil.isNull(parentId)) {
             parent = new BigInteger(parentId);

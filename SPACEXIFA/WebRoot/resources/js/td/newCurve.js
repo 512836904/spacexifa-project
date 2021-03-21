@@ -342,7 +342,7 @@ function iview() {
                 //根据采集模块编号判断是否同一个焊机
                 if (machine[f].fgather_no == redata.substring(8 + i, 12 + i).toString()) { //采集模块编号
                     var imgnum = machine[f].model;
-                    $("#m3" + machine[f].fid).html("--");//操作人员
+                    //$("#m3" + machine[f].fid).html("--");//操作人员
                     $("#m2" + machine[f].fid).html("--");//采集编号
                     for (var k = 0; k < welderName.length; k++) {
                         if (welderName[k].fid == parseInt(redata.substring(0 + i, 4 + i).toString())) {    //焊工号
@@ -688,7 +688,7 @@ window.setInterval(function () {
             }
         }
         if (off) {
-            $("#m3" + machine[i].fid).html("--");
+            //$("#m3" + machine[i].fid).html("--");
             $("#m4" + machine[i].fid).html("--A");
             $("#m5" + machine[i].fid).html("--V");
             $("#m6" + machine[i].fid).html("关机");
@@ -716,7 +716,7 @@ window.setInterval(function () {
                     }
                 }
                 if (offflag) {
-                    $("#m3" + machine[i].fid).html("--");
+                    //$("#m3" + machine[i].fid).html("--");
                     $("#m4" + machine[i].fid).html("--A");
                     $("#m5" + machine[i].fid).html("--V");
                     $("#m6" + machine[i].fid).html("关机");
@@ -789,7 +789,7 @@ function statusClick(statusnum) {
                     }
                 }
                 if (offflag) {
-                    $("#m3" + machine[i].fid).html("--");
+                    //$("#m3" + machine[i].fid).html("--");
                     $("#m4" + machine[i].fid).html("--A");
                     $("#m5" + machine[i].fid).html("--V");
                     $("#m6" + machine[i].fid).html("关机");

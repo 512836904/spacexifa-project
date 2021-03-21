@@ -14,6 +14,7 @@ public class WeldedJunction {
 	private BigInteger id;
 	private BigInteger machid;
 	private BigInteger counts;
+	private BigInteger hours;
 	private String machine_num;
 	private String weldedJunctionno;
 	private String serialNo;
@@ -67,6 +68,8 @@ public class WeldedJunction {
 	private String fwps_lib_version;
 	private BigInteger fwpslib_id;
 	private String fwelder_name;
+	private String fequipment_no;
+	private String junctionname;
 	private BigInteger fwelder_id;
 	private String fstatus;
 	private String ftask_no;
@@ -112,6 +115,31 @@ public class WeldedJunction {
 	public String getElectricity_unit() {
 		return electricity_unit;
 	}
+
+	public BigInteger getHours() {
+		return hours;
+	}
+
+	public void setHours(BigInteger hours) {
+		this.hours = hours;
+	}
+
+	public String getFequipment_no() {
+		return fequipment_no;
+	}
+
+	public void setFequipment_no(String fequipment_no) {
+		this.fequipment_no = fequipment_no;
+	}
+
+	public String getJunctionname() {
+		return junctionname;
+	}
+
+	public void setJunctionname(String junctionname) {
+		this.junctionname = junctionname;
+	}
+
 	public void setElectricity_unit(String electricity_unit) {
 		this.electricity_unit = electricity_unit;
 	}

@@ -37,31 +37,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
-public class Server implements Runnable {
+public class Server {
 
-    //private List<Handler> handlers = new ArrayList<Handler>();
-    //public com.MyMqttClient mqtt = new com.MyMqttClient();
     public MyMqttClient mqtt = new MyMqttClient(this);
-    public static final String SERVERIP = "121.196.222.216";
-    public static final int SERVERPORT = 5555;
-    public static final int SERVERPORTWEB = 5554;
     public static String oracleUser = "";
     public static String oraclePassword = "";
     public String str = "";
     public Socket socket = null;
-    public Socket websocketlink = null;
-    public ServerSocket serverSocket = null;
-    public boolean webtype = false;
-    public int sqlwritetype = 0;
-    public int websendtype = 0;
-    public int sockettype = 0;
     public String ip = null;
     public String ip1 = null;
     public String connet1 = "jdbc:oracle:thin:@";
     public String connet2 = ":1521/orcl";
-    public String connet3 = "?user=";
-    public String connet4 = "&password=";
-    public String connet5 = "&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
     public String connet;
     public byte b[];
     public DB_Connectioncode check;
@@ -69,51 +55,60 @@ public class Server implements Runnable {
     public ArrayList<String> listarray2 = new ArrayList<String>();
     public ArrayList<String> listarray3 = new ArrayList<String>();
     public ArrayList<String> listarray4 = new ArrayList<String>();
-    public HashMap<String, SocketChannel> socketlist = new HashMap<>();
-    public HashMap<String, SocketChannel> websocketlist = new HashMap<>();
-    public HashMap<String, SocketChannel> clientList = new HashMap<>();
-    public int socketcount = 0;
-    public int websocketcount = 0;
-    public int clientcount = 0;
-    public Selector selector = null;
-    public ServerSocketChannel ssc = null;
-    public Client client = new Client(this);
     public NettyServerHandler NS = new NettyServerHandler(this);
-    private NettyWebSocketHandler NWS = new NettyWebSocketHandler(this);
-    private Connection c;
-    public java.sql.Connection conn = null;
+    public Websocket websocket = new Websocket();
+    //private NettyWebSocketHandler NWS = new NettyWebSocketHandler(this);
     public java.sql.Statement stmt = null;
     private long time;
     private long time1;
-    private ArrayList<String> dbdata;
     public String outlinestatus = "A";
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     //创建缓存线程池，处理PC实时数据
     public static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-    public String getconnet() {
-        return connet;
-    }
-    public ArrayList<String> getlistarray1() {
-        return listarray1;
-    }
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     //创建德鲁伊数据库连接池
     public static OracleDBConnection dbConnection = new OracleDBConnection();
 
+    public Server() {
+        //启动定时线程
+        startServerWork();
+        //启动Netty的PC服务端，获取OTC采集器发过来的数据
+        startServerWork(5551);
+        //启动mqtt服务
+        startMqttWork();
+    }
 
-    public void run() {
+    public void startMqttWork(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mqtt.init("");
+                NS.mqtt = mqtt;
+                websocket.mqtt = mqtt;
+                mqtt.subTopic("weldmeswebdatadown");    //索取规范
+                mqtt.subTopic("weldmes/downparams");    //下发规范
+                mqtt.subTopic("spacexifa-downparams");    //控制命令和密码下发规范
+                mqtt.subTopic("padDataSetLiveData");    //手持终端存实时表
+                mqtt.subTopic("hand-held-terminal-askFor");    //手持终端索取
+                mqtt.subTopic("hand-held-terminal-issue");    //手持终端下发
+                mqtt.subTopic("whiteList-dataIssue");    //焊工白名单下发
+                //mqtt.subTopic("control-command-issue");    //手持终端控制命令下发
+            }
+        });
+        thread.start();
+    }
 
+
+    public void startServerWork() {
         //读取IPconfig配置文件获取ip地址和数据库配置
         try {
             File file = new File("PC/IPconfig.txt");
             String filePath = file.getCanonicalPath();
-
             FileInputStream in = new FileInputStream(filePath);
             InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
             BufferedReader bufReader = new BufferedReader(inReader);
             String line = null;
             int writetime = 0;
-
             while ((line = bufReader.readLine()) != null) {
                 if (writetime == 0) {
                     ip = line;
@@ -123,32 +118,24 @@ public class Server implements Runnable {
                     writetime = 0;
                 }
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         String[] values = ip.split(",");
         connet = connet1 + values[0] + connet2;
         oracleUser = values[2];
         oraclePassword = values[3];
-
         //开启线程每小时更新三张状态表
         Date date = new Date();
         String nowtime = DateTools.format("HH:mm:ss", date);
         String[] timesplit = nowtime.split(":");
         String hour = timesplit[0];
-
         Calendar calendar = Calendar.getInstance();
-
         calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hour)); // 控制时
         calendar.set(Calendar.MINUTE, 17);    // 控制分
         calendar.set(Calendar.SECOND, 00);    // 控制秒
         Date a = new Date();
         time = calendar.getTime().getTime() / 1000 - a.getTime() / 1000;
-
         //断网续传数据每天更新三张状态表
         Date date1 = new Date();
         String nowtime1 = DateTools.format("yyyy-MM-dd", date);
@@ -156,7 +143,6 @@ public class Server implements Runnable {
         String day1 = timesplit1[2];
 
         Calendar calendar1 = Calendar.getInstance();
-
         calendar1.set(Calendar.DAY_OF_MONTH, Integer.valueOf(day1) + 1); // 控制天
         calendar1.set(Calendar.HOUR_OF_DAY, 00); // 控制时
         calendar1.set(Calendar.MINUTE, 00);    // 控制分
@@ -403,7 +389,7 @@ public class Server implements Runnable {
                      * 开始时间超过12个小时，自动结束掉任务
                      */
                     String updateTaskResultSql = "UPDATE TB_TASKRESULT SET FREALENDTIME = SYSDATE,FOPERATETYPE = 2 " +
-                            "WHERE FOPERATETYPE = 1 AND FREALSTARTTIME <= TO_DATE('"+twelveHourBefore+"', 'yyyy-mm-dd hh24:mi:ss')";
+                            "WHERE FOPERATETYPE = 1 AND FREALSTARTTIME <= TO_DATE('" + twelveHourBefore + "', 'yyyy-mm-dd hh24:mi:ss')";
                     statement.executeQuery(updateTaskResultSql);
 
                     String timework = null;
@@ -501,8 +487,6 @@ public class Server implements Runnable {
 
         //获取最新焊口和焊机统计时间
         check = new DB_Connectioncode();
-        NS.websocket.dbdata = this.dbdata;
-
         listarray1 = check.getId1();
         listarray2 = check.getId2();
         listarray3 = check.getId3();
@@ -516,11 +500,9 @@ public class Server implements Runnable {
         NS.mysql.listarray1 = this.listarray1;
         NS.mysql.listarray2 = this.listarray2;
         NS.mysql.listarray3 = this.listarray3;
-        NS.websocket.listarray1 = this.listarray1;
-        NS.websocket.listarray2 = this.listarray2;
-        NS.websocket.listarray3 = this.listarray3;
-//        NS.android.listarray1 = this.listarray1;
-//        NS.android.listarray2 = this.listarray2;
+        websocket.listarray1 = this.listarray1;
+        websocket.listarray2 = this.listarray2;
+        websocket.listarray3 = this.listarray3;
         NS.listarray1 = this.listarray1;
         NS.listarray2 = this.listarray2;
         NS.listarray3 = this.listarray3;
@@ -540,8 +522,6 @@ public class Server implements Runnable {
                     NS.mysql.listarray1 = listarray1;
                     NS.mysql.listarray2 = listarray2;
                     NS.mysql.listarray3 = listarray3;
-                    NS.android.listarray1 = listarray1;
-                    NS.android.listarray2 = listarray2;
                     NS.listarray1 = listarray1;
                     NS.listarray2 = listarray2;
                     NS.listarray3 = listarray3;
@@ -552,145 +532,54 @@ public class Server implements Runnable {
                 }
             }
         }, 0, 3600, TimeUnit.SECONDS);
-
-        //工作线程
-        new Thread(socketstart).start();
-        //new Thread(websocketstart).start();
-        //new Thread(sockettran).start();
-        //new com.Email().run();
-        //new com.UpReport();
-
-        mqtt.init("");
-        NS.mqtt = mqtt;
-        NS.websocket.mqtt = mqtt;
-        mqtt.subTopic("weldmeswebdatadown");    //索取规范
-        mqtt.subTopic("weldmes/downparams");    //下发规范
-        mqtt.subTopic("spacexifa-downparams");    //控制命令和密码下发规范
-        mqtt.subTopic("padDataSetLiveData");    //手持终端存实时表
-        mqtt.subTopic("hand-held-terminal-askFor");    //手持终端索取
-        mqtt.subTopic("hand-held-terminal-issue");    //手持终端下发
-        mqtt.subTopic("whiteList-dataIssue");    //焊工白名单下发
-        //mqtt.subTopic("control-command-issue");    //手持终端控制命令下发
     }
 
-    //开启5551端口获取焊机数据
-    public Runnable socketstart = new Runnable() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-            EventLoopGroup workerGroup = new NioEventLoopGroup();
-            try {
-                ServerBootstrap b = new ServerBootstrap();
-                b.group(bossGroup, workerGroup)
-                        .channel(NioServerSocketChannel.class)
-                        .option(ChannelOption.SO_BACKLOG, 1024)
-                        .childHandler(NS);
-
-                b = b.childHandler(new ChannelInitializer<SocketChannel>() { // (4)
-                    @Override
-                    public void initChannel(SocketChannel chsoc) throws Exception {
-                        chsoc.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-                        chsoc.pipeline().addLast("frameEncoder", new LengthFieldPrepender(4));
-                        chsoc.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-                        chsoc.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-                        chsoc.pipeline().addLast(
-                                new ReadTimeoutHandler(100),
-                                new WriteTimeoutHandler(100),
-                                NS);
-                        synchronized (socketlist) {
-                            socketcount++;
-                            socketlist.put(Integer.toString(socketcount), chsoc);
-                            NS.socketlist = socketlist;
-                            NWS.socketlist = socketlist;
-                            mqtt.socketlist = socketlist;
-                        }
-                    }
-                });
-
-                //绑定端口，等待同步成功
-                ChannelFuture f;
-                f = b.bind(5551).sync();
-                //等待服务端关闭监听端口
-                f.channel().closeFuture().sync();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } finally {
-                //释放线程池资源
-                bossGroup.shutdownGracefully();
-                workerGroup.shutdownGracefully();
-            }
-        }
-    };
-
-    //开启5550端口处理网页实时数据
-    public Runnable websocketstart = new Runnable() {
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-
-            EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-            EventLoopGroup workerGroup = new NioEventLoopGroup(128);
-
-            try {
-                ServerBootstrap serverBootstrap = new ServerBootstrap();
-                serverBootstrap
-                        .group(bossGroup, workerGroup)
-                        .option(ChannelOption.SO_BACKLOG, 1024)
-                        .channel(NioServerSocketChannel.class)
-                        .childOption(ChannelOption.SO_KEEPALIVE, true)
-                        .childHandler(new ChannelInitializer<SocketChannel>() {
-
-                            @Override
-                            protected void initChannel(SocketChannel chweb) throws Exception {
-                                // TODO Auto-generated method stub
-                                chweb.pipeline().addLast("httpServerCodec", new HttpServerCodec());
-                                chweb.pipeline().addLast("chunkedWriteHandler", new ChunkedWriteHandler());
-                                chweb.pipeline().addLast("httpObjectAggregator", new HttpObjectAggregator(1024 * 1024 * 1024));
-                                chweb.pipeline().addLast("webSocketServerProtocolHandler", new WebSocketServerProtocolHandler("ws://119.3.100.103:5550/SerialPortDemo/ws/张三", null, true, 65535));
-                                chweb.pipeline().addLast("myWebSocketHandler", NWS);
-                                synchronized (this) {
-                                    websocketcount++;
-                                    websocketlist.put(Integer.toString(websocketcount), chweb);
-                                    NS.websocketlist = websocketlist;
+    public void startServerWork(final int inetPort) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                EventLoopGroup bossGroup = new NioEventLoopGroup();
+                EventLoopGroup workerGroup = new NioEventLoopGroup();
+                try {
+                    ServerBootstrap b = new ServerBootstrap();
+                    b.group(bossGroup, workerGroup)
+                            .channel(NioServerSocketChannel.class)
+                            .option(ChannelOption.SO_BACKLOG, 128)
+                            .childHandler(new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                public void initChannel(SocketChannel chsoc) throws Exception {
+                                    chsoc.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                                    chsoc.pipeline().addLast("frameEncoder", new LengthFieldPrepender(4));
+                                    chsoc.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
+                                    chsoc.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
+                                    //chsoc.pipeline().addLast(new ReadTimeoutHandler(100), new WriteTimeoutHandler(100), NS);
+                                    chsoc.pipeline().addLast(NS);
                                 }
+                            });
 
-                                //System.out.println(chweb);
-                            }
-
-                        });
-
-                Channel ch = serverBootstrap.bind(5550).sync().channel();
-                ch.closeFuture().sync();
-
-				/*ChannelFuture channelFuture = serverBootstrap.bind(5550).sync();
-	            channelFuture.channel().closeFuture().sync();*/
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                bossGroup.shutdownGracefully();
-                workerGroup.shutdownGracefully();
+                    //绑定端口，等待同步成功
+                    ChannelFuture channelFuture = b.bind(inetPort).sync();
+                    if (channelFuture.isSuccess()) {
+                        //如果没有成功结束就处理一些事情,结束了就执行关闭服务端等操作
+                        System.out.println("PC服务端启动成功,监听端口是：" + inetPort);
+                    }
+                    //等待服务端关闭监听端口
+                    channelFuture.channel().closeFuture().sync();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    //释放线程池资源
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                    System.out.println("PC转发器服务端已关闭！");
+                }
             }
-        }
-    };
+        });
+        thread.start();
+    }
 
-    //多层级转发
-    public Runnable sockettran = new Runnable() {
-
-        @Override
-        public void run() {
-            if (ip1 != null) {
-                client.run();
-            }
-        }
-    };
-
-    public static void main(String[] args) throws IOException {
-        Thread desktopServerThread = new Thread(new Server());
-        desktopServerThread.start();
+    public static void main(String[] args) {
+        new Server();
     }
 
 }

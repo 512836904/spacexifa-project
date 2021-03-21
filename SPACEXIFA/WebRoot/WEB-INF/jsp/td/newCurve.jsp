@@ -33,7 +33,7 @@
 	<script type="text/javascript" src="resources/js/paho-mqtt-min.js"></script>
 	<script type="text/javascript" src="resources/js/highcharts.js"></script>
 	<!-- js引入 -->
-<%--	<script type="text/javascript" src="resources/js/loading.js"></script>--%>
+	<script type="text/javascript" src="resources/js/loading.js"></script>
 	<script type="text/javascript" src="resources/js/session-overdue.js"></script>
 	<script type="text/javascript" src="resources/js/td/newCurve.js"></script>
 

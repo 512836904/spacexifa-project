@@ -89,9 +89,11 @@ function loadJobSetNormRate(day){
         success: function (result) {
             if (result) {
                 for (var i in result.ary) {
-                    var name = result.ary[i].job_number +" "+ result.ary[i].set_number +" "+result.ary[i].part_name;
-                    data.push(name);
-                    dataList.push(result.ary[i].normRate);
+                    if(result.ary[i].job_number!=null){
+                        var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                        data.push(name);
+                        dataList.push(result.ary[i].normRate);
+                    }
                 }
                 var Right1 = echarts.init(document.querySelector("#Right1"));
                 var option = Right1.getOption();

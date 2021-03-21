@@ -143,6 +143,7 @@ function loadProduction() {
                                 mode: 'local',
                                 data: result.array
                             });
+                            $("#fjunction").combobox("setValue", result.array.text);
                         }
                     }
                 }

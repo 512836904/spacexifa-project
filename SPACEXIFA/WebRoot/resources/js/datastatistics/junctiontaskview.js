@@ -109,7 +109,7 @@ function historyDatagrid(){
 		height : $("#tableDiv").height(),
 		width : $("#tableDiv").width(),
 		idField : 'fid',
-		pageSize : 10,
+		pageSize : 50,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		url : url1,
 		singleSelect : true,

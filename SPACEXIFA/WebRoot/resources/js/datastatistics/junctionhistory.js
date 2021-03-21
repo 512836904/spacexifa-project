@@ -1,6 +1,8 @@
 var ipurl = "";
 var xAxisData = new Array(), yAxisData = new Array(), fieldArr = new Array(), divArr = new Array();
 var eleUpLine = 0, eleDownLine = 0, volUpLine = 0, volDownLine = 0;
+var maxele = "";
+var emqurl = "";
 $(function () {
     historyDatagrid();
     $("#little").hide();
@@ -17,7 +19,31 @@ $(function () {
         error: function (errorMsg) {
             alert("数据请求失败，请联系系统管理员!");
         }
-    })
+    });
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "td/AllTdbf",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                //127.0.0.1:8083
+                // websocketURL = eval(result.web_socket);
+                websocketURL = result.web_socket;
+                if(websocketURL.includes("10.110.11.3")){
+                    //websocketURL = "10.110.11.3:9200"
+                    emqurl='http://10.110.11.3:9200/tb_live_data/_search?pretty=true'
+                }else{
+                    //websocketURL = "192.168.11.3:9200"
+                    emqurl='http://192.168.11.3:9200/tb_live_data/_search?pretty=true'
+                }
+            }
+        },
+        error: function (errorMsg) {
+            alert("数据请求失败，请联系系统管理员!");
+        }
+    });
     $('#ftype').combobox('clear');
     $('#ftype').combobox('loadData', [{
         "text": "正常",
@@ -109,7 +135,7 @@ function historyDatagrid() {
         height: $("#tableDiv").height(),
         width: $("#tableDiv").width(),
         idField: 'fid',
-        pageSize: 10,
+        pageSize: 50,
         pageList: [10, 20, 30, 40, 50],
         url: "datastatistics/getJunctionHistoryList?searchStr=" + searchStr,
         singleSelect: true,
@@ -237,7 +263,23 @@ function historyDatagrid() {
             $("#body").append(sh);
             document.getElementById("show").style.display = "block";
             chartStr = "";
-            setParam();
+            //setParam();
+            var fjunction_id = row.junction_id;
+            $.ajax({
+                type: "post",
+                async: false,
+                url: "datastatistics/getMaxele?fjunction="+fjunction_id,
+                data: {},
+                dataType: "json", //返回数据形式为json
+                success: function (result) {
+                    if (result) {
+                        maxele=result.maxele;
+                    }
+                },
+                error: function (errorMsg) {
+                    alert("数据请求失败，请联系系统管理员!");
+                }
+            });
             query = {
                 "query": {
                     "bool": {
@@ -293,7 +335,8 @@ function historyDatagrid() {
                 ]
             }
             $.ajax({
-                url: 'http://192.168.11.3:9200/tb_live_data/_search?pretty=true',
+                //url: 'http://192.168.11.3:9200/tb_live_data/_search?pretty=true',
+                url: emqurl,
                 type: 'post',
                 //url: "rep/historyCurve"+chartStr+"&fid="+encodeURIComponent($('#taskno').val())+"&mach="+$('#machid').val()+"&welderid="+$("#welderid").val()+"&fweld_bead="+fweld_bead+"&fsolder_layer="+fsolder_layer,
                 contentType: 'application/json',
@@ -418,6 +461,14 @@ function eleChart() {
                 saveAsImage: {}
             }
         },
+        visualMap: {
+            show: false,
+            dimension: 1,
+            pieces: [],  //pieces的值由动态数据决定
+            outOfRange: {
+                color: "#A020F0"
+            }
+        },
         dataZoom: [
             {
                 type: 'slider',
@@ -453,7 +504,7 @@ function eleChart() {
                 data: [
                     {
                         name: '预设电流上限',
-                        yAxis: eleUpLine
+                        yAxis: maxele
                     },
                     {
                         name: '预设电流下限',
@@ -476,6 +527,9 @@ function eleChart() {
             }
         }]
     };
+    var max = Math.max.apply(Math, ele); //数据的最大值
+    option.series[0].data = ele;
+    option.visualMap.pieces[0] = {gte: maxele, lte: max, color: 'red'};
     myChart.setOption(option);
 }
 

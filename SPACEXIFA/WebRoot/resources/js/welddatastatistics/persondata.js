@@ -2,19 +2,35 @@ $(function () {
     //dgDatagrid();
     itemcombobox();
     wpslibDatagrid();
+
 })
 
 var chartStr = "";
-
-function setParam() {
+var tasktime = "";
+var sign = 1;
+function gettasktime() {
+    tasktime = "";
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
-    chartStr += "?dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2;
-    // alert(chartStr);
+    if(dtoTime1 != ""){
+        if(tasktime == ""){
+            tasktime += " k.FREALSTARTTIME >to_date('" +dtoTime1+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }else{
+            tasktime += " AND k.FREALSTARTTIME >to_date('"+dtoTime1+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
+    if(dtoTime2 != ""){
+        if(tasktime == ""){
+            tasktime += " k.FREALENDTIME < to_date('"+dtoTime2+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }else{
+            tasktime += " AND k.FREALENDTIME <to_date('"+dtoTime2+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
 }
 function wpslibDatagrid(){
+    gettasktime();
     parameterStr1();
-    var url1 = encodeURI("datastatistics/getwelderweldtime?search="+searchStr);
+    var url1 = encodeURI("datastatistics/getwelderweldtime?search="+searchStr+"&tasktime="+tasktime);
     $("#dg").datagrid( {
         fitColumns : false,
         height: $("#wpsTableDiv").height(),
@@ -100,6 +116,27 @@ function wpslibDatagrid(){
             halign : "center",
             align : "left"
         }, {
+            field : 'ftaskid',
+            title : '任务id',
+            width : 100,
+            halign : "center",
+            align : "left",
+            hidden : true
+        }, {
+            field : 'fstarttime',
+            title : '开始时间',
+            width : 100,
+            halign : "center",
+            align : "left",
+            hidden : true
+        }, {
+            field : 'fendtime',
+            title : '结束时间',
+            width : 100,
+            halign : "center",
+            align : "left",
+            hidden : true
+        }, {
             field : 'edit',
             title : '编辑',
             width : 130,
@@ -108,10 +145,17 @@ function wpslibDatagrid(){
             formatter:function(value,row,index){
                 var str = "";
                 var chart="";
-                var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
-                var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
+                var dtoTime1 = row.fstarttime;
+                var dtoTime2 = row.fendtime;
+                var taskid = row.taskid;
                 chart= "fid=" +row.welder_id + "&fjunction_id=" + row.fjunction_id + "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')';
-                str += '<a id="mc" class="easyui-linkbutton" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+                if(taskid==0){
+                    str += '<a id="mcs" class="easyui-linkbutton" style="pointer-events: none;" href="weldedjunction/getNnstandardHistory?'+chart+'">';
+                    //$("#mc").attr("disabled", "disabled");
+                    //document.getElementById("mc").disabled=false;
+                }else{
+                    str += '<a id="mc" class="easyui-linkbutton"  href="weldedjunction/getNnstandardHistory?'+chart+'">';
+                }
                 return str;
             }
         }] ],
@@ -124,11 +168,21 @@ function wpslibDatagrid(){
             }
         },
         onLoadSuccess:function(data){
-            $("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-search'});
+            var xx = data.rows;
+           for(var i in xx){
+               if(xx[i].taskid==0){
+                   $("a[id='mcs']").linkbutton({text:'无任务信息',plain:true,iconCls:'icon-search'});
+               }else{
+                   $("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-search'});
+               }
+            }
         }
     });
 }
-
+// function Open(distion){
+//     var chart = distion;
+//     window.open("weldedjunction/getNnstandardHistory?'+chart+'");
+// }
 function dgDatagrid() {
     setParam();
     var column = new Array();
@@ -413,16 +467,16 @@ function parameterStr1(){
 
     if(dt1 != ""){
         if(searchStr == ""){
-            searchStr += " fstarttime >to_date('" +dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " w.fstarttime >to_date('" +dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
         }else{
-            searchStr += " AND fstarttime >to_date('"+dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " AND w.fstarttime >to_date('"+dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
         }
     }
     if(dt2 != ""){
         if(searchStr == ""){
-            searchStr += " fendtime < to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " w.fendtime < to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
         }else{
-            searchStr += " AND fendtime <to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " AND w.fendtime <to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
         }
     }
 }

@@ -655,7 +655,7 @@ public class DataStatisticsController {
                 dto.setPersonid(i.getId());
                 json.put("t0", i.getSerialnumber());    //编号
                 json.put("t1", i.getName());        //姓名
-                title.put("name", i.getName());//工作时间
+                title.put("name", i.getName());//给echarts赋值
                 //json.put("",i);
                 DataStatistics weld = null;
                 BigInteger worktime = null, standytime = null;
@@ -666,7 +666,7 @@ public class DataStatisticsController {
                 worktime = dss.getStaringUpTimeByWelder(null, dto);
                 if (worktime != null) {
                     json.put("t3", getTimeStrBySecond(worktime));//工作时间
-                    title.put("starttime", getTimeStrBySecond(worktime));//工作时间
+                    title.put("starttime", worktime);//工作时间
                 } else {
                     json.put("t3", "00:00:00");//工作时间
                     title.put("starttime", 0);//工作时间
@@ -679,7 +679,7 @@ public class DataStatisticsController {
                 }
                 if (weld != null) {
                     json.put("t2", getTimeStrBySecond(weld.getWorktime()));//焊接时间
-                    title.put("worktime", getTimeStrBySecond(weld.getWorktime()));//焊接时间
+                    title.put("worktime", weld.getWorktime());//焊接时间
                     if(weld.getWorktime().doubleValue()!=0 && worktime.doubleValue()!=0){
                         double weldingproductivity = (double) Math.round(weld.getWorktime().doubleValue() / worktime.doubleValue() * 100 * 100) / 100;
                         json.put("t4", weldingproductivity);//焊接效率
@@ -783,23 +783,15 @@ public class DataStatisticsController {
         pageSize = Integer.parseInt(request.getParameter("rows"));
         page = new Page(pageIndex, pageSize, total);
         String search = request.getParameter("search");
+        String tasktime = request.getParameter("tasktime");
         long total = 0;
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         JSONObject obj = new JSONObject();
         WeldDto dto = new WeldDto();
-        String time1 = request.getParameter("dtoTime1");
-        String time2 = request.getParameter("dtoTime2");
         double temp1=0,temp2=0;
         try {
-            if (iutil.isNull(time1)) {
-                dto.setDtoTime1(time1);
-            }
-            if (iutil.isNull(time2)) {
-                dto.setDtoTime2(time2);
-            }
-            //List<WeldedJunction> list = wjm.getJunctionweldtime(page,search);
-            List<WeldedJunction> list = wjm.getWelderweldtime(page,search);
+            List<WeldedJunction> list = wjm.getWelderweldtime(page,search,tasktime);
             if (list != null) {
                 PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
                 total = pageinfo.getTotal();
@@ -823,6 +815,97 @@ public class DataStatisticsController {
                 } else {
                     json.put("temp", 0);
                 }
+                if(Integer.valueOf(w.getCounts().toString()) > 0){
+                    json.put("taskid", w.getCounts());
+                }else{
+                    json.put("taskid", 0);
+                }if(iutil.isNull(w.getStartTime())){
+                    json.put("fstarttime", w.getStartTime());
+                }else{
+                    json.put("fstarttime", 0);
+                }if(iutil.isNull(w.getEndTime())){
+                    json.put("fendtime", w.getEndTime());
+                }else{
+                    json.put("fendtime", 0);
+                }
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("total", total);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+
+    /**
+     * 设备焊接数据报表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getmachineweldtime")
+    @ResponseBody
+    public String getmachineweldtime(HttpServletRequest request) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+        page = new Page(pageIndex, pageSize, total);
+        String search = request.getParameter("search");
+        String tasktime = request.getParameter("tasktime");
+        long total = 0;
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        WeldDto dto = new WeldDto();
+        String time1 = request.getParameter("dtoTime1");
+        String time2 = request.getParameter("dtoTime2");
+        double temp1=0,temp2=0;
+        try {
+            if (iutil.isNull(time1)) {
+                dto.setDtoTime1(time1);
+            }
+            if (iutil.isNull(time2)) {
+                dto.setDtoTime2(time2);
+            }
+            List<WeldedJunction> list = wjm.getmachineweldtime(page,search,tasktime);
+            if (list != null) {
+                PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
+                total = pageinfo.getTotal();
+            }
+            for (WeldedJunction w : list) {
+                json.put("fprefix_number",w.getFprefix_number());
+                json.put("fsuffix_number", w.getFsuffix_number());
+                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                json.put("fproduct_number", w.getFproduct_number());
+                json.put("fweldername", w.getFwelder_name());
+                json.put("fweldernum", w.getPipelineNo());
+                json.put("fitem", w.getSerialNo());
+                json.put("equipment", w.getMachine_num());
+                json.put("junctionname", w.getJunctionname());
+                json.put("alarmtime", getTimeStrBySecond(w.getCounts()));
+                json.put("worktime", getTimeStrBySecond(w.getHours()));
+                json.put("welder_id", w.getFwelder_id());
+                json.put("fjunction_id", w.getIid());
+                json.put("machind", w.getMachid());
+                json.put("nomeltime", getTimeStrBySecond(w.getHours().subtract(w.getCounts())));
+                if (Integer.valueOf(w.getHours().toString()) + Integer.valueOf(w.getCounts().toString()) != 0) {
+                    json.put("temp", new DecimalFormat("0.00").format((float) Integer.valueOf(w.getHours().subtract(w.getCounts()).toString()) / (Integer.valueOf(w.getHours().toString())) * 100));//规范符合率
+                } else {
+                    json.put("temp", 0);
+                }
+                if(Integer.valueOf(w.getCounts().toString()) > 0){
+                    json.put("taskid", w.getCounts());
+                }else{
+                    json.put("taskid", 0);
+                }
+               if(iutil.isNull(w.getStartTime())){
+                    json.put("fstarttime", w.getStartTime());
+                }else{
+                    json.put("fstarttime", 0);
+                }if(iutil.isNull(w.getEndTime())){
+                    json.put("fendtime", w.getEndTime());
+                }else{
+                    json.put("fendtime", 0);
+                }
                 ary.add(json);
             }
         } catch (Exception e) {
@@ -841,6 +924,7 @@ public class DataStatisticsController {
         pageSize = Integer.parseInt(request.getParameter("rows"));
         page = new Page(pageIndex, pageSize, total);
         String search = request.getParameter("search");
+        String tasktime = request.getParameter("tasktime");
         long total = 0;
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
@@ -856,27 +940,44 @@ public class DataStatisticsController {
             if (iutil.isNull(time2)) {
                 dto.setDtoTime2(time2);
             }
-            List<WeldedJunction> list = wjm.getJunctionweldtime(page,search);
+            List<WeldedJunction> list = wjm.getJunctionweldtime(page,search,tasktime);
             if (list != null) {
                 PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
                 total = pageinfo.getTotal();
             }
             for (WeldedJunction w : list) {
-                json.put("fprefix_number",w.getFprefix_number());
-                json.put("fsuffix_number", w.getFsuffix_number());
-                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
-                json.put("fproduct_number", w.getFproduct_number());
-                json.put("fwelder_name", w.getFwelder_name());
-                json.put("junctionname", w.getWeldedJunctionno());
-                json.put("alarmtime", getTimeStrBySecond(w.getCounts()));
-                json.put("worktime", getTimeStrBySecond(w.getMachid()));
-                json.put("nomeltime", getTimeStrBySecond(w.getMachid().subtract(w.getCounts())));
-                if (Integer.valueOf(w.getMachid().toString()) + Integer.valueOf(w.getCounts().toString()) != 0) {
-                    json.put("temp", new DecimalFormat("0.00").format((float) Integer.valueOf(w.getMachid().subtract(w.getCounts()).toString()) / (Integer.valueOf(w.getMachid().toString())) * 100));//规范符合率
-                } else {
-                    json.put("temp", 0);
+                if(iutil.isNull(w.getFwelder_name())){
+                    json.put("fprefix_number",w.getFprefix_number());
+                    json.put("fsuffix_number", w.getFsuffix_number());
+                    // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                    json.put("fproduct_number", w.getFproduct_number());
+                    json.put("fwelder_name", w.getFwelder_name());
+                    json.put("junctionname", w.getWeldedJunctionno());
+                    json.put("alarmtime", getTimeStrBySecond(w.getCounts()));
+                    json.put("worktime", getTimeStrBySecond(w.getMachid()));
+                    json.put("nomeltime", getTimeStrBySecond(w.getMachid().subtract(w.getCounts())));
+                    json.put("welderid", w.getFwelder_id());
+                    json.put("junctionid", w.getIid());
+                    if (Integer.valueOf(w.getMachid().toString()) + Integer.valueOf(w.getCounts().toString()) != 0) {
+                        json.put("temp", new DecimalFormat("0.00").format((float) Integer.valueOf(w.getMachid().subtract(w.getCounts()).toString()) / (Integer.valueOf(w.getMachid().toString())) * 100));//规范符合率
+                    } else {
+                        json.put("temp", 0);
+                    }
+                    if(Integer.valueOf(w.getCounts().toString()) > 0){
+                        json.put("taskid", w.getCounts());
+                    }else{
+                        json.put("taskid", 0);
+                    }if(iutil.isNull(w.getStartTime())){
+                        json.put("fstarttime", w.getStartTime());
+                    }else{
+                        json.put("fstarttime", 0);
+                    }if(iutil.isNull(w.getEndTime())){
+                        json.put("fendtime", w.getEndTime());
+                    }else{
+                        json.put("fendtime", 0);
+                    }
+                    ary.add(json);
                 }
-                ary.add(json);
             }
         } catch (Exception e) {
             e.getMessage();
@@ -982,6 +1083,79 @@ public class DataStatisticsController {
         }
         obj.put("total", total);
         obj.put("ary", titleary);
+        obj.put("rows", ary);
+        return obj.toString();
+    }
+    //新工件生产数据报表
+    @RequestMapping("/getjunctionalltime")
+    @ResponseBody
+    public String getjunctionalltime(HttpServletRequest request) {
+        pageIndex = Integer.parseInt(request.getParameter("page"));
+        pageSize = Integer.parseInt(request.getParameter("rows"));
+        page = new Page(pageIndex, pageSize, total);
+        String search = request.getParameter("search");
+        long total = 0;
+        JSONObject json = new JSONObject();
+        JSONArray ary = new JSONArray();
+        JSONObject obj = new JSONObject();
+        JSONObject title = new JSONObject();
+        WeldDto dto = new WeldDto();
+        String time1 = request.getParameter("dtoTime1");
+        String time2 = request.getParameter("dtoTime2");
+        double temp1=0,temp2=0,time=0,count=0, air=0;
+        double electric=0,weldingproductivity=0,electricity=0,voltage=0;
+        DecimalFormat format = new DecimalFormat("0.00");
+        try {
+            if (iutil.isNull(time1)) {
+                dto.setDtoTime1(time1);
+            }
+            if (iutil.isNull(time2)) {
+                dto.setDtoTime2(time2);
+            }
+            List<WeldedJunction> list = wjm.getJunctionstandtime(page,search);
+            if (list != null) {
+                PageInfo<WeldedJunction> pageinfo = new PageInfo<WeldedJunction>(list);
+                total = pageinfo.getTotal();
+            }
+            DataStatistics parameter = dss.getParameter();
+            for (WeldedJunction w : list) {
+                json.put("fprefix_number",w.getFprefix_number());
+                json.put("fsuffix_number", w.getFsuffix_number());
+                // json.put("fweldingtime", new DecimalFormat("0.0000").format((float) Integer.valueOf(w.getCounts().toString()) / 3600));
+                json.put("fproduct_number", w.getFproduct_number());
+                json.put("fwelder_name", w.getFwelder_name());
+                json.put("junctionname", w.getWeldedJunctionno());
+                //json.put("alarmtime", getTimeStrBySecond(w.getCounts()));//待机时长
+                json.put("worktime", getTimeStrBySecond(w.getHours()));//焊接时长
+                json.put("alltime", getTimeStrBySecond(w.getHours().add(w.getCounts())));//工作时长
+//                if (Integer.valueOf(w.getHours().toString()) + Integer.valueOf(w.getCounts().toString()) != 0) {
+//                    json.put("temp", new DecimalFormat("0.00").format((float) Integer.valueOf(w.getHours().toString()) / (Integer.valueOf(w.getCounts().toString()+w.getHours().toString())) * 100));//焊接效率
+//                } else {
+//                    json.put("temp", 0);
+//                }
+                if (w.getHours() != null) {
+                    time = w.getHours().doubleValue() / 60 / 60;//焊接时长(h)
+                    count = w.getCounts().doubleValue() / 60 / 60;//待机时长(h)
+                    weldingproductivity = (double) Math.round(w.getHours().doubleValue() / (w.getHours().doubleValue()+w.getCounts().doubleValue()) * 100 );
+                    air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;//气体消耗量=气体流量*焊接时间
+                }
+                if(w.getMaxElectricity()!=0){
+                    electricity = w.getMaxElectricity();
+                    voltage = w.getMaxValtage();
+                    electric = (double) Math.round((time * electricity * voltage / 1000 +w.getCounts().doubleValue()*parameter.getStandbypower() / 1000) * 100) / 100;//电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
+                }else{
+                    electric = (double) Math.round((count * parameter.getStandbypower() / 1000) * 100) / 100;
+                }
+                json.put("electric",electric);//电能消耗
+                json.put("materialwast",format.format(new BigDecimal(w.getMaterial())));//焊丝消耗
+                json.put("weldingproductivity",weldingproductivity);//焊接效率
+                json.put("airwast",air);//气体消耗
+                ary.add(json);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        obj.put("total", total);
         obj.put("rows", ary);
         return obj.toString();
     }

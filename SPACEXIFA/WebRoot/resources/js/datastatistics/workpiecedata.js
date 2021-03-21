@@ -1,9 +1,10 @@
 $(function () {
-    dgDatagrid();
-    workgas();
-    setTimeout(function(){
-        setWorkCharts();
-    }, 2000);
+    //dgDatagrid();
+    //workgas();
+    // setTimeout(function(){
+    //     setWorkCharts();
+    // }, 2000);
+    wpslibDatagrid();
 })
 
 var chartStr = "";
@@ -25,76 +26,257 @@ function setParam() {
     chartStr += "&dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2+"&ftype=" + ftype;
 }
 
-
-function dgDatagrid() {
-    setParam();
-    var url1 = encodeURI("datastatistics/getWorkpieceData?search="+searchStr+"&chartStr="+chartStr);
-    var column = new Array();
-    $.ajax({
-        type: "post",
-        async: false,
-        url: url1,
-        data: {},
-        dataType: "json", //返回数据形式为json
-        success: function (result) {
-            if (result) {
-                workary = result.arys;
-                var str = ["焊缝名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
-                for (var i = 0; i < str.length; i++) {
-                    column.push({
-                        field: "t" + i,
-                        title: str[i],
-                        width: 200,
-                        halign: "center",
-                        align: "left",
-                        sortable: true,
-                        sorter: function (a, b) {
-                            return (a > b ? 1 : -1);
-                        }
-                    });
-                }
-                var grid = {
-                    fitColumns: true,
-                    height: 600,
-                    width: 1050,
-                    url: url1,
-                    pageSize: 50,
-                    pageList: [10, 20, 30, 40, 50],
-                    singleSelect: true,
-                    rownumbers: true,
-                    showPageList: false,
-                    pagination: true,
-                    remoteSort: false,
-                    nowrap: false,
-                    columns: [column],
-                    rowStyler: function (index, row) {
-                        if ((index % 2) != 0) {
-                            //处理行代背景色后无法选中
-                            var color = new Object();
-                            return color;
-                        }
-                    },
-                    onBeforeLoad: function (param) {
-                        $("#chartLoading").hide();
-                    }
-                };
-                $('#dg').datagrid(grid);
-                $('#dg').datagrid('loadData', result.rows);
+function wpslibDatagrid(){
+    parameterStr1();
+    var url1 = encodeURI("datastatistics/getjunctionalltime?search="+searchStr);
+    $("#taskviewtable").datagrid( {
+        fitColumns : false,
+        height: $("#wpsTableDiv").height(),
+        width: $("#wpsTableDiv").width(),
+        idField : 'fid',
+        pageSize : 50,
+        pageList : [ 10, 20, 30, 40, 50 ],
+        url : url1,
+        singleSelect : true,
+        rownumbers : true,
+        showPageList : false,
+        columns : [ [ {
+            field : 'fid',
+            title : '序号',
+//			width : 30,
+            halign : "center",
+            align : "left",
+            hidden:true
+        },{
+            field : 'fprefix_number',
+            title : '工作号',
+            width : 200,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'fsuffix_number',
+            title : '部套号',
+            width : 200,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'fproduct_number',
+            title : '工艺编号',
+            width : 100,
+            halign : "center",
+            align : "left"
+        },{
+            field : 'junctionname',
+            title : '焊缝名称',
+            width : 200,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'fwelder_name',
+            title : '焊工姓名',
+            width : 100,
+            halign : "center",
+            align : "left"
+        },{
+            field : 'worktime',
+            title : '焊接时长',
+            width : 100,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'alltime',
+            title : '工作时长',
+            width : 100,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'electric',
+            title : '电能消耗(KW/H)',
+            width : 100,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'materialwast',
+            title : '焊丝消耗(KG)',
+            width : 100,
+            halign : "center",
+            align : "left"
+        },{
+            field : 'airwast',
+            title : '气体消耗(L)',
+            width : 100,
+            halign : "center",
+            align : "left"
+        }, {
+            field : 'weldingproductivity',
+            title : '焊接效率(%)',
+            width : 100,
+            halign : "center",
+            align : "left"
+        }] ],
+        pagination : true,
+        rowStyler: function(index,row){
+            if ((index % 2)!=0){
+                //处理行代背景色后无法选中
+                var color=new Object();
+                return color;
             }
-        },
-        error: function (errorMsg) {
-            alert("数据请求失败，请联系系统管理员!");
         }
     });
 }
 
+
+// function dgDatagrid() {
+//     setParam();
+//     var url1 = encodeURI("datastatistics/getWorkpieceData?search="+searchStr+"&chartStr="+chartStr);
+//     var column = new Array();
+//     $.ajax({
+//         type: "post",
+//         async: false,
+//         url: url1,
+//         data: {},
+//         dataType: "json", //返回数据形式为json
+//         success: function (result) {
+//             if (result) {
+//                 workary = result.arys;
+//                 var str = ["焊缝名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
+//                 for (var i = 0; i < str.length; i++) {
+//                     column.push({
+//                         field: "t" + i,
+//                         title: str[i],
+//                         width: 200,
+//                         halign: "center",
+//                         align: "left",
+//                         sortable: true,
+//                         sorter: function (a, b) {
+//                             return (a > b ? 1 : -1);
+//                         }
+//                     });
+//                 }
+//                 var grid = {
+//                     fitColumns: true,
+//                     height: 600,
+//                     width: 1050,
+//                     url: url1,
+//                     pageSize: 50,
+//                     pageList: [10, 20, 30, 40, 50],
+//                     singleSelect: true,
+//                     rownumbers: true,
+//                     showPageList: false,
+//                     pagination: true,
+//                     remoteSort: false,
+//                     nowrap: false,
+//                     columns: [column],
+//                     rowStyler: function (index, row) {
+//                         if ((index % 2) != 0) {
+//                             //处理行代背景色后无法选中
+//                             var color = new Object();
+//                             return color;
+//                         }
+//                     },
+//                     onBeforeLoad: function (param) {
+//                         $("#chartLoading").hide();
+//                     }
+//                 };
+//                 $('#dg').datagrid(grid);
+//                 $('#dg').datagrid('loadData', result.rows);
+//             }
+//         },
+//         error: function (errorMsg) {
+//             alert("数据请求失败，请联系系统管理员!");
+//         }
+//     });
+// }
+
 function serach() {
-    $("#chartLoading").show();
-    chartStr = "";
-    setTimeout(function () {
-        dgDatagrid();
-    }, 500);
+    // $("#chartLoading").show();
+    // chartStr = "";
+    // setTimeout(function () {
+    //     dgDatagrid();
+    // }, 500);
+    wpslibDatagrid();
 }
+
+function parameterStr1(){
+    searchStr = "";
+    var dt1 = $("#dtoTime1").datetimebox('getValue');
+    var dt2 = $("#dtoTime2").datetimebox('getValue');
+    //var item = $("#item").combobox('getValue');
+    var product_drawing_no = $("#product_drawing_no").val();
+    var product_name = $("#product_name").val();
+    var taskno = $("#taskno").val();
+    var fwps_lib_num = $("#fwps_lib_num").val();
+    var fwelded_junction_no = $("#fwelded_junction_no").val();
+    var product_number = $("#product_number").val();
+    var junction_name = $("#fwelded_junction_no").val();
+    var welderno = $("#welderno").val();
+    var ftype = $("#ftype").combobox('getValue');
+    if(welderno != ""){
+        if(searchStr == ""){
+            searchStr += " e.fname LIKE "+"'%" + welderno + "%'";
+        }else{
+            searchStr += " AND e.fname LIKE "+"'%" + welderno + "%'";
+        }
+    }
+    if(ftype != ""){
+        if(searchStr == ""){
+            searchStr += " w.FPRODUCT_NUMBER_ID = '" + ftype + "'";
+        }else{
+            searchStr += " AND w.FPRODUCT_NUMBER_ID = '" + ftype + "'";
+        }
+    }
+    if(product_drawing_no != ""){
+        if(searchStr == ""){
+            searchStr += " j.JOB_NUMBER LIKE "+"'%" + product_drawing_no + "%'";
+        }else{
+            searchStr += " AND j.JOB_NUMBER LIKE "+"'%" + product_drawing_no + "%'";
+        }
+    }
+    if(product_name != ""){
+        if(searchStr == ""){
+            searchStr += " j.SET_NUMBER LIKE "+"'%" + product_name + "%'";
+        }else {
+            searchStr += " AND j.SET_NUMBER LIKE "+"'%" + product_name + "%'";
+        }
+    }
+    if(junction_name != ""){
+        if(searchStr == ""){
+            searchStr += " u.junction_name LIKE "+"'%" + junction_name + "%'";
+        }else {
+            searchStr += " AND u.junction_name LIKE "+"'%" + junction_name + "%'";
+        }
+    }
+    if(taskno != ""){
+        if(searchStr == ""){
+            searchStr += " c.fname LIKE "+"'%" + taskno + "%'";
+        }else{
+            searchStr += " AND c.fname LIKE "+"'%" + taskno + "%'";
+        }
+    }
+    if(fwelded_junction_no != ""){
+        if(searchStr == ""){
+            searchStr += " u.junction_name LIKE "+"'%" + fwelded_junction_no + "%'";
+        }else{
+            searchStr += " AND u.junction_name LIKE "+"'%" + fwelded_junction_no + "%'";
+        }
+    }
+
+    if(dt1 != ""){
+        if(searchStr == ""){
+            searchStr += " fstarttime >to_date('" +dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }else{
+            searchStr += " AND fstarttime >to_date('"+dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
+    if(dt2 != ""){
+        if(searchStr == ""){
+            searchStr += " fendtime < to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }else{
+            searchStr += " AND fendtime <to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+        }
+    }
+}
+
 
 //导出到Excel
 function exportExcel() {
@@ -124,6 +306,127 @@ function domresize() {
         width: 1050
     });
 }
+
+function itemcombobox() {
+    /*	$.ajax({
+          type : "post",
+          async : false,
+          url : "datastatistics/getAllInsframework",
+          data : {},
+          dataType : "json", //返回数据形式为json
+          success : function(result) {
+              if (result) {
+                  var optionStr = '';
+                  for (var i = 0; i < result.ary.length; i++) {
+                      optionStr += "<option value=\"" + result.ary[i].id + "\" >"
+                              + result.ary[i].name + "</option>";
+                  }
+                  $("#item").html(optionStr);
+              }
+          },
+          error : function(errorMsg) {
+              alert("数据请求失败，请联系系统管理员!");
+          }
+        });
+        $("#item").combobox();*/
+
+    $.ajax({
+        type: "post",
+        async: false,
+        url: "weldtask/getOperateArea",
+        data: {},
+        dataType: "json", //返回数据形式为json
+        success: function (result) {
+            if (result) {
+                if (result.type == 23) {
+                    var zoptionStr = "";
+                    var boptionStr = "";
+                    for (var i = 0; i < result.ary.length; i++) {
+                        zoptionStr += "<option value=\"" + result.ary[i].id + "\" >"
+                            + result.ary[i].name + "</option>";
+                    }
+                    for (var j = 0; j < result.banzu.length; j++) {
+                        boptionStr += "<option value=\"" + result.banzu[j].id + "\" >"
+                            + result.banzu[j].name + "</option>";
+                    }
+                    $("#zitem").html(zoptionStr);
+                    $("#bitem").html(boptionStr);
+                    $("#zitem").combobox();
+                    $("#zitem").combobox('select', result.ary[0].id);
+                    $("#bitem").combobox();
+                    $("#bitem").combobox('select', result.banzu[0].id);
+//		        	$("#zitem").combobox({disabled: true});
+//		        	$("#bitem").combobox({disabled: true});
+                } else if (result.type == 22) {
+                    var zoptionStr = "";
+                    var boptionStr = '<option value="0">请选择</option>';
+                    for (var i = 0; i < result.ary.length; i++) {
+                        zoptionStr += "<option value=\"" + result.ary[i].id + "\" >"
+                            + result.ary[i].name + "</option>";
+                    }
+                    for (var j = 0; j < result.banzu.length; j++) {
+                        boptionStr += "<option value=\"" + result.banzu[j].id + "\" >"
+                            + result.banzu[j].name + "</option>";
+                    }
+                    $("#zitem").html(zoptionStr);
+                    $("#bitem").html(boptionStr);
+                    $("#zitem").combobox();
+                    $("#zitem").combobox('select', result.ary[0].id);
+                    $("#bitem").combobox();
+                    $("#bitem").combobox('select', 0);
+//		        	$("#zitem").combobox({disabled: true});
+                } else {
+                    $("#bitem").combobox({disabled: true});
+                    var zoptionStr = '<option value="0">请选择</option>';
+                    for (var i = 0; i < result.ary.length; i++) {
+                        zoptionStr += "<option value=\"" + result.ary[i].id + "\" >"
+                            + result.ary[i].name + "</option>";
+                    }
+                    $("#zitem").html(zoptionStr);
+                    $("#zitem").combobox();
+                    $("#zitem").combobox('select', 0);
+                }
+
+            }
+        },
+        error: function (errorMsg) {
+            alert("数据请求失败，请联系系统管理员!");
+        }
+    });
+
+    $("#zitem").combobox({
+        onChange: function (newValue, oldValue) {
+            if (oldValue != "") {
+                $.ajax({
+                    type: "post",
+                    async: false,
+                    url: "weldtask/getTeam?searchStr=" + " and i.fparent=" + newValue,
+                    data: {},
+                    dataType: "json", //返回数据形式为json
+                    success: function (result) {
+                        if (result) {
+                            var boptionStr = '<option value="0">请选择</option>';
+                            for (var i = 0; i < result.ary.length; i++) {
+                                boptionStr += "<option value=\"" + result.ary[i].id + "\" >"
+                                    + result.ary[i].name + "</option>";
+                            }
+                            $("#bitem").html(boptionStr);
+                            $("#bitem").combobox();
+                            $("#bitem").combobox('select', 0);
+                            $("#bitem").combobox({disabled: false});
+                        }
+                    },
+                    error: function (errorMsg) {
+                        alert("数据请求失败，请联系系统管理员!");
+                    }
+                });
+            }
+        }
+    })
+
+    $("#zitem").combobox('select', 0);
+}
+
 
 function workgas() {
     // 1. 实例化对象

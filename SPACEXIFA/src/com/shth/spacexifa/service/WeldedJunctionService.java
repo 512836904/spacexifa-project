@@ -29,11 +29,19 @@ public interface WeldedJunctionService {
 
 	/**
 	 * 工件焊接时长
+	 * @param str
+	 * @param tasktime
+	 * @return
+	 */
+	List<WeldedJunction> getJunctionweldtime(Page page,String str,String tasktime);
+
+	/**
+	 * 工件生产时长
 	 * @param welder
 	 * @param dto
 	 * @return
 	 */
-	List<WeldedJunction> getJunctionweldtime(Page page,String str);
+	List<WeldedJunction> getJunctionstandtime(Page page,String str);
 
 	/**
 	 * 人员焊接时长
@@ -41,7 +49,15 @@ public interface WeldedJunctionService {
 	 * @param dto
 	 * @return
 	 */
-	List<WeldedJunction> getWelderweldtime(Page page,String str);
+	List<WeldedJunction> getWelderweldtime(Page page,String str,String tasktime);
+
+	/**
+	 * 新设备焊接时长
+	 * @param welder
+	 * @param dto
+	 * @return
+	 */
+	List<WeldedJunction> getmachineweldtime(Page page,String str,String tasktime);
 
 	/**
 	 * 设备焊接时长

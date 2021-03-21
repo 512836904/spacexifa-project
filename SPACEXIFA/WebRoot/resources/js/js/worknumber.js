@@ -260,9 +260,11 @@ function loadJobSetNormRate(day) {
         success: function (result) {
             if (result) {
                 for (var i in result.ary) {
-                    var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
-                    data.push(name);
-                    dataList.push(result.ary[i].normRate);
+                    if(result.ary[i].job_number!=null){
+                        var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                        data.push(name);
+                        dataList.push(result.ary[i].normRate);
+                    }
                 }
                 var Coincidence_rate = echarts.init(document.querySelector("#Coincidence_rate"));
                 var option = Coincidence_rate.getOption();
@@ -393,12 +395,12 @@ function onMessageArrived(message) {
                     feild["banzu"] = iname;
                     feild["welder"] = name;
                     feild["electricity"] = parseInt(ele);
-                    feild["voltage"] = parseInt(vol);
+                    feild["voltage"] = parseInt(vol/10);
                     appTableArray.push(feild);
                 } else {
                     if (JOB_NUMBER !== '' && name !== ''){
                         appTableArray[appindex].electricity = parseInt(ele);
-                        appTableArray[appindex].voltage = parseInt(vol);
+                        appTableArray[appindex].voltage = parseInt(vol/10);
                     }
                 }
             } else {
@@ -415,11 +417,11 @@ function onMessageArrived(message) {
                     }
                 }
                 //电流电压超过额定值
-                if (Number(ele) > maxele || Number(vol) > maxvol) {
+                if (Number(ele) > maxele) {
                     //根据焊缝名称查找数组如果有则删除
-                    if (junctionName_num !== -1) {
-                        appTableArray.remove(junctionName_num);
-                    }
+                    // if (junctionName_num !== -1) {
+                    //     appTableArray.remove(junctionName_num);
+                    // }
                 } else {
                     //如果不重复则可以增加新数据
                     if (addOrremove) {
@@ -431,17 +433,16 @@ function onMessageArrived(message) {
                         feild["banzu"] = iname;
                         feild["welder"] = name;
                         feild["electricity"] = parseInt(ele);
-                        feild["voltage"] = parseInt(vol);
+                        feild["voltage"] = parseInt(vol/10);
                         appTableArray.push(feild);
                     } else {
                         if (JOB_NUMBER !== '' && name !== ''){
                             appTableArray[appindex].electricity = parseInt(ele);
-                            appTableArray[appindex].voltage = parseInt(vol);
+                            appTableArray[appindex].voltage = parseInt(vol/10);
                         }
                     }
                 }
-            }
-
+             }
         }
         appvue.tableData = appTableArray;
     }

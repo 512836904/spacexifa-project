@@ -39,30 +39,75 @@
         <div id="chartShow" style="width:160px;" align="center"><img src="resources/images/load1.gif"/>数据加载中，请稍候...
         </div>
     </div>
-    <div id="dg_btn">
-        <div style="margin-bottom: 5px;">
-            焊缝名称：
-            <input class="easyui-textbox" name="junctionname" id="junctionname"/>
-            正常/返修：
-            <select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">
-                <option value="0">正常</option>
-                <option value="1">返修</option>
-            </select>
-            时间：
-            <input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">--
-            <input class="easyui-datetimebox" name="dtoTime2" id="dtoTime2">
-            <a href="javascript:serach();" class="easyui-linkbutton" iconCls="icon-select">搜索</a>
-            <a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>
-        </div>
-    </div>
-    <table id="dg" style="table-layout: fixed; width:100%;height: 100%;">
-        <div style="float:right;width: 35%;height: 95%">
-            <h2 class="h2-side"><span>工件工作时间、焊接时间（h）</span></h2>
-            <div class="panel02">
-                <div id="workgas" style="height:90%;width:88%;overflow:auto;padding-left:5px;float:left;background-color: #e1e1fd"></div>
+<%--    <div id="dg_btn">--%>
+<%--        <div style="margin-bottom: 5px;">--%>
+<%--            焊缝名称：--%>
+<%--            <input class="easyui-textbox" name="junctionname" id="junctionname"/>--%>
+<%--            正常/返修：--%>
+<%--            <select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">--%>
+<%--                <option value="0">正常</option>--%>
+<%--                <option value="1">返修</option>--%>
+<%--            </select>--%>
+<%--            时间：--%>
+<%--            <input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">----%>
+<%--            <input class="easyui-datetimebox" name="dtoTime2" id="dtoTime2">--%>
+<%--            <a href="javascript:serach();" class="easyui-linkbutton" iconCls="icon-select">搜索</a>--%>
+<%--            <a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+    <div class="functiondiv">
+        <div>
+            <div  style="float: left;">
+                <label>工作号：</label>
+                <input class="easyui-textbox" style="width:120px;" name="product_drawing_no" id="product_drawing_no"/>
+            </div>
+            <div  style="float: left;">
+                <label>部套号：</label>
+                <input class="easyui-textbox" style="width:120px;" name="product_name" id="product_name"/>
+            </div>
+            <div  style="float: left;">
+                <label>工艺编号：</label>
+                <input class="easyui-textbox" style="width:120px;" name="taskno" id="taskno"/>
+            </div>
+            <div style="float: left;">
+                <label>焊缝名称：</label>
+                <input class="easyui-textbox" style="width:120px;" name="fwelded_junction_no" id="fwelded_junction_no"/>
+            </div>
+            <div style="float: left;">
+                <label>焊工姓名：</label>
+                <input class="easyui-textbox" style="width:120px;" name="welderno" id="welderno"/>
+            </div>
+            <div>
+                <label>正常/返修：</label>
+                <select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">
+                    <option value="0">正常</option>
+                    <option value="1">返修</option>
+                </select>
             </div>
         </div>
-    </table>
+        <div>
+            <div  style="float: left;">
+                <label>时间：</label>
+                <input class="easyui-datetimebox" style="width:150px;" name="dtoTime1" id="dtoTime1">--
+                <input class="easyui-datetimebox" style="width:150px;" name="dtoTime2" id="dtoTime2">&emsp;
+            </div>
+            <div  style="float: left;">
+                <a href="javascript:serach();" class="easyui-linkbutton" iconCls="icon-select" >搜索</a>&emsp;
+                <%--					<a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>--%>
+            </div>
+        </div>
+    </div>
+    <div id="wpsTableDiv" style="height:90%;">
+        <table id="taskviewtable" style="table-layout: fixed; width:100%;"></table>
+    </div>
+<%--    <table id="dg" style="table-layout: fixed; width:100%;height: 100%;">--%>
+<%--        <div style="float:right;width: 35%;height: 95%">--%>
+<%--            <h2 class="h2-side"><span>工件工作时间、焊接时间（h）</span></h2>--%>
+<%--            <div class="panel02">--%>
+<%--                <div id="workgas" style="height:90%;width:88%;overflow:auto;padding-left:5px;float:left;background-color: #e1e1fd"></div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </table>--%>
 </div>
 </body>
 </html>

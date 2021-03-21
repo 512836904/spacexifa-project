@@ -1,6 +1,7 @@
 package com.yang.serialport.ui;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -15,64 +16,27 @@ import io.netty.util.CharsetUtil;
 
 import java.io.*;
 
-//作为客户端连接服务器
+/**
+ * 采集器【OTC】作为客户端连接转发器【PC】
+ */
 public class Clientconnect {
     public MainFrame mainFrame;
     public NettyServerHandler NS;
     private EventLoopGroup loop = new NioEventLoopGroup();
-    private String ip;
-    private String fitemid;
-    public Bootstrap bootstrap = new Bootstrap();
+    //PC服务端的IP地址和端口
+    private static String inetIp = "localhost";
+    private static int inetPort = 5551;
     public ConnectionListener CL = new ConnectionListener(this);
+    public NettyServerHandler nsh = new NettyServerHandler();
 
     public Clientconnect(NettyServerHandler NS, MainFrame mainFrame) {
-        // TODO Auto-generated constructor stub
         this.NS = NS;
         this.mainFrame = mainFrame;
     }
 
-    public Clientconnect() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public static void main(String[] args) {
-        new Clientconnect().run();
-    }
-
-    public Bootstrap createBootstrap(Bootstrap bootstrap, EventLoopGroup eventLoop) {
-        if (bootstrap != null) {
-            final TcpClientHandler handler = new TcpClientHandler(this);
-
-            try {
-                // TODO: 2020/11/8 路径修改
-                File file = new File("OTCcom/IPconfig.txt");
-//		  FileInputStream in = new FileInputStream("IPconfig.txt");
-                FileInputStream in = new FileInputStream(file.getCanonicalPath());
-                InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
-                BufferedReader bufReader = new BufferedReader(inReader);
-                String line = null;
-                int writetime = 0;
-
-                while ((line = bufReader.readLine()) != null) {
-                    if (writetime == 0) {
-                        ip = line;
-                        writetime++;
-                    } else {
-                        fitemid = line;
-                        writetime = 0;
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("otc FileNotFoundException");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                System.out.println("otc IOException");
-            }
-
+    public void createBootstrap(EventLoopGroup eventLoop) {
+        try {
+            Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(eventLoop);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
@@ -83,17 +47,24 @@ public class Clientconnect {
                     socketChannel.pipeline().addLast("frameEncoder", new LengthFieldPrepender(4));
                     socketChannel.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
                     socketChannel.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-                    socketChannel.pipeline().addLast(handler);
+                    socketChannel.pipeline().addLast(new TcpClientHandler());
                     CL.socketChannel = socketChannel;
+                    nsh.chcli = socketChannel;
                 }
             });
-            bootstrap.remoteAddress(ip, 5551);
-            bootstrap.connect().addListener(CL);
+            ChannelFuture channelFuture = bootstrap.remoteAddress(inetIp, inetPort).connect().sync();
+            if (channelFuture.isSuccess()) {
+                System.out.println("OTC连接PC成功！");
+            } else {
+                System.out.println("OTC连接PC失败！");
+            }
+            bootstrap.connect().addListener(CL).sync();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return bootstrap;
     }
 
-    public void run() {
-        createBootstrap(bootstrap, loop);
+    public void start() {
+        createBootstrap(loop);
     }
 }

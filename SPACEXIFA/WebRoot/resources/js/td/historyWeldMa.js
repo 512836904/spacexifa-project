@@ -28,7 +28,7 @@ function Junction() {
         idField: 'id',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
-        url: "weldedjunction/getWeldingJun" + chartStr + "&wjno=" + $("#wjno").val() + "&machineid=" + $("#machineid").val(),
+        url: "weldedjunction/gethistorypersonmachine" + chartStr + "&wjno=" + $("#wjno").val() + "&machineid=" + $("#machineid").val(),
         singleSelect: true,
         rownumbers: true,
         showPageList: false,

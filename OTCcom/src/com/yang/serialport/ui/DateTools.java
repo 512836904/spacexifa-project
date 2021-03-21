@@ -3,6 +3,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 工具类
+ */
 public class DateTools {
 	
 	public static Date parse(String formatPattern, String dateString)  

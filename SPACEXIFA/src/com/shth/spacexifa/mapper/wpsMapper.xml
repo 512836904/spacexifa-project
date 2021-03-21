@@ -1264,9 +1264,7 @@
 
     <select id="findCraftByJunctionId" parameterType="java.math.BigInteger" resultType="Wps">
         SELECT * FROM (
-        SELECT wj.CRAFT_PARAM FROM TB_PRODUCTION_CRAFT pc
-        INNER JOIN TB_LIBRARY_JUNCTION lj ON lj.PRODUCTION_ID = pc.FID
-        INNER JOIN TB_WELDED_JUNCTION wj ON wj.FID = lj.TRACKINGCARD_ID
+        SELECT CRAFT_PARAM FROM TB_PRODUCTION_CRAFT pc
         WHERE 1 = 1
         <if test="junction_id != 0 and junction_id != null">
             and pc.FJUNCTION = #{junction_id}

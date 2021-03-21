@@ -8,7 +8,7 @@ function junctionDatagrid() {
         height: $("#body").height(),
         width: $("#body").width(),
         idField: 'FID',
-        pageSize: 10,
+        pageSize: 50,
         pageList: [10, 20, 30, 40, 50],
         url: "production/getProductionCraftList",
         singleSelect: true,

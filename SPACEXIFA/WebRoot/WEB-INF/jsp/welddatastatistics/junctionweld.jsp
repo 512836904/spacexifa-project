@@ -61,7 +61,14 @@
 			</div>
 		</div>
 		<div>
-			<div  style="float: left;">
+			<div style="float: left;">
+				<label>正常/返修：</label>
+				<select class="easyui-combobox" name="type" id="ftype" data-options="editable:false">
+					<option value="0">正常</option>
+					<option value="1">返修</option>
+				</select>
+			</div>
+			<div style="float: left;">
 				<label>时间：</label>
 				<input class="easyui-datetimebox" style="width:150px;" name="dtoTime1" id="dtoTime1">--
 				<input class="easyui-datetimebox" style="width:150px;" name="dtoTime2" id="dtoTime2">&emsp;

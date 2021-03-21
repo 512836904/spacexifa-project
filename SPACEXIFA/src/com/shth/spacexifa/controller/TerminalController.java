@@ -419,6 +419,7 @@ public class TerminalController {
                 productionByjid.setSOLDER_SPEED_UPPER(BigInteger.valueOf(Long.parseLong(maxsolder)));
                 productionByjid.setDATA_SOURCES(BigInteger.valueOf(2));//数据来源：终端扫码
                 productionByjid.setFJUNCTION(BigInteger.valueOf(junctiob_id));
+                productionByjid.setCraft_param(wpsparameter);
                 craftService.updateProductionCraft(productionByjid);
                 produ_id = productionByjid.getFID();//工艺id
             } else {
@@ -438,6 +439,7 @@ public class TerminalController {
                 craft.setSOLDER_SPEED_UPPER(BigInteger.valueOf(Long.parseLong(maxsolder)));
                 craft.setDATA_SOURCES(BigInteger.valueOf(2));//数据来源：终端扫码
                 craft.setFJUNCTION(BigInteger.valueOf(junctiob_id));
+                craft.setCraft_param(wpsparameter);
                 craft.setCREATE_TIME(sdf.format(System.currentTimeMillis()));
                 if (null != repairType && !"".equals(repairType)) {
                     if ("1".equals(repairType)) {
@@ -501,7 +503,7 @@ public class TerminalController {
                         task_id = wps.getFid();
                     } else {
                         //task_id = taskResultById.getFid();
-                        wpsService.updateTaskResultById(wps);//结束任务
+                        wpsService.updateTaskResultById(taskResultById);//结束任务
                         //新增一个任务
                         wpsService.overCard(wps);
                         task_id = wps.getFid();

@@ -297,6 +297,14 @@ function workgas() {
                 interval: 0
             }
         },
+        dataZoom: [
+            {
+                id: 'dataZoomX',
+                type: 'slider',
+                xAxisIndex: [0],
+                filterMode: 'filter'
+            }
+        ],
         yAxis: [{
             type: "value",
             name: "工作时间(H)",
@@ -419,9 +427,11 @@ function setWorkCharts(){
             var name = workary[index].name;
             var starttime = workary[index].starttime;
             var worktime = workary[index].worktime;
-            ins.push(name);
-            data1.push(starttime);
-            data2.push(worktime);
+            if(starttime>0 || worktime>0){
+                ins.push(name);
+                data1.push(starttime/3600);
+                data2.push(worktime/3600);
+            }
         }
     }
     var teamgas = echarts.init(document.querySelector("#workgas"));
@@ -432,6 +442,16 @@ function setWorkCharts(){
             return value.split("").join("\n");
         }
     option.series[0].data = data1;
+    if(data1.length>0){
+        option.yAxis[0].max=Math.ceil(Math.max(...data1));
+        option.yAxis[0].min=0;
+        option.yAxis[0].interval=Math.ceil(Math.max(...data1)/5);
+    }
     option.series[1].data = data2;
+    if(data2.length>0){
+        option.yAxis[1].max=Math.ceil(Math.max(...data2));
+        option.yAxis[1].min=0;
+        option.yAxis[1].interval=Math.ceil(Math.max(...data2)/5);
+    }
     teamgas.setOption(option);
 }

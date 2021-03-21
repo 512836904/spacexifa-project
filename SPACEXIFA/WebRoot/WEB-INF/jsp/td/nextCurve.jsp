@@ -106,7 +106,7 @@
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
                     工作号：<span id="r1"></span></li>
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
-                    布套号：<span id="r2"></span></li>
+                    部套号：<span id="r2"></span></li>
             </div>
             <div style="float:left;width:20%;height:120px;padding-top:35px;margin-left:100px;">
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">

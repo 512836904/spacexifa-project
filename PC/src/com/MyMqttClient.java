@@ -2,6 +2,8 @@ package com;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sun.xml.xsom.impl.scd.SCDImpl;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
 import io.netty.channel.socket.SocketChannel;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -12,23 +14,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyMqttClient {
     public static MqttClient mqttClient = null;
     private static MemoryPersistence memoryPersistence = null;
     private static MqttConnectOptions mqttConnectOptions = null;
-    private String socketfail;
-    public HashMap<String, SocketChannel> socketlist = new HashMap<>();
+    //在线OTC连接通道
+    public static ConcurrentHashMap<ChannelId, ChannelHandlerContext> channelList;
     private String ip;
-    private String ip1;
     //新加
     public ArrayList<String> taskarray = new ArrayList<String>();   //存取手持终端下发的任务信息
     public Server server;
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    /*
-     * static { init("MQTT_FX_Client"); }
-     */
 
     //新加
     public MyMqttClient(Server server) {
@@ -51,94 +49,65 @@ public class MyMqttClient {
                 if (writetime == 0) {
                     ip = line;
                     writetime++;
-                } else {
-                    ip1 = line;
-                    writetime = 0;
                 }
             }
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
             e.printStackTrace();
         }
         String[] values = ip.split(",");
 
-        //��ʼ���������ö���
         mqttConnectOptions = new MqttConnectOptions();
-        //��ʼ��MqttClient
         if (null != mqttConnectOptions) {
-            /*
-             * mqttConnectOptions.setUserName("815137651@qq.com");
-             * mqttConnectOptions.setPassword("shgwth4916.".toCharArray());
-             */
-            //			true���԰�ȫ��ʹ���ڴ�־�����Ϊ�ͻ��˶Ͽ�����ʱ���������״̬
             mqttConnectOptions.setCleanSession(true);
-            //			�������ӳ�ʱ������
             mqttConnectOptions.setConnectionTimeout(3000);
             mqttConnectOptions.setKeepAliveInterval(3000);
-            //			���ó־û���ʽ
             memoryPersistence = new MemoryPersistence();
             if (null != memoryPersistence && null != clientId) {
                 try {
                     mqttClient = new MqttClient("tcp://" + values[0] + ":1883", clientId, memoryPersistence);
                 } catch (MqttException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            } else {
-
             }
         } else {
-            System.out.println("mqttConnectOptions����Ϊ��");
+            System.out.println("mqttConnectOptions");
         }
 
-        //�������Ӻͻص�
         if (null != mqttClient) {
             if (!mqttClient.isConnected()) {
-
-                //			�����ص���������
                 MqttReceriveCallback mqttReceriveCallback = new MqttReceriveCallback(this);
-                //			�ͻ�����ӻص�����
                 mqttClient.setCallback(mqttReceriveCallback);
-                //			��������
                 try {
                     mqttClient.connect(mqttConnectOptions);
                 } catch (MqttException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
+            }else {
+                System.out.println("MQTT服务连接成功！");
             }
         } else {
             System.out.println("mqttClientΪ is null");
         }
     }
 
-    //	�ر�����
     public void closeConnect() {
-        //�رմ洢��ʽ
         if (null != memoryPersistence) {
             try {
                 memoryPersistence.close();
             } catch (MqttPersistenceException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {
             System.out.println("memoryPersistence is null");
         }
 
-        //		�ر�����
         if (null != mqttClient) {
             if (mqttClient.isConnected()) {
                 try {
                     mqttClient.disconnect();
                     mqttClient.close();
                 } catch (MqttException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             } else {
@@ -149,7 +118,7 @@ public class MyMqttClient {
         }
     }
 
-    //	������Ϣ
+    //	消息发送
     public void publishMessage(String pubTopic, String message, int qos) {
         if (null != mqttClient && mqttClient.isConnected()) {
             MqttMessage mqttMessage = new MqttMessage();
@@ -165,7 +134,6 @@ public class MyMqttClient {
                         //System.out.println("��Ϣ�����ɹ�:"+message);
                     }
                 } catch (MqttException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -176,7 +144,7 @@ public class MyMqttClient {
 
     }
 
-    //	��������
+    //	重连
     public void reConnect() {
         if (null != mqttClient) {
             if (!mqttClient.isConnected()) {
@@ -184,7 +152,6 @@ public class MyMqttClient {
                     try {
                         mqttClient.connect(mqttConnectOptions);
                     } catch (MqttException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 } else {
@@ -199,7 +166,7 @@ public class MyMqttClient {
 
     }
 
-    //	��������
+    //	订阅主题
     public void subTopic(String topic) {
         if (null != mqttClient && mqttClient.isConnected()) {
             try {
@@ -213,7 +180,7 @@ public class MyMqttClient {
         }
     }
 
-    //	�������
+    //	清空主题
     public void cleanTopic(String topic) {
         if (null != mqttClient && !mqttClient.isConnected()) {
             try {
@@ -233,6 +200,7 @@ public class MyMqttClient {
          * 判断是手持终端下发的任务信息还是前端mq下发的信息
          */
         if (str.charAt(0) == '{') {
+            System.out.println("手持终端下发了任务");
             try {
                 JSONObject taskstr = JSONObject.parseObject(str);
                 if ("starttask".equals(taskstr.getString("type"))) {
@@ -269,7 +237,7 @@ public class MyMqttClient {
                     }
                     System.out.println("手持终端下发了任务：" + taskstr.getString("machine") + ",时间：" + sdf.format(System.currentTimeMillis()));
                     this.server.NS.mysql.db.taskarray = taskarray;
-                    this.server.NS.websocket.taskarray = taskarray;
+                    this.server.websocket.taskarray = taskarray;
                 } else if ("overtask".equals(taskstr.getString("type"))) {
                     if (!taskarray.isEmpty() && taskarray.contains(taskstr.getString("machine"))) {
                         int index = taskarray.indexOf(taskstr.getString("machine"));
@@ -284,7 +252,7 @@ public class MyMqttClient {
                         System.out.println("手持终端结束了任务：" + taskstr.getString("machine") + ",时间：" + sdf.format(System.currentTimeMillis()));
                     }
                     this.server.NS.mysql.db.taskarray = taskarray;
-                    this.server.NS.websocket.taskarray = taskarray;
+                    this.server.websocket.taskarray = taskarray;
                 }
 
             } catch (Exception e) {
@@ -292,53 +260,36 @@ public class MyMqttClient {
             }
 
         } else {
-//            if (str.length() == 112){
-//                System.out.println("下发了数据："+sdf.format(System.currentTimeMillis()));
-//            }
-//            if (str.length() == 24){
-//                System.out.println("索取了数据："+sdf.format(System.currentTimeMillis()));
-//            }
+            //System.out.println("网页下发了任务");
+            //System.out.println("len:"+str.length()+"-->str:"+str);
             Server.cachedThreadPool.execute(new writeMessageByMq(str));
-
         }
     }
 
     class writeMessageByMq implements Runnable {
 
         private String str = "";
-        writeMessageByMq(String str){
+
+        writeMessageByMq(String str) {
             this.str = str;
         }
 
         @Override
         public void run() {
-            ArrayList<String> listarraybuf = new ArrayList<String>();
-            boolean ifdo = false;
-            HashMap<String, SocketChannel> socketlist_cl;
-            Iterator<Entry<String, SocketChannel>> webiter = socketlist.entrySet().iterator();
-            while (webiter.hasNext()) {
-                try {
-                    Entry<String, SocketChannel> entry = (Entry<String, SocketChannel>) webiter.next();
-                    socketfail = entry.getKey();
-                    SocketChannel socketcon = entry.getValue();
-                    if (socketcon.isOpen() && socketcon.isActive() && socketcon.isWritable()) {
-                        socketcon.writeAndFlush(str);
-                    } else {
-                        listarraybuf.add(socketfail);
-                        ifdo = true;
+            //synchronized (channelList) {
+                Iterator<Entry<ChannelId, ChannelHandlerContext>> iterator = channelList.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    try {
+                        Entry<ChannelId, ChannelHandlerContext> next = iterator.next();
+                        ChannelHandlerContext value = next.getValue();
+                        if (value.channel().isOpen() && value.channel().isActive() && value.channel().isWritable()) {
+                            value.channel().writeAndFlush(str);
+                        }
+                    } catch (Exception e) {
+                        e.getStackTrace();
                     }
-
-                } catch (Exception e) {
-                    listarraybuf.add(socketfail);
-                    ifdo = true;
-                    e.getStackTrace();
                 }
-            }
-            if (ifdo) {
-                for (int i = 0; i < listarraybuf.size(); i++) {
-                    socketlist.remove(listarraybuf.get(i));
-                }
-            }
+            //}
         }
     }
 }

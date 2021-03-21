@@ -29,9 +29,13 @@ public interface WeldedJunctionMapper extends Mapper<WeldedJunction>{
 
 	List<WeldedJunction> getJunctionHistory(@Param("search")String search);
 
-	List<WeldedJunction> getJunctionweldtime(@Param("search")String search);
+	List<WeldedJunction> getJunctionweldtime(@Param("search")String search,@Param("tasktime")String tasktime);
 
-	List<WeldedJunction> getWelderweldtime(@Param("search")String search);
+	List<WeldedJunction> getJunctionstandtime(@Param("search")String search);
+
+	List<WeldedJunction> getWelderweldtime(@Param("search")String search,@Param("tasktime")String tasktime);
+
+	List<WeldedJunction> getmachineweldtime(@Param("search")String search,@Param("tasktime")String tasktime);
 
 	List<WeldedJunction> getMachineweldtime(@Param("search")String search);
 

@@ -1,5 +1,5 @@
 var eleUpLine = 0, eleDownLine = 0, volUpLine = 0, volDownLine = 0;
-
+var welderid="";
 $(function () {
     Junction();
     $("#little").hide();
@@ -11,7 +11,8 @@ function setParam() {
     var parent = $("#parent").val();
     var dtoTime1 = $("#dtoTime1").datetimebox('getValue');
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
-    chartStr = "?parent=" + parent + "&dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2;
+    welderid = $("#welderid").val();
+    chartStr = "?parent=" + parent + "&dtoTime1=" + dtoTime1 + "&dtoTime2=" + dtoTime2+"&welderid=" + welderid ;
 }
 
 var time1 = new Array();
@@ -28,7 +29,7 @@ function Junction() {
         idField: 'id',
         pageSize: 10,
         pageList: [10, 20, 30, 40, 50],
-        url: "weldedjunction/getWeldingJun" + chartStr + "&wjno=" + $("#wjno").val() + "&welderid=" + $("#welderid").val(),
+        url: "weldedjunction/gethistorypersonmachine" + chartStr,
         singleSelect: true,
         rownumbers: true,
         showPageList: false,

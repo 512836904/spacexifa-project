@@ -3,6 +3,9 @@ package com;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * 向数据库中查询焊工、焊机等信息
+ */
 public class DB_Connectioncode {
 
     public ArrayList<String> listarray1 = new ArrayList<String>();

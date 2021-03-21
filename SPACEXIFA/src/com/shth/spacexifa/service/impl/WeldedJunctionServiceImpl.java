@@ -69,15 +69,27 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 	}
 
 	@Override
-	public List<WeldedJunction> getJunctionweldtime(Page page, String search) {
+	public List<WeldedJunction> getJunctionweldtime(Page page, String search,String tasktime) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
-		return wjm.getJunctionweldtime(search);
+		return wjm.getJunctionweldtime(search,tasktime);
 	}
 
 	@Override
-	public List<WeldedJunction> getWelderweldtime(Page page, String search) {
+	public List<WeldedJunction> getJunctionstandtime(Page page, String search) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
-		return wjm.getWelderweldtime(search);
+		return wjm.getJunctionstandtime(search);
+	}
+
+	@Override
+	public List<WeldedJunction> getWelderweldtime(Page page, String search,String tasktime) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return wjm.getWelderweldtime(search,tasktime);
+	}
+
+	@Override
+	public List<WeldedJunction> getmachineweldtime(Page page, String search, String tasktime) {
+		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return wjm.getmachineweldtime(search,tasktime);
 	}
 
 	@Override

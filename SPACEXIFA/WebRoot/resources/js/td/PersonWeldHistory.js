@@ -6,7 +6,6 @@ var welderid = "";
 var dtoTime1 = "";
 var dtoTime2 = "";
 $(function () {
-    Junction();
     $("#little").hide();
     $("#body1").height($("#elebody").height() - 30);
     var fjunction_id = $("#fjunction_id").val();
@@ -49,16 +48,17 @@ $(function () {
             alert("数据请求失败，请联系系统管理员!");
         }
     });
-
+    Junction();
 })
 
 function setParam() {
     chartStr = "";
     fjunction_id = $("#fjunction_id").val();
     welderid = $("#fid").val();
-    dtoTime1 = $("#dtoTime1").val();
-    dtoTime2 = $("#dtoTime2").val();
-    chartStr = "?fjunction_id=" + fjunction_id + "&welderid=" + welderid + "&dtoTime1=" + dtoTime1+ "&dtoTime2=" + dtoTime2;
+    machinid = $("#machin_id").val();
+    dtoTime1 = $("#dto1").val();
+    dtoTime2 = $("#dto2").val();
+    chartStr = "?fjunction_id=" + fjunction_id + "&welderid=" + welderid + "&machineid=" + machinid + "&dtoTime1=" + dtoTime1+ "&dtoTime2=" + dtoTime2;
 }
 
 var time1 = new Array();
@@ -73,7 +73,7 @@ function Junction() {
         height: $("body").height() / 2,
         width: $("body").width(),
         idField: 'id',
-        pageSize: 10,
+        pageSize: 50,
         pageList: [10, 20, 30, 40, 50],
         url: "weldedjunction/getWeldingJun" + chartStr,
         singleSelect: true,
@@ -225,6 +225,7 @@ function Junction() {
             $("#bodys").append(sh);
             document.getElementById("show").style.display = "block";
             chartStr = "";
+            var firsttime = row.firsttime.substring(0,19);
             setParam();
             query = {
                 "query": {
@@ -263,8 +264,8 @@ function Junction() {
                         "filter": {
                             "range": {
                                 "fuploaddatetime": {
-                                    "gte": new Date(dtoTime1).toISOString(),
-                                    "lte": new Date(dtoTime2).toISOString()
+                                    "gte": new Date(row.firsttime.substring(0,19)).toISOString(),
+                                    "lte": new Date(row.lasttime.substring(0,19)).toISOString()
                                 }
                             }
                         }

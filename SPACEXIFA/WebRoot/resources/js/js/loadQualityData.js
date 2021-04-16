@@ -90,7 +90,8 @@ function loadJobSetNormRate(day){
             if (result) {
                 for (var i in result.ary) {
                     if(result.ary[i].job_number!=null){
-                        var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                        //var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                        var name = result.ary[i].job_number + " " + result.ary[i].set_number ;
                         data.push(name);
                         dataList.push(result.ary[i].normRate);
                     }

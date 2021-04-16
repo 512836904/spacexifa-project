@@ -78,7 +78,7 @@
             </div>
         </fieldset>
     </div>
-    <div style="width:23%;height:150px;float:left;margin-left:10px;position: relative;">
+    <div style="width:18%;height:150px;float:left;margin-left:10px;position: relative;">
         <fieldset>
             <legend>焊接参数</legend>
             <div style="width:95%;height:75px;margin-left:20px;">
@@ -99,18 +99,24 @@
             </div>
         </fieldset>
     </div>
-    <div style="width:47%;height:150px;float:left;margin-left:10px;position: relative;">
+    <div style="width:52%;height:150px;float:left;margin-left:10px;position: relative;">
         <fieldset>
             <legend>设备特征</legend>
-            <div style="float:left;width:20%;height:120px;padding-top:35px;margin-left:100px;">
+            <div style="float:left;width:20%;height:120px;padding-top:35px;margin-left:30px;">
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
                     工作号：<span id="r1"></span></li>
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
                     部套号：<span id="r2"></span></li>
             </div>
-            <div style="float:left;width:20%;height:120px;padding-top:35px;margin-left:100px;">
+            <div style="float:left;width:30%;height:120px;padding-top:35px;margin-left:30px;">
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
-                    工件名：<span id="r3"></span></li>
+                    零件图号：<span id="r5"></span></li>
+                <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
+                    零件名：<span id="r6"></span></li>
+            </div>
+            <div style="float:left;width:30%;height:120px;padding-top:35px;margin-left:30px;">
+                <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
+                    焊缝名称：<span id="r3"></span></li>
                 <li style="width:100%;height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size: 20px;">
                     班组：<span id="r4"></span></li>
             </div>

@@ -5,6 +5,20 @@ var fjunction_id = "";
 var welderid = "";
 var dtoTime1 = "";
 var dtoTime2 = "";
+var product_drawing_no = "";
+var product_name = "";
+var taskno = "";
+var fwelded_junction_no = "";
+var junction_name = "";
+var weldername = "";
+var weldernum = "";
+var zitem = "";
+var bitem = "";
+var chartvalue = "";
+var part_number = "";
+var part_name = "";
+var machinenum = "";
+var fstatus = "";
 $(function () {
     $("#little").hide();
     $("#body1").height($("#elebody").height() - 30);
@@ -60,7 +74,73 @@ function setParam() {
     dtoTime2 = $("#dto2").val();
     chartStr = "?fjunction_id=" + fjunction_id + "&welderid=" + welderid + "&machineid=" + machinid + "&dtoTime1=" + dtoTime1+ "&dtoTime2=" + dtoTime2;
 }
-
+function goback(){
+    fjunction_id = $("#fjunction_id").val();
+    welderid = $("#fid").val();
+    machinid = $("#machin_id").val();
+    Time1 = $("#dtoTime1").val();
+    Time2 = $("#dtoTime2").val();
+    product_drawing_no = $("#product_drawing_no").val();
+    product_name = $("#product_name").val();
+    part_number = $("#part_number").val();
+    part_name = $("#part_name").val();
+    taskno = $("#taskno").val();
+    fwelded_junction_no = $("#fwelded_junction_no").val();
+    fjunction_id = $("#fjunction_id").val();
+    weldername = $("#weldername").val();
+    weldernum = $("#weldernum").val();
+    machinenum = $("#machinenum").val();
+    zitem = $("#zitem").val();
+    bitem = $("#bitem").val();
+    type = $("#type").val();
+    fstatus = $("#fstatus").val();
+    if(zitem != ""){
+        chartvalue += "&zitem="+zitem;
+    }
+    if(bitem != ""){
+        chartvalue += "&bitem="+bitem;
+    }
+    if(Time1 != ""){
+        chartvalue += "&Time1="+Time1;
+    }
+    if(Time2 != ""){
+        chartvalue += "&Time2="+Time2;
+    }
+    if(product_drawing_no != ""){
+        chartvalue += "&product_drawing_no="+product_drawing_no;
+    }
+    if(product_name != ""){
+        chartvalue += "&product_name="+product_name;
+    }
+    if(part_number != ""){
+        chartvalue += "&part_number="+part_number;
+    }
+    if(part_name != ""){
+        chartvalue += "&part_name="+encodeURI(part_name);
+    }
+    if(taskno != ""){
+        chartvalue += "&taskno="+taskno;
+    }
+    if(fwelded_junction_no != ""){
+        chartvalue += "&fwelded_junction_no="+encodeURI(fwelded_junction_no);
+    }
+    if(weldername != ""){
+        chartvalue += "&weldername="+encodeURI(weldername);
+    }
+    if(weldernum != ""){
+        chartvalue += "&weldernum="+encodeURI(weldernum);
+    }
+    if(machinenum != ""){
+        chartvalue += "&machinenum="+encodeURI(machinenum);
+    }
+    if(type != ""){
+        chartvalue += "&type="+type;
+    }
+    if(fstatus != ""){
+        chartvalue += "&fstatus="+fstatus;
+    }
+    window.location.href=encodeURI("datastatistics/goweldpartermeter?chartvalue="+chartvalue);
+}
 var time1 = new Array();
 var vol = new Array();
 var ele = new Array();
@@ -295,6 +375,8 @@ function Junction() {
                 success: function (json, statusText, xhr) {
                     //$("#table").bootstrabool('load',json.hits.hits);
                     var result = json.hits.hits;
+                    ele.splice(0,ele.length);
+                    vol.splice(0,vol.length);
                     for (var i in result) {
                         ele.push(result[i]._source.felectricity);
                         vol.push(result[i]._source.fvoltage);

@@ -371,7 +371,13 @@ function gobutton_2() {
     var e = document.getElementById("teamwork");
     e.style.display = 'block';
     Coincidence();
-    loadWorkAreas(null,1);
+    var display = $('#one_day2').css('display');
+    if(display=='none'){
+        loadWorkAreas(1, 1);
+    }else{
+        loadWorkAreas(null, 1);
+    }
+
 }
 
 //跳转工段
@@ -385,7 +391,12 @@ function gobutton_1() {
     var e = document.getElementById("teamwork");
     e.style.display = 'none';
     Coincidence1();
-    loadWorkAreas(null,0);
+    var display = $('#one_day2').css('display');
+    if(display=='none'){
+        loadWorkAreas(1, 0);
+    }else{
+        loadWorkAreas(null, 0);
+    }
 }
 
 //超规范跳转工段

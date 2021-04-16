@@ -1,10 +1,7 @@
 package com.shth.spacexifa.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.shth.spacexifa.model.Dictionarys;
-import com.shth.spacexifa.model.MyUser;
-import com.shth.spacexifa.model.ProductionCraft;
-import com.shth.spacexifa.model.Wps;
+import com.shth.spacexifa.model.*;
 import com.shth.spacexifa.page.Page;
 import com.shth.spacexifa.service.DictionaryService;
 import com.shth.spacexifa.service.ProductionCraftService;
@@ -187,6 +184,30 @@ public class WpsController {
         obj.put("rows", ary);
         return obj.toString();
     }
+    /**
+     * 工作号默认展示所有或隐藏所有
+     */
+    @RequestMapping("/updateWorkgage")
+    @ResponseBody
+    public String updateWorkgage(HttpServletRequest request) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            //如果工作号信息展示状态为空，默认展示【1】
+            String supergage_status = request.getParameter("supergage_status");
+            if (isNotEmpty(supergage_status)) {
+                wpsService.updateWorkStatus(Integer.parseInt(supergage_status));
+            } else {
+                wpsService.updateWorkStatus(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonObject.put("success", false);
+        }
+        jsonObject.put("success", true);
+        return jsonObject.toString();
+    }
+
+
     /**
      * 大屏工作号展示管理
      *

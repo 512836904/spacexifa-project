@@ -709,6 +709,12 @@ public interface WpsService {
 	 */
 	int updateStatusByFids(List<String> list,String type);
 
+
+	/**
+	 * 默认工作号展示状态
+	 */
+	int updateWorkStatus(Integer type);
+
 	/**
 	 * 查询所有工作号信息
 	 * @return

@@ -150,8 +150,9 @@ function loadWelderStatus(){
         multiple: false,  //多选
         editable: false,  //是否可编辑
         panelHeight: 'auto',
-        data: [{id: 0, text: '已离职'}, {id: 1, text: '在职'}]//设置默认值
+        data: [{id: 1, text: '在职',selected:true}, {id: 0, text: '已离职'}]//设置默认值
     });
+
 }
 
 var url = "";

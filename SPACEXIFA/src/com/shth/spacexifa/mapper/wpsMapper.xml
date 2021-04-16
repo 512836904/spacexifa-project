@@ -1307,6 +1307,7 @@
         </if>
     </update>
 
+
     <!-- 大屏工作号是否展示 -->
     <update id="updateStatusByFids">
         UPDATE TB_WELDED_JUNCTION SET
@@ -1315,6 +1316,13 @@
         <foreach collection="list" open="(" close=")" item="id" separator=",">
             #{id}
         </foreach>
+    </update>
+
+    <!-- 大屏工作号默认展示 -->
+    <update id="updateWorkStatus">
+        UPDATE TB_WELDED_JUNCTION SET
+        FSTATUS = #{status}
+        WHERE 1=1
     </update>
 
     <!-- 查询所有展示的工作号信息 -->

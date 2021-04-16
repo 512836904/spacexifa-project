@@ -14,6 +14,8 @@ function setParam() {
     var dtoTime2 = $("#dtoTime2").datetimebox('getValue');
     var zitem = $("#zitem").combobox('getValue');
     var bitem = $("#bitem").combobox('getValue');
+    var weldername = $("#weldername").val();
+    var weldernum = $("#weldernum").val();
     var item = "";
     if(zitem!=0){
         item = zitem;
@@ -21,7 +23,7 @@ function setParam() {
     if(bitem!=0){
         item = bitem;
     }
-    chartStr += "?item="+item+"&dtoTime1="+dtoTime1+"&dtoTime2="+dtoTime2;
+    chartStr += "?item="+item+"&dtoTime1="+dtoTime1+"&dtoTime2="+dtoTime2+"&weldername="+weldername+"&weldernum="+weldernum;
 
 }
 
@@ -37,7 +39,7 @@ function dgDatagrid() {
         success : function(result) {
             if (result) {
                 workary = result.arys;
-                var str = ["焊工编号","焊工名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)"];
+                var str = ["焊工编号","焊工名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)"];
                 for (var i = 0; i < str.length; i++) {
                     column.push({
                         field: "t" + i,
@@ -47,6 +49,18 @@ function dgDatagrid() {
                         align: "left",
                         sortable: true,
                         sorter: function (a, b) {
+                            if(a.indexOf(":")>0){
+                                let hour = a.split(":")[0];
+                                let min = a.split(":")[1];
+                                let sec = a.split(":")[2];
+                                a = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                            }
+                            if(b.indexOf(":")>0){
+                                let hour = b.split(":")[0];
+                                let min = b.split(":")[1];
+                                let sec = b.split(":")[2];
+                                b = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                            }
                             return (a > b ? 1 : -1);
                         }
                     });
@@ -56,8 +70,8 @@ function dgDatagrid() {
                     height : 600,
                     width : 1050,
                     url : "datastatistics/getPersonData"+chartStr,
-                    pageSize : 50,
-                    pageList : [ 10, 20, 30, 40, 50 ],
+                    pageSize : 200,
+                    pageList : [ 10, 20, 50, 100, 200 ],
                     singleSelect : true,
                     rownumbers : true,
                     showPageList : false,

@@ -50,6 +50,11 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
+	public List<DataStatistics> getweldernameCount(WeldDto dto, String tasktime) {
+		return ds.getweldernameCount(dto, tasktime);
+	}
+
+	@Override
 	public DataStatistics getParameter() {
 		return ds.getParameter();
 	}
@@ -92,9 +97,19 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
-	public List<DataStatistics> getAllWelder(Page page,BigInteger parent) {
+	public List<DataStatistics> getAllWelder(Page page,BigInteger parent,WeldDto dto) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
-		return ds.getAllWelder(parent);
+		return ds.getAllWelder(parent,dto);
+	}
+
+	@Override
+	public DataStatistics getItemWorkTime(BigInteger itemid,WeldDto dto) {
+		return ds.getItemWorkTime(itemid,dto);
+	}
+
+	@Override
+	public List<DataStatistics> getAllPersonData(BigInteger parent,WeldDto dto) {
+		return ds.getAllWelder(parent,dto);
 	}
 
 	@Override
@@ -178,10 +193,7 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 		return ds.getAllMachine(itemid);
 	}
 
-	@Override
-	public List<DataStatistics> getAllPersonData(BigInteger parent) {
-		return ds.getAllWelder(parent);
-	}
+
 
 	public List<DataStatistics> getAllJunctionData(String junctionno) {
 		return ds.getAllJunction(junctionno);
@@ -228,9 +240,19 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
 	}
 
 	@Override
-	public List<DataStatistics> getWorkRank(Page page,BigInteger parent, String time) {
+	public List<DataStatistics> getWorkRank(Page page,BigInteger parent, String time,String time2) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
-		return ds.getWorkRank(parent, time);
+		return ds.getWorkRank(parent, time,time2);
+	}
+
+	@Override
+	public List<DataStatistics> getWelderWorkTime(BigInteger itemid, String time) {
+		return ds.getWelderWorkTime(itemid, time);
+	}
+
+	@Override
+	public List<DataStatistics> getPersonWorkTime(BigInteger itemid, String time) {
+		return ds.getPersonWorkTime(itemid, time);
 	}
 
 	@Override

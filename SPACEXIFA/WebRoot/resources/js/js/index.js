@@ -357,7 +357,13 @@ function one_1(data) {
         var div = document.getElementById("one_day2");
         div.style.display = 'block';
     }
-    loadWorkAreas(data, null);
+    var display = $('#pchart1').css('display');
+    if(display=='none'){
+        loadWorkAreas(data, 1);
+    }else{
+        loadWorkAreas(data, null);
+    }
+
 }
 
 function one_2(data) {
@@ -372,7 +378,13 @@ function one_2(data) {
         var div = document.getElementById("one_day4");
         div.style.display = 'block';
     }
-    loadWorkGas(data, null);
+    var display = $('#vchart1').css('display');
+    if(display=='none'){
+        loadWorkGas(data, 1);
+    }else{
+        loadWorkGas(data, null);
+    }
+
 }
 
 function one_3(data) {
@@ -387,7 +399,13 @@ function one_3(data) {
         var div = document.getElementById("one_day6");
         div.style.display = 'block';
     }
-    loadWorkWelders(data, null);
+    var display = $('#vchart3').css('display');
+    if(display=='none'){
+        loadWorkWelders(data, 1);
+    }else{
+        loadWorkWelders(data, null);
+    }
+
 }
 
 function one_4(data) {
@@ -402,7 +420,12 @@ function one_4(data) {
         var div = document.getElementById("one_day8");
         div.style.display = 'block';
     }
-    loadWorkMaterals(data, null);
+    var display = $('#vchart5').css('display');
+    if(display=='none'){
+        loadWorkMaterals(data, 1);
+    }else{
+        loadWorkMaterals(data, null);
+    }
 }
 
 function one_5(data) {
@@ -417,7 +440,13 @@ function one_5(data) {
         var div = document.getElementById("one_day10");
         div.style.display = 'block';
     }
-    loadWorkRadios(data, null);
+    var display = $('#vchart7').css('display');
+    if(display=='none'){
+        loadWorkRadios(data, 1);
+    }else{
+        loadWorkRadios(data, null);
+    }
+
 }
 
 function one_6(data) {
@@ -446,7 +475,12 @@ function gobutton_10() {
     var e = document.getElementById("allteamwork");
     e.style.display = 'block';
     Coincidence();
-    loadWorkAreas(null, 1);
+    var display = $('#one_day2').css('display');
+    if(display=='none'){
+        loadWorkAreas(1, 1);
+    }else{
+        loadWorkAreas(null, 1);
+    }
 }
 
 //跳转工段
@@ -460,7 +494,12 @@ function gobutton_9() {
     var e = document.getElementById("allteamwork");
     e.style.display = 'none';
     Coincidence1();
-    loadWorkAreas(null, 0);
+    var display = $('#one_day2').css('display');
+    if(display=='none'){
+        loadWorkAreas(1, 0);
+    }else{
+        loadWorkAreas(null, 0);
+    }
 }
 
 //跳转班组
@@ -474,7 +513,13 @@ function gobutton_8() {
     var e = document.getElementById("allteamradio");
     e.style.display = 'block';
     teamradio();
-    loadWorkRadios(null, 1);
+    var display = $('#one_day10').css('display');
+    if(display=='none'){
+        loadWorkRadios(1, 1);
+    }else{
+        loadWorkRadios(null, 1);
+    }
+
 }
 
 //跳转工段
@@ -488,11 +533,17 @@ function gobutton_7() {
     var e = document.getElementById("allteamradio");
     e.style.display = 'none';
     workradio();
-    loadWorkRadios(null, 0);
+    var display = $('#one_day10').css('display');
+    if(display=='none'){
+        loadWorkRadios(1, 0);
+    }else{
+        loadWorkRadios(null, 0);
+    }
 }
 
 //跳转班组
 function gobutton_6() {
+    //alert(res);
     var div = document.getElementById("vchart5");
     div.style.display = 'none';
     var d = document.getElementById("vchart6");
@@ -502,7 +553,12 @@ function gobutton_6() {
     var e = document.getElementById("allteammateral");
     e.style.display = 'block';
     teammateral();
-    loadWorkMaterals(null, 1);
+    var display = $('#one_day8').css('display');
+    if(display=='none'){
+        loadWorkMaterals(1, 1);
+    }else{
+        loadWorkMaterals(null, 1);
+    }
 }
 
 //跳转工段
@@ -516,7 +572,12 @@ function gobutton_5() {
     var e = document.getElementById("allteammateral");
     e.style.display = 'none';
     workmateral();
-    loadWorkMaterals(null, 0);
+    var display = $('#one_day8').css('display');
+    if(display=='none'){
+        loadWorkMaterals(1, 0);
+    }else{
+        loadWorkMaterals(null, 0);
+    }
 }
 
 //跳转班组
@@ -530,7 +591,12 @@ function gobutton_4() {
     var e = document.getElementById("allteamwelder");
     e.style.display = 'block';
     teamwelder();
-    loadWorkWelders(null, 1);
+    var display = $('#one_day6').css('display');
+    if(display=='none'){
+        loadWorkWelders(1, 1);
+    }else{
+        loadWorkWelders(null, 1);
+    }
 }
 
 //跳转工段
@@ -544,7 +610,12 @@ function gobutton_3() {
     var e = document.getElementById("allteamwelder");
     e.style.display = 'none';
     workwelder();
-    loadWorkWelders(null, 0);
+    var display = $('#one_day6').css('display');
+    if(display=='none'){
+        loadWorkWelders(1, 0);
+    }else{
+        loadWorkWelders(null, 0);
+    }
 }
 
 //跳转班组
@@ -558,7 +629,12 @@ function gobutton_2() {
     var e = document.getElementById("allteamgas");
     e.style.display = 'block';
     teamgas();
-    loadWorkGas(null, 1);
+    var display = $('#one_day4').css('display');
+    if(display=='none'){
+        loadWorkGas(1, 1);
+    }else{
+        loadWorkGas(null, 1);
+    }
 }
 
 //跳转工段
@@ -572,7 +648,12 @@ function gobutton_1() {
     var e = document.getElementById("allteamgas");
     e.style.display = 'none';
     workgas();
-    loadWorkGas(null, 0);
+    var display = $('#one_day4').css('display');
+    if(display=='none'){
+        loadWorkGas(1, 0);
+    }else{
+        loadWorkGas(null, 0);
+    }
 }
 
 // 左二
@@ -601,7 +682,7 @@ function teamgas() {
             data: ['电能消耗量', '气体消耗量'],
             top: "top",
             left: "7%",
-            itemWidth: 16, // 图例标记图形宽度
+            itemWidth: 10, // 图例标记图形宽度
             itemHeight: 10,
             icon: 'rect', // 图例项的icon
             textStyle: {

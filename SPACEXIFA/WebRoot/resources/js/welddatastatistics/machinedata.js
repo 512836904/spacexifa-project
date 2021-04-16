@@ -48,8 +48,8 @@ function wpslibDatagrid(){
         height: $("#wpsTableDiv").height(),
         width: $("#wpsTableDiv").width(),
         idField : 'fid',
-        pageSize : 50,
-        pageList : [ 10, 20, 30, 40, 50 ],
+        pageSize : 200,
+        pageList : [ 10, 20, 50, 100, 200 ],
         url : url1,
         singleSelect : true,
         rownumbers : true,
@@ -80,6 +80,18 @@ function wpslibDatagrid(){
             halign : "center",
             align : "left"
         }, {
+            field: 'part_number',
+            title: '零件图号',
+            width: 90,
+            halign: "center",
+            align: "left"
+        }, {
+            field: 'part_name',
+            title: '零件名',
+            width: 90,
+            halign: "center",
+            align: "left"
+        },{
             field : 'fproduct_number',
             title : '工艺编号',
             width : 100,
@@ -159,9 +171,8 @@ function wpslibDatagrid(){
                 var chart="";
                 var dtoTime1 = row.fstarttime
                 var dtoTime2 = row.fendtime;
-                var taskid = row.taskid;
-                chart= "fid=" +row.welder_id + "&fjunction_id=" + row.fjunction_id + "&machin_id=" + row.machind+ "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')';
-                if(taskid==0){
+                chart= "fid=" +row.welder_id + "&fjunction_id=" + row.fjunction_id + "&machin_id=" + row.machind+ "&dtoTime1=" +'('+ dtoTime1 +')'+ "&dtoTime2=" +'('+ dtoTime2+')'+pameter;
+                if(dtoTime1==0){
                     str += '<a id="mcs" class="easyui-linkbutton" style="pointer-events: none;" href="weldedjunction/getNnstandardHistory?'+chart+'">';
                     //$("#mc").attr("disabled", "disabled");
                     //document.getElementById("mc").disabled=false;
@@ -180,10 +191,10 @@ function wpslibDatagrid(){
             }
         },
         onLoadSuccess:function(data){
-            var xx = data.rows;
-            for(var i in xx){
-                if(xx[i].taskid==0){
-                    $("a[id='mcs']").linkbutton({text:'无任务信息',plain:true,iconCls:'icon-search'});
+            var taskstatus = data.rows;
+            for(var i in taskstatus){
+                if(taskstatus[i].fstarttime==0){
+                    $("a[id='mcs']").linkbutton({text:'任务进行中',plain:true,iconCls:'icon-search'});
                 }else{
                     $("a[id='mc']").linkbutton({text:'任务信息',plain:true,iconCls:'icon-search'});
                 }
@@ -392,11 +403,22 @@ function serach() {
     // }, 500);
     wpslibDatagrid();
 }
-
+var pameter = "";
 function parameterStr1(){
     searchStr = "";
-    var dt1 = $("#dtoTime1").datetimebox('getValue');
-    var dt2 = $("#dtoTime2").datetimebox('getValue');
+    pameter = "";
+    var startTime = $("#Time1").val();
+    if(startTime.length>0){
+        $('#dtoTime1').datetimebox('setValue', startTime);
+        $("#Time1").val("");
+    }
+    var endTime = $("#Time2").val();
+    if(endTime.length>0){
+        $('#dtoTime2').datetimebox('setValue', endTime);
+        $("#Time2").val("");
+    }
+    var time1 = $("#dtoTime1").datetimebox('getValue');
+    var time2 = $("#dtoTime2").datetimebox('getValue');
     //var item = $("#item").combobox('getValue');
     var product_drawing_no = $("#product_drawing_no").val();
     var product_name = $("#product_name").val();
@@ -407,9 +429,59 @@ function parameterStr1(){
     var junction_name = $("#fwelded_junction_no").val();
     var weldername = $("#weldername").val();
     var machinenum = $("#machinenum").val();
+    var part_number = $("#part_number").val();
+    var part_name = $("#part_name").val();
+    var zm = $("#zm").val();
+    if(zm>0){
+        $('#zitem').combobox('select', zm);
+    }
+    var bm = $("#bm").val();
+    if(bm>0){
+        $('#bitem').combobox('select', bm);
+    }
     var zitem = $("#zitem").combobox('getValue');
     var bitem = $("#bitem").combobox('getValue');
     var item = "";
+    var type = 3;
+    if(zitem != ""){
+        pameter += "&zitem="+zitem
+    }
+    if(bitem != ""){
+        pameter += "&bitem="+bitem
+    }
+    if(time1 != ""){
+        pameter += "&time1="+time1
+    }
+    if(time2 != ""){
+        pameter += "&time2="+time2
+    }
+    if(product_drawing_no != ""){
+        pameter += "&product_drawing_no="+product_drawing_no
+    }
+    if(product_name != ""){
+        pameter += "&product_name="+product_name
+    }
+    if(part_number != ""){
+        pameter += "&part_number="+part_number
+    }
+    if(part_name != ""){
+        pameter += "&part_name="+part_name
+    }
+    if(taskno != ""){
+        pameter += "&taskno="+taskno
+    }
+    if(fwelded_junction_no != ""){
+        pameter += "&fwelded_junction_no="+fwelded_junction_no
+    }
+    if(weldername != ""){
+        pameter += "&weldername="+weldername
+    }
+    if(machinenum != ""){
+        pameter += "&machinenum="+machinenum
+    }
+    if(type != ""){
+        pameter += "&type="+type
+    }
     if (zitem != 0) {
         item = zitem;
     }
@@ -458,6 +530,20 @@ function parameterStr1(){
             searchStr += " AND w.SET_NUMBER LIKE "+"'%" + product_name + "%'";
         }
     }
+    if(part_number != ""){
+        if(searchStr == ""){
+            searchStr += " w.PART_DRAWING_NUMBER LIKE "+"'%" + part_number + "%'";
+        }else {
+            searchStr += " AND w.PART_DRAWING_NUMBER LIKE "+"'%" + part_number + "%'";
+        }
+    }
+    if(part_name != ""){
+        if(searchStr == ""){
+            searchStr += " w.PART_NAME LIKE "+"'%" + part_name + "%'";
+        }else {
+            searchStr += " AND w.PART_NAME LIKE "+"'%" + part_name + "%'";
+        }
+    }
     if(taskno != ""){
         if(searchStr == ""){
             searchStr += " c.fname LIKE "+"'%" + taskno + "%'";
@@ -466,18 +552,18 @@ function parameterStr1(){
         }
     }
 
-    if(dt1 != ""){
+    if(time1 != ""){
         if(searchStr == ""){
-            searchStr += " fstarttime >to_date('" +dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " fstarttime >to_date('" +time1+"', 'yyyy-mm-dd hh24:mi:ss')";
         }else{
-            searchStr += " AND fstarttime >to_date('"+dt1+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " AND fstarttime >to_date('"+time1+"', 'yyyy-mm-dd hh24:mi:ss')";
         }
     }
-    if(dt2 != ""){
+    if(time2 != ""){
         if(searchStr == ""){
-            searchStr += " fendtime < to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " fendtime < to_date('"+time2+"', 'yyyy-mm-dd hh24:mi:ss')";
         }else{
-            searchStr += " AND fendtime <to_date('"+dt2+"', 'yyyy-mm-dd hh24:mi:ss')";
+            searchStr += " AND fendtime <to_date('"+time2+"', 'yyyy-mm-dd hh24:mi:ss')";
         }
     }
 }

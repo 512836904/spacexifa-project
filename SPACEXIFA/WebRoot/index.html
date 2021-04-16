@@ -66,7 +66,7 @@
 
         <div class="panel">
             <div class="panel01" style="float:left">
-                <h2 class="h2-side"><span>焊工工作时间排行 ( h )</span></h2>
+                <h2 class="h2-side"><span>焊工燃弧时间排行 ( h )</span></h2>
             </div>
             <div id="one_day" class="pane501" style="float:left">
                 <a onclick="javascript:one(1);">
@@ -109,7 +109,7 @@
                 <div class="chart" id="vchart1">
                     <div id="workgas" style="height:90%;width:98%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:2%;height:10%;float:left;padding-top:1.3rem;">
-                        <button type="button" id="button_1" onclick="javascript:gobutton_2();" style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
+                        <button type="button" id="button_1"  value="1" onclick="javascript:gobutton_2();" style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"/>
                         </button>
                     </div>
@@ -117,7 +117,7 @@
                 <div class="chart" id="vchart2" style="display:none;">
                     <div id="teamgas" style="height:90%;width:99%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:1%;height:10%;float:left;padding-top:1.3rem;">
-                        <button type="button" id="button_2" onclick="javascript:gobutton_1();"
+                        <button type="button" id="button_2" value="0" onclick="javascript:gobutton_1();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -153,7 +153,7 @@
                 <div class="chart2" id="pchart1">
                     <div id="workareas" style="height:90%;width:90%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:10%;height:10%;float:left;padding-top:2.5rem;">
-                        <button type="button" id="button_9" onclick="javascript:gobutton_10();"
+                        <button type="button" id="button_9"  value="1" onclick="javascript:gobutton_10();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG">
                         </button>
@@ -162,7 +162,7 @@
                 <div class="chart2" id="pchart2" style="display:none;">
                     <div id="teamworks" style="height:90%;width:90%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:10%;height:10%;float:left;padding-top:2.5rem;">
-                        <button type="button" id="button_10" onclick="javascript:gobutton_9();"
+                        <button type="button" id="button_10" value="0" onclick="javascript:gobutton_9();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -171,13 +171,13 @@
             </div>
         </div>
         <div class="panel" style="height: 6.05rem;">
-            <!-- 查询待机工作时长 -->
-            <input type="hidden" id="standbyTime" readonly="readonly" value="1">
+            <!-- 查询焊接工作时长 -->
+            <input type="hidden" id="standbyTime" readonly="readonly" value="0">
             <div class="panel01" style="float:left" id="allworkwelder">
-                <h2 class="h2-mid"><span>工区焊工人均工作时间 ( h )</span></h2>
+                <h2 class="h2-mid"><span>工区焊工人均燃弧时间 ( h )</span></h2>
             </div>
             <div class="panel01" style="float:left;display:none;" id="allteamwelder">
-                <h2 class="h2-mid"><span>班组焊工人均工作时间 ( h )</span></h2>
+                <h2 class="h2-mid"><span>班组焊工人均燃弧时间 ( h )</span></h2>
             </div>
             <div id="one_day6" class="pane501" style="float:left">
                 <a onclick="javascript:one_3(1);">
@@ -195,7 +195,7 @@
                 <div class="chart2" id="vchart3">
                     <div id="workwelders" style="height:90%;width:90%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:10%;height:10%;float:left;padding-top:2.5rem;">
-                        <button type="button" id="button_3" onclick="javascript:gobutton_4();"
+                        <button type="button" id="button_3" value="1" onclick="javascript:gobutton_4();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -203,7 +203,7 @@
                 <div class="chart2" id="vchart4" style="display:none;">
                     <div id="teamwelder" style="height:90%;width:90%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:10%;height:10%;float:left;padding-top:2.5rem;">
-                        <button type="button" id="button_4" onclick="javascript:gobutton_3();"
+                        <button type="button" id="button_4" value="0" onclick="javascript:gobutton_3();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -239,7 +239,7 @@
                 <div class="chart" id="vchart5">
                     <div id="workmaterals" style="height:90%;width:98%;padding-left:5px;float:left"></div>
                     <div style="height:10%;width:2%;padding-top:1.0rem;float:left">
-                        <button type="button" id="button_5" onclick="javascript:gobutton_6();"
+                        <button type="button" id="button_5" value="1" onclick="javascript:gobutton_6();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -248,7 +248,7 @@
                     <div id="teammaterals"
                          style="height:90%;width:98%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:2%;height:10%;float:left;padding-top:1.0rem;">
-                        <button type="button" id="button_6" onclick="javascript:gobutton_5();"
+                        <button type="button" id="button_6" value="0" onclick="javascript:gobutton_5();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -279,7 +279,7 @@
                 <div class="chart" id="vchart7">
                     <div id="workradios" style="height:90%;width:98%;padding-left:5px;float:left"></div>
                     <div style="height:10%;width:2%;padding-top:1.0rem;float:left">
-                        <button type="button" id="button_8" onclick="javascript:gobutton_8();"
+                        <button type="button" id="button_7" value="1" onclick="javascript:gobutton_8();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>
@@ -287,7 +287,7 @@
                 <div class="chart" id="vchart8" style="display:none;">
                     <div id="teamradios" style="height:90%;width:98%;overflow:auto;padding-left:5px;float:left;"></div>
                     <div style="width:2%;height:10%;float:left;padding-top:1.0rem;">
-                        <button type="button" id="button_7" onclick="javascript:gobutton_7();"
+                        <button type="button" id="button_8"  value="0" onclick="javascript:gobutton_7();"
                                 style="width:50px;height:40px;border-width: 0px;border-radius:3px;background:#070b3f;cursor:pointer;outline: none;">
                             <img style="width: 100%" src="resources/images/images/jiantou.PNG"></button>
                     </div>

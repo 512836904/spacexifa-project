@@ -77,7 +77,7 @@
 
         <div class="panel">
             <div class="panel01" style="float:left">
-                <h2 class="h2-side"><span>焊工工作时间排行 ( h )</span></h2>
+                <h2 class="h2-side"><span>焊工燃弧时间排行 ( h )</span></h2>
             </div>
             <div id="one_day" class="pane501" style="float:left">
                 <a onclick="javascript:one(1);">
@@ -185,10 +185,10 @@
             <!-- 0：查询焊工焊接工作时长 -->
             <input type="hidden" id="standbyTime" readonly="readonly" value="0">
             <div class="panel01" style="float:left" id="allworkwelder">
-                <h2 class="h2-mid"><span>工区焊工人均工作时间 ( h )</span></h2>
+                <h2 class="h2-mid"><span>工区焊工人均燃弧时间 ( h )</span></h2>
             </div>
             <div class="panel01" style="float:left;display:none;" id="allteamwelder">
-                <h2 class="h2-mid"><span>班组焊工人均工作时间 ( h )</span></h2>
+                <h2 class="h2-mid"><span>班组焊工人均燃弧时间 ( h )</span></h2>
             </div>
             <div id="one_day6" class="pane501" style="float:left">
                 <a onclick="javascript:one_3(1);">

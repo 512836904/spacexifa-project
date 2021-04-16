@@ -3,6 +3,8 @@ var xAxisData = new Array(), yAxisData = new Array(), fieldArr = new Array(), di
 var eleUpLine = 0, eleDownLine = 0, volUpLine = 0, volDownLine = 0;
 var maxele = "";
 var emqurl = "";
+var ele = "";
+var vol = "";
 $(function () {
     historyDatagrid();
     $("#little").hide();
@@ -135,8 +137,8 @@ function historyDatagrid() {
         height: $("#tableDiv").height(),
         width: $("#tableDiv").width(),
         idField: 'fid',
-        pageSize: 50,
-        pageList: [10, 20, 30, 40, 50],
+        pageSize : 200,
+        pageList : [ 10, 20, 50, 100, 200 ],
         url: "datastatistics/getJunctionHistoryList?searchStr=" + searchStr,
         singleSelect: true,
         rownumbers: true,
@@ -348,6 +350,8 @@ function historyDatagrid() {
                 success: function (json, statusText, xhr) {
                     //$("#table").bootstrabool('load',json.hits.hits);
                     var result = json.hits.hits;
+                    ele.splice(0,ele.length);
+                    vol.splice(0,vol.length);
                     for (var i in result) {
                         ele.push(result[i]._source.felectricity);
                         vol.push(result[i]._source.fvoltage);
@@ -530,7 +534,7 @@ function eleChart() {
     var max = Math.max.apply(Math, ele); //数据的最大值
     option.series[0].data = ele;
     option.visualMap.pieces[0] = {gte: maxele, lte: max, color: 'red'};
-    myChart.setOption(option);
+    myChart.setOption(option,true);
 }
 
 
@@ -619,7 +623,7 @@ function volChart() {
             }
         }]
     };
-    myChart.setOption(option);
+    myChart.setOption(option,true);
 }
 
 function fullScreen() {

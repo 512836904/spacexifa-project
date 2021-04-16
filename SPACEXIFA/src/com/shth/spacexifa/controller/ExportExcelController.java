@@ -21,7 +21,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -414,7 +417,10 @@ public class ExportExcelController {
 		String time1 = request.getParameter("dtoTime1");
 		String time2 = request.getParameter("dtoTime2");
 		WeldDto dto = new WeldDto();
+		DecimalFormat df = new DecimalFormat("#.00");
 		String dtime = "统计日期：" + time1 + "--" + time2;
+		List<DataStatistics> count = null;
+		double weldernum =0; //刷卡焊工数量
 		try {
 			if (iutil.isNull(time1)) {
 				dto.setDtoTime1(time1);
@@ -423,9 +429,9 @@ public class ExportExcelController {
 				dto.setDtoTime2(time2);
 			}
 			List<DataStatistics> list = dss.getAllItemData();
-			String[] titles = new String[] { "所属班组", "设备总数", "开机设备数", "实焊设备数", "设备利用率(%)", "焊接焊缝数", "焊接时间", "工作时间",
-					"焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)" };
-			Object[][] data = new Object[list.size()][12];
+			String[] titles = new String[] { "所属班组", "设备总数", "开机设备数", "实焊设备数", "设备利用率(%)", "焊接时间","人均焊接时长", "工作时间","人均工作时长",
+					"焊接效率(%)", "焊丝消耗(KG)","人均焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)" };
+			Object[][] data = new Object[list.size()][15];
 			int ii = 0;
 			for (DataStatistics i : list) {
 				if (ii < list.size()) {
@@ -434,66 +440,79 @@ public class ExportExcelController {
 					int machinenum = 0;
 					BigInteger starttime = null;
 					DataStatistics weldtime = null;
-					DataStatistics junction = dss.getWorkJunctionNum(i.getId(), dto);// 获取工作(焊接)的焊口数
+					//DataStatistics junction = dss.getWorkJunctionNum(i.getId(), dto);// 获取工作(焊接)的焊口数
 					DataStatistics parameter = dss.getParameter();// 获取参数
 					BigInteger standytime = null;
-					if (junction.getJunctionnum() != 0) {
+//					if (junction.getJunctionnum() != 0) {
 						machinenum = dss.getStartingUpMachineNum(i.getId(), dto);// 获取开机焊机总数
 						starttime = dss.getStaringUpTime(i.getId(), dto);// 获取开机总时长
 						data[ii][2] = machinenum;// 开机设备数
-						data[ii][5] = junction.getJunctionnum();// 焊接焊缝数
 						data[ii][7] = getTimeStrBySecond(starttime);// 工作时间
 						standytime = dss.getStandytime(i.getId(), dto);// 获取待机总时长
-						weldtime = dss.getWorkTimeAndEleVol(i.getId(), dto);// 获取焊接时长，平均电流电压
+						weldtime = dss.getItemWorkTime(i.getId(), dto);// 获取焊接时长，平均电流电压
+					    count = dss.getPersonWorkTime(i.getId(), time1);//获取工区或班组的打卡人数
+					    weldernum = count.get(0).getNum();
 						double standytimes = 0, time = 0, electric = 0;
 						if (standytime != null) {
 							standytimes = standytime.doubleValue() / 60 / 60;
+							if(weldernum>0){
+								data[ii][8] = df.format((starttime.doubleValue()/(weldernum*3600)));// 人均工作时间
+							}else{
+								data[ii][8] = 0;// 人均工作时间
+							}
 						}
 						if (weldtime != null) {
-							electric = (double) Math.round((weldtime.getWorktime().doubleValue() / 60 / 60
-									* (weldtime.getElectricity() * weldtime.getVoltage()) / 1000
-									+ standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
+							electric = (double) Math.round((weldtime.getWorktime().doubleValue() / 60 / 60 * (weldtime.getElectricity() * weldtime.getVoltage())/ 1000*0.8 + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
 						} else {
-							electric = (double) Math
-									.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
+							electric = (double) Math.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
 						}
-						data[ii][10] = electric;// 电能消耗
-					} else {
-						data[ii][2] = 0;
-						data[ii][5] = 0;
-						data[ii][7] = "00:00:00";
-						data[ii][10] = 0;
-					}
+						data[ii][12] = electric;// 电能消耗
+//					} else {
+//						data[ii][2] = 0;
+//						data[ii][6] = "00:00:00";
+//						data[ii][9] = 0;
+//					}
 					if (i.getTotal() != 0 && weldtime != null) {
 						DataStatistics machine = dss.getWorkMachineNum(i.getId(), dto);// 获取工作(焊接)的焊机数
-						if (machine != null && junction != null) {
+						if (machine != null) {
 							data[ii][3] = machine.getMachinenum();// 实焊设备数
-							data[ii][6] = getTimeStrBySecond(weldtime.getWorktime());// 焊接时间
+							data[ii][5] = df.format(weldtime.getWorktime().doubleValue()/3600);// 焊接时间
+							if(weldernum>0){
+								data[ii][6] = df.format((weldtime.getWorktime().doubleValue()/(weldernum*3600)));// 人均焊接时间
+							}else{
+								data[ii][6] = 0;// 人均焊接时间
+							}
 							double useratio = (double) Math
 									.round(Double.valueOf(machinenum) / Double.valueOf(i.getTotal()) * 100 * 100) / 100;
 							double weldingproductivity = (double) Math
 									.round(weldtime.getWorktime().doubleValue() / starttime.doubleValue() * 100 * 100)
 									/ 100;
 							data[ii][4] = useratio;// 设备利用率
-							data[ii][8] = weldingproductivity;// 焊接效率
+							data[ii][9] = weldingproductivity;// 焊接效率
 						}
 						if (parameter != null) {
-							double time = weldtime.getWorktime().doubleValue() / 60;
+							time = weldtime.getWorktime().doubleValue() / 60;
 							String[] str = parameter.getWireweight().split(",");
 							double wireweight = Double.valueOf(str[0]);
-							double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;// 焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
+							//double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;// 焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
+							double wire =weldtime.getWirefeedrate();
 							double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;// 气体消耗量=气体流量*焊接时间
-							data[ii][9] = wire;// 焊丝消耗
-							data[ii][11] = air;// 气体消耗
+							data[ii][10] = df.format(wire);// 焊丝消耗
+							if(weldernum>0){
+								data[ii][11] = df.format((wire/weldernum));// 人均焊丝消耗
+							}else{
+								data[ii][11] = 0;// 人均焊丝消耗
+							}
+							data[ii][13] = air;// 气体消耗
 						}
 					} else {
 						data[ii][3] = 0;// 实焊设备数
-						data[ii][6] = "00:00:00";// 焊接时间
+						data[ii][5] = "00:00:00";// 焊接时间
 						data[ii][4] = 0;// 设备利用率
-						data[ii][8] = 0;// 焊接效率
+						data[ii][9] = 0;// 焊接效率
 						data[ii][2] = 0;// 开机设备数
-						data[ii][9] = 0;// 焊丝消耗
-						data[ii][11] = 0;// 气体消耗
+						data[ii][10] = 0;// 焊丝消耗
+						data[ii][13] = 0;// 气体消耗
 					}
 				}
 				ii++;
@@ -631,7 +650,7 @@ public class ExportExcelController {
 				itemid = new BigInteger(item);
 			}
 			List<DataStatistics> list = dss.getAllMachineData(itemid);
-			String[] titles = new String[] { "所属班组", "设备编号", "焊接焊缝数", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)",
+			String[] titles = new String[] { "所属班组", "设备编号", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)",
 					"电能消耗(KWH)", "气体消耗(L)" };
 			Object[][] data = new Object[list.size()][9];
 			int ii = 0;
@@ -640,14 +659,14 @@ public class ExportExcelController {
 					dto.setMachineid(i.getId());
 					data[ii][0] = i.getInsname();
 					data[ii][1] = i.getName();
-					DataStatistics junctionnum = dss.getWorkJunctionNum(null, dto);
+					//DataStatistics junctionnum = dss.getWorkJunctionNum(null, dto);
 					DataStatistics parameter = dss.getParameter();
 					BigInteger worktime = null, standytime = null;
 					DataStatistics weld = null;
-					if (junctionnum.getJunctionnum() != 0) {
-						data[ii][2] = junctionnum.getJunctionnum();// 焊接焊缝数
+					//if (junctionnum.getJunctionnum() != 0) {
+						//data[ii][2] = junctionnum.getJunctionnum();// 焊接焊缝数
 						worktime = dss.getStaringUpTime(i.getInsid(), dto);
-						data[ii][4] = getTimeStrBySecond(worktime);// 工作时间
+						data[ii][3] = getTimeStrBySecond(worktime);// 工作时间
 						standytime = dss.getStandytime(i.getInsid(), dto);// 获取待机总时长
 						weld = dss.getWorkTimeAndEleVol(i.getInsid(), dto);
 						double standytimes = 0, time = 0, electric = 0;
@@ -662,32 +681,32 @@ public class ExportExcelController {
 							electric = (double) Math
 									.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
 						}
-						data[ii][7] = electric;// 电能消耗
-					} else {
-						data[ii][2] = 0;
-						data[ii][4] = "00:00:00";
-						data[ii][7] = 0;
-					}
+						data[ii][6] = electric;// 电能消耗
+//					} else {
+//						data[ii][2] = 0;
+//						data[ii][3] = "00:00:00";
+//						data[ii][6] = 0;
+//					}
 					if (weld != null) {
-						data[ii][3] = getTimeStrBySecond(weld.getWorktime());// 焊接时间
-						data[ii][4] = getTimeStrBySecond(worktime);// 工作时间
+						data[ii][2] = getTimeStrBySecond(weld.getWorktime());// 焊接时间
+						data[ii][3] = getTimeStrBySecond(worktime);// 工作时间
 						double weldingproductivity = (double) Math
 								.round(weld.getWorktime().doubleValue() / worktime.doubleValue() * 100 * 100) / 100;
-						data[ii][5] = weldingproductivity;// 焊接效率
+						data[ii][4] = weldingproductivity;// 焊接效率
 						if (parameter != null) {
-							double time = weld.getWorktime().doubleValue() / 60;
+							time = weld.getWorktime().doubleValue() / 60;
 							String[] str = parameter.getWireweight().split(",");
 							double wireweight = Double.valueOf(str[0]);
 							double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;// 焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
 							double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;// 气体消耗量=气体流量*焊接时间
-							data[ii][6] = wire;// 焊丝消耗
-							data[ii][8] = air;// 气体消耗
+							data[ii][5] = wire;// 焊丝消耗
+							data[ii][7] = air;// 气体消耗
 						}
 					} else {
-						data[ii][3] = "00:00:00";
+						data[ii][2] = "00:00:00";
+						data[ii][4] = 0;
 						data[ii][5] = 0;
-						data[ii][6] = 0;
-						data[ii][8] = 0;
+						data[ii][7] = 0;
 					}
 				}
 				ii++;
@@ -816,89 +835,89 @@ public class ExportExcelController {
 		File file = null;
 		String time1 = request.getParameter("dtoTime1");
 		String time2 = request.getParameter("dtoTime2");
+		String weldername = request.getParameter("weldername");
+		String weldernum = request.getParameter("weldernum");
+		String item = request.getParameter("item");
 		WeldDto dto = new WeldDto();
+		BigInteger itemid = null;
 		String dtime = "统计日期：" + time1 + "--" + time2;
 		try {
+			if (iutil.isNull(item)) {
+				itemid = new BigInteger(item);
+			} else {
+				itemid = im.getUserInsframework();
+			}
 			if (iutil.isNull(time1)) {
 				dto.setDtoTime1(time1);
 			}
 			if (iutil.isNull(time2)) {
 				dto.setDtoTime2(time2);
 			}
-			List<DataStatistics> list = dss.getAllPersonData(im.getUserInsframework());
-			String[] titles = new String[] { "焊工编号", "焊工名称", "焊接焊缝数", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)",
+			if (iutil.isNull(weldername)) {
+				dto.setJunctionno('%'+weldername+'%');
+			}
+			if (iutil.isNull(weldernum)) {
+				dto.setWelderno('%'+weldernum+'%');
+			}
+			List<DataStatistics> list = dss.getAllPersonData(itemid,dto);
+			String[] titles = new String[] { "焊工编号", "焊工名称", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)",
 					"电能消耗(KWH)", "气体消耗(L)", "规范符合率(%)" };
-			Object[][] data = new Object[list.size()][10];
+			Object[][] data = new Object[list.size()][9];
 			int ii = 0;
 			for (DataStatistics i : list) {
 				if (ii < list.size()) {
-					dto.setWelderno(i.getSerialnumber());
+					dto.setPersonid(i.getId());
 					data[ii][0] = i.getSerialnumber();
 					data[ii][1] = i.getName();
 					DataStatistics weld = null;
 					BigInteger worktime = null, standytime = null;
-					DataStatistics junctionnum = dss.getWorkJunctionNumByWelder(null, dto);
+					//DataStatistics junctionnum = dss.getWorkJunctionNumByWelder(null, dto);
 					DataStatistics parameter = dss.getParameter();
-					if (junctionnum.getJunctionnum() != 0) {
-						data[ii][2] = junctionnum.getJunctionnum();// 焊接焊缝数
-						worktime = dss.getStaringUpTimeByWelder(null, dto);
-						data[ii][4] = getTimeStrBySecond(worktime);// 工作时间
-						standytime = dss.getStandytimeByWelder(null, dto);
-						weld = dss.getWorkTimeAndEleVolByWelder(null, dto);
-						double standytimes = 0, time = 0, electric = 0;
-						if (standytime != null) {
-							standytimes = standytime.doubleValue() / 60 / 60;
-						}
-						if (weld != null) {
-							time = weld.getWorktime().doubleValue() / 60 / 60;
-							electric = (double) Math.round((time * (weld.getElectricity() * weld.getVoltage()) / 1000
-									+ standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
-						} else {
-							electric = (double) Math
-									.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;
-						}
-						data[ii][7] = electric;// 电能消耗
-					} else {
-						data[ii][2] = 0;
-						data[ii][4] = "00:00:00";// 工作时间
-						data[ii][7] = 0;
+					worktime = dss.getStaringUpTimeByWelder(null, dto);
+					if (worktime != null) {
+						data[ii][3] = getTimeStrBySecond(worktime);// 工作时间
+					}else {
+						data[ii][3] = "00:00:00";
+					}
+					standytime = dss.getStandytimeByWelder(null, dto);
+					weld = dss.getWorkTimeAndEleVolByWelder(null, dto);
+					double standytimes = 0, time = 0, electric = 0;
+					if (standytime != null) {
+						standytimes = standytime.doubleValue() / 60 / 60;
 					}
 					if (weld != null) {
-						data[ii][3] = getTimeStrBySecond(weld.getWorktime());// 焊接时间
-						double weldingproductivity = (double) Math
-								.round(weld.getWorktime().doubleValue() / worktime.doubleValue() * 100 * 100) / 100;
-						data[ii][5] = weldingproductivity;// 焊接效率
-						if (parameter != null) {
-							double time = weld.getWorktime().doubleValue() / 60;
-							String[] str = parameter.getWireweight().split(",");
-							double wireweight = Double.valueOf(str[0]);
-							double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;// 焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
-							double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;// 气体消耗量=气体流量*焊接时间
-//							String sperate = new DecimalFormat("0.00").format((float)Integer.valueOf(weld.getWorktime().subtract(new BigInteger(weld.getTime())).toString())/(Integer.valueOf(weld.getWorktime().toString()))*100);
-							if (String.valueOf(weld.getWorktime()).equals("0")) {
-								data[ii][9] = 0;// 规范符合率
-							} else {
-								String sperate = new DecimalFormat("0.00").format((float) Integer
-										.valueOf(weld.getWorktime().subtract(new BigInteger(weld.getTime())).toString())
-										/ (Integer.valueOf(weld.getWorktime().toString())) * 100);
-								data[ii][9] = sperate;// 规范符合率
-							}
-							data[ii][6] = wire;// 焊丝消耗
-							data[ii][8] = air;// 气体消耗
-
+						data[ii][2] = getTimeStrBySecond(weld.getWorktime());// 焊接时间
+						if(weld.getWorktime().doubleValue()!=0 && worktime.doubleValue()!=0){
+							double weldingproductivity = (double) Math.round(weld.getWorktime().doubleValue() / worktime.doubleValue() * 100 * 100) / 100;
+							data[ii][4] = weldingproductivity;// 焊接效率
+						}else{
+							data[ii][4] = "00:00:00";//焊接效率
 						}
-					} else {
-						data[ii][3] = "00:00:00";
-						data[ii][5] = 0;
+						time = weld.getWorktime().doubleValue() / 60 / 60;
+						electric = (double) Math.round((time * (weld.getElectricity() * weld.getVoltage()) / 1000 + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;//电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
+						double wire = weld.getWirefeedrate();
+						double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;//气体消耗量=气体流量*焊接时间
+						if (String.valueOf(weld.getWorktime()).equals("0")) {
+							data[ii][8]=0;//规范符合率
+						} else {
+							String sperate = new DecimalFormat("0.00").format((float) Integer.valueOf(weld.getWorktime().subtract(new BigInteger(weld.getTime())).toString()) / (Integer.valueOf(weld.getWorktime().toString())) * 100);
+							data[ii][8]=sperate;//规范符合率
+						}
+						data[ii][5]=wire;
+						data[ii][7]=air;
+					}else{
+						electric = (double) Math.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;
+						data[ii][2] = "00:00:00";
+						data[ii][5]=0;
 						data[ii][6] = 0;
-						data[ii][8] = 0;
-						data[ii][9] = 0;// 规范符合率
+						data[ii][7]=0;
+						data[ii][8]=0;
 					}
+					data[ii][6] = electric;// 电能消耗
 				}
 				ii++;
 			}
 			filename = "人员生产数据" + sdf.format(new Date()) + ".xls";
-
 			ServletContext scontext = request.getSession().getServletContext();
 			// 获取绝对路径
 			String abpath = scontext.getRealPath("");
@@ -1018,7 +1037,19 @@ public class ExportExcelController {
 		String time1 = request.getParameter("dtoTime1");
 		String time2 = request.getParameter("dtoTime2");
 		String junctionno = request.getParameter("junctionno");
+		String search="";
+		if(iutil.isNull(request.getParameter("searchStr"))){
+			try {
+				search =URLDecoder.decode(request.getParameter("searchStr"),"utf-8");
+				} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+
 		WeldDto dto = new WeldDto();
+		double temp1=0,temp2=0,time=0,count=0, air=0;
+		double electric=0,weldingproductivity=0,electricity=0,voltage=0;
+		DecimalFormat format = new DecimalFormat("0.00");
 		String dtime = "统计日期：" + time1 + "--" + time2;
 		try {
 			if (iutil.isNull(time1)) {
@@ -1027,72 +1058,41 @@ public class ExportExcelController {
 			if (iutil.isNull(time2)) {
 				dto.setDtoTime2(time2);
 			}
-			List<DataStatistics> list = dss.getAllJunctionData("%" + junctionno + "%");
-			String[] titles = new String[] { "焊缝编号", "焊接时间", "工作时间", "焊接效率(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)",
-					"规范符合率(%)" };
-			Object[][] data = new Object[list.size()][8];
+			List<WeldedJunction> list = wjm.getExportJunctionstandtime(search);
+			DataStatistics parameter = dss.getParameter();
+			//List<DataStatistics> list = dss.getAllJunctionData("%" + junctionno + "%");
+			String[] titles = new String[] { "工作号", "部套号", "零件图号","零件名","工艺编号","焊缝名称","焊工姓名","焊接时长", "工作时长(%)", "焊丝消耗(KG)", "电能消耗(KWH)", "气体消耗(L)",
+					"焊接效率(%)" };
+			Object[][] data = new Object[list.size()][13];
 			int ii = 0;
-			for (DataStatistics i : list) {
+			for (WeldedJunction w : list) {
 				if (ii < list.size()) {
-					dto.setJunctionno(i.getSerialnumber());
-					data[ii][0] = i.getSerialnumber();
-					BigInteger worktime = dss.getStaringUpTimeByJunction(null, dto);
-					DataStatistics parameter = dss.getParameter();
-					BigInteger standytime = null;
-					DataStatistics weld = null;
-					if (worktime != null) {
-						data[ii][2] = getTimeStrBySecond(worktime);// 工作时间
-						weld = dss.getWorkTimeAndEleVolByJunction(null, dto);
-						standytime = dss.getStandytimeByJunction(null, dto);
-
-						double standytimes = 0, time = 0, electric = 0;
-						if (standytime != null) {
-							standytimes = standytime.doubleValue() / 60 / 60;
-						}
-						if (weld != null) {
-							time = weld.getWorktime().doubleValue() / 60 / 60;
-							electric = (double) Math.round((time * (weld.getElectricity() * weld.getVoltage()) / 1000
-									+ standytimes * parameter.getStandbypower() / 1000) * 100) / 100;// 电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
-						} else {
-							electric = (double) Math
-									.round((time + standytimes * parameter.getStandbypower() / 1000) * 100) / 100;
-						}
-						data[ii][5] = electric;// 电能消耗
-					} else {
-						data[ii][2] = "00:00:00";
-						data[ii][5] = 0;
+					data[ii][0] = w.getFprefix_number();// 工作号
+					data[ii][1] = w.getFsuffix_number();// 部套号
+					data[ii][2] = w.getRoomNo();// 零件图号
+					data[ii][3] = w.getArea();// 零件名
+					data[ii][4] = w.getFproduct_number();// 工艺编号
+					data[ii][5] = w.getWeldedJunctionno();// 焊缝名称
+					data[ii][6] = w.getFwelder_name();// 焊工姓名
+					data[ii][7] = getTimeStrBySecond(w.getHours());// 焊接时长
+					data[ii][8] = getTimeStrBySecond(w.getHours().add(w.getCounts()));// 工作时长
+					if (w.getHours() != null) {
+						time = w.getHours().doubleValue() / 60 / 60;//焊接时长(h)
+						count = w.getCounts().doubleValue() / 60 / 60;//待机时长(h)
+						weldingproductivity = (double) Math.round(w.getHours().doubleValue() / (w.getHours().doubleValue()+w.getCounts().doubleValue()) * 100 );
+						air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;//气体消耗量=气体流量*焊接时间
 					}
-					if (worktime != null && weld != null) {
-						data[ii][1] = getTimeStrBySecond(weld.getWorktime());// 焊接时间
-						double weldingproductivity = (double) Math
-								.round(weld.getWorktime().doubleValue() / worktime.doubleValue() * 100 * 100) / 100;
-						data[ii][3] = weldingproductivity;// 焊接效率
-						if (parameter != null) {
-							double time = weld.getWorktime().doubleValue() / 60;
-							String[] str = parameter.getWireweight().split(",");
-							double wireweight = Double.valueOf(str[0]);
-							double wire = (double) Math.round(wireweight * parameter.getSpeed() * time * 100) / 100;// 焊丝消耗量=焊丝|焊丝重量*送丝速度*焊接时间
-							double air = (double) Math.round(parameter.getAirflow() * time * 100) / 100;// 气体消耗量=气体流量*焊接时间
-							if (String.valueOf(weld.getWorktime()).equals("0")) {
-								data[ii][7] = 0;
-							} else {
-								String sperate = new DecimalFormat("0.00").format((float) Integer
-										.valueOf(weld.getWorktime().subtract(new BigInteger(weld.getTime())).toString())
-										/ (Integer.valueOf(weld.getWorktime().toString())) * 100);
-								data[ii][7] = sperate;
-							}
-//							String sperate = new DecimalFormat("0.00").format((float)Integer.valueOf(weld.getWorktime().subtract(new BigInteger(weld.getTime())).toString())/(Integer.valueOf(weld.getWorktime().toString()))*100);
-							data[ii][4] = wire;// 焊丝消耗
-							data[ii][6] = air;// 气体消耗
-
-						}
-					} else {
-						data[ii][1] = "00:00:00";
-						data[ii][3] = 0;
-						data[ii][4] = 0;
-						data[ii][6] = 0;
-						data[ii][7] = 0;
+					if(w.getMaxElectricity()!=0){
+						electricity = w.getMaxElectricity();
+						voltage = w.getMaxValtage();
+						electric = (double) Math.round((time * electricity * voltage / 1000 +w.getCounts().doubleValue()*parameter.getStandbypower() / 1000) * 100) / 100;//电能消耗量=焊接时间*焊接平均电流*焊接平均电压+待机时间*待机功率
+					}else{
+						electric = (double) Math.round((count * parameter.getStandbypower() / 1000) * 100) / 100;
 					}
+					data[ii][9] = format.format(new BigDecimal(w.getMaterial()));// 焊丝消耗
+					data[ii][10] = electric;// 电能消耗
+					data[ii][11] = air;// 气体消耗
+					data[ii][12] = weldingproductivity;// 焊接效率
 				}
 				ii++;
 			}

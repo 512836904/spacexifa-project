@@ -431,6 +431,8 @@ function iview() {
                                 $("#r1").html(result.JOB_NUMBER);
                                 $("#r2").html(result.SET_NUMBER);
                                 $("#r3").html(result.junctionName);
+                                $("#r5").html(result.PART_DRAWING_NUMBER);
+                                $("#r6").html(result.PART_NAME);
                             }
                         }
                     });
@@ -474,7 +476,7 @@ function iview() {
                     symbol++;
                 }
 
-                $("#l4").html("--");
+               // $("#l4").html("--");
                 $("#l3").html("--");
                 // $("#r13").html(presetele + " A");
                 // $("#r14").html(presetvol + " v");

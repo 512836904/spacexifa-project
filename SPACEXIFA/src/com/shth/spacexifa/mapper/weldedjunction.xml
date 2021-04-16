@@ -191,9 +191,8 @@
     </select>
 
     <select id="getWelderweldtime" resultMap="wjMap" parameterType="java.lang.String">
-        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,fitem serialNo,fname fproduct_number,weldername fwelder_name,fweldernum pipelineNo,fwelder_id,iid,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid,MIN(startTime) fstart_time,MAX(endTime) fend_time from(
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,PART_DRAWING_NUMBER froom_no,PART_NAME farea,PART_DRAWING_NUMBER,PART_NAME,fitem serialNo,fname fproduct_number,weldername fwelder_name,fweldernum pipelineNo,fwelder_id,iid,FCARD_ID fcard_id,FWPS_LIB_ID fwpslib_id,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid from(
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,w.FCARD_ID FCARD_ID,w.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime
         from tb_work w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
@@ -202,18 +201,13 @@
         LEFT JOIN tb_insframework ins on ins.fid = i.fparent
         LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
         left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
-        left join TB_TASKRESULT k on w.fwelder_id = k.fwelderid and w.FCARD_ID=k.FCARD_ID and w.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
-        where ((w.FJUNCTION_ID > 0 and w.FCARD_ID > 0) or (w.FJUNCTION_ID = 0 and w.FCARD_ID = 0))
+        where w.FJUNCTION_ID > 0 and w.FCARD_ID > 0
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,w.FCARD_ID,w.FWPS_LIB_ID,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
         UNION ALL
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,u.junction_name junctionname,sum(w.fworktime) inside,0 worktime,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,e.fwelder_no fweldernum,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,i.fname fitem,w.FCARD_ID FCARD_ID,w.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,sum(w.fworktime) inside,0 worktime
         from tb_work w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
@@ -222,24 +216,19 @@
         LEFT JOIN tb_insframework ins on ins.fid = i.fparent
         LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
         left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
-        left join TB_TASKRESULT k on w.fwelder_id = k.fwelderid and w.FCARD_ID=k.FCARD_ID and w.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
         where w.fstatus = 99 and w.FJUNCTION_ID > 0 and w.FCARD_ID > 0
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
-        )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,fweldernum,junctionname,fitem,fwelder_id,iid
-        ORDER BY fname
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,w.fjunction_id,e.fname,e.fwelder_no,i.fname,w.FCARD_ID,w.FWPS_LIB_ID,u.junction_name,w.fwelder_id,w.FJUNCTION_ID
+        )temp group by JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,fname,weldername,fweldernum,junctionname,fitem,fwelder_id,iid,FCARD_ID,FWPS_LIB_ID
+        ORDER BY machid DESC
     </select>
 
 
     <select id="getmachineweldtime" resultMap="wjMap" parameterType="java.lang.String">
-        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,serialNo,fname fproduct_number,weldername fwelder_name,fwelder_id,iid,junctionname,machid,fequipment_no,MIN(startTime) fstart_time,MAX(endTime) fend_time,sum(insid) counts,sum(hour) hours from(
-        SELECT w.JOB_NUMBER,w.SET_NUMBER,c.fname,e.fname weldername,a.fwelder_id fwelder_id,a.FJUNCTION_ID iid,u.junction_name junctionname,j.fid machid,j.fequipment_no fequipment_no,i.fname serialNo,0 insid,SUM(a.fworktime) hour,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,PART_DRAWING_NUMBER froom_no,PART_NAME farea,serialNo,fname fproduct_number,weldername fwelder_name,fwelder_id,iid,FCARD_ID fcard_id,FWPS_LIB_ID fwpslib_id,junctionname,machid,fequipment_no,sum(insid) counts,sum(hour) hours from(
+        SELECT w.JOB_NUMBER,w.SET_NUMBER,w.PART_DRAWING_NUMBER,w.PART_NAME,c.fname,e.fname weldername,a.fwelder_id fwelder_id,a.FJUNCTION_ID iid,a.FCARD_ID FCARD_ID,a.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,j.fid machid,j.fequipment_no fequipment_no,i.fname serialNo,0 insid,SUM(a.fworktime) hour
         FROM tb_welding_machine j
         INNER JOIN tb_work a ON j.fid=a.fmachine_id
         left join tb_welded_junction w on a.fcard_id = w.fid
@@ -249,18 +238,13 @@
         INNER JOIN tb_insframework i on i.fid = j.finsframework_id
         LEFT JOIN tb_insframework ins on ins.fid = i.fparent
         LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
-        left join TB_TASKRESULT k on a.fwelder_id = k.fwelderid and a.FCARD_ID=k.FCARD_ID and a.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
-        WHERE a.FWELDER_ID > 0
+        WHERE  a.FJUNCTION_ID > 0 and a.FCARD_ID > 0
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.fid,j.fequipment_no,i.fname,w.JOB_NUMBER,w.SET_NUMBER,c.fname,e.fname,a.fwelder_id,a.FJUNCTION_ID,u.junction_name
+        GROUP BY j.fid,j.fequipment_no,i.fname,w.JOB_NUMBER,w.SET_NUMBER,w.PART_DRAWING_NUMBER,w.PART_NAME,c.fname,a.FCARD_ID,a.FWPS_LIB_ID,e.fname,a.fwelder_id,a.FJUNCTION_ID,u.junction_name
         UNION ALL
-        SELECT w.JOB_NUMBER,w.SET_NUMBER,c.fname,e.fname weldername,a.fwelder_id fwelder_id,a.FJUNCTION_ID iid,u.junction_name junctionname,j.fid machid,j.fequipment_no fequipment_no,i.fname,SUM(a.fworktime) insid, 0 hour,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        SELECT w.JOB_NUMBER,w.SET_NUMBER,w.PART_DRAWING_NUMBER,w.PART_NAME,c.fname,e.fname weldername,a.fwelder_id fwelder_id,a.FJUNCTION_ID iid,a.FCARD_ID FCARD_ID,a.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,j.fid machid,j.fequipment_no fequipment_no,i.fname,SUM(a.fworktime) insid, 0 hour
         FROM tb_welding_machine j
         INNER JOIN tb_work a ON j.fid=a.fmachine_id
         left join tb_welded_junction w on a.fcard_id = w.fid
@@ -270,60 +254,47 @@
         INNER JOIN tb_insframework i on i.fid = j.finsframework_id
         LEFT JOIN tb_insframework ins on ins.fid = i.fparent
         LEFT JOIN tb_insframework insf on insf.fid = ins.fparent
-        left join TB_TASKRESULT k on a.fwelder_id = k.fwelderid and a.FCARD_ID=k.FCARD_ID and a.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
         WHERE a.fstatus = 99 and a.FJUNCTION_ID > 0 and a.fcard_id > 0 and a.FWELDER_ID > 0
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.fid,j.fequipment_no,i.fname,w.JOB_NUMBER,w.SET_NUMBER,c.fname,e.fname,a.fwelder_id,a.FJUNCTION_ID,u.junction_name
-        )temp group by JOB_NUMBER,SET_NUMBER,serialNo,fname,weldername,fwelder_id,iid,junctionname,machid,fequipment_no
-        ORDER BY fproduct_number
+        GROUP BY j.fid,j.fequipment_no,i.fname,w.JOB_NUMBER,w.SET_NUMBER,w.PART_DRAWING_NUMBER,w.PART_NAME,c.fname,a.FCARD_ID,a.FWPS_LIB_ID,e.fname,a.fwelder_id,a.FJUNCTION_ID,u.junction_name
+        )temp group by JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,serialNo,fname,weldername,fwelder_id,iid,junctionname,machid,fequipment_no,FCARD_ID,FWPS_LIB_ID
+        ORDER BY machid DESC
     </select>
 
     <select id="getJunctionweldtime" resultMap="wjMap" parameterType="java.lang.String">
-        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,fname fproduct_number,fwelder_id,iid,weldername fwelder_name,MIN(startTime) fstart_time,MAX(endTime) fend_time,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid from(
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,PART_DRAWING_NUMBER froom_no,PART_NAME farea,fname fproduct_number,fwelder_id,iid,weldername fwelder_name,FCARD_ID fcard_id,FWPS_LIB_ID fwpslib_id,junctionname weldedJunctionno,sum(inside) counts,sum(worktime) machid from(
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,w.FCARD_ID FCARD_ID,w.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,0 inside,sum(w.fworktime) worktime
         from tb_work w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
         left join TB_WELDER e on w.FWELDER_ID = e.fid
         left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
-        left join TB_TASKRESULT k on w.fwelder_id = k.fwelderid and w.FCARD_ID=k.FCARD_ID and w.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
         where w.fjunction_id > 0 and c.fname > 0
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,u.junction_name,w.fwelder_id
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,w.fjunction_id,w.FCARD_ID,w.FWPS_LIB_ID,e.fname,u.junction_name,w.fwelder_id
         UNION ALL
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,u.junction_name junctionname,sum(w.fworktime) inside,0 worktime,
-        MIN(k.FREALSTARTTIME) startTime,MAX(k.FREALENDTIME) endTime
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,w.fwelder_id fwelder_id,w.FJUNCTION_ID iid,w.FCARD_ID FCARD_ID,w.FWPS_LIB_ID FWPS_LIB_ID,u.junction_name junctionname,sum(w.fworktime) inside,0 worktime
         from tb_work w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
         left join TB_WELDER e on w.FWELDER_ID = e.fid
         left join TB_JUNCTION u on w.FJUNCTION_ID = u.fid
-        left join TB_TASKRESULT k on w.fwelder_id = k.fwelderid and w.FCARD_ID=k.FCARD_ID and w.FMACHINE_ID = k.FMACHINEID
-        <if test="tasktime!=null and tasktime!=''">
-            and${tasktime}
-        </if>
         where w.fjunction_id > 0 and c.fname > 0 and w.fstatus = 99
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,u.junction_name,w.fwelder_id
-        )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,junctionname,fwelder_id,iid
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,w.fjunction_id,w.FCARD_ID,w.FWPS_LIB_ID,e.fname,u.junction_name,w.fwelder_id
+        )temp group by JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,fname,weldername,junctionname,fwelder_id,iid,FCARD_ID,FWPS_LIB_ID
+        ORDER BY machid DESC
     </select>
 
     <select id="getJunctionstandtime" resultMap="wjMap" parameterType="java.lang.String">
-        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,fname fproduct_number,weldername fwelder_name,junctionname weldedJunctionno,sum(electricity_unit) maxElectricity,sum(valtage_unit) maxValtage,sum(wirefeedrate) fmaterial,sum(inside) counts,sum(worktime) hours from(
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,u.junction_name junctionname,avg(felectricity) electricity_unit,avg(fvoltage) valtage_unit,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate,0 inside,sum(w.fworktime) worktime from tb_work w
+        select JOB_NUMBER fprefix_number,SET_NUMBER fsuffix_number,PART_DRAWING_NUMBER froom_no,PART_NAME farea,fname fproduct_number,weldername fwelder_name,junctionname weldedJunctionno,sum(electricity_unit) maxElectricity,sum(valtage_unit) maxValtage,sum(wirefeedrate) fmaterial,sum(inside) counts,sum(worktime) hours from(
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,u.junction_name junctionname,avg(felectricity) electricity_unit,avg(fvoltage) valtage_unit,sum((w.fworktime*w.fwirefeedrate*m.fcoefficient)/60) wirefeedrate,0 inside,sum(w.fworktime) worktime from tb_work w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
         left join TB_WELDER e on w.FWELDER_ID = e.fid
@@ -333,9 +304,9 @@
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname,u.junction_name
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname,u.junction_name
         UNION ALL
-        select j.JOB_NUMBER,j.SET_NUMBER,c.fname,e.fname weldername,u.junction_name junctionname,0 wirefeedrate,0 electricity_unit,0 valtage_unit,sum(w.FSTANDBYTIME) inside,0 worktime from TB_STANDBY w
+        select j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,e.fname weldername,u.junction_name junctionname,0 wirefeedrate,0 electricity_unit,0 valtage_unit,sum(w.FSTANDBYTIME) inside,0 worktime from TB_STANDBY w
         left join tb_welded_junction j on w.fcard_id = j.fid
         left join tb_production_craft c on w.FWPS_LIB_ID = c.fid
         left join TB_WELDER e on w.FWELDER_ID = e.fid
@@ -344,8 +315,9 @@
         <if test="search!=null and search!=''">
             and${search}
         </if>
-        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,c.fname,w.fjunction_id,e.fname,u.junction_name
-        )temp group by JOB_NUMBER,SET_NUMBER,fname,weldername,junctionname
+        GROUP BY j.JOB_NUMBER,j.SET_NUMBER,j.PART_DRAWING_NUMBER,j.PART_NAME,c.fname,w.fjunction_id,e.fname,u.junction_name
+        )temp group by JOB_NUMBER,SET_NUMBER,PART_DRAWING_NUMBER,PART_NAME,fname,weldername,junctionname
+        ORDER BY hours DESC
     </select>
 
     <select id="getJMByWelder" resultMap="wjMap">

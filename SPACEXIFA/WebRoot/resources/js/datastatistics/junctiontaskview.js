@@ -109,8 +109,8 @@ function historyDatagrid(){
 		height : $("#tableDiv").height(),
 		width : $("#tableDiv").width(),
 		idField : 'fid',
-		pageSize : 50,
-		pageList : [ 10, 20, 30, 40, 50 ],
+		pageSize : 200,
+		pageList : [ 10, 20, 50, 100, 200 ],
 		url : url1,
 		singleSelect : true,
 		rownumbers : true,
@@ -350,14 +350,14 @@ function historyDatagrid(){
 // 	var beijing_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
 // 	return beijing_datetime; // 2017-03-31 16:02:06
 // }
-// function searchHistory(){
-// 	searchStr = "";
-// 	setParam();
-// 	$('#dg').datagrid("options").url="datastatistics/getJunctionHistoryList";
-// 	$('#dg').datagrid('load', {
-// 		"searchStr" : searchStr
-// 	});
-// }
+function searchHistory(){
+	searchStr = "";
+	setParam();
+	$('#dg').datagrid("options").url="datastatistics/getJunctionHistoryList";
+	$('#dg').datagrid('load', {
+		"searchStr" : searchStr
+	});
+}
 // function eleChart(){
 // 	var myChart = echarts.init(document.getElementById('body1'));
 // 	var option = {

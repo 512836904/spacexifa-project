@@ -115,6 +115,47 @@ public class WeldedJunctionControll {
         }if (request.getParameter("machin_id") != null && request.getParameter("machin_id") != "") {
             request.setAttribute("machin_id", request.getParameter("machin_id"));
         }
+        if (request.getParameter("product_drawing_no") != null && request.getParameter("product_drawing_no") != "") {
+            request.setAttribute("product_drawing_no", request.getParameter("product_drawing_no"));
+        }
+        if (request.getParameter("product_name") != null && request.getParameter("product_name") != "") {
+            request.setAttribute("product_name", request.getParameter("product_name"));
+        }
+        if (request.getParameter("taskno") != null && request.getParameter("taskno") != "") {
+            request.setAttribute("taskno", request.getParameter("taskno"));
+        }
+        if (request.getParameter("fwelded_junction_no") != null && request.getParameter("fwelded_junction_no") != "") {
+            request.setAttribute("fwelded_junction_no", request.getParameter("fwelded_junction_no"));
+        }
+        if (request.getParameter("weldername") != null && request.getParameter("weldername") != "") {
+            request.setAttribute("weldername", request.getParameter("weldername"));
+        }
+        if (request.getParameter("weldernum") != null && request.getParameter("weldernum") != "") {
+            request.setAttribute("weldernum", request.getParameter("weldernum"));
+        }
+        if (request.getParameter("machinenum") != null && request.getParameter("machinenum") != "") {
+            request.setAttribute("machinenum", request.getParameter("machinenum"));
+        }
+        if (request.getParameter("zitem") != null && request.getParameter("zitem") != "") {
+            request.setAttribute("zitem", request.getParameter("zitem"));
+        }
+        if (request.getParameter("bitem") != null && request.getParameter("bitem") != "") {
+            request.setAttribute("bitem", request.getParameter("bitem"));
+        }
+        if (request.getParameter("part_number") != null && request.getParameter("part_number") != "") {
+            request.setAttribute("part_number", request.getParameter("part_number"));
+        }
+        if (request.getParameter("part_name") != null && request.getParameter("part_name") != "") {
+            request.setAttribute("part_name", request.getParameter("part_name"));
+        }
+        if (request.getParameter("type") != null && request.getParameter("type") != "") {
+            request.setAttribute("type", request.getParameter("type"));
+        }
+        if (request.getParameter("ftype") != null && request.getParameter("ftype") != "") {
+            request.setAttribute("fstatus", request.getParameter("ftype"));
+        }
+        request.setAttribute("time1", request.getParameter("time1"));
+        request.setAttribute("time2", request.getParameter("time2"));
         return "td/PersonWeldHistory";
     }
 

@@ -34,8 +34,8 @@ function wpslibDatagrid(){
         height: $("#wpsTableDiv").height(),
         width: $("#wpsTableDiv").width(),
         idField : 'fid',
-        pageSize : 50,
-        pageList : [ 10, 20, 30, 40, 50 ],
+        pageSize : 200,
+        pageList : [ 10, 20, 50, 100, 200 ],
         url : url1,
         singleSelect : true,
         rownumbers : true,
@@ -60,6 +60,18 @@ function wpslibDatagrid(){
             halign : "center",
             align : "left"
         }, {
+            field : 'part_number',
+            title : '零件图号',
+            width : 200,
+            halign : "center",
+            align : "left"
+        },{
+            field : 'part_name',
+            title : '零件名',
+            width : 200,
+            halign : "center",
+            align : "left"
+        },{
             field : 'fproduct_number',
             title : '工艺编号',
             width : 100,
@@ -82,7 +94,23 @@ function wpslibDatagrid(){
             title : '焊接时长',
             width : 100,
             halign : "center",
-            align : "left"
+            align : "left",
+            sortable: true,
+            sorter: function (a, b) {
+                if(a.indexOf(":")>0){
+                    let hour = a.split(":")[0];
+                    let min = a.split(":")[1];
+                    let sec = a.split(":")[2];
+                    a = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                }
+                if(b.indexOf(":")>0){
+                    let hour = b.split(":")[0];
+                    let min = b.split(":")[1];
+                    let sec = b.split(":")[2];
+                    b = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                }
+                return (a > b ? 1 : -1);
+            }
         }, {
             field : 'alltime',
             title : '工作时长',
@@ -205,9 +233,9 @@ function parameterStr1(){
     var product_drawing_no = $("#product_drawing_no").val();
     var product_name = $("#product_name").val();
     var taskno = $("#taskno").val();
-    var fwps_lib_num = $("#fwps_lib_num").val();
+    var part_number = $("#part_number").val();
     var fwelded_junction_no = $("#fwelded_junction_no").val();
-    var product_number = $("#product_number").val();
+    var part_name = $("#part_name").val();
     var junction_name = $("#fwelded_junction_no").val();
     var welderno = $("#welderno").val();
     var ftype = $("#ftype").combobox('getValue');
@@ -237,6 +265,20 @@ function parameterStr1(){
             searchStr += " j.SET_NUMBER LIKE "+"'%" + product_name + "%'";
         }else {
             searchStr += " AND j.SET_NUMBER LIKE "+"'%" + product_name + "%'";
+        }
+    }
+    if(part_number != ""){
+        if(searchStr == ""){
+            searchStr += " j.PART_DRAWING_NUMBER LIKE "+"'%" + part_number + "%'";
+        }else {
+            searchStr += " AND j.PART_DRAWING_NUMBER LIKE "+"'%" + part_number + "%'";
+        }
+    }
+    if(part_name != ""){
+        if(searchStr == ""){
+            searchStr += " j.PART_NAME LIKE "+"'%" + part_name + "%'";
+        }else {
+            searchStr += " AND j.PART_NAME LIKE "+"'%" + part_name + "%'";
         }
     }
     if(junction_name != ""){
@@ -280,16 +322,17 @@ function parameterStr1(){
 
 //导出到Excel
 function exportExcel() {
-    chartStr = "";
-    setParam();
+    searchStr = "";
+    parameterStr1();
     $.messager.confirm("提示", "文件默认保存在浏览器的默认路径，<br/>如需更改路径请设置浏览器的<br/>“下载前询问每个文件的保存位置“属性！", function (result) {
         if (result) {
-            var url = "export/exportWorkpieceData";
+            //var url = "export/exportWorkpieceData?searchStr="+searchStr;
+            var url = encodeURI("export/exportWorkpieceData?searchStr="+searchStr);
             var img = new Image();
             img.src = url;  // 设置相对路径给Image, 此时会发送出请求
             url = img.src;  // 此时相对路径已经变成绝对路径
             img.src = null; // 取消请求
-            window.location.href = encodeURI(url + chartStr);
+            window.location.href = encodeURI(url);
         }
     });
 }

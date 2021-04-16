@@ -37,11 +37,18 @@ public interface WeldedJunctionService {
 
 	/**
 	 * 工件生产时长
-	 * @param welder
-	 * @param dto
+	 * @param page
+	 * @param str
 	 * @return
 	 */
 	List<WeldedJunction> getJunctionstandtime(Page page,String str);
+
+	/**
+	 * 工件生产报表导出
+	 * @param str
+	 * @return
+	 */
+	List<WeldedJunction> getExportJunctionstandtime(String str);
 
 	/**
 	 * 人员焊接时长
@@ -106,7 +113,7 @@ public interface WeldedJunctionService {
 
 	/**
 	 * 删除任务
-	 * @param wj
+	 * @param id
 	 */
 	boolean deleteJunction(BigInteger id);
 
@@ -115,7 +122,7 @@ public interface WeldedJunctionService {
 	 * @Description
 	 * @author Bruce
 	 * @date 2020年2月17日下午8:15:49
-	 * @param wps
+	 * @param weldtask
 	 */
 	void turnDown(WeldedJunction weldtask);
 
@@ -133,7 +140,6 @@ public interface WeldedJunctionService {
 	 * 焊工对应的焊机任务信息
 	 * @param page 分页
 	 * @param dto
-	 * @param str
 	 * @param welderid 焊机编号
 	 * @return
 	 */
@@ -163,7 +169,7 @@ public interface WeldedJunctionService {
 
 	/**
 	 * 新增任务
-	 * @param object
+	 * @param wj
 	 * @return
 	 */
 	boolean addTask(WeldedJunction wj);

@@ -17,7 +17,12 @@ $(function () {
     //创建定时器每10分钟刷新页面
     setInterval(function(){
         loadAddSupergage(0);
-        loadJobNumberInfo(0);
+        var one_2 = $('#one_2').css('display');
+        if(one_2=='none'){
+            loadJobNumberInfo(1);
+        }else{
+            loadJobNumberInfo(0);
+        }
         loadJobSetNormRate(0);
     }, 600000);
     loadUrl();
@@ -261,7 +266,8 @@ function loadJobSetNormRate(day) {
             if (result) {
                 for (var i in result.ary) {
                     if(result.ary[i].job_number!=null){
-                        var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                       // var name = result.ary[i].job_number + " " + result.ary[i].set_number + " " + result.ary[i].part_name;
+                        var name = result.ary[i].job_number + " " + result.ary[i].set_number;
                         data.push(name);
                         dataList.push(result.ary[i].normRate);
                     }

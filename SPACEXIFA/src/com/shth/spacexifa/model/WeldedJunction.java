@@ -66,7 +66,11 @@ public class WeldedJunction {
 	private String fafter_hot_time;
 	private String fwps_lib_name;
 	private String fwps_lib_version;
+
+
+
 	private BigInteger fwpslib_id;
+	private BigInteger fcard_id;
 	private String fwelder_name;
 	private String fequipment_no;
 	private String junctionname;
@@ -81,7 +85,14 @@ public class WeldedJunction {
 	private String fproduct_drawing_no;
 	private String fproduct_name;
 	private String fproduct_version;
-	
+
+	public BigInteger getFcard_id() {
+		return fcard_id;
+	}
+
+	public void setFcard_id(BigInteger fcard_id) {
+		this.fcard_id = fcard_id;
+	}
 	public BigInteger getInsfid() {
 		return insfid;
 	}

@@ -66,6 +66,14 @@
                 <input class="easyui-textbox" style="width:120px;" name="product_name" id="product_name"/>
             </div>
             <div  style="float: left;">
+                <label>零件图号：</label>
+                <input class="easyui-textbox" style="width:120px;" name="part_number" id="part_number"/>
+            </div>
+            <div  style="float: left;">
+                <label>零件名：</label>
+                <input class="easyui-textbox" style="width:120px;" name="part_name" id="part_name"/>
+            </div>
+            <div  style="float: left;">
                 <label>工艺编号：</label>
                 <input class="easyui-textbox" style="width:120px;" name="taskno" id="taskno"/>
             </div>
@@ -93,7 +101,7 @@
             </div>
             <div  style="float: left;">
                 <a href="javascript:serach();" class="easyui-linkbutton" iconCls="icon-select" >搜索</a>&emsp;
-                <%--					<a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>--%>
+                <a href="javascript:exportExcel();" class="easyui-linkbutton" iconCls="icon-export">导出</a>
             </div>
         </div>
     </div>

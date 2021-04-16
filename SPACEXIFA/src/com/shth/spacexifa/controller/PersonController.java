@@ -256,6 +256,7 @@ public class PersonController {
         BigInteger num = null;
         List<Parameter> parameter = parameterService.getParameter(); //获取参数
         num = parameter.get(0).getNumversion().add(new BigInteger("1"));
+        String welderno = request.getParameter("welderno");
         try {
             welder.setId(new BigInteger(request.getParameter("FID")));
             welder.setQuali(Integer.parseInt(request.getParameter("qua")));
@@ -274,14 +275,16 @@ public class PersonController {
 //			welder.setUpdatedate(sdf.parse(sdf.format((new Date()).getTime())));
 //			welder.setCreatedate(sdf.parse(request.getParameter("createdate")));
             welderService.update(welder);
-            parameterService.UpdateNumVersion(num);
+            int count = welderService.getUsernameCount(welderno);
+            if(DIMISSIONSTATUS.equals(0) || count==0){
+                parameterService.UpdateNumVersion(num);
+            }
             obj.put("success", true);
         } catch (Exception e) {
             obj.put("success", false);
             obj.put("errorMsg", e.getMessage());
         }
         return obj.toString();
-
     }
 
     @RequestMapping("/toDestroyWelder")

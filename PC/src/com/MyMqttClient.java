@@ -223,7 +223,6 @@ public class MyMqttClient {
                             taskarray.set(index + 5, taskstr.getString("workprocedureid"));
                             taskarray.set(index + 6, taskstr.getString("workstepid"));
                             taskarray.set(index + 7, taskstr.getString("weldlineid"));
-
                         } else {
                             taskarray.add(taskstr.getString("machine"));
                             taskarray.add(taskstr.getString("welderid"));

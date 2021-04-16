@@ -74,9 +74,15 @@ public class WeldedJunctionServiceImpl implements WeldedJunctionService{
 		return wjm.getJunctionweldtime(search,tasktime);
 	}
 
+
 	@Override
 	public List<WeldedJunction> getJunctionstandtime(Page page, String search) {
 		PageHelper.startPage(page.getPageIndex(), page.getPageSize());
+		return wjm.getJunctionstandtime(search);
+	}
+
+	@Override
+	public List<WeldedJunction> getExportJunctionstandtime(String search) {
 		return wjm.getJunctionstandtime(search);
 	}
 

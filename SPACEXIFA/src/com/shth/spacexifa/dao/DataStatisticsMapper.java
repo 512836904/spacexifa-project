@@ -39,6 +39,8 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 
 	BigInteger getStandytimeByJunction(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 
+	List<DataStatistics> getweldernameCount(@Param("dto") WeldDto dto,@Param("tasktime") String tasktime);
+
 	BigInteger getWorkingJunction(@Param("dto") WeldDto dto);
 
 	BigInteger getStandJunction(@Param("dto") WeldDto dto);
@@ -47,11 +49,15 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 
 	DataStatistics getWorkTimeAndEleVol(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 
+	DataStatistics getItemWorkTime(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
+
 	DataStatistics getWorkTimeAndEleVolByWelder(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 
 	DataStatistics getWorkTimeAndEleVolByJunction(@Param("itemid") BigInteger itemid,@Param("dto") WeldDto dto);
 
 	List<DataStatistics> getAllMachine(@Param("item") BigInteger item);
+
+	List<DataStatistics> getAllWelder(@Param("parent") BigInteger parent,@Param("dto") WeldDto dto);
 
 	List<DataStatistics> getAllWelder(@Param("parent") BigInteger parent);
 
@@ -79,7 +85,11 @@ public interface DataStatisticsMapper  extends Mapper<DataStatistics>{
 
 	List<DataStatistics> getFauitDetail(@Param("dto") WeldDto dto,@Param("id") BigInteger id,@Param("value") int value);
 
-	List<DataStatistics> getWorkRank(@Param("parent")BigInteger parent,@Param("time")String time);
+	List<DataStatistics> getWorkRank(@Param("parent")BigInteger parent,@Param("time")String time,@Param("time2")String time2);
+
+	List<DataStatistics> getWelderWorkTime(@Param("itemid")BigInteger itemid,@Param("time")String time);
+
+	List<DataStatistics> getPersonWorkTime(@Param("itemid")BigInteger itemid,@Param("time")String time);
 
 	List<DataStatistics> getStandbyRank(@Param("parent")BigInteger parent,@Param("time")String time);
 

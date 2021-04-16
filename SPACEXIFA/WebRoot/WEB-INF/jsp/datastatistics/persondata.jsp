@@ -45,6 +45,10 @@
             <select class="easyui-combobox" name="zitem" id="zitem" data-options="editable:false"></select>
             所属班组：
             <select class="easyui-combobox" name="bitem" id="bitem" data-options="editable:false"></select>
+            焊工姓名：
+            <input class="easyui-textbox" style="width:120px;" name="weldername" id="weldername">
+            焊工编号：
+            <input class="easyui-textbox" style="width:120px;" name="weldernum" id="weldernum">
             时间：
             <input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">--
             <input class="easyui-datetimebox" name="dtoTime2" id="dtoTime2">

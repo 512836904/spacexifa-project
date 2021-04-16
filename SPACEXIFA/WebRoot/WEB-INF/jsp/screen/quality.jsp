@@ -165,10 +165,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
             <div class="panel" style="height: 6.05rem;">
                 <div class="panel01" id="workstandr" style="float:left">
-                    <h2 class="h2-mid"><span>工区超规范累计次数（次）</span></h2>
+                    <h2 class="h2-mid"><span>工区超规范停机次数（次）</span></h2>
                 </div>
 				 <div class="panel01" id="teamstander" style="float:left;display:none;">
-                    <h2 class="h2-mid"><span>班组超规范累计次数（次）</span></h2>
+                    <h2 class="h2-mid"><span>班组超规范停机次数（次）</span></h2>
                 </div>
 				<div id="one_day6" class="pane501" style="float:left">
                     <a onclick="javascript:one_3(1);">
@@ -297,23 +297,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 if (result) {
                     var tablearray = [];
                     var data = result.ary;
-                    for (var index in data) {
-                        //查询对象数组是否存在某个值，存在则返回下标，不存在返回-1
-                        var gzh_num = tablearray.map(a => a.gzh).indexOf(data[index].job_number);
-                        var bth_num = tablearray.map(a => a.bth).indexOf(data[index].set_number);
-                        var ljm_num = tablearray.map(a => a.ljm).indexOf(data[index].part_name);
-                        var work_area_num = tablearray.map(a => a.work_area).indexOf(data[index].insname);
-                        var person_num = tablearray.map(a => a.person).indexOf(data[index].name);
-                        var time_num = tablearray.map(a => a.time).indexOf(data[index].starttime);
-                        if (gzh_num == -1 || bth_num == -1 || ljm_num == -1 || work_area_num == -1 || person_num == -1 || time_num == -1) {
-                            let feild = {};
-                            feild["gzh"] = data[index].job_number;
-                            feild["bth"] = data[index].set_number;
-                            feild["ljm"] = data[index].part_name;
-                            feild["work_area"] = data[index].insname;
-                            feild["person"] = data[index].name;
-                            feild["time"] = data[index].starttime;
-                            tablearray.push(feild);
+                    var supergage_status = result.supergage_status;//超规范是否展示
+                    if(supergage_status==1) {
+                        for (var index in data) {
+                            //查询对象数组是否存在某个值，存在则返回下标，不存在返回-1
+                            var gzh_num = tablearray.map(a => a.gzh).indexOf(data[index].job_number);
+                            var bth_num = tablearray.map(a => a.bth).indexOf(data[index].set_number);
+                            var ljm_num = tablearray.map(a => a.ljm).indexOf(data[index].part_name);
+                            var work_area_num = tablearray.map(a => a.work_area).indexOf(data[index].insname);
+                            var person_num = tablearray.map(a => a.person).indexOf(data[index].name);
+                            var time_num = tablearray.map(a => a.time).indexOf(data[index].starttime);
+                            if (gzh_num == -1 || bth_num == -1 || ljm_num == -1 || work_area_num == -1 || person_num == -1 || time_num == -1) {
+                                let feild = {};
+                                feild["gzh"] = data[index].job_number;
+                                feild["bth"] = data[index].set_number;
+                                feild["ljm"] = data[index].part_name;
+                                feild["work_area"] = data[index].insname;
+                                feild["person"] = data[index].name;
+                                feild["time"] = data[index].starttime;
+                                tablearray.push(feild);
+                            }
                         }
                     }
                     appvue.$delete(appvue.tableData);

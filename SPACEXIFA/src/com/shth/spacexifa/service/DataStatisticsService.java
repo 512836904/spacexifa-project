@@ -38,6 +38,14 @@ public interface DataStatisticsService {
 	int getStartingUpMachineNum(BigInteger itemid,WeldDto dto);
 
 	/**
+	 * 获取焊机任务数
+	 * @param itemid  项目部id
+	 * @param dto 扩展参数类
+	 * @return
+	 */
+	List<DataStatistics> getweldernameCount(WeldDto dto,String tasktime);
+
+	/**
 	 * 获取设备利用率
 	 * @param itemid  项目部id
 	 * @param dto 扩展参数类
@@ -114,6 +122,13 @@ public interface DataStatisticsService {
 	DataStatistics getWorkTimeAndEleVolByJunction(BigInteger itemid,WeldDto dto);
 
 	/**
+	 * 班组焊接时间及焊丝消耗
+	 * @param dto
+	 * @return
+	 */
+	DataStatistics getItemWorkTime(BigInteger itemid,WeldDto dto);
+
+	/**
 	 * 获取所有的焊机id，编号以及组织机构id，名称
 	 * @param page 分页
 	 * @param itemid 组织机构id
@@ -126,7 +141,13 @@ public interface DataStatisticsService {
 	 * @param page
 	 * @return
 	 */
-	List<DataStatistics> getAllWelder(Page page,BigInteger parent);
+	List<DataStatistics> getAllWelder(Page page,BigInteger parent,WeldDto dto);
+
+	/**
+	 * 人员生产数据导出Excel
+	 * @return
+	 */
+	List<DataStatistics> getAllPersonData(BigInteger parent,WeldDto dto);
 
 	/**
 	 * 获取所有悍缝编号及组织机构id，name
@@ -252,11 +273,7 @@ public interface DataStatisticsService {
 	 */
 	List<DataStatistics> getAllMachineData(BigInteger itemid);
 
-	/**
-	 * 人员生产数据导出Excel
-	 * @return
-	 */
-	List<DataStatistics> getAllPersonData(BigInteger parent);
+
 
 	/**
 	 * 工件生产数据导出Excel
@@ -292,6 +309,7 @@ public interface DataStatisticsService {
 	 * @return
 	 */
 	List<DataStatistics> getWeldMachineOutCountData(WeldDto dto,BigInteger itemid);
+
 
 	/**
 	 * 人员累计焊接时间
@@ -329,7 +347,23 @@ public interface DataStatisticsService {
 	 * @param time 时间
 	 * @return
 	 */
-	List<DataStatistics> getWorkRank(Page page,BigInteger parent,String time);
+	List<DataStatistics> getWorkRank(Page page,BigInteger parent,String time,String time2);
+
+	/**
+	 * 工区或班组焊工工作量排行（焊接时长）
+	 * @param parent 事业部id
+	 * @param time 时间
+	 * @return
+	 */
+	List<DataStatistics> getWelderWorkTime(BigInteger parent,String time);
+
+	/**
+	 * 工区或班组焊工工作量排行（焊接时长）
+	 * @param parent 事业部id
+	 * @param time 时间
+	 * @return
+	 */
+	List<DataStatistics> getPersonWorkTime(BigInteger parent,String time);
 
 	/**
 	 * 焊工工作时长排行（待机时长）

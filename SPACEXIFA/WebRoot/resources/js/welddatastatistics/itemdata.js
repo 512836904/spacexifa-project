@@ -54,6 +54,18 @@ function dgDatagrid() {
                         align: "left",
                         sortable: true,
                         sorter: function (a, b) {
+                            if(a.indexOf(":")>0){
+                                let hour = a.split(":")[0];
+                                let min = a.split(":")[1];
+                                let sec = a.split(":")[2];
+                                a = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                            }
+                            if(b.indexOf(":")>0){
+                                let hour = b.split(":")[0];
+                                let min = b.split(":")[1];
+                                let sec = b.split(":")[2];
+                                b = Number(hour * 60 * 60 ) + Number(min * 60) + Number(sec);
+                            }
                             return (a > b ? 1 : -1);
                         }
                     });
@@ -63,8 +75,8 @@ function dgDatagrid() {
                     height: $("#body").height(),
                     width: $("#body").width(),
                     url: "datastatistics/getWeldItemData" + chartStr,
-                    pageSize: 10,
-                    pageList: [10, 20, 30, 40, 50],
+                    pageSize : 200,
+                    pageList : [ 10, 20, 50, 100, 200 ],
                     singleSelect: true,
                     rownumbers: true,
                     showPageList: false,

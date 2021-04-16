@@ -92,7 +92,7 @@ public class Server {
                 mqtt.subTopic("hand-held-terminal-askFor");    //手持终端索取
                 mqtt.subTopic("hand-held-terminal-issue");    //手持终端下发
                 mqtt.subTopic("whiteList-dataIssue");    //焊工白名单下发
-                //mqtt.subTopic("control-command-issue");    //手持终端控制命令下发
+                mqtt.subTopic("control-command-issue");    //手持终端控制命令下发
             }
         });
         thread.start();
@@ -534,7 +534,7 @@ public class Server {
         }, 0, 3600, TimeUnit.SECONDS);
     }
 
-    public void startServerWork(final int inetPort) {
+    public void startServerWork(int inetPort) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

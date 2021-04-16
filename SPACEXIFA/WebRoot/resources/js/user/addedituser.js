@@ -8,6 +8,22 @@ $(function () {
         }
     })
     $("#fm").form("disableValidation");
+    $('#ISSUEWPS').combobox('clear');
+    $('#ISSUEWPS').combobox('loadData', [{
+        "text": "无",
+        "value": "0"
+    }, {
+        "text": "有",
+        "value": "1"
+    }]);
+    $('#RECEIVEALARM').combobox('clear');
+    $('#RECEIVEALARM').combobox('loadData', [{
+        "text": "无",
+        "value": "0"
+    }, {
+        "text": "有",
+        "value": "1"
+    }]);
 });
 
 function inscombobox() {
@@ -35,22 +51,22 @@ function inscombobox() {
             alert('error');
         }
     });
-    $('#ISSUEWPS').combobox({
-        valueField: 'id',
-        textField: 'text',
-        multiple: false,  //多选
-        editable: false,  //是否可编辑
-        panelHeight: 'auto',
-        data: [{id: 0, text: '无'}, {id: 1, text: '有'}]//设置默认值
-    });
-    $('#RECEIVEALARM').combobox({
-        valueField: 'id',
-        textField: 'text',
-        multiple: false,  //多选
-        editable: false,  //是否可编辑
-        panelHeight: 'auto',
-        data: [{id: 0, text: '无'}, {id: 1, text: '有'}]//设置默认值
-    });
+    // $('#ISSUEWPS').combobox({
+    //     valueField: 'id',
+    //     textField: 'text',
+    //     multiple: false,  //多选
+    //     editable: false,  //是否可编辑
+    //     panelHeight: 'auto',
+    //     data: [{id: 0, text: '无'}, {id: 1, text: '有'}]//设置默认值
+    // });
+    // $('#RECEIVEALARM').combobox({
+    //     valueField: 'id',
+    //     textField: 'text',
+    //     multiple: false,  //多选
+    //     editable: false,  //是否可编辑
+    //     panelHeight: 'auto',
+    //     data: [{id: 0, text: '无'}, {id: 1, text: '有'}]//设置默认值
+    // });
 }
 
 function UserDatagrid() {
@@ -122,10 +138,12 @@ function saveUser() {
     });
     $('#dlg').window('open');
     $('#fm').form('clear');
+    $('#ISSUEWPS').combobox('select',0);
+    $('#RECEIVEALARM').combobox('select',0);
     UserDatagrid();
     var statusId = document.getElementsByName("statusid");
     statusId[0].checked = 'checked';
-    url = "user/addUser";
+    url = "user/addAllUser";
 }
 
 function editUser() {
@@ -150,6 +168,14 @@ function save() {
     var insframework = $("#insid").combobox("getValue");
     var sid = $("input[name='statusid']:checked").val();
     var rows = $("#tt").datagrid("getSelections");
+    var receivealarm = $("#RECEIVEALARM").combobox("getValue");
+    var issuewps = $("#ISSUEWPS").combobox("getValue");
+    var pssword = $("input[name='userPassword']").val();
+    var name = $("input[name='userName']").val();
+    var validName = $("input[name='userLoginName']").val();
+    var userPosition = $("input[name='userPosition']").val();
+    var userEmail = $("input[name='userEmail']").val();
+    var userPhone = $("input[name='userPhone']").val();
     var str = "";
     for (var i = 0; i < rows.length; i++) {
         str += rows[i].id + ",";
@@ -157,8 +183,8 @@ function save() {
     var url2 = "";
     if (flag == 1) {
         messager = "新增成功！";
-        url2 = url + "?userInsframework=" + insframework + "&status=" + sid + "&rid=" + str;
-        ;
+        url2 = url + "?userInsframework=" + insframework + "&status=" + sid + "&rid=" + str+"&receivealarm=" + receivealarm+"&issuewps=" + issuewps+"&pssword=" + pssword+"&name=" + name+
+            "&validName=" + validName+"&userPosition=" + userPosition+"&userEmail=" + userEmail+"&userPhone=" + userPhone;
     } else {
         messager = "修改成功！";
         url2 = url + "&userInsframework=" + insframework + "&status=" + sid + "&rid=" + str;

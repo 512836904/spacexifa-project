@@ -86,7 +86,7 @@
 
 			<div class="panel" style="height: 6.05rem;width:33%;float:left;">
 				<div class="panel01" style="float:left">
-                    <h2 class="h2-side"><span>工作号/部套号超规范信息表</span></h2>
+                    <h2 class="h2-side"><span>工作号/部套号超规范停机表</span></h2>
                 </div>
 				<div id="one_day" class="pane501" style="float:left">
 					<img id="u3913_img" class="img " src="resources/images/images/c11_u3913.png"/>
@@ -365,15 +365,18 @@
                 if (result) {
                     var tablearray = [];
                     var data = result.ary;
-                    for (var index in data) {
-                        let feild = {};
-                        feild["gzh"] = data[index].job_number;
-                        feild["bth"] = data[index].set_number;
-                        feild["ljm"] = data[index].part_name;
-                        feild["work_area"] = data[index].insname;
-                        feild["person"] = data[index].name;
-                        feild["time"] = data[index].starttime;
-                        tablearray.push(feild);
+                    var supergage_status = result.supergage_status;
+                    if(supergage_status==1){
+                        for (var index in data) {
+                            let feild = {};
+                            feild["gzh"] = data[index].job_number;
+                            feild["bth"] = data[index].set_number;
+                            feild["ljm"] = data[index].part_name;
+                            feild["work_area"] = data[index].insname;
+                            feild["person"] = data[index].name;
+                            feild["time"] = data[index].starttime;
+                            tablearray.push(feild);
+                        }
                     }
                     addvue.$delete(addvue.tableData);
                     Object.assign(addvue.$data,addvue.$options.data());

@@ -157,6 +157,7 @@ function wpslibDatagrid() {
             }
         },
         onLoadSuccess: function (data) {
+           // $('#wpslibTable').datagrid('selectAll');
             if ($("#wait").length != 0) {
                 $("a[id='wait']").linkbutton({text: '待审核', plain: true, iconCls: 'icon-newcancel'});
             }
@@ -303,6 +304,7 @@ function supergageShowOrHide(status) {
                 }else {
                     alert("隐藏成功！");
                 }
+                $('#wpslibTable').datagrid('reload');
             } else {
                 if (status === 1){
                     alert("展示失败！");
@@ -316,6 +318,46 @@ function supergageShowOrHide(status) {
         }
     });
 }
+
+//工作号默认隐藏
+function workgageShowOrHide(status){
+    /**
+     * 查询每个焊缝的电流电压上限，在实时信息展示中，
+     * 判断电流电压如果超出上限，则不进行展示
+     */
+    if (status === 1){
+        document.getElementById("workgageShow").checked = true;
+    } else {
+        document.getElementById("workgageHide").checked = true;
+    }
+    $.ajax({
+        url: 'wps/updateWorkgage',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            supergage_status: status,
+        },
+        success: function (result) {
+            if (result && result.success) {
+                if (status === 1){
+                    alert("展示成功！");
+                }else {
+                    alert("隐藏成功！");
+                }
+            } else {
+                if (status === 1){
+                    alert("展示失败！");
+                }else {
+                    alert("隐藏失败！");
+                }
+            }
+        },
+        error: function () {
+            console.log("超规范信息展示异常");
+        }
+    });
+}
+
 
 function getContextPath() {
     var pathName = document.location.pathname;

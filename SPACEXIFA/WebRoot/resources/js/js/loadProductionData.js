@@ -11,13 +11,68 @@ $(function (){
     }, 2000);
     //创建定时器每10分钟刷新页面
     setInterval(function(){
-        loadLeft1(0);
-        loadWorkRankData(0);
-        loadWorkGas(0,0);
-        loadWorkWelders(0,0);
-        loadWorkMaterals(0,0);
-        loadWorkRadios(0,0);
-        loadJobSetNumber(0);
+        var one_day = $('#one_day').css('display');
+        if(one_day=='none'){
+            loadLeft1(1);
+        }else{
+            loadLeft1(0);
+        }
+        var one_day2 = $('#one_day2').css('display');
+        if(one_day2=='none'){
+            loadWorkRankData(1);
+        }else{
+            loadWorkRankData(0);
+        }
+        var one_day4 = $('#one_day4').css('display');
+        var vchart1 = $('#vchart1').css('display');
+        if(one_day4=='none' && vchart1=='none'){
+            loadWorkGas(1, 1);
+        }else if(one_day4=='none' && vchart1=='block'){
+            loadWorkGas(1, 0);
+        }else if(one_day4=='block' && vchart1=='none'){
+            loadWorkGas(0, 1);
+        }else{
+            loadWorkGas(0, 0);
+        }
+        var one_day6 = $('#one_day6').css('display');
+        var vchart3 = $('#vchart3').css('display');
+        if(one_day6=='none' && vchart3=='none'){
+            loadWorkWelders(1, 1);
+        }else if(one_day6=='none' && vchart3=='block'){
+            loadWorkWelders(1, 0);
+        }else if(one_day6=='block' && vchart3=='none'){
+            loadWorkWelders(0, 1);
+        }else{
+            loadWorkWelders(0, 0);
+        }
+        var one_day8 = $('#one_day8').css('display');
+        var vchart5 = $('#vchart5').css('display');
+        if(one_day8=='none' && vchart5=='none'){
+            loadWorkMaterals(1, 1);
+        }else if(one_day8=='none' && vchart5=='block'){
+            loadWorkMaterals(1, 0);
+        }else if(one_day8=='block' && vchart5=='none'){
+            loadWorkMaterals(0, 1);
+        }else{
+            loadWorkMaterals(0, 0);
+        }
+        var one_day10 = $('#one_day10').css('display');
+        var vchart7 = $('#vchart7').css('display');
+        if(one_day10=='none' && vchart7=='none'){
+            loadWorkRadios(1, 1);
+        }else if(one_day10=='none' && vchart7=='block'){
+            loadWorkRadios(1, 0);
+        }else if(one_day10=='block' && vchart7=='none'){
+            loadWorkRadios(0, 1);
+        }else{
+            loadWorkRadios(0, 0);
+        }
+        var one_day12 = $('#one_day12').css('display');
+        if(one_day12=='none'){
+            loadJobSetNumber(1);
+        }else{
+            loadJobSetNumber(0);
+        }
     }, 600000);
 });
 
@@ -102,8 +157,13 @@ function loadWorkRankData(day){
 }
 
 function loadWorkGas(day,organization){
+    var nowzation = 0;
     if (day != null) {nowDatetime = day};
-    if (organization != null) {nowOrganization = organization};
+    if (organization != null) {
+        nowOrganization = organization
+    }else{
+        nowOrganization = nowzation;
+    };
     //异步加载电能气体消耗量
     var ins = [];
     var data1 = [];

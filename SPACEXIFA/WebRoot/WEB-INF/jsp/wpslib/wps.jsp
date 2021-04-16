@@ -86,6 +86,10 @@
                 超规范信息一键展示<input type="radio" name="supergage" id="supergageShow" value="1" style="width: 20px;"></a>
             <a href="javascript:supergageShowOrHide(0);" class="easyui-linkbutton" iconCls="icon-cut">
                 超规范信息一键隐藏<input type="radio" name="supergage" id="supergageHide" value="0" style="width: 20px;"></a>
+            <a href="javascript:workgageShowOrHide(1);" class="easyui-linkbutton" iconCls="icon-export">
+                工作号默认展示<input type="radio" name="workgage" id="workgageShow" value="1" style="width: 20px;"></a>
+            <a href="javascript:workgageShowOrHide(0);" class="easyui-linkbutton" iconCls="icon-cut">
+                工作号隐藏<input type="radio" name="workgage" id="workgageHide" value="0" style="width: 20px;"></a>
         </div>
     </div>
 </div>

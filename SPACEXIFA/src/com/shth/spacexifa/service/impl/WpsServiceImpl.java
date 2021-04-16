@@ -725,6 +725,11 @@ public class WpsServiceImpl implements WpsService{
 	}
 
 	@Override
+	public int updateWorkStatus(Integer status){
+		return mapper.updateWorkStatus(status);
+	}
+
+	@Override
 	public int updateStatusByFids(List<String> list, String type) {
 		int i = 0;
 		if (null != list && list.size() > 0 && null != type){

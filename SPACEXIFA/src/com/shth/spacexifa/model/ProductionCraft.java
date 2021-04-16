@@ -35,14 +35,14 @@ public class ProductionCraft {
 
 
     private String JUNCTION_NAME;       //焊缝名称
-    private String CRAFT_PARAM;				//工艺参数
+    private String craft_param;				//工艺参数
 
     public String getCraft_param() {
-        return CRAFT_PARAM;
+        return craft_param;
     }
 
-    public void setCraft_param(String CRAFT_PARAM) {
-        this.CRAFT_PARAM = CRAFT_PARAM;
+    public void setCraft_param(String craft_param) {
+        this.craft_param = craft_param;
     }
 
 

@@ -86,7 +86,7 @@
 				<if test="FREPAIRTYPE != 0">
 					FREPAIRTYPE,
 				</if>
-				<if test="CRAFT_PARAM != 0">
+				<if test="craft_param != null and craft_param != ''">
 					CRAFT_PARAM,
 				</if>
 			</trim>
@@ -146,8 +146,8 @@
 				<if test="FREPAIRTYPE != 0">
 					#{FREPAIRTYPE},
 				</if>
-				<if test="CRAFT_PARAM != null and CRAFT_PARAM != ''">
-					#{CRAFT_PARAM},
+				<if test="craft_param != null and craft_param != ''">
+					#{craft_param},
 				</if>
 			</trim>
 		</if>
@@ -199,8 +199,8 @@
 				<if test="MENDER != null and MENDER != ''">
 					MENDER = #{MENDER},
 				</if>
-				<if test="CRAFT_PARAM != null and CRAFT_PARAM != ''">
-					CRAFT_PARAM = #{CRAFT_PARAM},
+				<if test="craft_param != null and craft_param != ''">
+					CRAFT_PARAM = #{craft_param},
 				</if>
 			</set>
 			WHERE FID = #{FID}

@@ -42,13 +42,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="bodys" >
 		 <div class="functionleftdiv">历史曲线 >> 任务信息</div>
 	   	 <div id="companyOverproof_btn">
-			 <a href="javascript:window.history.back(-1)" class="easyui-linkbutton" iconCls="icon-select" id="full" >返回上一级</a>
+			 <a href="javascript:goback()" class="easyui-linkbutton" iconCls="icon-select" id="full" >返回上一级</a>
 <%--				<input  name="parent" id="parent" type="hidden" value="${parent }"/>--%>
 				<input  name="fjunction_id" id="fjunction_id" type="hidden" value="${fjunction_id }"/>
+			    <input  name="type" id="type" type="hidden" value="${type }"/>
 				<input  name="fid" id="fid" type="hidden" value="${fid }"/>
 	            <input  name="machin_id" id="machin_id" type="hidden" value="${machin_id }"/>
 				<input  style="width:0px" name="dto1" id="dto1" type="hidden" value="${dto1 }"/>
 				<input  style="width:0px" name="dto2" id="dto2" type="hidden" value="${dto2 }"/>
+				 <input  name="product_drawing_no" id="product_drawing_no" type="hidden" value="${product_drawing_no }"/>
+				 <input  name="product_name" id="product_name" type="hidden" value="${product_name }"/>
+				 <input  name="taskno" id="taskno" type="hidden" value="${taskno }"/>
+				<input  name="fwelded_junction_no" id="fwelded_junction_no" type="hidden" value="${fwelded_junction_no }"/>
+				 <input  name="weldername" id="weldername" type="hidden" value="${weldername }"/>
+				<input  name="weldernum" id="weldernum" type="hidden" value="${weldernum }"/>
+			 	<input  name="machinenum" id="machinenum" type="hidden" value="${machinenum }"/>
+				 <input  name="zitem" id="zitem" type="hidden" value="${zitem }"/>
+				 <input  name="bitem" id="bitem" type="hidden" value="${bitem }"/>
+			     <input  name="part_number" id="part_number" type="hidden" value="${part_number }"/>
+				 <input  name="part_name" id="part_name" type="hidden" value="${part_name }"/>
+				 <input  name="type" id="type" type="hidden" value="${type }"/>
+			     <input  name="fstatus" id="fstatus" type="hidden" value="${fstatus }"/>
+			 <input class="easyui-datetimebox" style="width:0px" name="dtoTime1" id="dtoTime1" type="hidden" value="${time1 }">
+			 <input class="easyui-datetimebox" style="width:0px" name="dtoTime2" id="dtoTime2" type="hidden" value="${time2 }">
 <%--				<input  name="machineid" id="machineid" type="hidden" value="${machineid }"/>--%>
 <%--				时间：--%>
 <%--				<input class="easyui-datetimebox" name="dtoTime1" id="dtoTime1">----%>

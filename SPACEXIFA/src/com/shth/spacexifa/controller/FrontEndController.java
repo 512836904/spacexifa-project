@@ -3,6 +3,7 @@ package com.shth.spacexifa.controller;
 import com.github.pagehelper.PageInfo;
 import com.shth.spacexifa.dto.WeldDto;
 import com.shth.spacexifa.model.DataStatistics;
+import com.shth.spacexifa.model.Parameter;
 import com.shth.spacexifa.model.Welder;
 import com.shth.spacexifa.model.Wps;
 import com.shth.spacexifa.page.Page;
@@ -35,6 +36,8 @@ public class FrontEndController {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat sdfMonth = new SimpleDateFormat("yyyy-MM");
+    private static final SimpleDateFormat sdfMonth1 = new SimpleDateFormat("yyyy-MM HH:mm:ss");
+
 
     @Autowired
     private DataStatisticsService dss;
@@ -42,6 +45,8 @@ public class FrontEndController {
     private WpsService wpsService;
     @Autowired
     private WelderService welderService;
+    @Autowired
+    private ParameterService parameterService;
 
     /**
      * 焊工工作时间排行
@@ -56,13 +61,16 @@ public class FrontEndController {
         BigInteger parent = null;
         try {
             String time1 = "";
+            String time2 = "";
             time1 = request.getParameter("startTime");
             String standbyTime = request.getParameter("standbyTime");
 
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
+                //time2 = sdf.format(System.currentTimeMillis());   //默认当天时间
             } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
+                //time2 = sdfMonth1.format(System.currentTimeMillis()) + "-01";//当月
             }
             List<DataStatistics> list = null;
             if (null != standbyTime && !"".equals(standbyTime) && "1".equals(standbyTime)){
@@ -70,7 +78,7 @@ public class FrontEndController {
                 list = dss.getStandbyRank(page, parent, time1);
             }else {
                 //查询焊接时长
-                list = dss.getWorkRank(page, parent, time1);
+                list = dss.getWorkRank(page, parent, time1,null);
             }
             if (null != list && list.size() > 0) {
                 for (int i = 0; i < list.size(); i++) {
@@ -129,7 +137,8 @@ public class FrontEndController {
                     json.put("itemname", data.getName());
                     //规范符合率 = 焊接时长 / （焊接时长+超规范时长）
                     if (data.getWkhour() != 0 || data.getWnhour() != 0) {
-                        json.put("hour", data.getWkhour() / (data.getWkhour() + data.getWnhour()) * 100);
+                        //json.put("hour", data.getWkhour() / (data.getWkhour() + data.getWnhour()) * 100);
+                        json.put("hour", data.getWkhour() / (data.getWkhour()) * 100);
                     } else {
                         json.put("hour", 0);
                     }
@@ -185,18 +194,20 @@ public class FrontEndController {
                 for (DataStatistics data : list) {
                     json.put("id", data.getId());       //组织机构id
                     json.put("name", data.getName());   //组织机构名称
-                    if (null != dataStatistics && dataStatistics.size() > 0) {
-                        for (DataStatistics da : dataStatistics) {
-                            if (da.getId().equals(data.getId())) {
-                                if (data.getType() == 22) {
-                                    weldernum = da.getNum(); //工区：焊工数量
-                                }
-                                if (data.getType() == 23) {
-                                    weldernum = da.getTotal();  //班组：焊工数量
-                                }
-                            }
-                        }
-                    }
+                    list = dss.getWelderWorkTime(data.getId(), startTime);//获取工区或班组的打卡人数
+                    weldernum = list.get(0).getNum();
+//                    if (null != dataStatistics && dataStatistics.size() > 0) {
+//                        for (DataStatistics da : dataStatistics) {
+//                            if (da.getId().equals(data.getId())) {
+//                                if (data.getType() == 22) {
+//                                    weldernum = da.getNum(); //工区：焊工数量
+//                                }
+//                                if (data.getType() == 23) {
+//                                    weldernum = da.getTotal();  //班组：焊工数量
+//                                }
+//                            }
+//                        }
+//                    }
                     BigDecimal bd = null;
                     if (weldernum != 0 && data.getHour() != null && data.getHour() != 0) {
                         bd = new BigDecimal(data.getHour() / weldernum);
@@ -264,7 +275,8 @@ public class FrontEndController {
                 //DataStatistics junction = dss.getWorkJunctionNum(i.getId(), dto);//获取工作(焊接)的焊口数
                 DataStatistics parameter = dss.getParameter();//获取参数
                 double standytimes = 0, worktimes = 0, electricpower = 0, avgVol = 0, avgEle = 0;
-                standytime = i.getStandbytime();//获取待机总时长
+                //standytime = i.getStandbytime();//获取待机总时长
+                standytime = dss.getStandytime(i.getId(), dto);
                 weldtime = i.getWorktime();//获取焊接时长，平均电流电压(根据时间和组织id查询)
                 avgVol = i.getVoltage();
                 avgEle = i.getElectricity();
@@ -370,7 +382,7 @@ public class FrontEndController {
             // List<DataStatistics> list = dss.getItemMachineByItemType(page, itemtype); //根据组织机构统计焊机总
             for (DataStatistics i : list) {
                 json.put("t0", i.getName());//所属班组
-                json.put("t9", i.getWirefeedrate());//所有车间
+                json.put("t9", i.getWirefeedrate());//焊丝消耗
                 ary.add(json);
             }
             //表头
@@ -424,7 +436,8 @@ public class FrontEndController {
                 int machinenum = 0;
                 total = i.getTotal();
                 num = i.getNum();
-                hour = i.getHour();
+                hour = dss.getStartingUpMachineNum(i.getId(), dto);
+               // hour = i.getHour();
                 if (i.getTotal() != 0) {
                     double useratio = Math.round(hour / total * 100);
                     json.put("t4", useratio);//设备利用率 = 开机/总台数
@@ -572,11 +585,17 @@ public class FrontEndController {
         JSONObject json = new JSONObject();
         JSONArray ary = new JSONArray();
         String time1 = request.getParameter("startTime");
+        int supergage_status = 1; //默认展示
         try {
             if (null == time1 || "".equals(time1) || "0".equals(time1)) {
                 time1 = sdfDay.format(System.currentTimeMillis());   //默认当天时间
             } else {
                 time1 = sdfMonth.format(System.currentTimeMillis()) + "-01";//当月
+            }
+            //查询超规范信息是否展示
+            Parameter parameter = parameterService.getParameterBySupergage();
+            if (null != parameter){
+                supergage_status = parameter.getSUPERGAGE_STATUS();
             }
             List<DataStatistics> list = dss.findSupergageInfo(time1);
             if (null != list && list.size() > 0) {
@@ -610,6 +629,7 @@ public class FrontEndController {
         }
         JSONObject obj = new JSONObject();
         obj.put("ary", ary);
+        obj.put("supergage_status" ,supergage_status);
         return obj.toString();
     }
 
@@ -687,8 +707,9 @@ public class FrontEndController {
                     if (li.getWkhour() != 0 || li.getWnhour() != 0) {
                         json.put("job_number", li.getJOB_NUMBER()); //工作号
                         json.put("set_number", li.getSET_NUMBER()); //布套号
-                        json.put("part_name", li.getPART_NAME());   //零件名
-                        bd = new BigDecimal((li.getWkhour() / (li.getWkhour() + li.getWnhour())) * 100);
+                        //json.put("part_name", li.getPART_NAME());   //零件名
+                        //bd = new BigDecimal((li.getWkhour() / (li.getWkhour() + li.getWnhour())) * 100);
+                        bd = new BigDecimal((li.getWkhour() / (li.getWkhour())) * 100);
                         bd = bd.setScale(2, RoundingMode.HALF_UP);
                         json.put("normRate", bd);
                     }

@@ -154,24 +154,38 @@ public class UserController {
 
     /**
      * 添加用户并重定向
-     *
-     * @param user
      * @param request
      * @return
      */
-    @RequestMapping("/addUser")
+    @RequestMapping("/addAllUser")
     @ResponseBody
-    public String addUser(User user, HttpServletRequest request) {
-
+    public String addAllUser(HttpServletRequest request) {
+        User user = new User();
         JSONObject obj = new JSONObject();
+        String userEmail = "";
+        String userPhone = "";
+        String fs = request.getParameter("pssword");
+        String f1 = request.getParameter("userInsframework");
+        String f2 = request.getParameter("status");
+        String f3 = request.getParameter("ISSUEWPS");
+        String f4 = request.getParameter("RECEIVEALARM");
+        String name = request.getParameter("name");
+        String validName = request.getParameter("validName");
+        String userPosition = request.getParameter("userPosition");
+        userEmail = request.getParameter("userEmail");
+        userPhone = request.getParameter("userPhone");
         try {
-            String fs = user.getUserPassword();
 //		String xxx = DigestUtils.md5Hex(fs);
             user.setUserPassword(fs);
             user.setUserInsframework(Long.parseLong(request.getParameter("userInsframework")));
             user.setStatus(Integer.parseInt(request.getParameter("status")));
             user.setISSUEWPS(Integer.parseInt(request.getParameter("ISSUEWPS")));
             user.setRECEIVEALARM(Integer.parseInt(request.getParameter("RECEIVEALARM")));
+            user.setUserLoginName(validName);
+            user.setUserName(name);
+            user.setUserPosition(userPosition);
+            user.setUserEmail(userEmail);
+            user.setUserPhone(userPhone);
             userService.save(user);
             String str = request.getParameter("rid");
             if (null != str && !"".equals(str)) {

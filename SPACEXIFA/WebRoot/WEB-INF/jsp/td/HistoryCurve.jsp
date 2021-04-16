@@ -41,6 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body>
 	<div id="bodys" >
 		 <div class="functionleftdiv">历史曲线 >> 任务信息</div>
+		<a href="javascript:history.go(-1);" class="easyui-linkbutton" iconCls="icon-select" id="full" >返回上一级</a>
 	   	 <div id="companyOverproof_btn">
 			<div style="margin-bottom: 5px;float:right">
 				<input  name="parent" id="parent" type="hidden" value="${parent }"/>

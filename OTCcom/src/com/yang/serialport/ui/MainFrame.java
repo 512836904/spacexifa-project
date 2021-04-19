@@ -7,10 +7,9 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
 
@@ -26,7 +25,7 @@ public class MainFrame {
     //创建缓存线程池，处理OTC实时数据
     public static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
     //定时线程池处理
-    public ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(10);
+    public static ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(10);
 
     public MainFrame() {
         // OTC开启客户端连接PC服务端
@@ -114,36 +113,22 @@ public class MainFrame {
     }
 
     private void startClientConnect() {
-        Thread thread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 clientconnect.start();
             }
-        });
-        thread.start();
+        }).start();
     }
 
     private void startNettyWorkGroup() {
-        Thread thread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
+            final EventLoopGroup bossGroup = new NioEventLoopGroup();
+            final EventLoopGroup workerGroup = new NioEventLoopGroup();
             @Override
             public void run() {
-                EventLoopGroup bossGroup = new NioEventLoopGroup(2);
-                EventLoopGroup workerGroup = new NioEventLoopGroup();
                 try {
                     ServerBootstrap b = new ServerBootstrap();
-//                    b = b.childHandler(new ChannelInitializer<SocketChannel>() {
-//                        @Override
-//                        public void initChannel(SocketChannel chsoc) throws Exception {
-//                                //编码解码
-//						chsoc.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 1, 2, 0, 0));
-//	                	chsoc.pipeline().addLast("frameEncoder", new LengthFieldPrepender(1));
-//                                //加入编码解码之后,不能加入utf-8编码,加入之后0x80之后的数错误
-//                                //chsoc.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-//                                //chsoc.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-//
-//                                //焊机连接上后,存入list数组中
-//                        }
-//                    }).option(ChannelOption.SO_BACKLOG, 128);
                     b.group(bossGroup, workerGroup)
                             .channel(NioServerSocketChannel.class)
                             .option(ChannelOption.SO_BACKLOG, 128)
@@ -172,8 +157,7 @@ public class MainFrame {
                     System.out.println("OTC服务端已关闭！");
                 }
             }
-        });
-        thread.start();
+        }).start();
     }
 
     public static void main(String args[]) {

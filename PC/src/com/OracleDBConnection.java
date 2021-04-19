@@ -18,25 +18,25 @@ public class OracleDBConnection {
     private static DataSource dataSource;
 
     static {
-        try {
-            //1.得到配置文件的输入流，注：/ 不能省略
-            InputStream inputStream = OracleDBConnection.class.getResourceAsStream("/config/druid.properties");
-            //2.创建Properties对象，读取上面的配置文件
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            //3.使用工厂类创建数据源
-            if (dataSource == null) {
+        if (dataSource == null) {
+            try {
+                //1.得到配置文件的输入流，注：/ 不能省略
+                InputStream inputStream = OracleDBConnection.class.getResourceAsStream("/config/druid.properties");
+                //2.创建Properties对象，读取上面的配置文件
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                //3.使用工厂类创建数据源
                 dataSource = DruidDataSourceFactory.createDataSource(properties);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("连接池异常！");
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("连接池异常！");
         }
     }
 
     /**
      * 创建连接
+     *
      * @return
      * @throws SQLException
      */
@@ -46,6 +46,7 @@ public class OracleDBConnection {
 
     /**
      * 关闭连接
+     *
      * @param conn
      */
     public static void close(Connection conn, Statement stmt, ResultSet rs) {
@@ -75,14 +76,14 @@ public class OracleDBConnection {
     /**
      * 获取连接池方法
      */
-    public static DataSource getDataSource() {
+    private static DataSource getDataSource() {
         return dataSource;
     }
 
     /**
      * 测试
      */
-    public final void test(){
+    public final void test() {
         Connection conn = null;
         Statement statement = null;
         try {
@@ -92,15 +93,15 @@ public class OracleDBConnection {
             String sql = "SELECT FID,FWELDER_NO,FNAME FROM TB_WELDER";
             ResultSet resultSet = statement.executeQuery(sql);
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 String fname = resultSet.getString("FNAME");
-                System.out.println("FNAME:"+fname);
+                System.out.println("FNAME:" + fname);
             }
             System.out.println("OK！");
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally{
-            OracleDBConnection.close(conn,statement,null);
+        } finally {
+            OracleDBConnection.close(conn, statement, null);
         }
     }
 

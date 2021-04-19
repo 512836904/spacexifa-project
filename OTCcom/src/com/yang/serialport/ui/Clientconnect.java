@@ -22,12 +22,11 @@ import java.io.*;
 public class Clientconnect {
     public MainFrame mainFrame;
     public NettyServerHandler NS;
-    private EventLoopGroup loop = new NioEventLoopGroup();
+    private final EventLoopGroup loop = new NioEventLoopGroup();
     //PC服务端的IP地址和端口
-    private static String inetIp = "localhost";
-    private static int inetPort = 5551;
+    private static final String inetIp = "localhost";
+    private static final int inetPort = 5551;
     public ConnectionListener CL = new ConnectionListener(this);
-    public NettyServerHandler nsh = new NettyServerHandler();
 
     public Clientconnect(NettyServerHandler NS, MainFrame mainFrame) {
         this.NS = NS;
@@ -48,8 +47,8 @@ public class Clientconnect {
                     socketChannel.pipeline().addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
                     socketChannel.pipeline().addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
                     socketChannel.pipeline().addLast(new TcpClientHandler());
-                    CL.socketChannel = socketChannel;
-                    nsh.chcli = socketChannel;
+                    ConnectionListener.socketChannel = socketChannel;
+                    NettyServerHandler.chcli = socketChannel;
                 }
             });
             ChannelFuture channelFuture = bootstrap.remoteAddress(inetIp, inetPort).connect().sync();

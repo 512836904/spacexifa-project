@@ -92,7 +92,7 @@ public class Server {
                 mqtt.subTopic("hand-held-terminal-askFor");    //手持终端索取
                 mqtt.subTopic("hand-held-terminal-issue");    //手持终端下发
                 mqtt.subTopic("whiteList-dataIssue");    //焊工白名单下发
-                mqtt.subTopic("control-command-issue");    //手持终端控制命令下发
+                mqtt.subTopic("control-command-issue");    //手持终端结束命令下发
             }
         });
         thread.start();
@@ -163,7 +163,7 @@ public class Server {
                 Connection connection = null;
                 Statement statement = null;
                 try {
-                    connection = Server.dbConnection.getConnection();
+                    connection = OracleDBConnection.getConnection();
                     statement = connection.createStatement();
                     //基本版
                     //获取上次统计时间，为空插入赋默认值
@@ -354,7 +354,7 @@ public class Server {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    Server.dbConnection.close(connection, statement, null);
+                    OracleDBConnection.close(connection, statement, null);
                 }
             }
         }, time1, (60 * 60 * 24), TimeUnit.SECONDS);
@@ -363,13 +363,12 @@ public class Server {
          * 周期性线程池每小时更新work等四张数据工作表
          */
         executorService.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 Connection connection = null;
                 Statement statement = null;
                 try {
-                    connection = Server.dbConnection.getConnection();
+                    connection = OracleDBConnection.getConnection();
                     statement = connection.createStatement();
                     //基本版
                     //获取上次统计时间，为空插入赋默认值
@@ -480,7 +479,7 @@ public class Server {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } finally {
-                    Server.dbConnection.close(connection, statement, null);
+                    OracleDBConnection.close(connection, statement, null);
                 }
             }
         }, time, 60 * 60, TimeUnit.SECONDS);

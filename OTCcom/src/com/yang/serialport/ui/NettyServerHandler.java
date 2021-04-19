@@ -25,7 +25,7 @@ import java.util.concurrent.*;
 public class NettyServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     public String fitemid = "17";
-    public SocketChannel chcli = null;
+    public static SocketChannel chcli;
 
 
     //创建缓存线程池，处理OTC实时数据
@@ -47,8 +47,74 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
     protected void messageReceived(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         byte[] req = new byte[buf.readableBytes()];
         buf.readBytes(req);
-        cachedThreadPool.execute(new Workspace(req));
+        String str = "";
+        //cachedThreadPool.execute(new Workspace(req));
+        try {
+            if (req.length == 144 || req.length == 56 || req.length == 12 || req.length == 11 || req.length == 13) {
+                for (int i = 0; i < req.length; i++) {
+                    //判断为数字还是字母，若为字母+256取正数
+                    if (req[i] < 0) {
+                        String r = Integer.toHexString(req[i] + 256);
+                        String rr = r.toUpperCase();
+                        //数字补为两位数
+                        if (rr.length() == 1) {
+                            rr = '0' + rr;
+                        }
+                        //strdata为总接收数据
+                        str += rr;
+
+                    } else {
+                        String r = Integer.toHexString(req[i]);
+                        if (r.length() == 1)
+                            r = '0' + r;
+                        r = r.toUpperCase();
+                        str += r;
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        publishData(str);
     }
+
+    private void publishData(String str){
+        if (str.length() >= 6) {
+            //基本版
+            if (str.substring(0, 2).equals("7E") && (str.substring(10, 12).equals("22") || str.substring(10, 12).equals("23")) && str.length() == 288) {
+                /**
+                 * 数据发送
+                 * str.length:596
+                 */
+                String charStr = "";
+                for (int i = 0; i < 102; i++) {
+                    charStr += 0;
+                }
+                String headData = str.substring(0, 44);                    //头部数据
+                String oneData = str.substring(44, 124) + charStr;        //第一组数据
+                String towData = str.substring(124, 204) + charStr;    //第二组数据
+                String threeData = str.substring(204, 284) + charStr;    //第三组数据
+                String footerData = str.substring(284, 286);                //尾部数据
+                str = headData + oneData + towData + threeData + footerData + fitemid + "7D";
+                try {
+                    chcli.writeAndFlush(str).sync();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                /**
+                 * 索取返回，下发返回，控制命令返回，白名单返回
+                 */
+                try {
+                    chcli.writeAndFlush(str).sync();
+                    //System.out.println(str);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     class Workspace implements Runnable {
         private byte[] req;
@@ -205,7 +271,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
             TcpClientHandler.channelList = channelList;
             System.out.println("终止连接:" + clientIp + "：" + port + "--->连接通道数量: " + channelList.size());
         }
-        ctx.channel().closeFuture();
+        //ctx.channel().closeFuture();
         ctx.close();
     }
 

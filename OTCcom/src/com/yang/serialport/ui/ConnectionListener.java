@@ -15,7 +15,7 @@ import io.netty.util.concurrent.GenericFutureListener;
  */
 public class ConnectionListener implements ChannelFutureListener {
     public Clientconnect client;
-    public SocketChannel socketChannel;
+    public static SocketChannel socketChannel;
 
     public ConnectionListener(Clientconnect client) {
         this.client = client;
